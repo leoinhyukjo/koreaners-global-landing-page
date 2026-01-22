@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Turbopack 설정 (Next.js 16 - 루트 레벨에 위치)
+  turbopack: {},
   typescript: {
     ignoreBuildErrors: false, // 빌드 에러를 확인하기 위해 false로 변경 권장
   },
@@ -15,8 +17,6 @@ const nextConfig = {
   // Vercel 배포 최적화
   experimental: {
     optimizePackageImports: ['@blocknote/react', 'lucide-react'],
-    // Turbopack 설정 추가 (Next.js 16 호환)
-    turbopack: {},
   },
   // BlockNote 관련 빌드 최적화
   webpack: (config, { isServer }) => {

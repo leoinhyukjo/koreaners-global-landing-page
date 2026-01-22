@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/middleware'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   
   // /admin으로 시작하는 경로만 체크
@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
 
   // 세션 확인 중 에러 로깅 (프로덕션에서는 제거)
   if (sessionError && process.env.NODE_ENV === 'development') {
-    console.error('Middleware 세션 확인 오류:', sessionError)
+    console.error('Proxy 세션 확인 오류:', sessionError)
   }
 
   // 로그인 페이지 접근 시
@@ -59,7 +59,6 @@ export async function middleware(request: NextRequest) {
 }
 
 // Next.js 16 최신 규격에 따른 matcher 설정
-// middleware 파일 convention 경고를 피하기 위해 명확한 경로만 지정
 export const config = {
   matcher: [
     '/admin/:path*',
