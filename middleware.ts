@@ -10,9 +10,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  let response = NextResponse.next({
+  // Next.js 16 최신 규격에 맞춘 response 생성
+  const response = NextResponse.next({
     request: {
-      headers: request.headers,
+      headers: new Headers(request.headers),
     },
   })
 
@@ -32,7 +33,7 @@ export async function middleware(request: NextRequest) {
     error: sessionError,
   } = await supabase.auth.getUser()
 
-  // 세션 확인 중 에러 로깅 (프로덕션에서는 제거 가능)
+  // 세션 확인 중 에러 로깅 (프로덕션에서는 제거)
   if (sessionError && process.env.NODE_ENV === 'development') {
     console.error('Middleware 세션 확인 오류:', sessionError)
   }
@@ -57,9 +58,18 @@ export async function middleware(request: NextRequest) {
   return response
 }
 
-// Vercel 최신 권장 사항에 따른 matcher 설정
+// Next.js 16 최신 규격에 따른 matcher 설정
 export const config = {
   matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (public folder)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     '/admin/:path*',
   ],
 }
