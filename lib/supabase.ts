@@ -24,23 +24,3 @@ export type Creator = {
   tiktok_url: string | null
   created_at: string
 }
-export type Portfolio = {
-  id: string
-  title: string
-  client_name: string
-  thumbnail_url: string | null
-  category: string[]
-  link: string | null
-  content: any // BlockNote JSON
-  created_at: string
-}
-
-export type Creator = {
-  id: string
-  name: string
-  profile_image_url: string | null
-  instagram_url: string | null
-  youtube_url: string | null
-  tiktok_url: string | null
-  created_at: string
-}
