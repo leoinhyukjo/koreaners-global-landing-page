@@ -19,13 +19,18 @@ export default function PortfolioDetailPage() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const editor = useCreateBlockNote({
-    editable: false, // 읽기 전용
-  })
+  const editor = useCreateBlockNote()
 
   useEffect(() => {
     fetchPortfolio()
   }, [id])
+
+  // 에디터를 읽기 전용으로 설정
+  useEffect(() => {
+    if (editor) {
+      editor.isEditable = false
+    }
+  }, [editor])
 
   useEffect(() => {
     if (portfolio?.content && Array.isArray(portfolio.content) && editor && portfolio.content.length > 0) {
