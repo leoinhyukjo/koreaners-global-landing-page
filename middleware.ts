@@ -59,17 +59,9 @@ export async function middleware(request: NextRequest) {
 }
 
 // Next.js 16 최신 규격에 따른 matcher 설정
+// middleware 파일 convention 경고를 피하기 위해 명확한 경로만 지정
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public folder)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     '/admin/:path*',
   ],
 }

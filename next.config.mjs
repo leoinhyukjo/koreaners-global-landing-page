@@ -15,6 +15,8 @@ const nextConfig = {
   // Vercel 배포 최적화
   experimental: {
     optimizePackageImports: ['@blocknote/react', 'lucide-react'],
+    // Turbopack 설정 추가 (Next.js 16 호환)
+    turbopack: {},
   },
   // BlockNote 관련 빌드 최적화
   webpack: (config, { isServer }) => {
