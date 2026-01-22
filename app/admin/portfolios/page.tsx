@@ -1,5 +1,8 @@
 'use client'
 
+// 관리자 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
