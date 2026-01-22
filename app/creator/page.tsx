@@ -1,37 +1,36 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Navigation } from '@/components/navigation'
-import { Users, Instagram, Twitter, Award, Target, TrendingUp } from 'lucide-react'
+import { Users, Instagram, Youtube, Music, Award, Target } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import { supabase } from '@/lib/supabase/client'
+import type { Creator } from '@/lib/supabase'
 
 export default function CreatorPage() {
-  const creators = [
-    { id: 1, name: '韓国留学生momona', nameEn: 'Momona', category: 'Lifestyle', platforms: ['YT', 'IG', 'TT', 'X'], location: '한국 거주', followers: '285K', engagement: '9.2%' },
-    { id: 2, name: 'マーキュリー商事', nameEn: 'Mercury', category: 'Business', platforms: ['YT', 'IG', 'TT', 'X'], location: '일본 거주', followers: '195K', engagement: '7.8%' },
-    { id: 3, name: '丸岡えつこ', nameEn: 'Maruoka Etsuko', category: 'Lifestyle', platforms: ['YT', 'IG', 'TT', 'X'], location: '일본 거주', followers: '320K', engagement: '10.5%' },
-    { id: 4, name: 'Kagawa Yu', nameEn: 'Kagawa Yu', category: 'Fashion', platforms: ['YT', 'IG', 'TT', 'X'], location: '한국 거주', followers: '410K', engagement: '11.2%' },
-    { id: 5, name: 'Uchan', nameEn: 'Uchan', category: 'Beauty', platforms: ['YT', 'IG', 'TT', 'X'], location: '한국 거주', followers: '265K', engagement: '8.9%' },
-    { id: 6, name: 'MAHO', nameEn: 'Maho', category: 'Fashion', platforms: ['YT', 'IG', 'TT', 'X'], location: '일본 거주', followers: '380K', engagement: '9.7%' },
-    { id: 7, name: 'michan', nameEn: 'Michan', category: 'Beauty', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '225K', engagement: '10.1%' },
-    { id: 8, name: 'えみん', nameEn: 'Emin', category: 'Lifestyle', platforms: ['YT', 'IG', 'TT'], location: '한국 거주', followers: '195K', engagement: '8.6%' },
-    { id: 9, name: 'えの', nameEn: 'Eno', category: 'Fashion', platforms: ['YT', 'IG', 'TT', 'X'], location: '한국 거주', followers: '340K', engagement: '11.8%' },
-    { id: 10, name: 'きむはな', nameEn: 'Kim Hana', category: 'Beauty', platforms: ['YT', 'IG'], location: '일본 거주', followers: '280K', engagement: '9.4%' },
-    { id: 11, name: 'れいな', nameEn: 'Reina', category: 'Fashion', platforms: ['IG', 'TT'], location: '일본 거주', followers: '165K', engagement: '10.3%' },
-    { id: 12, name: 'ムグン', nameEn: 'Mugun', category: 'Lifestyle', platforms: ['IG'], location: '한국 거주', followers: '145K', engagement: '7.9%' },
-    { id: 13, name: 'ふかわ', nameEn: 'Fukawa', category: 'F&B', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '210K', engagement: '8.8%' },
-    { id: 14, name: 'SONAMI', nameEn: 'Sonami', category: 'Beauty', platforms: ['YT', 'IG', 'TT', 'X'], location: '한국 거주', followers: '395K', engagement: '12.1%' },
-    { id: 15, name: 'みじゅ', nameEn: 'Miju', category: 'Fashion', platforms: ['IG', 'X'], location: '일본 거주', followers: '175K', engagement: '9.6%' },
-    { id: 16, name: 'AMANE', nameEn: 'Amane', category: 'Lifestyle', platforms: ['YT', 'IG', 'TT'], location: '한국 거주', followers: '305K', engagement: '10.9%' },
-    { id: 17, name: 'SEIRA', nameEn: 'Seira', category: 'Beauty', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '425K', engagement: '13.2%' },
-    { id: 18, name: 'Natsuki', nameEn: 'Natsuki', category: 'Fashion', platforms: ['IG', 'TT'], location: '일본 거주', followers: '190K', engagement: '8.7%' },
-    { id: 19, name: 'hekihooo', nameEn: 'Hekiho', category: 'Lifestyle', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '255K', engagement: '9.3%' },
-    { id: 20, name: 'NAGUMO FUKA', nameEn: 'Nagumo Fuka', category: 'Beauty', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '315K', engagement: '11.4%' },
-    { id: 21, name: 'HIMARI', nameEn: 'Himari', category: 'Fashion', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '370K', engagement: '12.6%' },
-    { id: 22, name: '加藤 乃愛', nameEn: 'Kato Noa', category: 'Beauty', platforms: ['YT', 'IG', 'TT', 'X'], location: '일본 거주', followers: '445K', engagement: '14.1%' },
-    { id: 23, name: 'Mitsuki', nameEn: 'Mitsuki', category: 'Lifestyle', platforms: ['YT', 'IG', 'TT'], location: '일본 거주', followers: '295K', engagement: '10.2%' },
-    { id: 24, name: 'Chisato Yoshiki', nameEn: 'Chiipopo', category: 'Beauty', platforms: ['YT', 'IG'], location: '일본 거주', followers: '335K', engagement: '11.7%' },
-    { id: 25, name: 'myu', nameEn: 'Myu', category: 'Fashion', platforms: ['YT', 'IG'], location: '일본 거주', followers: '265K', engagement: '9.8%' },
-  ]
+  const [creators, setCreators] = useState<Creator[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchCreators()
+  }, [])
+
+  async function fetchCreators() {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('creators')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      setCreators(data || [])
+    } catch (error: any) {
+      console.error('Error fetching creators:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -52,57 +51,146 @@ export default function CreatorPage() {
           </div>
 
           {/* Creator Cards Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
-            {creators.map(creator => (
-              <Card 
-                key={creator.id}
-                className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300"
-              >
-                {/* Creator Avatar */}
-                <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Users className="w-20 h-20 text-primary/30" />
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-1">
-                    {creator.platforms.map((platform, idx) => (
-                      <div key={idx} className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full">
-                        {platform === 'IG' && <Instagram className="w-3 h-3 text-primary" />}
-                        {platform === 'X' && <Twitter className="w-3 h-3 text-primary" />}
-                        {platform === 'TT' && <span className="text-[10px] font-bold text-primary">TT</span>}
-                        {platform === 'YT' && <span className="text-[10px] font-bold text-primary">YT</span>}
+          {loading ? (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground">로딩 중...</p>
+            </div>
+          ) : creators.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground text-lg">등록된 크리에이터가 없습니다.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
+              {creators.map(creator => (
+                <Card 
+                  key={creator.id}
+                  className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300"
+                >
+                  {/* Creator Avatar */}
+                  <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                    {/* 프로필 이미지 */}
+                    {creator.profile_image_url ? (
+                      <img
+                        src={creator.profile_image_url}
+                        alt={creator.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Users className="w-20 h-20 text-primary/30" />
                       </div>
-                    ))}
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background/90 to-transparent">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2 py-1 bg-primary text-primary-foreground text-xs font-bold rounded">
-                        {creator.category}
-                      </span>
+                    )}
+                    
+                    {/* SNS 플랫폼 아이콘들 */}
+                    <div className="absolute top-4 right-4 flex gap-1">
+                      {/* Instagram */}
+                      {creator.instagram_url ? (
+                        <a
+                          href={creator.instagram_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-colors"
+                        >
+                          <Instagram className="w-3 h-3 text-primary" />
+                        </a>
+                      ) : (
+                        <div className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-30 pointer-events-none">
+                          <Instagram className="w-3 h-3 text-primary" />
+                        </div>
+                      )}
+                      
+                      {/* YouTube */}
+                      {creator.youtube_url ? (
+                        <a
+                          href={creator.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-colors"
+                        >
+                          <Youtube className="w-3 h-3 text-primary" />
+                        </a>
+                      ) : (
+                        <div className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-30 pointer-events-none">
+                          <Youtube className="w-3 h-3 text-primary" />
+                        </div>
+                      )}
+                      
+                      {/* TikTok */}
+                      {creator.tiktok_url ? (
+                        <a
+                          href={creator.tiktok_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-colors"
+                        >
+                          <Music className="w-3 h-3 text-primary" />
+                        </a>
+                      ) : (
+                        <div className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-30 pointer-events-none">
+                          <Music className="w-3 h-3 text-primary" />
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                {/* Creator Info */}
-                <div className="p-4">
-                  <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                    {creator.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-3">{creator.location}</p>
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Followers</p>
-                      <p className="font-bold text-primary">{creator.followers}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-muted-foreground mb-1">Engagement</p>
-                      <p className="font-bold text-primary">{creator.engagement}</p>
+                  {/* Creator Info */}
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                      {creator.name}
+                    </h3>
+                    
+                    {/* SNS 링크 (하단) */}
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-border">
+                      {creator.instagram_url ? (
+                        <a
+                          href={creator.instagram_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          <Instagram className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        <div className="opacity-30 pointer-events-none">
+                          <Instagram className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                      )}
+                      
+                      {creator.youtube_url ? (
+                        <a
+                          href={creator.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          <Youtube className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        <div className="opacity-30 pointer-events-none">
+                          <Youtube className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                      )}
+                      
+                      {creator.tiktok_url ? (
+                        <a
+                          href={creator.tiktok_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          <Music className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        <div className="opacity-30 pointer-events-none">
+                          <Music className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+          )}
 
           {/* Creator Categories */}
           <div className="mb-20">
@@ -122,10 +210,6 @@ export default function CreatorPage() {
                   <li className="flex gap-2">
                     <span className="text-primary mt-1">•</span>
                     <span><span className="font-medium text-foreground">TikTok:</span> Z세대 타깃 숏폼 바이럴 전문가</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span><span className="font-medium text-foreground">X (Twitter):</span> 정보 확산형 콘텐츠 특화</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-primary mt-1">•</span>

@@ -2,27 +2,47 @@
 
 import { Navigation } from '@/components/navigation'
 import { Card } from '@/components/ui/card'
-import { useState } from 'react'
-import { TrendingUp, Award, Target } from 'lucide-react'
-import { FooterCTA } from '@/components/footer-cta' // Declare the FooterCTA variable
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase/client'
+import type { Portfolio } from '@/lib/supabase'
+import Link from 'next/link'
 
 export default function PortfolioPage() {
   const [activeTab, setActiveTab] = useState('all')
+  const [portfolios, setPortfolios] = useState<Portfolio[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const portfolioItems = [
-    { id: 1, category: 'beauty', title: 'K-Beauty 브랜드 A사', description: '신규 진입 3개월 만에 매출 목표 240% 달성', reach: '580만', engagement: '125개', conversion: '240%' },
-    { id: 2, category: 'fashion', title: '패션 브랜드 B사', description: '일본 공식몰 론칭 후 첫 달 목표 매출 180% 달성', reach: '420만', engagement: '98개', conversion: '180%' },
-    { id: 3, category: 'fb', title: 'F&B 브랜드 C사', description: '브랜드 인지도 제로에서 시작해 6개월 만에 주요 유통 입점', reach: '650만', engagement: '156개', conversion: '12개' },
-    { id: 4, category: 'beauty', title: 'Skincare 브랜드 D사', description: '일본 시장 진출 첫 해 매출 3억 달성', reach: '380만', engagement: '89개', conversion: '195%' },
-    { id: 5, category: 'fashion', title: 'K-Fashion 브랜드 E사', description: '일본 Z세대 타깃 SNS 캠페인으로 브랜드 인지도 급상승', reach: '520만', engagement: '143개', conversion: '220%' },
-    { id: 6, category: 'fb', title: 'F&B 브랜드 F사', description: '일본 편의점 입점 성공 및 매출 2배 달성', reach: '490만', engagement: '112개', conversion: '8개' },
-    { id: 7, category: 'etc', title: 'Lifestyle 브랜드 G사', description: '일본 크라우드펀딩 목표 금액 350% 달성', reach: '310만', engagement: '76개', conversion: '350%' },
-    { id: 8, category: 'etc', title: 'Tech 브랜드 H사', description: '일본 온라인 커머스 런칭 성공', reach: '280만', engagement: '64개', conversion: '165%' },
-  ]
+  useEffect(() => {
+    fetchPortfolios()
+  }, [])
 
+  async function fetchPortfolios() {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('portfolios')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      setPortfolios(data || [])
+    } catch (error: any) {
+      console.error('Error fetching portfolios:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 카테고리 필터링
   const filteredItems = activeTab === 'all' 
-    ? portfolioItems 
-    : portfolioItems.filter(item => item.category === activeTab)
+    ? portfolios 
+    : portfolios.filter(item => {
+        if (!item.category || !Array.isArray(item.category)) return false
+        return item.category.some(cat => 
+          cat.toLowerCase() === activeTab.toLowerCase() || 
+          (activeTab === 'fb' && cat.toLowerCase() === 'f&b')
+        )
+      })
 
   const tabs = [
     { id: 'all', label: 'All' },
@@ -31,6 +51,22 @@ export default function PortfolioPage() {
     { id: 'fashion', label: 'Fashion' },
     { id: 'etc', label: 'Etc' },
   ]
+
+  // 카테고리 표시용 함수
+  function getCategoryDisplay(category: string[] | null): string {
+    if (!category || category.length === 0) return 'Etc'
+    return category[0]
+  }
+
+  // 카테고리 첫 글자 가져오기
+  function getCategoryInitial(category: string[] | null): string {
+    if (!category || category.length === 0) return 'E'
+    const firstCat = category[0].toLowerCase()
+    if (firstCat === 'beauty') return 'B'
+    if (firstCat === 'fashion') return 'F'
+    if (firstCat === 'f&b' || firstCat === 'fb') return 'F&B'
+    return 'E'
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -68,55 +104,82 @@ export default function PortfolioPage() {
           </div>
 
           {/* Portfolio Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-            {filteredItems.map(item => (
-              <Card 
-                key={item.id}
-                className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer"
-              >
-                {/* Image Placeholder */}
-                <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-6xl font-bold text-primary/20 uppercase">
-                      {item.category === 'beauty' ? 'B' : item.category === 'fashion' ? 'F' : item.category === 'fb' ? 'F&B' : 'E'}
-                    </div>
-                  </div>
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase">
-                      {item.category === 'fb' ? 'F&B' : item.category}
-                    </span>
-                  </div>
-                </div>
+          {loading ? (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground">로딩 중...</p>
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground text-lg">
+                {portfolios.length === 0 
+                  ? '등록된 포트폴리오가 없습니다.'
+                  : '선택한 카테고리에 해당하는 포트폴리오가 없습니다.'}
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+              {filteredItems.map(item => (
+                <Link key={item.id} href={`/portfolio/${item.id}`}>
+                  <Card 
+                    className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer h-full"
+                  >
+                    {/* Image */}
+                    {item.thumbnail_url ? (
+                      <div className="aspect-video relative overflow-hidden">
+                        <img
+                          src={item.thumbnail_url}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase">
+                            {getCategoryDisplay(item.category)}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-6xl font-bold text-primary/20 uppercase">
+                            {getCategoryInitial(item.category)}
+                          </div>
+                        </div>
+                        <div className="absolute top-4 left-4">
+                          <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase">
+                            {getCategoryDisplay(item.category)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
 
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                    {item.description}
-                  </p>
+                    {/* Content */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                        {item.client_name}
+                      </p>
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-3 pt-4 border-t border-border">
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">리치</p>
-                      <p className="text-sm font-bold text-primary">{item.reach}</p>
+                      {/* Category Tags */}
+                      {item.category && item.category.length > 0 && (
+                        <div className="flex gap-2 flex-wrap pt-4 border-t border-border">
+                          {item.category.map((cat, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
+                            >
+                              {cat}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">콘텐츠</p>
-                      <p className="text-sm font-bold text-primary">{item.engagement}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">성과</p>
-                      <p className="text-sm font-bold text-primary">{item.conversion}</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>
