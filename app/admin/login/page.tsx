@@ -123,23 +123,20 @@ export default function AdminLoginPage() {
         
         // 세션이 브라우저에 확실히 안착했는지 확인
         try {
-          const { data: { session: verifiedSession }, error: verifyError } = await getSession()
-          
-          if (verifyError) {
-            console.error('⚠️ 세션 확인 중 오류:', verifyError)
-          }
+          const verifiedSession = await getSession()
           
           if (!verifiedSession) {
             console.warn('⚠️ 세션이 브라우저에 저장되지 않음, 잠시 대기 후 재시도')
             // 잠시 대기 후 재확인
             await new Promise(resolve => setTimeout(resolve, 500))
-            const { data: { session: retrySession } } = await getSession()
+            const retrySession = await getSession()
             
             if (!retrySession) {
               console.error('❌ 세션 저장 실패, 강제 새로고침으로 이동')
               window.location.href = '/admin'
               return
             }
+            console.log('✅ 재시도 후 세션 확인됨')
           } else {
             console.log('✅ 세션 확인됨:', { userId: verifiedSession.user.id })
           }
