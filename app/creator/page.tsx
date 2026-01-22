@@ -80,78 +80,28 @@ export default function CreatorPage() {
                         <Users className="w-20 h-20 text-primary/30" />
                       </div>
                     )}
-                    
-                    {/* SNS 플랫폼 아이콘들 */}
-                    <div className="absolute top-4 right-4 flex gap-1">
-                      {/* Instagram */}
-                      {creator.instagram_url ? (
-                        <a
-                          href={creator.instagram_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-colors"
-                        >
-                          <Instagram className="w-3 h-3 text-primary" />
-                        </a>
-                      ) : (
-                        <div className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-30 pointer-events-none">
-                          <Instagram className="w-3 h-3 text-primary" />
-                        </div>
-                      )}
-                      
-                      {/* YouTube */}
-                      {creator.youtube_url ? (
-                        <a
-                          href={creator.youtube_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-colors"
-                        >
-                          <Youtube className="w-3 h-3 text-primary" />
-                        </a>
-                      ) : (
-                        <div className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-30 pointer-events-none">
-                          <Youtube className="w-3 h-3 text-primary" />
-                        </div>
-                      )}
-                      
-                      {/* TikTok */}
-                      {creator.tiktok_url ? (
-                        <a
-                          href={creator.tiktok_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-colors"
-                        >
-                          <Music className="w-3 h-3 text-primary" />
-                        </a>
-                      ) : (
-                        <div className="p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-30 pointer-events-none">
-                          <Music className="w-3 h-3 text-primary" />
-                        </div>
-                      )}
-                    </div>
                   </div>
 
                   {/* Creator Info */}
                   <div className="p-4">
-                    <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="text-lg font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                       {creator.name}
                     </h3>
                     
-                    {/* SNS 링크 (하단) */}
-                    <div className="flex gap-2 mt-3 pt-3 border-t border-border">
+                    {/* SNS 링크 */}
+                    <div className="flex gap-3">
                       {creator.instagram_url ? (
                         <a
                           href={creator.instagram_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-primary hover:underline"
+                          className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                          aria-label="Instagram"
                         >
                           <Instagram className="w-4 h-4" />
                         </a>
                       ) : (
-                        <div className="opacity-30 pointer-events-none">
+                        <div className="p-2 rounded-full bg-muted/50 opacity-30 pointer-events-none">
                           <Instagram className="w-4 h-4 text-muted-foreground" />
                         </div>
                       )}
@@ -161,12 +111,13 @@ export default function CreatorPage() {
                           href={creator.youtube_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-primary hover:underline"
+                          className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                          aria-label="YouTube"
                         >
                           <Youtube className="w-4 h-4" />
                         </a>
                       ) : (
-                        <div className="opacity-30 pointer-events-none">
+                        <div className="p-2 rounded-full bg-muted/50 opacity-30 pointer-events-none">
                           <Youtube className="w-4 h-4 text-muted-foreground" />
                         </div>
                       )}
@@ -176,12 +127,13 @@ export default function CreatorPage() {
                           href={creator.tiktok_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-primary hover:underline"
+                          className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                          aria-label="TikTok"
                         >
                           <Music className="w-4 h-4" />
                         </a>
                       ) : (
-                        <div className="opacity-30 pointer-events-none">
+                        <div className="p-2 rounded-full bg-muted/50 opacity-30 pointer-events-none">
                           <Music className="w-4 h-4 text-muted-foreground" />
                         </div>
                       )}

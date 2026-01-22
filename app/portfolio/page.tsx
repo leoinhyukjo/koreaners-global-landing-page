@@ -33,38 +33,41 @@ export default function PortfolioPage() {
     }
   }
 
-  // 카테고리 필터링
+  // 카테고리 필터링 (대소문자 구분)
   const filteredItems = activeTab === 'all' 
     ? portfolios 
     : portfolios.filter(item => {
         if (!item.category || !Array.isArray(item.category)) return false
-        return item.category.some(cat => 
-          cat.toLowerCase() === activeTab.toLowerCase() || 
-          (activeTab === 'fb' && cat.toLowerCase() === 'f&b')
-        )
+        return item.category.some(cat => {
+          // activeTab과 정확히 일치하거나, F&B의 경우 'F&B' 또는 'fb' 모두 허용
+          if (activeTab === 'F&B' || activeTab === 'fb') {
+            return cat === 'F&B' || cat === 'fb'
+          }
+          return cat === activeTab
+        })
       })
 
   const tabs = [
     { id: 'all', label: 'All' },
-    { id: 'beauty', label: 'Beauty' },
-    { id: 'fb', label: 'F&B' },
-    { id: 'fashion', label: 'Fashion' },
-    { id: 'etc', label: 'Etc' },
+    { id: 'Beauty', label: 'Beauty' },
+    { id: 'F&B', label: 'F&B' },
+    { id: 'Fashion', label: 'Fashion' },
+    { id: 'etc', label: 'etc' },
   ]
 
   // 카테고리 표시용 함수
   function getCategoryDisplay(category: string[] | null): string {
-    if (!category || category.length === 0) return 'Etc'
+    if (!category || category.length === 0) return 'etc'
     return category[0]
   }
 
   // 카테고리 첫 글자 가져오기
   function getCategoryInitial(category: string[] | null): string {
     if (!category || category.length === 0) return 'E'
-    const firstCat = category[0].toLowerCase()
-    if (firstCat === 'beauty') return 'B'
-    if (firstCat === 'fashion') return 'F'
-    if (firstCat === 'f&b' || firstCat === 'fb') return 'F&B'
+    const firstCat = category[0]
+    if (firstCat === 'Beauty') return 'B'
+    if (firstCat === 'Fashion') return 'F'
+    if (firstCat === 'F&B' || firstCat === 'fb') return 'F&B'
     return 'E'
   }
 

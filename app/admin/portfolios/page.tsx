@@ -20,8 +20,17 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
+
+const CATEGORIES = ['Beauty', 'F&B', 'Fashion', 'etc'] as const
 
 export default function PortfoliosPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
@@ -34,8 +43,7 @@ export default function PortfoliosPage() {
   const [title, setTitle] = useState('')
   const [clientName, setClientName] = useState('')
   const [thumbnailUrl, setThumbnailUrl] = useState('')
-  const [categories, setCategories] = useState<string[]>([])
-  const [categoryInput, setCategoryInput] = useState('')
+  const [category, setCategory] = useState<string>('')
   const [link, setLink] = useState('')
 
   useEffect(() => {
@@ -71,7 +79,8 @@ export default function PortfoliosPage() {
     setTitle(portfolio.title)
     setClientName(portfolio.client_name)
     setThumbnailUrl(portfolio.thumbnail_url || '')
-    setCategories(portfolio.category || [])
+    // 카테고리는 첫 번째 값만 사용 (단일 선택)
+    setCategory(portfolio.category && portfolio.category.length > 0 ? portfolio.category[0] : '')
     setLink(portfolio.link || '')
     setDialogOpen(true)
   }
@@ -80,20 +89,8 @@ export default function PortfoliosPage() {
     setTitle('')
     setClientName('')
     setThumbnailUrl('')
-    setCategories([])
-    setCategoryInput('')
+    setCategory('')
     setLink('')
-  }
-
-  function handleAddCategory() {
-    if (categoryInput.trim() && !categories.includes(categoryInput.trim())) {
-      setCategories([...categories, categoryInput.trim()])
-      setCategoryInput('')
-    }
-  }
-
-  function handleRemoveCategory(category: string) {
-    setCategories(categories.filter((c) => c !== category))
   }
 
   async function handleSave() {
@@ -102,14 +99,28 @@ export default function PortfoliosPage() {
       return
     }
 
+    if (!category) {
+      alert('카테고리를 선택해주세요.')
+      return
+    }
+
+    // 카테고리 값 검증: 4가지 값 중 하나만 허용
+    if (!CATEGORIES.includes(category as typeof CATEGORIES[number])) {
+      alert('Beauty, F&B, Fashion, etc 중 하나를 선택해주세요.')
+      return
+    }
+
     try {
       setSaving(true)
+
+      // 카테고리는 배열로 저장하되, 단일 값만 포함 (DB 스키마가 배열 타입인 경우 대비)
+      const categoryArray = [category]
 
       const portfolioData = {
         title,
         client_name: clientName,
         thumbnail_url: thumbnailUrl || null,
-        category: categories,
+        category: categoryArray,
         link: link || null,
         content: {}, // 나중에 BlockNote로 확장
       }
@@ -288,39 +299,19 @@ export default function PortfoliosPage() {
             </div>
 
             <div>
-              <Label>카테고리</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={categoryInput}
-                  onChange={(e) => setCategoryInput(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      handleAddCategory()
-                    }
-                  }}
-                  placeholder="카테고리 입력 후 Enter"
-                />
-                <Button type="button" onClick={handleAddCategory}>
-                  추가
-                </Button>
-              </div>
-              <div className="flex gap-2 mt-2 flex-wrap">
-                {categories.map((cat) => (
-                  <span
-                    key={cat}
-                    className="inline-flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/10 text-primary"
-                  >
-                    {cat}
-                    <button
-                      onClick={() => handleRemoveCategory(cat)}
-                      className="hover:text-destructive"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
+              <Label htmlFor="category">카테고리 *</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger id="category" className="mt-2">
+                  <SelectValue placeholder="카테고리를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex justify-end gap-2 pt-4">

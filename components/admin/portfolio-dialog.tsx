@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useBlockNote } from '@blocknote/react'
-import { BlockNote } from '@blocknote/mantine'
-import '@blocknote/mantine/style.css'
+import { useCreateBlockNote } from '@blocknote/react'
+import { BlockNoteView } from '@blocknote/react'
+import '@blocknote/react/style.css'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,6 +13,13 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
@@ -24,18 +31,19 @@ interface PortfolioDialogProps {
   portfolio: Portfolio | null
 }
 
+const CATEGORIES = ['Beauty', 'F&B', 'Fashion', 'etc'] as const
+
 export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogProps) {
   const [title, setTitle] = useState('')
   const [clientName, setClientName] = useState('')
   const [thumbnailUrl, setThumbnailUrl] = useState('')
-  const [categories, setCategories] = useState<string[]>([])
-  const [categoryInput, setCategoryInput] = useState('')
+  const [category, setCategory] = useState<string>('')
   const [link, setLink] = useState('')
   const [uploading, setUploading] = useState(false)
   const { toast } = useToast()
 
   // BlockNote 에디터 초기화
-  const editor = useBlockNote({
+  const editor = useCreateBlockNote({
     uploadFile: async (file: File) => {
       // 이미지 업로드 함수
       return await uploadImage(file)
@@ -47,27 +55,37 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
       setTitle(portfolio.title)
       setClientName(portfolio.client_name)
       setThumbnailUrl(portfolio.thumbnail_url || '')
-      setCategories(portfolio.category || [])
+      // 카테고리는 첫 번째 값만 사용 (단일 선택)
+      setCategory(portfolio.category && portfolio.category.length > 0 ? portfolio.category[0] : '')
       setLink(portfolio.link || '')
       // BlockNote 에디터에 기존 콘텐츠 로드
-      if (portfolio.content && Array.isArray(portfolio.content)) {
-        editor.replaceBlocks(editor.document, portfolio.content)
+      if (portfolio.content && Array.isArray(portfolio.content) && editor && portfolio.content.length > 0) {
+        try {
+          editor.replaceBlocks(editor.document, portfolio.content)
+        } catch (error) {
+          console.error('Error loading BlockNote content:', error)
+        }
       }
     } else {
       // 새 포트폴리오인 경우 초기화
       setTitle('')
       setClientName('')
       setThumbnailUrl('')
-      setCategories([])
-      setCategoryInput('')
+      setCategory('')
       setLink('')
       // 빈 문서로 초기화
-      editor.replaceBlocks(editor.document, [
-        {
-          type: 'paragraph',
-          content: '',
-        },
-      ])
+      if (editor) {
+        try {
+          editor.replaceBlocks(editor.document, [
+            {
+              type: 'paragraph',
+              content: '',
+            },
+          ])
+        } catch (error) {
+          console.error('Error initializing BlockNote editor:', error)
+        }
+      }
     }
   }, [portfolio, open, editor])
 
@@ -117,16 +135,6 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
     }
   }
 
-  function handleAddCategory() {
-    if (categoryInput.trim() && !categories.includes(categoryInput.trim())) {
-      setCategories([...categories, categoryInput.trim()])
-      setCategoryInput('')
-    }
-  }
-
-  function handleRemoveCategory(category: string) {
-    setCategories(categories.filter((c) => c !== category))
-  }
 
   async function handleSubmit() {
     if (!title || !clientName) {
@@ -138,8 +146,29 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
       return
     }
 
+    if (!category) {
+      toast({
+        title: '필수 항목',
+        description: '카테고리를 선택해주세요.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // 카테고리 값 검증: 4가지 값 중 하나만 허용
+    if (!CATEGORIES.includes(category as typeof CATEGORIES[number])) {
+      toast({
+        title: '유효하지 않은 카테고리',
+        description: 'Beauty, F&B, Fashion, etc 중 하나를 선택해주세요.',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       const content = editor.document
+      // 카테고리는 배열로 저장하되, 단일 값만 포함 (DB 스키마가 배열 타입인 경우 대비)
+      const categoryArray = [category]
 
       if (portfolio) {
         // 수정
@@ -149,7 +178,7 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
             title,
             client_name: clientName,
             thumbnail_url: thumbnailUrl || null,
-            category: categories,
+            category: categoryArray,
             link: link || null,
             content,
           })
@@ -167,7 +196,7 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
           title,
           client_name: clientName,
           thumbnail_url: thumbnailUrl || null,
-          category: categories,
+          category: categoryArray,
           link: link || null,
           content,
         })
@@ -261,39 +290,19 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
             </div>
 
             <div>
-              <Label>카테고리</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={categoryInput}
-                  onChange={(e) => setCategoryInput(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      handleAddCategory()
-                    }
-                  }}
-                  placeholder="카테고리 입력 후 Enter"
-                />
-                <Button type="button" onClick={handleAddCategory}>
-                  추가
-                </Button>
-              </div>
-              <div className="flex gap-2 mt-2 flex-wrap">
-                {categories.map((cat) => (
-                  <span
-                    key={cat}
-                    className="inline-flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/10 text-primary"
-                  >
-                    {cat}
-                    <button
-                      onClick={() => handleRemoveCategory(cat)}
-                      className="hover:text-destructive"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                ))}
-              </div>
+              <Label htmlFor="category">카테고리 *</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger id="category" className="mt-2">
+                  <SelectValue placeholder="카테고리를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -301,7 +310,7 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
           <div>
             <Label>본문 내용</Label>
             <div className="mt-2 border rounded-md">
-              <BlockNote editor={editor} />
+              <BlockNoteView editor={editor} />
             </div>
           </div>
 

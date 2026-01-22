@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useBlockNote } from '@blocknote/react'
-import { BlockNote } from '@blocknote/mantine'
-import '@blocknote/mantine/style.css'
+import { useCreateBlockNote } from '@blocknote/react'
+import { BlockNoteView } from '@blocknote/react'
+import '@blocknote/react/style.css'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import { Navigation } from '@/components/navigation'
@@ -19,7 +19,7 @@ export default function PortfolioDetailPage() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const editor = useBlockNote({
+  const editor = useCreateBlockNote({
     editable: false, // 읽기 전용
   })
 
@@ -28,8 +28,12 @@ export default function PortfolioDetailPage() {
   }, [id])
 
   useEffect(() => {
-    if (portfolio?.content && Array.isArray(portfolio.content)) {
-      editor.replaceBlocks(editor.document, portfolio.content)
+    if (portfolio?.content && Array.isArray(portfolio.content) && editor && portfolio.content.length > 0) {
+      try {
+        editor.replaceBlocks(editor.document, portfolio.content)
+      } catch (error) {
+        console.error('Error loading BlockNote content:', error)
+      }
     }
   }, [portfolio, editor])
 
@@ -142,7 +146,7 @@ export default function PortfolioDetailPage() {
           {/* 본문 */}
           <Card className="p-8">
             {portfolio?.content && Array.isArray(portfolio.content) && portfolio.content.length > 0 ? (
-              <BlockNote editor={editor} />
+              <BlockNoteView editor={editor} />
             ) : (
               <p className="text-muted-foreground">콘텐츠가 없습니다.</p>
             )}
