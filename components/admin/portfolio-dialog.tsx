@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useCreateBlockNote } from '@blocknote/react'
-import { BlockNoteView } from '@blocknote/react'
-import '@blocknote/react/style.css'
+import { BlockNoteView } from '@blocknote/mantine'
+import '@blocknote/mantine/style.css'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
