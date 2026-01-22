@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, FolderOpen, Users, LogOut } from 'lucide-react'
+import { LayoutDashboard, FolderOpen, Users, FileText, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from '@/lib/admin-auth'
 import { useToast } from '@/hooks/use-toast'
@@ -41,8 +41,9 @@ export default function AdminLayout({
 
   const navItems = [
     { href: '/admin', label: '대시보드', icon: LayoutDashboard },
-    { href: '/admin/portfolios', label: '포트폴리오', icon: FolderOpen },
-    { href: '/admin/creators', label: '크리에이터', icon: Users },
+    { href: '/admin/portfolios', label: '포트폴리오 관리', icon: FolderOpen },
+    { href: '/admin/creators', label: '크리에이터 관리', icon: Users },
+    { href: '/admin/blog', label: '블로그 관리', icon: FileText },
   ]
 
   // 로그인 페이지인지 확인

@@ -24,3 +24,18 @@ export type Creator = {
   tiktok_url: string | null
   created_at: string
 }
+
+export type BlogPost = {
+  id: string
+  title: string
+  slug: string
+  category: string
+  thumbnail_url: string | null
+  summary: string | null
+  content: any // BlockNote JSON
+  published: boolean
+  meta_title: string | null
+  meta_description: string | null
+  created_at: string
+  updated_at: string
+}

@@ -42,6 +42,9 @@ export function Navigation() {
             <a href="/portfolio" className="text-foreground hover:text-primary transition-colors">
               Portfolio
             </a>
+            <a href="/blog" className="text-foreground hover:text-primary transition-colors">
+              Blog
+            </a>
             <a href="/contact">
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 shadow-[0_0_15px_rgba(217,255,0,0.3)] hover:shadow-[0_0_25px_rgba(217,255,0,0.5)] transition-all">
                 문의하기
