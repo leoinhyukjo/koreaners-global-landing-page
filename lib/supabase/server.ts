@@ -18,7 +18,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export async function createClient() {
   const cookieStore = await cookies()
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  // 환경 변수 체크 (위에서 이미 체크했지만 TypeScript를 위해 함수 내부에서도 체크)
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      'Supabase environment variables are missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local'
+    )
+  }
+
+  // Non-null assertion: 위의 체크로 인해 string 타입임이 보장됨
+  return createServerClient(supabaseUrl!, supabaseAnonKey!, {
     cookies: {
       getAll() {
         return cookieStore.getAll()

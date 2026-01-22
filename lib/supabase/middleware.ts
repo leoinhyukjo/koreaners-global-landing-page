@@ -11,7 +11,8 @@ export function createClient(request: NextRequest, response: NextResponse) {
     return null
   }
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  // 타입 단언: 위의 체크로 인해 string 타입임이 보장됨
+  return createServerClient(supabaseUrl as string, supabaseAnonKey as string, {
     cookies: {
       getAll() {
         return request.cookies.getAll()
