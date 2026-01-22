@@ -15,8 +15,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // 브라우저용 Supabase 클라이언트
 // 쿠키가 자동으로 저장되고 전송됨
-// 환경변수가 없어도 빌드가 성공하도록 빈 문자열 사용
+// 환경변수가 없어도 빌드가 성공하도록 placeholder 값 사용
 export const supabase = createBrowserClient(
-  supabaseUrl || '',
-  supabaseAnonKey || ''
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
 )
