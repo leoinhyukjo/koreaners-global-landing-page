@@ -3,7 +3,7 @@
 // 블로그 편집 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import nextDynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
@@ -38,7 +38,7 @@ const BlogEditor = nextDynamic(
 
 const CATEGORIES = ['업계 동향', '최신 트렌드', '전문가 인사이트', '마케팅 뉴스'] as const
 
-export default function BlogEditPage() {
+function BlogEditForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const postId = searchParams.get('id')
@@ -617,5 +617,19 @@ export default function BlogEditPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function BlogEditPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <p className="text-muted-foreground">로딩 중...</p>
+        </div>
+      }
+    >
+      <BlogEditForm />
+    </Suspense>
   )
 }
