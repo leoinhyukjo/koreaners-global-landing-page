@@ -1,6 +1,7 @@
 'use client'
 
-import { useCreateBlockNote, type BlockNoteEditor } from '@blocknote/react'
+import { useCreateBlockNote } from '@blocknote/react'
+import type { BlockNoteEditor } from '@blocknote/core'
 import { BlockNoteView } from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
 import { useEffect, useRef } from 'react'

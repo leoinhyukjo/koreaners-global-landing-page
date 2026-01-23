@@ -21,7 +21,7 @@ import { supabase } from '@/lib/supabase/client'
 import type { BlogPost } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { ArrowLeft, X, Save, Send } from 'lucide-react'
-import type { BlockNoteEditor } from '@blocknote/react'
+import type { BlockNoteEditor } from '@blocknote/core'
 
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
 const BlogEditor = nextDynamic(
