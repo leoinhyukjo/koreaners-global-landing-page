@@ -168,12 +168,15 @@ function BlogEditForm() {
 
   async function handleSubmit(publish: boolean) {
     console.log('1. 발행 시작', { publish, saving, postId })
-    alert(`발행 시작: ${publish ? '발행' : '임시저장'} 모드`)
 
     // 이미 저장 중이면 중복 실행 방지
     if (saving) {
       console.log('1-1. 이미 저장 중이므로 중단')
-      alert('이미 저장 중입니다. 잠시만 기다려주세요.')
+      toast({
+        title: '처리 중',
+        description: '이미 저장 중입니다. 잠시만 기다려주세요.',
+        variant: 'default',
+      })
       return
     }
 
@@ -181,7 +184,6 @@ function BlogEditForm() {
     console.log('2. 제목 확인 시작', { title, titleTrimmed: title?.trim() })
     if (!title || !title.trim()) {
       console.log('2-1. 제목 누락')
-      alert('제목을 입력해주세요.')
       toast({
         title: '필수 항목 누락',
         description: '제목을 입력해주세요.',
@@ -194,7 +196,6 @@ function BlogEditForm() {
     console.log('3. 슬러그 확인 시작', { slug, slugTrimmed: slug?.trim() })
     if (!slug || !slug.trim()) {
       console.log('3-1. 슬러그 누락')
-      alert('슬러그를 입력해주세요.')
       toast({
         title: '필수 항목 누락',
         description: '슬러그를 입력해주세요.',
@@ -205,7 +206,6 @@ function BlogEditForm() {
 
     if (!/^[a-z0-9-]+$/.test(slug)) {
       console.log('3-2. 슬러그 형식 오류', { slug })
-      alert('슬러그는 영문 소문자, 숫자, 하이픈(-)만 사용 가능합니다.')
       toast({
         title: '슬러그 형식 오류',
         description: '슬러그는 영문 소문자, 숫자, 하이픈(-)만 사용 가능합니다.',
@@ -218,7 +218,6 @@ function BlogEditForm() {
     console.log('4. 카테고리 확인 시작', { category })
     if (!category) {
       console.log('4-1. 카테고리 누락')
-      alert('카테고리를 선택해주세요.')
       toast({
         title: '필수 항목 누락',
         description: '카테고리를 선택해주세요.',
@@ -229,7 +228,6 @@ function BlogEditForm() {
 
     if (!CATEGORIES.includes(category as typeof CATEGORIES[number])) {
       console.log('4-2. 유효하지 않은 카테고리', { category })
-      alert('업계 동향, 최신 트렌드, 전문가 인사이트, 마케팅 뉴스 중 하나를 선택해주세요.')
       toast({
         title: '유효하지 않은 카테고리',
         description: '업계 동향, 최신 트렌드, 전문가 인사이트, 마케팅 뉴스 중 하나를 선택해주세요.',
@@ -247,7 +245,6 @@ function BlogEditForm() {
     const content = editorRef.current?.document || editorContent
     if (!content || !Array.isArray(content) || content.length === 0) {
       console.log('5-1. 본문 내용 누락', { content })
-      alert('본문 내용을 입력해주세요.')
       toast({
         title: '필수 항목 누락',
         description: '본문 내용을 입력해주세요.',
@@ -261,7 +258,6 @@ function BlogEditForm() {
       console.log('6. SEO 필드 확인 시작 (발행 모드)', { metaTitle, metaDescription })
       if (!metaTitle || !metaTitle.trim()) {
         console.log('6-1. Meta Title 누락')
-        alert('발행하려면 검색 엔진용 제목(Meta Title)을 입력해주세요.')
         toast({
           title: 'SEO 필수 항목',
           description: '발행하려면 검색 엔진용 제목(Meta Title)을 입력해주세요.',
@@ -271,7 +267,6 @@ function BlogEditForm() {
       }
       if (!metaDescription || !metaDescription.trim()) {
         console.log('6-2. Meta Description 누락')
-        alert('발행하려면 검색 결과 요약문(Meta Description)을 입력해주세요.')
         toast({
           title: 'SEO 필수 항목',
           description: '발행하려면 검색 결과 요약문(Meta Description)을 입력해주세요.',
@@ -316,27 +311,44 @@ function BlogEditForm() {
           .select()
 
         if (error) {
-          console.error('[BlogEdit] 업데이트 실패:', error)
-          alert(`DB 업데이트 실패: ${error.message || '알 수 없는 에러'}`)
+          console.error('[BlogEdit] 업데이트 실패:', {
+            error,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+            updateData: { ...updateData, content: 'Array(...)' },
+            postId,
+          })
+          const errorMessage = error.message || '알 수 없는 에러'
+          alert(`DB 업데이트 실패: ${errorMessage}`)
           throw error
         }
 
         if (!updateResult || updateResult.length === 0) {
           const errorMsg = '데이터가 업데이트되지 않았습니다.'
-          console.error('[BlogEdit] 업데이트 결과 없음')
+          console.error('[BlogEdit] 업데이트 결과 없음', { 
+            postId, 
+            updateData: { ...updateData, content: 'Array(...)' } 
+          })
           alert(errorMsg)
           throw new Error(errorMsg)
         }
 
-        console.log('8-2. DB 업데이트 성공!', updateResult)
-        alert('DB 업데이트 성공!')
+        console.log('8-2. DB 업데이트 성공!', { 
+          id: updateResult[0]?.id, 
+          title: updateResult[0]?.title,
+          published: updateResult[0]?.published,
+          summary: updateResult[0]?.summary || '(없음)',
+        })
         toast({
           title: '저장 완료',
-          description: publish ? '포스트가 성공적으로 발행되었습니다.' : '포스트가 임시저장되었습니다.',
+          description: publish ? '인사이트가 성공적으로 발행되었습니다.' : '인사이트가 임시저장되었습니다.',
         })
       } else {
         // 생성
         console.log('9. 생성 모드 - DB 저장 시도')
+        const now = new Date().toISOString()
         const insertData = {
           title: title.trim(),
           slug: slug.trim(),
@@ -347,30 +359,47 @@ function BlogEditForm() {
           published: publish,
           meta_title: safeMetaTitle,
           meta_description: safeMetaDescription,
+          updated_at: now, // 생성 시에도 updated_at 설정
         }
-        console.log('9-1. 저장 데이터:', { ...insertData, content: Array.isArray(insertData.content) ? `Array(${insertData.content.length})` : 'Invalid' })
-        alert('DB 저장 시도 중...')
+        console.log('9-1. 저장 데이터:', { 
+          ...insertData, 
+          content: Array.isArray(insertData.content) ? `Array(${insertData.content.length})` : 'Invalid',
+          summary: insertData.summary || '(없음)',
+          published: insertData.published,
+        })
 
         const { data, error } = await supabase.from('blog_posts').insert(insertData).select()
 
         if (error) {
-          console.error('[BlogEdit] 생성 실패:', error)
-          alert(`DB 저장 실패: ${error.message || '알 수 없는 에러'}`)
+          console.error('[BlogEdit] 생성 실패:', {
+            error,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+            insertData: { ...insertData, content: 'Array(...)' },
+          })
+          const errorMessage = error.message || '알 수 없는 에러'
+          alert(`DB 저장 실패: ${errorMessage}`)
           throw error
         }
 
         if (!data || data.length === 0) {
           const errorMsg = '데이터가 저장되지 않았습니다.'
-          console.error('[BlogEdit] 저장 결과 없음')
+          console.error('[BlogEdit] 저장 결과 없음', { insertData: { ...insertData, content: 'Array(...)' } })
           alert(errorMsg)
           throw new Error(errorMsg)
         }
 
-        console.log('9-2. DB 저장 성공!', data)
-        alert('DB 저장 성공!')
+        console.log('9-2. DB 저장 성공!', { 
+          id: data[0]?.id, 
+          title: data[0]?.title,
+          published: data[0]?.published,
+          summary: data[0]?.summary || '(없음)',
+        })
         toast({
           title: '저장 완료',
-          description: publish ? '포스트가 성공적으로 발행되었습니다.' : '포스트가 임시저장되었습니다.',
+          description: publish ? '인사이트가 성공적으로 발행되었습니다.' : '인사이트가 임시저장되었습니다.',
         })
       }
 
@@ -378,8 +407,20 @@ function BlogEditForm() {
       router.push('/admin/blog')
     } catch (err: any) {
       const errorMessage = err?.message || '저장에 실패했습니다. 필수 필드를 확인해주세요.'
-      console.error('[BlogEdit] 저장 실패:', err)
-      alert(`시스템 오류 발생: ${errorMessage}`)
+      console.error('[BlogEdit] 저장 실패:', {
+        error: err,
+        message: err?.message,
+        details: err?.details,
+        hint: err?.hint,
+        code: err?.code,
+        stack: err?.stack,
+        publish,
+        postId,
+        title,
+        slug,
+        category,
+        hasContent: !!content && Array.isArray(content) && content.length > 0,
+      })
       toast({
         title: '발행 실패',
         description: errorMessage,
