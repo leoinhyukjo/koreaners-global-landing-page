@@ -24,6 +24,9 @@ const notion = new Client({
  * - Marketing Agreement (checkbox): 마케팅 동의
  */
 export async function POST(request: NextRequest) {
+  // properties 변수를 함수 스코프 상단에 선언하여 catch 블록에서도 접근 가능하도록 함
+  let properties: Record<string, any> | null = null
+
   try {
     // 환경 변수 확인 및 로깅
     console.log('[Notion API] 환경 변수 확인 중...')
@@ -99,7 +102,7 @@ export async function POST(request: NextRequest) {
     // - Message (대문자 M)
     // - Privacy Agreement (대문자 P, A, 공백 포함)
     // - Marketing Agreement (대문자 M, A, 공백 포함)
-    const properties = {
+    properties = {
       // Name (title 타입) - Notion DB 속성 이름: "Name"
       Name: {
         title: [
@@ -248,15 +251,17 @@ export async function POST(request: NextRequest) {
         console.error('[Notion API] =========================')
       }
       
-      // 요청했던 properties도 함께 출력하여 비교 가능하게 함
-      console.error('[Notion API] 전송했던 Properties:', JSON.stringify(properties, null, 2))
+      // 요청했던 properties도 함께 출력하여 비교 가능하게 함 (정의된 경우에만)
+      if (properties) {
+        console.error('[Notion API] 전송했던 Properties:', JSON.stringify(properties, null, 2))
+      }
       
       return NextResponse.json(
         { 
           error: 'Notion 데이터베이스 속성 검증에 실패했습니다. 속성 이름과 타입을 확인해주세요.',
           details: error.message,
           body: error.body,
-          sentProperties: properties,
+          sentProperties: properties || null,
         },
         { status: 400 }
       )
