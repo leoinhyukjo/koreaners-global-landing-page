@@ -1,0 +1,112 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { supabase } from '@/lib/supabase/client'
+import type { BlogPost } from '@/lib/supabase'
+import Link from 'next/link'
+import { Calendar, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import { resolveThumbnailSrc } from '@/lib/thumbnail'
+
+export function LatestInsights() {
+  const [latestPost, setLatestPost] = useState<BlogPost | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchLatestPost()
+  }, [])
+
+  async function fetchLatestPost() {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+
+      if (error) {
+        console.error('[Latest Insights] Error:', error)
+        return
+      }
+
+      setLatestPost(data)
+    } catch (err: any) {
+      console.error('[Latest Insights] Error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading || !latestPost) {
+    return null
+  }
+
+  const thumbnailSrc = resolveThumbnailSrc(latestPost.thumbnail_url)
+
+  return (
+    <section className="py-12 sm:py-16 md:py-20 px-5 sm:px-6 relative">
+      <div className="container mx-auto max-w-6xl">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 break-keep">
+            <span className="text-foreground">최신 </span>
+            <span className="text-primary">인사이트</span>
+          </h2>
+          <p className="text-sm sm:text-base text-muted-foreground break-keep">
+            글로벌 마케팅 트렌드와 실무 인사이트를 확인하세요
+          </p>
+        </div>
+
+        <Link href={`/blog/${latestPost.slug}`}>
+          <Card className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_30px_rgba(217,255,0,0.15)]">
+            <div className="grid md:grid-cols-2 gap-0">
+              {/* 썸네일 */}
+              <div className="aspect-video md:aspect-auto md:h-full relative overflow-hidden bg-muted">
+                <Image
+                  src={thumbnailSrc}
+                  alt={`${latestPost.title} - ${latestPost.category} 블로그 포스트`}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              {/* 콘텐츠 */}
+              <div className="p-6 sm:p-8 md:p-10 flex flex-col justify-center">
+                <div className="mb-3 sm:mb-4">
+                  <Badge variant="secondary" className="text-xs break-keep">
+                    {latestPost.category}
+                  </Badge>
+                </div>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4 group-hover:text-primary transition-colors break-keep leading-tight">
+                  {latestPost.title}
+                </h3>
+                {latestPost.summary && (
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 leading-relaxed line-clamp-3 break-keep">
+                    {latestPost.summary}
+                  </p>
+                )}
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
+                  <time className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 break-keep" dateTime={latestPost.created_at}>
+                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                    {new Date(latestPost.created_at).toLocaleDateString('ko-KR')}
+                  </time>
+                  <span className="text-sm text-primary flex items-center gap-2 group-hover:gap-3 transition-all break-keep">
+                    읽기
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </Link>
+      </div>
+    </section>
+  )
+}

@@ -59,32 +59,32 @@ export function TrustSignals() {
   }, [])
 
   return (
-    <section className="py-20 relative overflow-hidden">
+    <section className="py-12 sm:py-16 relative overflow-hidden bg-black border-t border-zinc-800">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground break-keep">
+          <h2 className="text-4xl md:text-5xl font-black mb-4 text-white break-keep">
             TRUSTED BY
           </h2>
-          <p className="text-muted-foreground text-lg break-keep max-w-prose mx-auto">
+          <p className="text-zinc-400 text-lg break-keep max-w-prose mx-auto">
             신뢰와 열정을 바탕으로 함께 성장해온 소중한 파트너들입니다
           </p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* First Row - Scroll Right */}
           <div 
             ref={scrollRef1}
-            className="flex gap-6 overflow-x-hidden py-4"
+            className="flex gap-4 overflow-x-hidden py-4"
             style={{ scrollBehavior: 'auto' }}
           >
             {duplicatedRow1.map((partner, index) => (
               <div
                 key={`row1-${partner}-${index}`}
-                className="flex-shrink-0 px-8 py-6 bg-card/50 border border-border rounded-xl hover:border-primary/50 hover:scale-105 transition-all duration-300"
+                className="flex-shrink-0 px-8 py-6 bg-zinc-900 border border-zinc-800 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
                 style={{ minWidth: '200px' }}
               >
                 <div className="text-center">
-                  <span className="text-lg font-semibold text-foreground">
+                  <span className="text-lg font-bold text-white">
                     {partner}
                   </span>
                 </div>
@@ -95,17 +95,17 @@ export function TrustSignals() {
           {/* Second Row - Scroll Left */}
           <div 
             ref={scrollRef2}
-            className="flex gap-6 overflow-x-hidden py-4"
+            className="flex gap-4 overflow-x-hidden py-4"
             style={{ scrollBehavior: 'auto' }}
           >
             {duplicatedRow2.map((partner, index) => (
               <div
                 key={`row2-${partner}-${index}`}
-                className="flex-shrink-0 px-8 py-6 bg-card/50 border border-border rounded-xl hover:border-primary/50 hover:scale-105 transition-all duration-300"
+                className="flex-shrink-0 px-8 py-6 bg-zinc-900 border border-zinc-800 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
                 style={{ minWidth: '200px' }}
               >
                 <div className="text-center">
-                  <span className="text-lg font-semibold text-foreground">
+                  <span className="text-lg font-bold text-white">
                     {partner}
                   </span>
                 </div>
@@ -115,8 +115,8 @@ export function TrustSignals() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-muted-foreground break-keep">
-            코리너스 글로벌은 <span className="text-primary font-semibold">수출바우처 공식 수행기관</span>입니다.
+          <p className="text-sm text-zinc-400 break-keep">
+            코리너스 글로벌은 <span className="text-white font-bold">수출바우처 공식 수행기관</span>입니다.
           </p>
         </div>
       </div>

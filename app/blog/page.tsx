@@ -11,6 +11,8 @@ import { supabase } from '@/lib/supabase/client'
 import type { BlogPost } from '@/lib/supabase'
 import Link from 'next/link'
 import { Calendar, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
@@ -120,29 +122,18 @@ export default function BlogPage() {
                       className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
                       {/* Image */}
-                      {post.thumbnail_url ? (
-                        <div className="aspect-video relative overflow-hidden bg-muted">
-                          <img
-                            src={post.thumbnail_url}
-                            alt={`${post.title} - ${post.category} 블로그 포스트`}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                            <Badge variant="secondary" className="text-xs">{post.category}</Badge>
-                          </div>
+                      <div className="aspect-video relative overflow-hidden bg-muted">
+                        <Image
+                          src={resolveThumbnailSrc(post.thumbnail_url)}
+                          alt={`${post.title} - ${post.category} 블로그 포스트`}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                          <Badge variant="secondary" className="text-xs">{post.category}</Badge>
                         </div>
-                      ) : (
-                        <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-4xl sm:text-6xl font-bold text-primary/20 uppercase">
-                              {post.category.charAt(0)}
-                            </div>
-                          </div>
-                          <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                            <Badge variant="secondary" className="text-xs">{post.category}</Badge>
-                          </div>
-                        </div>
-                      )}
+                      </div>
 
                       {/* Content */}
                       <div className="p-4 sm:p-6 flex-1 flex flex-col">

@@ -22,6 +22,7 @@ import type { BlogPost } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { ArrowLeft, X, Save, Send } from 'lucide-react'
 import type { BlockNoteEditor } from '@blocknote/core'
+import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
 const BlogEditor = nextDynamic(
@@ -285,7 +286,7 @@ function BlogEditForm() {
       const safeSummary = summary && summary.trim() ? summary.trim() : null
       const safeMetaTitle = metaTitle && metaTitle.trim() ? metaTitle.trim() : null
       const safeMetaDescription = metaDescription && metaDescription.trim() ? metaDescription.trim() : null
-      const safeThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() ? thumbnailUrl.trim() : null
+      const safeThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() ? resolveThumbnailSrc(thumbnailUrl) : null
 
       if (postId) {
         // 수정
@@ -591,7 +592,7 @@ function BlogEditForm() {
             </div>
 
             {/* SEO 설정 */}
-            <div className="space-y-4 border-t pt-6">
+            <div className="space-y-4 border-t border-border pt-6">
               <h3 className="text-lg font-semibold">SEO 설정</h3>
 
               <div className="space-y-2">

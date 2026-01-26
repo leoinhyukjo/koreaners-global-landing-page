@@ -39,15 +39,15 @@ export function Performance() {
   }, [emblaApi])
 
   return (
-    <section id="performance" className="py-24 relative bg-card/20">
+    <section id="performance" className="py-12 sm:py-16 relative bg-black border-t border-zinc-800">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-balance break-keep">
-              <span className="text-foreground">검증된 </span>
-              <span className="text-primary">성과</span>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
+              <span className="text-white">검증된 </span>
+              <span className="text-white">성과</span>
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 break-keep max-w-prose mx-auto px-2">
+            <p className="text-lg text-zinc-400 mb-8 break-keep max-w-prose mx-auto">
               다양한 산업군에서 탁월한 결과를 만들어냈습니다
             </p>
           </div>
@@ -55,11 +55,11 @@ export function Performance() {
           {/* Portfolio Carousel */}
           {loading ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground">로딩 중...</p>
+              <p className="text-zinc-400">로딩 중...</p>
             </div>
           ) : portfolios.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground text-lg">
+              <p className="text-zinc-400 text-lg">
                 등록된 포트폴리오가 없습니다.
               </p>
             </div>
@@ -72,7 +72,7 @@ export function Performance() {
                   size="icon"
                   onClick={scrollPrev}
                   disabled={prevBtnDisabled}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 rounded-full w-12 h-12 bg-background/80 backdrop-blur-sm border-border hover:bg-background hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-black/80 backdrop-blur-sm border-white hover:bg-white hover:text-black transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                   aria-label="이전 슬라이드"
                 >
                   <ChevronLeft className="h-6 w-6" />
@@ -82,7 +82,7 @@ export function Performance() {
                   size="icon"
                   onClick={scrollNext}
                   disabled={nextBtnDisabled}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 rounded-full w-12 h-12 bg-background/80 backdrop-blur-sm border-border hover:bg-background hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-black/80 backdrop-blur-sm border-white hover:bg-white hover:text-black transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                   aria-label="다음 슬라이드"
                 >
                   <ChevronRight className="h-6 w-6" />
@@ -91,40 +91,39 @@ export function Performance() {
 
               {/* Carousel Container */}
               <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex gap-6">
+                <div className="flex gap-4">
                   {portfolios.map(item => (
-                    <div key={item.id} className="flex-[0_0_100%] md:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)]">
+                    <div key={item.id} className="flex-[0_0_100%] md:flex-[0_0_calc(50%-8px)] lg:flex-[0_0_calc(33.333%-11px)]">
                       <Link href={`/portfolio/${item.id}`}>
                         <Card 
-                          className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer h-full shadow-lg hover:shadow-[0_0_30px_rgba(217,255,0,0.15)]"
+                          className="group overflow-hidden bg-zinc-900 border-zinc-800 hover:border-white transition-all duration-200 cursor-pointer h-full rounded-none"
                         >
                           {/* Image */}
                           {item.thumbnail_url ? (
-                            <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
+                            <div className="aspect-video relative overflow-hidden bg-zinc-950">
                               <img
                                 src={item.thumbnail_url}
                                 alt={item.title}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-105"
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               <div className="absolute top-4 left-4">
-                                <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase backdrop-blur-sm">
-                                  {item.category && item.category.length > 0 ? item.category[0] : 'etc'}
+                                <span className="px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none">
+                                  {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
                                 </span>
                               </div>
                             </div>
                           ) : (
-                            <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                            <div className="aspect-video bg-zinc-950 relative overflow-hidden">
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-6xl font-bold text-primary/20 uppercase">
+                                <div className="text-6xl font-black text-zinc-800 uppercase">
                                   {item.category && item.category.length > 0 
                                     ? item.category[0].charAt(0) 
                                     : 'E'}
                                 </div>
                               </div>
                               <div className="absolute top-4 left-4">
-                                <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase">
-                                  {item.category && item.category.length > 0 ? item.category[0] : 'etc'}
+                                <span className="px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none">
+                                  {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
                                 </span>
                               </div>
                             </div>
@@ -132,20 +131,20 @@ export function Performance() {
 
                           {/* Content */}
                           <div className="p-6">
-                            <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors break-keep">
+                            <h3 className="text-xl font-black text-white mb-2 group-hover:text-white transition-colors break-keep">
                               {item.title}
                             </h3>
-                            <p className="text-sm text-muted-foreground mb-4 leading-relaxed break-keep">
+                            <p className="text-sm text-zinc-400 mb-4 leading-relaxed break-keep">
                               {item.client_name}
                             </p>
 
                             {/* Category Tags */}
                             {item.category && item.category.length > 0 && (
-                              <div className="flex gap-2 flex-wrap pt-4 border-t border-border">
+                              <div className="flex gap-2 flex-wrap pt-4 border-t border-zinc-800">
                                 {item.category.map((cat, idx) => (
                                   <span
                                     key={idx}
-                                    className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
+                                    className="px-2 py-1 text-xs bg-white/10 text-white border border-zinc-800 rounded-none font-bold"
                                   >
                                     {cat}
                                   </span>
@@ -166,7 +165,7 @@ export function Performance() {
           {portfolios.length > 0 && (
             <div className="text-center mt-12">
               <Link href="/portfolio">
-                <Button className="px-6 py-3 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-medium">
+                <Button className="px-6 py-3 rounded-none font-black">
                   전체 포트폴리오 보기
                 </Button>
               </Link>

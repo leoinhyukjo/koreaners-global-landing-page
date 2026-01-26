@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { BlogContent } from '@/components/blog/blog-content'
+import Image from 'next/image'
+import { resolveThumbnailSrc, toAbsoluteUrl } from '@/lib/thumbnail'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -58,7 +60,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const metaTitle = blogPost.meta_title || blogPost.title
   const metaDescription = blogPost.meta_description || blogPost.summary || `${blogPost.title} - ${blogPost.category}`
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://koreaners-global.com'
-  const ogImage = blogPost.thumbnail_url || `${siteUrl}/og-default.png`
+  const ogImage = toAbsoluteUrl(siteUrl, resolveThumbnailSrc(blogPost.thumbnail_url))
 
   return {
     title: metaTitle,
@@ -104,13 +106,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
   // 카테고리에 따라 스키마 타입 결정
   const isNews = blogPost.category === '마케팅 뉴스' || blogPost.category === '업계 동향'
   const schemaType = isNews ? 'NewsArticle' : 'BlogPosting'
+  const thumbnailSrc = resolveThumbnailSrc(blogPost.thumbnail_url)
+  const thumbnailAbsolute = toAbsoluteUrl(siteUrl, thumbnailSrc)
   
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': schemaType,
     headline: blogPost.meta_title || blogPost.title,
     description: blogPost.meta_description || blogPost.summary || blogPost.title,
-    image: blogPost.thumbnail_url ? [blogPost.thumbnail_url] : [],
+    image: [thumbnailAbsolute],
     datePublished: blogPost.created_at,
     dateModified: blogPost.updated_at,
     author: {
@@ -141,59 +145,67 @@ export default async function BlogDetailPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen relative overflow-hidden bg-black">
         <Navigation />
         
-        <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
+        <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
           <div className="container mx-auto max-w-4xl">
             {/* 헤더 */}
-            <header className="mb-6 sm:mb-8">
+            <header className="mb-8 sm:mb-12">
               <Link href="/blog">
-                <Button variant="ghost" className="mb-3 sm:mb-4 min-h-[44px]">
+                <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-zinc-900 border-0">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   목록으로
                 </Button>
               </Link>
               
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4 sm:space-y-6">
+                {/* 썸네일 - 제목 위에 배치 (없으면 기본 이미지) */}
+                <div className="aspect-video rounded-none overflow-hidden border border-zinc-800 relative bg-zinc-950">
+                  <Image
+                    src={thumbnailSrc}
+                    alt={`${blogPost.title} - ${blogPost.category} 블로그 포스트`}
+                    fill
+                    sizes="(min-width: 1024px) 896px, 100vw"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+
                 <div>
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
-                    <Badge variant="secondary" className="text-xs">{blogPost.category}</Badge>
-                    <time className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1" dateTime={blogPost.created_at}>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap break-keep">
+                    <Badge variant="secondary" className="text-xs break-keep bg-zinc-900 text-zinc-300 border-zinc-800 rounded-none">{blogPost.category}</Badge>
+                    <time className="text-xs sm:text-sm text-zinc-400 flex items-center gap-1 break-keep" dateTime={blogPost.created_at}>
                       <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                       {new Date(blogPost.created_at).toLocaleDateString('ko-KR')}
                     </time>
                   </div>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight tracking-tight text-foreground dark:text-foreground">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 leading-tight break-keep text-white">
                     {blogPost.title}
                   </h1>
-                  {blogPost.summary && (
-                    <p className="text-base sm:text-lg md:text-xl text-muted-foreground dark:text-muted-foreground leading-relaxed tracking-normal">
-                      {blogPost.summary}
-                    </p>
-                  )}
                 </div>
-
-                {blogPost.thumbnail_url && (
-                  <div className="aspect-video rounded-lg overflow-hidden">
-                    <img
-                      src={blogPost.thumbnail_url}
-                      alt={`${blogPost.title} - ${blogPost.category} 블로그 포스트`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
               </div>
             </header>
 
-            {/* 본문 */}
-            <Card className="p-4 sm:p-6 md:p-8 lg:p-12 bg-card dark:bg-card border-border dark:border-border">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-foreground dark:prose-headings:text-foreground prose-p:text-foreground/90 dark:prose-p:text-foreground/90 prose-strong:text-foreground dark:prose-strong:text-foreground">
-                <div className="text-foreground dark:text-foreground leading-relaxed tracking-normal [&_p]:mb-4 [&_p]:text-base [&_p]:md:text-lg [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-xl [&_h3]:md:text-2xl [&_h3]:font-semibold [&_h3]:leading-tight [&_ul]:my-4 [&_ol]:my-4 [&_li]:mb-2 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/50 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground">
-                  <BlogContent blogPost={blogPost} />
+            {/* 요약부 - 별도 박스로 구분 */}
+            {blogPost.summary && (
+              <div className="mb-10 sm:mb-12">
+                <div className="border border-zinc-800 bg-zinc-900/30 p-4 sm:p-6 md:p-8 rounded-none">
+                  <p className="text-base sm:text-lg md:text-xl text-zinc-300 leading-relaxed break-keep">
+                    {blogPost.summary}
+                  </p>
                 </div>
+                {/* 요약부와 본문 사이 구분선 */}
+                <div className="mt-10 sm:mt-12 border-t border-zinc-800"></div>
               </div>
-            </Card>
+            )}
+
+            {/* 본문 - 큰 박스로 감싸기 */}
+            <div className={`${blogPost.summary ? 'mt-0' : 'mt-10 sm:mt-12'} border border-zinc-700 bg-zinc-900/20 p-4 sm:p-6 md:p-8 lg:p-10 rounded-none blog-content-wrapper`}>
+              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-300 leading-relaxed">
+                <BlogContent blogPost={blogPost} />
+              </div>
+            </div>
           </div>
         </article>
       </main>

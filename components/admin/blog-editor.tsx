@@ -78,7 +78,7 @@ export function BlogEditor({
 
   return (
     <div className="border border-border rounded-lg overflow-hidden bg-card">
-      <div className="min-h-[600px]">
+      <div className="min-h-[600px] editor-light-theme">
         <BlockNoteView 
           editor={editor}
           theme="light"

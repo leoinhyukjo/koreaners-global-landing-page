@@ -26,6 +26,7 @@ import { supabase } from '@/lib/supabase/client'
 import type { BlogPost } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { X } from 'lucide-react'
+import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
 interface BlogDialogProps {
   open: boolean
@@ -244,7 +245,7 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       const safeSummary = summary && summary.trim() ? summary.trim() : null
       const safeMetaTitle = metaTitle && metaTitle.trim() ? metaTitle.trim() : null
       const safeMetaDescription = metaDescription && metaDescription.trim() ? metaDescription.trim() : null
-      const safeThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() ? thumbnailUrl.trim() : null
+      const safeThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() ? resolveThumbnailSrc(thumbnailUrl) : null
 
       if (blogPost) {
         // 수정
@@ -404,7 +405,7 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
                 {thumbnailUrl && (
                   <div className="relative h-20 w-20 shrink-0">
                     <img
-                      src={thumbnailUrl}
+                      src={resolveThumbnailSrc(thumbnailUrl)}
                       alt="Thumbnail"
                       className="h-full w-full rounded object-cover"
                     />

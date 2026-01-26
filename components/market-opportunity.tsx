@@ -29,46 +29,44 @@ export function MarketOpportunity() {
   ]
 
   return (
-    <section id="market" className="py-24 relative">
+    <section id="market" className="py-12 sm:py-16 relative bg-black">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance break-keep">
-              <span className="text-primary inline-block">폭발적으로 성장하는</span>{' '}
-              <span className="text-foreground inline-block">일본 시장 기회</span>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
+              <span className="text-white inline-block">폭발적으로 성장하는</span>{' '}
+              <span className="text-white inline-block">일본 시장 기회</span>
             </h2>
-            <p className="text-xl text-muted-foreground break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-400 break-keep max-w-prose mx-auto">
               지금이 일본 시장 진출의 최적기입니다
             </p>
           </div>
 
           {/* Bento Grid */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-4">
             {stats.map((stat, index) => (
               <Card
                 key={index}
-                className="relative p-8 bg-card border-border hover:border-primary hover:shadow-[0_0_30px_rgba(217,255,0,0.2)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden"
+                className="relative p-6 bg-zinc-900 border-zinc-800 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/30 group-hover:scale-150 transition-all duration-500" />
-                
                 <div className="relative z-10">
-                  <div className="mb-6">
-                    <stat.icon className="w-12 h-12 text-primary" />
+                  <div className="mb-4">
+                    <stat.icon className="w-10 h-10 text-white" />
                   </div>
                   
                   <div className="mb-2">
-                    <div className="text-sm text-muted-foreground mb-1">
+                    <div className="text-xs text-zinc-400 mb-1 font-medium">
                       {stat.title}
                     </div>
-                    <div className="text-5xl font-bold text-primary mb-1">
+                    <div className="text-4xl font-black text-white mb-1">
                       {stat.value}
                     </div>
-                    <div className="text-lg text-foreground font-semibold">
+                    <div className="text-base text-white font-bold">
                       {stat.subtitle}
                     </div>
                   </div>
                   
-                  <p className="text-muted-foreground text-sm leading-relaxed break-keep">
+                  <p className="text-zinc-400 text-sm leading-relaxed break-keep">
                     {stat.description}
                   </p>
                 </div>

@@ -28,36 +28,36 @@ export function Barriers() {
   ]
 
   return (
-    <section className="py-24 relative bg-card/20">
+    <section className="py-12 sm:py-16 relative bg-black border-t border-zinc-800">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance break-keep">
-              <span className="text-foreground">일본 시장 진출의 </span>
-              <span className="text-primary">4가지 장벽</span>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
+              <span className="text-white">일본 시장 진출의 </span>
+              <span className="text-white">4가지 장벽</span>
             </h2>
-            <p className="text-xl text-muted-foreground break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-400 break-keep max-w-prose mx-auto">
               많은 기업들이 이 장벽 앞에서 실패합니다
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
             {barriers.map((barrier, index) => (
               <Card
                 key={index}
-                className="p-8 bg-card border-border hover:border-primary/50 hover:shadow-[0_0_20px_rgba(217,255,0,0.15)] hover:-translate-y-1 transition-all duration-500 group"
+                className="p-6 bg-zinc-900 border-zinc-800 hover:border-white hover:-translate-y-1 transition-all duration-200 group rounded-none"
               >
-                <div className="flex items-start gap-6">
+                <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                      <barrier.icon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-500" />
+                    <div className="w-14 h-14 bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all duration-200 rounded-none">
+                      <barrier.icon className="w-7 h-7 text-white group-hover:text-black transition-colors duration-200" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-3 break-keep">
+                    <h3 className="text-xl font-black text-white mb-2 break-keep">
                       {barrier.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed break-keep">
+                    <p className="text-zinc-400 leading-relaxed break-keep text-sm">
                       {barrier.description}
                     </p>
                   </div>

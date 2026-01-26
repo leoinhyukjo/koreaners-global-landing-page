@@ -11,7 +11,7 @@ import { Footer } from '@/components/footer'
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-black">
       <Navigation />
       <HeroSection />
       <MarketOpportunity />

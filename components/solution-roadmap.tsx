@@ -56,52 +56,52 @@ export function SolutionRoadmap() {
   ]
 
   return (
-    <section id="solution" className="py-24 relative">
+    <section id="solution" className="py-12 sm:py-16 relative bg-black border-t border-zinc-800">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance break-keep">
-              <span className="text-foreground">코리너스의 </span>
-              <span className="text-primary">4단계 솔루션</span>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
+              <span className="text-white">코리너스의 </span>
+              <span className="text-white">4단계 솔루션</span>
             </h2>
-            <p className="text-xl text-muted-foreground break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-400 break-keep max-w-prose mx-auto">
               데이터 기반 성장 설계로 성공을 보장합니다
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-4">
             {steps.map((step, index) => (
               <Card
                 key={index}
-                className="relative p-8 bg-card border-border hover:border-primary hover:shadow-[0_0_30px_rgba(217,255,0,0.2)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden"
+                className="relative p-6 bg-zinc-900 border-zinc-800 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
               >
                 {/* Step number background */}
-                <div className="absolute top-4 right-4 text-8xl font-bold text-primary/5 group-hover:text-primary/15 group-hover:scale-110 transition-all duration-500">
+                <div className="absolute top-4 right-4 text-7xl font-black text-zinc-800 group-hover:text-zinc-700 transition-all duration-200">
                   {step.number}
                 </div>
                 
                 <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                      <step.icon className="w-7 h-7 text-primary group-hover:scale-110 transition-transform duration-500" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all duration-200 rounded-none">
+                      <step.icon className="w-6 h-6 text-white group-hover:text-black transition-colors duration-200" />
                     </div>
-                    <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-semibold">
+                    <div className="px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-none">
                       {step.tag}
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-bold text-foreground mb-2 break-keep">
+                  <h3 className="text-xl font-black text-white mb-2 break-keep">
                     {step.title}
                   </h3>
                   
-                  <p className="text-primary font-semibold mb-6 break-keep">
+                  <p className="text-white font-bold mb-4 break-keep text-sm">
                     {step.description}
                   </p>
 
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5">
                     {step.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-muted-foreground break-keep">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <li key={idx} className="flex items-center gap-2 text-zinc-400 break-keep text-sm">
+                        <div className="w-1 h-1 bg-white" />
                         {feature}
                       </li>
                     ))}

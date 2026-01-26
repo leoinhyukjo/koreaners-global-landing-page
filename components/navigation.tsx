@@ -42,11 +42,11 @@ export function Navigation() {
   // 최소한의 높이만 가진 빈 박스로 레이아웃 시프트 방지
   if (!mounted) {
     return (
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm">
         <div className="container mx-auto px-5 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="text-xl sm:text-2xl font-bold text-primary">
-              KOREANERS<span className="text-foreground"> GLOBAL</span>
+            <div className="text-xl sm:text-2xl font-black text-white">
+              KOREANERS GLOBAL
             </div>
             <div className="h-9 w-9"></div>
           </div>
@@ -59,17 +59,17 @@ export function Navigation() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-background/95 backdrop-blur-lg border-b border-border shadow-sm'
-          : 'bg-transparent'
+          ? 'bg-black/95 backdrop-blur-sm border-b border-zinc-800'
+          : 'bg-black/90 backdrop-blur-sm'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0">
-            <div className="text-xl sm:text-2xl font-bold text-primary">
-              KOREANERS<span className="text-foreground"> GLOBAL</span>
+            <div className="text-xl sm:text-2xl font-black text-white">
+              KOREANERS GLOBAL
             </div>
-            <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
+            <div className="text-[10px] sm:text-xs text-zinc-400 mt-0.5">
               당신의 글로벌 비즈니스 파트너
             </div>
           </a>
@@ -80,16 +80,16 @@ export function Navigation() {
               <a
                 key={item.href}
                 href={item.href}
-                className="relative text-foreground/90 hover:text-foreground transition-all duration-200 py-2 font-medium text-sm group"
+                className="relative text-zinc-300 hover:text-white transition-all duration-200 py-2 font-bold text-sm group"
               >
                 {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
               </a>
             ))}
             <a href="/contact" className="ml-2">
               <Button 
                 size="default"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 px-6 py-2.5 shadow-[0_0_15px_rgba(217,255,0,0.3)] hover:shadow-[0_0_25px_rgba(217,255,0,0.5)] transition-all duration-200 font-semibold"
+                className="px-6 py-2.5 font-black"
               >
                 문의하기
               </Button>
@@ -101,7 +101,7 @@ export function Navigation() {
             <a href="/contact" className="mr-1">
               <Button 
                 size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs px-3 py-1.5 h-auto font-semibold shadow-[0_0_10px_rgba(217,255,0,0.2)]"
+                className="text-xs px-3 py-1.5 h-auto font-black"
               >
                 문의
               </Button>
@@ -111,18 +111,18 @@ export function Navigation() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9 hover:bg-accent/50"
+                  className="h-9 w-9 hover:bg-zinc-900 border-0"
                   aria-label="메뉴 열기"
                 >
-                  <Menu className="h-5 w-5 text-foreground" />
+                  <Menu className="h-5 w-5 text-white" />
                 </Button>
               </SheetTrigger>
               <SheetContent 
                 side="right" 
-                className="w-[300px] sm:w-[340px] bg-background border-l border-border z-50"
+                className="w-[300px] sm:w-[340px] bg-black border-l border-zinc-800 z-50 rounded-none"
               >
-                <SheetHeader className="border-b border-border pb-4 mb-4 z-10 relative">
-                  <SheetTitle className="text-left text-xl font-bold text-foreground">
+                <SheetHeader className="border-b border-zinc-800 pb-4 mb-4 z-10 relative">
+                  <SheetTitle className="text-left text-xl font-black text-white">
                     메뉴
                   </SheetTitle>
                 </SheetHeader>
@@ -132,20 +132,20 @@ export function Navigation() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="group flex items-center justify-between text-foreground hover:text-primary hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 py-4 px-5 rounded-xl text-base font-medium tracking-tight relative z-10"
+                      className="group flex items-center justify-between text-white hover:text-white hover:bg-zinc-900 active:bg-zinc-800 transition-all duration-200 py-4 px-5 rounded-none text-base font-bold tracking-tight relative z-10 border-b border-zinc-800"
                       style={{
                         animation: `fadeInSlide 0.3s ease-out ${index * 60}ms both`,
                       }}
                     >
-                      <span className="text-foreground group-hover:text-primary transition-colors duration-200 font-medium">
+                      <span className="text-white transition-colors duration-200 font-bold">
                         {item.label}
                       </span>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
+                      <ChevronRight className="h-4 w-4 text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
                     </a>
                   ))}
                   
                   {/* 문의하기 버튼 - 강조 */}
-                  <div className="mt-8 pt-8 border-t border-border relative z-10">
+                  <div className="mt-8 pt-8 border-t border-zinc-800 relative z-10">
                     <div className="flex justify-center">
                       <a
                         href="/contact"
@@ -154,7 +154,7 @@ export function Navigation() {
                       >
                         <Button 
                           size="lg"
-                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] shadow-sm hover:shadow-md transition-all duration-200 font-semibold text-base py-4 px-6 rounded-xl border border-primary/20"
+                          className="w-full font-black text-base py-4 px-6 rounded-none"
                         >
                           문의하기
                         </Button>
