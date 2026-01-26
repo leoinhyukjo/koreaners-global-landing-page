@@ -219,9 +219,16 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
     }
   }
 
+  const dialogContentClass = [
+    'overflow-y-auto',
+    'h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4',
+    'inset-0 top-0 left-0 translate-x-0 translate-y-0',
+    'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-auto md:max-w-4xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-lg md:border md:p-6',
+  ].join(' ')
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className={dialogContentClass}>
         <DialogHeader>
           <DialogTitle>
             {portfolio ? '포트폴리오 수정' : '새 포트폴리오'}
@@ -229,58 +236,62 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* 기본 정보 */}
           <div className="space-y-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="title">제목 *</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="포트폴리오 제목"
+                className="w-full"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="client">클라이언트명 *</Label>
               <Input
                 id="client"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="클라이언트명"
+                className="w-full"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="link">링크</Label>
               <Input
                 id="link"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 placeholder="https://..."
+                className="w-full"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label>썸네일 이미지</Label>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Input
                   type="file"
                   accept="image/*"
                   onChange={handleThumbnailUpload}
                   disabled={uploading}
-                  className="flex-1"
+                  className="w-full flex-1"
                 />
                 {thumbnailUrl && (
-                  <div className="relative w-20 h-20">
+                  <div className="relative h-20 w-20 shrink-0">
                     <img
                       src={thumbnailUrl}
                       alt="Thumbnail"
-                      className="w-full h-full object-cover rounded"
+                      className="h-full w-full rounded object-cover"
                     />
                     <button
+                      type="button"
                       onClick={() => setThumbnailUrl('')}
-                      className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1"
+                      className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white"
+                      aria-label="썸네일 제거"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -289,10 +300,10 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
               </div>
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="category">카테고리 *</Label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger id="category" className="mt-2">
+                <SelectTrigger id="category" className="mt-1 w-full">
                   <SelectValue placeholder="카테고리를 선택하세요" />
                 </SelectTrigger>
                 <SelectContent>
@@ -306,20 +317,26 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
             </div>
           </div>
 
-          {/* BlockNote 에디터 */}
-          <div>
+          <div className="space-y-2">
             <Label>본문 내용</Label>
-            <div className="mt-2 border rounded-md">
+            <div className="mt-1 rounded-md border">
               <BlockNoteView editor={editor} />
             </div>
           </div>
 
-          {/* 버튼 */}
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
+            >
               취소
             </Button>
-            <Button onClick={handleSubmit} disabled={uploading}>
+            <Button
+              onClick={handleSubmit}
+              disabled={uploading}
+              className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
+            >
               {portfolio ? '수정' : '생성'}
             </Button>
           </div>

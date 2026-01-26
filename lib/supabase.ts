@@ -39,3 +39,21 @@ export type BlogPost = {
   created_at: string
   updated_at: string
 }
+
+export type Inquiry = {
+  id: string
+  name: string
+  company: string
+  position: string
+  email?: string
+  phone: string
+  message: string
+  // DB 스키마에 따라 필드명이 다를 수 있음
+  privacy_agreement?: boolean // DB 필드명: privacy_agreement 또는 privacy_policy
+  privacy_consent?: boolean // 대체 필드명
+  privacy_policy?: boolean // 대체 필드명
+  marketing_agreement?: boolean // DB 필드명: marketing_agreement
+  marketing_consent?: boolean // 대체 필드명 (사용 안 함)
+  is_read?: boolean
+  created_at: string
+}

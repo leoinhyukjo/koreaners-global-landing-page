@@ -70,14 +70,14 @@ export default function BlogPage() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
-          <div className="text-center space-y-6 mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold text-balance leading-tight tracking-tight">
+          <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight tracking-tight">
               <span className="text-foreground dark:text-foreground">글로벌 마케팅 </span>
               <span className="text-primary">인사이트</span>
             </h1>
-            <p className="text-xl text-muted-foreground dark:text-muted-foreground max-w-3xl mx-auto text-pretty leading-relaxed tracking-normal">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground dark:text-muted-foreground max-w-3xl mx-auto text-pretty leading-relaxed tracking-normal px-2">
               글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식 채널
             </p>
           </div>
@@ -112,50 +112,50 @@ export default function BlogPage() {
               </div>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-20">
               {blogPosts.map((post) => (
                 <article key={post.id} className="h-full">
-                  <Link href={`/blog/${post.slug}`}>
+                  <Link href={`/blog/${post.slug}`} className="block h-full">
                     <Card 
                       className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
                       {/* Image */}
                       {post.thumbnail_url ? (
-                        <div className="aspect-video relative overflow-hidden">
+                        <div className="aspect-video relative overflow-hidden bg-muted">
                           <img
                             src={post.thumbnail_url}
                             alt={`${post.title} - ${post.category} 블로그 포스트`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
-                          <div className="absolute top-4 left-4">
-                            <Badge variant="secondary">{post.category}</Badge>
+                          <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                            <Badge variant="secondary" className="text-xs">{post.category}</Badge>
                           </div>
                         </div>
                       ) : (
                         <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-6xl font-bold text-primary/20 uppercase">
+                            <div className="text-4xl sm:text-6xl font-bold text-primary/20 uppercase">
                               {post.category.charAt(0)}
                             </div>
                           </div>
-                          <div className="absolute top-4 left-4">
-                            <Badge variant="secondary">{post.category}</Badge>
+                          <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                            <Badge variant="secondary" className="text-xs">{post.category}</Badge>
                           </div>
                         </div>
                       )}
 
                       {/* Content */}
-                      <div className="p-6 flex-1 flex flex-col">
-                        <h2 className="text-xl font-bold text-foreground dark:text-foreground mb-2 group-hover:text-primary transition-colors leading-tight tracking-tight">
+                      <div className="p-4 sm:p-6 flex-1 flex flex-col">
+                        <h2 className="text-lg sm:text-xl font-bold text-foreground dark:text-foreground mb-2 group-hover:text-primary transition-colors leading-tight tracking-tight">
                           {post.title}
                         </h2>
                         {post.summary && (
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-4 leading-relaxed line-clamp-3 tracking-normal">
+                          <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground mb-4 leading-relaxed line-clamp-3 tracking-normal">
                             {post.summary}
                           </p>
                         )}
 
-                        <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
+                        <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex items-center justify-between">
                           <time className="text-xs text-muted-foreground flex items-center gap-1" dateTime={post.created_at}>
                             <Calendar className="h-3 w-3" />
                             {new Date(post.created_at).toLocaleDateString('ko-KR')}

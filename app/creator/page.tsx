@@ -37,15 +37,15 @@ export default function CreatorPage() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
-          <div className="text-center space-y-6 mb-16">
-            <h1 className="text-5xl md:text-6xl font-bold text-balance">
+          <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight">
               <span className="text-primary">105명의 전속 크리에이터</span>
               <br />
               <span className="text-foreground">검증된 전환 파워</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto text-pretty px-2">
               일본 Z세대 67%의 구매 결정을 이끌어내는 실질적인 전환 엔진
             </p>
           </div>
@@ -60,7 +60,7 @@ export default function CreatorPage() {
               <p className="text-muted-foreground text-lg">등록된 크리에이터가 없습니다.</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-20">
               {creators.map(creator => (
                 <Card 
                   key={creator.id}

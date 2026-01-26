@@ -57,14 +57,14 @@ export function SolutionRoadmap() {
 
   return (
     <section id="solution" className="py-24 relative">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance break-keep">
               <span className="text-foreground">코리너스의 </span>
               <span className="text-primary">4단계 솔루션</span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground break-keep max-w-prose mx-auto">
               데이터 기반 성장 설계로 성공을 보장합니다
             </p>
           </div>
@@ -90,17 +90,17 @@ export function SolutionRoadmap() {
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
+                  <h3 className="text-2xl font-bold text-foreground mb-2 break-keep">
                     {step.title}
                   </h3>
                   
-                  <p className="text-primary font-semibold mb-6">
+                  <p className="text-primary font-semibold mb-6 break-keep">
                     {step.description}
                   </p>
 
                   <ul className="space-y-2">
                     {step.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-muted-foreground">
+                      <li key={idx} className="flex items-center gap-2 text-muted-foreground break-keep">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                         {feature}
                       </li>

@@ -60,12 +60,12 @@ export function TrustSignals() {
 
   return (
     <section className="py-20 relative overflow-hidden">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-5 sm:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground break-keep">
             TRUSTED BY
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-lg break-keep max-w-prose mx-auto">
             신뢰와 열정을 바탕으로 함께 성장해온 소중한 파트너들입니다
           </p>
         </div>
@@ -115,7 +115,7 @@ export function TrustSignals() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground break-keep">
             코리너스 글로벌은 <span className="text-primary font-semibold">수출바우처 공식 수행기관</span>입니다.
           </p>
         </div>

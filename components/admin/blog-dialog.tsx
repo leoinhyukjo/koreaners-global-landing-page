@@ -318,9 +318,16 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
     }
   }
 
+  const dialogContentClass = [
+    'overflow-y-auto',
+    'h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4',
+    'inset-0 top-0 left-0 translate-x-0 translate-y-0',
+    'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-auto md:max-w-4xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-lg md:border md:p-6',
+  ].join(' ')
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className={dialogContentClass}>
         <DialogHeader>
           <DialogTitle>
             {blogPost ? '마케팅 인사이트 수정' : '새 마케팅 인사이트'}
@@ -328,39 +335,39 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* 기본 정보 */}
           <div className="space-y-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="title">제목 *</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="블로그 포스트 제목"
+                className="w-full"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="slug">슬러그 (URL) *</Label>
               <Input
                 id="slug"
                 value={slug}
                 onChange={(e) => {
-                  // 소문자로 변환하고 영문, 숫자, 하이픈만 허용
                   const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
                   setSlug(value)
                 }}
                 placeholder="global-marketing-insights-2024"
+                className="w-full"
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                URL에 사용될 고유한 식별자입니다. 영문 소문자, 숫자, 하이픈만 사용 가능합니다. (예: global-marketing-trends-2024)
+              <p className="mt-1 text-xs text-muted-foreground">
+                URL에 사용될 고유한 식별자입니다. 영문 소문자, 숫자, 하이픈만 사용 가능합니다.
               </p>
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="category">카테고리 *</Label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger id="category" className="mt-2">
+                <SelectTrigger id="category" className="mt-1 w-full">
                   <SelectValue placeholder="카테고리를 선택하세요" />
                 </SelectTrigger>
                 <SelectContent>
@@ -373,36 +380,39 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
               </Select>
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="summary">요약</Label>
               <Input
                 id="summary"
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
                 placeholder="블로그 포스트 요약 문구"
+                className="w-full"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label>썸네일 이미지</Label>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Input
                   type="file"
                   accept="image/*"
                   onChange={handleThumbnailUpload}
                   disabled={uploading}
-                  className="flex-1"
+                  className="w-full flex-1"
                 />
                 {thumbnailUrl && (
-                  <div className="relative w-20 h-20">
+                  <div className="relative h-20 w-20 shrink-0">
                     <img
                       src={thumbnailUrl}
                       alt="Thumbnail"
-                      className="w-full h-full object-cover rounded"
+                      className="h-full w-full rounded object-cover"
                     />
                     <button
+                      type="button"
                       onClick={() => setThumbnailUrl('')}
-                      className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1"
+                      className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white"
+                      aria-label="썸네일 제거"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -410,78 +420,77 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
                 )}
               </div>
             </div>
-
           </div>
 
-          {/* SEO 설정 */}
           <div className="space-y-4 border-t pt-6">
             <h3 className="text-lg font-semibold">SEO 설정</h3>
-            
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="meta_title">
                 검색 엔진용 제목 (Meta Title) *
-                {published && <span className="text-destructive ml-1">(발행 시 필수)</span>}
+                {published && <span className="ml-1 text-destructive">(발행 시 필수)</span>}
               </Label>
               <Input
                 id="meta_title"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
-                placeholder={title || "블로그 포스트 제목"}
+                placeholder={title || '블로그 포스트 제목'}
                 maxLength={60}
                 required
+                className="w-full"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 검색 결과에 표시될 제목입니다. {metaTitle.length}/60자 (권장: 50-60자)
               </p>
             </div>
-
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="meta_description">
                 검색 결과 요약문 (Meta Description) *
-                {published && <span className="text-destructive ml-1">(발행 시 필수)</span>}
+                {published && <span className="ml-1 text-destructive">(발행 시 필수)</span>}
               </Label>
               <Textarea
                 id="meta_description"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder={summary || "블로그 포스트 요약"}
+                placeholder={summary || '블로그 포스트 요약'}
                 maxLength={160}
                 rows={3}
                 required
+                className="w-full"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 검색 결과에 표시될 설명입니다. {metaDescription.length}/160자 (권장: 120-160자)
               </p>
             </div>
           </div>
 
-          {/* BlockNote 에디터 */}
-          <div>
+          <div className="space-y-2">
             <Label>본문 내용</Label>
-            <div className="mt-2 border rounded-md">
+            <div className="mt-1 rounded-md border">
               <BlockNoteView editor={editor} />
             </div>
           </div>
 
-          {/* 버튼 */}
-          <div className="flex justify-end gap-2 border-t pt-4">
-            <Button 
-              variant="outline" 
+          <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
+            <Button
+              variant="outline"
               onClick={onClose}
               disabled={saving || uploading}
+              className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
             >
               취소
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => handleSubmit(false)} 
+            <Button
+              variant="outline"
+              onClick={() => handleSubmit(false)}
               disabled={saving || uploading}
+              className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
             >
               {saving ? '처리 중...' : '임시저장'}
             </Button>
-            <Button 
-              onClick={() => handleSubmit(true)} 
+            <Button
+              onClick={() => handleSubmit(true)}
               disabled={saving || uploading}
+              className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
             >
               {saving ? '처리 중...' : '발행하기'}
             </Button>

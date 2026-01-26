@@ -443,34 +443,36 @@ function BlogEditForm() {
   return (
     <div className="min-h-screen bg-background">
       {/* 헤더 */}
-      <div className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+      <div className="sticky top-0 z-10 border-b border-border bg-card">
+        <div className="container mx-auto max-w-7xl px-4 py-4 sm:px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
+                className="h-10 w-10 shrink-0 touch-manipulation"
                 onClick={() => router.push('/admin/blog')}
+                aria-label="목록으로"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="text-2xl font-bold">
+              <h1 className="truncate text-xl font-bold sm:text-2xl">
                 {postId ? '포스트 수정' : '새 포스트 작성'}
               </h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  console.log('임시저장 버튼 클릭')
                   handleSubmit(false)
                 }}
                 disabled={saving || uploading}
+                className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
               >
-                <Save className="h-4 w-4 mr-2" />
+                <Save className="h-4 w-4 shrink-0 sm:mr-2" />
                 {saving ? '처리 중...' : '임시저장'}
               </Button>
               <Button
@@ -478,12 +480,12 @@ function BlogEditForm() {
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  console.log('발행하기 버튼 클릭')
                   handleSubmit(true)
                 }}
                 disabled={saving || uploading}
+                className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
               >
-                <Send className="h-4 w-4 mr-2" />
+                <Send className="h-4 w-4 shrink-0 sm:mr-2" />
                 {saving ? '처리 중...' : '발행하기'}
               </Button>
             </div>
@@ -492,23 +494,23 @@ function BlogEditForm() {
       </div>
 
       {/* 메인 컨텐츠 */}
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
           {/* 왼쪽: 메타 정보 */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="space-y-6 lg:col-span-1">
             <div className="space-y-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="title">제목 *</Label>
                 <Input
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="포스트 제목"
-                  className="mt-2"
+                  className="mt-1 w-full"
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="slug">슬러그 (URL) *</Label>
                 <Input
                   id="slug"
@@ -518,22 +520,22 @@ function BlogEditForm() {
                     setSlug(value)
                   }}
                   placeholder="post-url-slug"
-                  className="mt-2"
+                  className="mt-1 w-full"
                 />
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="mt-1 text-xs text-muted-foreground">
                   영문 소문자, 숫자, 하이픈만 사용 가능
                 </p>
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="category">카테고리 *</Label>
                 {!isMounted ? (
-                  <div className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 flex items-center">
+                  <div className="mt-1 flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2">
                     <span className="text-muted-foreground">카테고리 선택</span>
                   </div>
                 ) : (
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger id="category" className="mt-2">
+                    <SelectTrigger id="category" className="mt-1 w-full">
                       <SelectValue placeholder="카테고리 선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -547,26 +549,27 @@ function BlogEditForm() {
                 )}
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="summary">요약</Label>
                 <Textarea
                   id="summary"
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
                   placeholder="포스트 요약"
-                  className="mt-2"
+                  className="mt-1 w-full"
                   rows={3}
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label>썸네일 이미지</Label>
-                <div className="mt-2 space-y-2">
+                <div className="mt-1 space-y-2">
                   <Input
                     type="file"
                     accept="image/*"
                     onChange={handleThumbnailUpload}
                     disabled={uploading}
+                    className="w-full"
                   />
                   {thumbnailUrl && (
                     <div className="relative w-full aspect-video rounded-md overflow-hidden border border-border">
@@ -590,36 +593,32 @@ function BlogEditForm() {
             {/* SEO 설정 */}
             <div className="space-y-4 border-t pt-6">
               <h3 className="text-lg font-semibold">SEO 설정</h3>
-              
-              <div>
+
+              <div className="space-y-2">
                 <Label htmlFor="meta_title">Meta Title *</Label>
                 <Input
                   id="meta_title"
                   value={metaTitle}
                   onChange={(e) => setMetaTitle(e.target.value)}
-                  placeholder={title || "검색 엔진용 제목"}
+                  placeholder={title || '검색 엔진용 제목'}
                   maxLength={60}
-                  className="mt-2"
+                  className="mt-1 w-full"
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {metaTitle.length}/60자
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{metaTitle.length}/60자</p>
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="meta_description">Meta Description *</Label>
                 <Textarea
                   id="meta_description"
                   value={metaDescription}
                   onChange={(e) => setMetaDescription(e.target.value)}
-                  placeholder={summary || "검색 결과 요약문"}
+                  placeholder={summary || '검색 결과 요약문'}
                   maxLength={160}
                   rows={3}
-                  className="mt-2"
+                  className="mt-1 w-full"
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {metaDescription.length}/160자
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{metaDescription.length}/160자</p>
               </div>
             </div>
           </div>

@@ -30,15 +30,14 @@ export function MarketOpportunity() {
 
   return (
     <section id="market" className="py-24 relative">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
-              <span className="text-primary">폭발적으로 성장하는</span>
-              <br />
-              <span className="text-foreground">일본 시장 기회</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance break-keep">
+              <span className="text-primary inline-block">폭발적으로 성장하는</span>{' '}
+              <span className="text-foreground inline-block">일본 시장 기회</span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground break-keep max-w-prose mx-auto">
               지금이 일본 시장 진출의 최적기입니다
             </p>
           </div>
@@ -69,7 +68,7 @@ export function MarketOpportunity() {
                     </div>
                   </div>
                   
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed break-keep">
                     {stat.description}
                   </p>
                 </div>

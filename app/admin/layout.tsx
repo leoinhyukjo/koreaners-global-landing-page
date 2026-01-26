@@ -3,14 +3,20 @@
 // 관리자 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
 export const dynamic = 'force-dynamic'
 
-import { ReactNode } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, FolderOpen, Users, FileText, LogOut } from 'lucide-react'
+import { LayoutDashboard, FolderOpen, Users, FileText, MessageSquare, LogOut, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from '@/lib/admin-auth'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 
 export default function AdminLayout({
   children,
@@ -20,6 +26,12 @@ export default function AdminLayout({
   const pathname = usePathname()
   const router = useRouter()
   const { toast } = useToast()
+  const [isMounted, setIsMounted] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   async function handleLogout() {
     const { error } = await signOut()
@@ -44,49 +56,69 @@ export default function AdminLayout({
     { href: '/admin/portfolios', label: '포트폴리오 관리', icon: FolderOpen },
     { href: '/admin/creators', label: '크리에이터 관리', icon: Users },
     { href: '/admin/blog', label: '블로그 관리', icon: FileText },
+    { href: '/admin/inquiries', label: '문의 내역', icon: MessageSquare },
   ]
 
-  // 로그인 페이지인지 확인
   const isLoginPage = pathname === '/admin/login'
+
+  function NavLinks({ onItemClick }: { onItemClick?: () => void }) {
+    return (
+      <>
+        {navItems.map((item) => {
+          const Icon = item.icon
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onItemClick}
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )}
+            >
+              <Icon className="h-5 w-5 shrink-0" />
+              {item.label}
+            </Link>
+          )
+        })}
+      </>
+    )
+  }
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-background">
+        {isLoginPage ? (
+          children
+        ) : (
+          <main className="min-h-screen">
+            <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+              {children}
+            </div>
+          </main>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sidebar - 로그인 페이지가 아닐 때만 표시 */}
+      {/* 데스크톱 사이드바 (768px 이상) */}
       {!isLoginPage && (
-        <aside className="fixed left-0 top-0 h-full w-64 border-r border-border bg-card">
+        <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 border-r border-border bg-card md:block">
           <div className="flex h-full flex-col">
-            {/* Logo */}
-            <div className="border-b border-border p-6">
+            <div className="border-b border-border px-6 py-5">
               <Link href="/admin" className="text-xl font-bold text-primary">
                 관리자 패널
               </Link>
             </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 space-y-1 p-4">
-              {navItems.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {item.label}
-                  </Link>
-                )
-              })}
+            <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+              <NavLinks />
             </nav>
-
-            {/* Footer */}
-            <div className="border-t border-border p-4 space-y-2">
+            <div className="space-y-2 border-t border-border p-4">
               <Link
                 href="/"
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
@@ -98,7 +130,7 @@ export default function AdminLayout({
                 onClick={handleLogout}
                 className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
               >
-                <LogOut className="h-5 w-5" />
+                <LogOut className="h-5 w-5 shrink-0" />
                 로그아웃
               </Button>
             </div>
@@ -106,14 +138,73 @@ export default function AdminLayout({
         </aside>
       )}
 
-      {/* Main Content */}
-      <main className={cn('min-h-screen', !isLoginPage && 'ml-64')}>
+      {/* 모바일 상단 바 + 햄버거 (768px 미만) */}
+      {!isLoginPage && (
+        <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4 md:hidden">
+          <Link href="/admin" className="text-lg font-bold text-primary">
+            관리자 패널
+          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 shrink-0"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="메뉴 열기"
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </header>
+      )}
+
+      {/* 모바일 메뉴 Sheet (왼쪽에서 슬라이드) */}
+      {!isLoginPage && (
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetContent
+            side="left"
+            className="w-72 border-r border-border bg-card p-0 sm:max-w-[288px]"
+          >
+            <SheetHeader className="border-b border-border px-6 py-5 text-left">
+              <SheetTitle className="text-xl font-bold text-primary">
+                관리자 패널
+              </SheetTitle>
+            </SheetHeader>
+            <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+              <NavLinks onItemClick={() => setMobileMenuOpen(false)} />
+            </nav>
+            <div className="mt-auto space-y-2 border-t border-border p-4">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              >
+                랜딩페이지로
+              </Link>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  handleLogout()
+                }}
+                className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-5 w-5 shrink-0" />
+                로그아웃
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      <main
+        className={cn(
+          'min-h-screen',
+          !isLoginPage && 'pt-14 md:ml-64 md:pt-0'
+        )}
+      >
         {isLoginPage ? (
-          // 로그인 페이지는 전체 화면 사용 (children에서 이미 스타일링됨)
           children
         ) : (
-          // 다른 페이지는 컨테이너와 패딩 사용
-          <div className="container mx-auto p-8">
+          <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
             {children}
           </div>
         )}

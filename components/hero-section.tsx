@@ -20,10 +20,10 @@ export function HeroSection() {
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-5 sm:px-6 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
           <h1 
-            className={`text-5xl md:text-7xl font-bold mb-2 text-balance transition-all duration-1000 ${
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2 text-balance break-keep transition-all duration-1000 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
@@ -31,7 +31,7 @@ export function HeroSection() {
           </h1>
           
           <p 
-            className={`text-5xl md:text-7xl text-primary font-bold mb-12 text-balance transition-all duration-1000 delay-200 ${
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-primary font-bold mb-8 sm:mb-12 text-balance break-keep transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >

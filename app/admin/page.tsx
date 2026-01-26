@@ -8,10 +8,11 @@ import { supabase } from '@/lib/supabase/client'
 import type { Portfolio, BlogPost, Creator } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { FolderOpen, FileText, Users, TrendingUp, ArrowRight, Calendar } from 'lucide-react'
+import { FolderOpen, FileText, Users, ArrowRight, Calendar } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AdminDashboard() {
+  const [isMounted, setIsMounted] = useState(false)
   const [stats, setStats] = useState({
     portfolios: 0,
     blogPosts: 0,
@@ -22,8 +23,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchDashboardData()
+    setIsMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (isMounted) fetchDashboardData()
+  }, [isMounted])
 
   async function fetchDashboardData() {
     try {
@@ -89,29 +94,71 @@ export default function AdminDashboard() {
     },
   ]
 
+  if (!isMounted) {
+    return (
+      <div className="space-y-6 sm:space-y-8">
+        <div>
+          <div className="h-9 w-48 animate-pulse rounded bg-muted" />
+          <div className="mt-2 h-5 w-64 animate-pulse rounded bg-muted" />
+        </div>
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <CardHeader className="space-y-0 pb-2">
+                <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-9 w-16 animate-pulse rounded bg-muted" />
+                <div className="mt-2 h-4 w-20 animate-pulse rounded bg-muted" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-48 animate-pulse rounded bg-muted" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-4 w-full animate-pulse rounded bg-muted" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <div className="h-5 w-36 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-52 animate-pulse rounded bg-muted" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-4 w-full animate-pulse rounded bg-muted" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">대시보드</h1>
-        <p className="text-muted-foreground">관리자 패널에 오신 것을 환영합니다</p>
+        <h1 className="text-2xl font-bold sm:text-3xl">대시보드</h1>
+        <p className="mt-1 text-sm text-muted-foreground sm:text-base">관리자 패널에 오신 것을 환영합니다</p>
       </div>
 
       {/* 통계 카드 */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         {statCards.map((stat) => {
           const Icon = stat.icon
           return (
             <Link key={stat.title} href={stat.href}>
-              <Card className="hover:border-primary/50 transition-all cursor-pointer group">
+              <Card className="cursor-pointer transition-all hover:border-primary/50 group">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                  <Icon className={`h-5 w-5 ${stat.color} group-hover:scale-110 transition-transform`} />
+                  <Icon className={`h-5 w-5 shrink-0 ${stat.color} transition-transform group-hover:scale-110`} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold">{loading ? '...' : stat.value}</div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    총 {stat.title} 수
-                  </p>
+                  <div className="text-2xl font-bold sm:text-3xl">{loading ? '...' : stat.value}</div>
+                  <p className="mt-1 text-xs text-muted-foreground">총 {stat.title} 수</p>
                 </CardContent>
               </Card>
             </Link>
@@ -120,17 +167,16 @@ export default function AdminDashboard() {
       </div>
 
       {/* 최근 활동 */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* 최근 포트폴리오 */}
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <CardTitle>최근 포트폴리오</CardTitle>
                 <CardDescription>가장 최근에 등록된 포트폴리오</CardDescription>
               </div>
-              <Link href="/admin/portfolios">
-                <Badge variant="outline" className="cursor-pointer hover:bg-accent">
+              <Link href="/admin/portfolios" className="w-fit">
+                <Badge variant="outline" className="cursor-pointer px-4 py-2.5 touch-manipulation hover:bg-accent">
                   모두 보기
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Badge>
@@ -147,20 +193,20 @@ export default function AdminDashboard() {
                 {recentPortfolios.map((portfolio) => (
                   <Link
                     key={portfolio.id}
-                    href={`/admin/portfolios`}
-                    className="block p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-accent/50 transition-all"
+                    href="/admin/portfolios"
+                    className="block rounded-lg border border-border p-3 transition-all hover:border-primary/50 hover:bg-accent/50"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{portfolio.title}</h4>
-                        <p className="text-xs text-muted-foreground mt-1">{portfolio.client_name}</p>
-                        <div className="flex items-center gap-2 mt-2">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-sm font-medium">{portfolio.title}</h4>
+                        <p className="mt-1 text-xs text-muted-foreground">{portfolio.client_name}</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           {portfolio.category && portfolio.category.length > 0 && (
                             <Badge variant="secondary" className="text-xs">
                               {portfolio.category[0]}
                             </Badge>
                           )}
-                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             {new Date(portfolio.created_at).toLocaleDateString('ko-KR')}
                           </span>
@@ -174,16 +220,15 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* 최근 블로그 포스트 */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <CardTitle>최근 블로그 포스트</CardTitle>
                 <CardDescription>가장 최근에 작성된 블로그 글</CardDescription>
               </div>
-              <Link href="/admin/blog">
-                <Badge variant="outline" className="cursor-pointer hover:bg-accent">
+              <Link href="/admin/blog" className="w-fit">
+                <Badge variant="outline" className="cursor-pointer px-4 py-2.5 touch-manipulation hover:bg-accent">
                   모두 보기
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Badge>
@@ -200,16 +245,16 @@ export default function AdminDashboard() {
                 {recentBlogPosts.map((post) => (
                   <Link
                     key={post.id}
-                    href={`/admin/blog`}
-                    className="block p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-accent/50 transition-all"
+                    href="/admin/blog"
+                    className="block rounded-lg border border-border p-3 transition-all hover:border-primary/50 hover:bg-accent/50"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{post.title}</h4>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-sm font-medium">{post.title}</h4>
                         {post.summary && (
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{post.summary}</p>
+                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{post.summary}</p>
                         )}
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <Badge variant="secondary" className="text-xs">
                             {post.category}
                           </Badge>
@@ -218,7 +263,7 @@ export default function AdminDashboard() {
                           ) : (
                             <Badge variant="outline" className="text-xs">임시저장</Badge>
                           )}
-                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             {new Date(post.created_at).toLocaleDateString('ko-KR')}
                           </span>

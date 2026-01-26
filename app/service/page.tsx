@@ -71,15 +71,20 @@ export default function ServicePage() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 relative overflow-hidden">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-5 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight text-balance">
-              단순한 대행을 넘어,<br />
-              <span className="text-primary">당신의 가장 강력한 글로벌 지사</span>가 됩니다.
+          <div className="text-center space-y-4 sm:space-y-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight break-keep">
+              <div className="flex flex-col items-center gap-2">
+                <span className="inline-block">단순한 대행을 넘어,</span>
+                <span className="inline-block">
+                  <span className="text-primary">당신의 가장 강력한 글로벌 지사</span>
+                  <span>가 됩니다.</span>
+                </span>
+              </div>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto text-balance">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-prose mx-auto text-balance break-keep px-2">
               데이터로 진단하고 인프라로 성장을 설계하는 코리너스만의 실행형 컨설팅 솔루션
             </p>
           </div>
@@ -87,13 +92,13 @@ export default function ServicePage() {
       </section>
 
       {/* Problem & Insight Section */}
-      <section className="py-20 px-4">
+      <section className="py-12 sm:py-20 px-5 sm:px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4 break-keep">
               일본 마케팅, 왜 비용만 쓰고 성과는 없는가?
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base sm:text-lg text-muted-foreground break-keep max-w-prose mx-auto px-2">
               일본 시장 진출 시 기업들이 겪는 4가지 핵심 문제점
             </p>
           </div>
@@ -107,10 +112,10 @@ export default function ServicePage() {
                 <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
                   <point.icon className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">
+                <h3 className="text-xl font-bold text-foreground mb-3 break-keep">
                   {point.title}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed break-keep">
                   {point.description}
                 </p>
               </Card>
@@ -120,17 +125,17 @@ export default function ServicePage() {
       </section>
 
       {/* Service 01: Influencer Marketing */}
-      <section className="py-20 px-4 bg-card/20">
+      <section className="py-20 px-5 sm:px-6 bg-card/20">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-6">
                 <span className="text-primary font-semibold">Service 01</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 break-keep">
                 인플루언서 마케팅
               </h2>
-              <p className="text-2xl text-primary font-bold mb-8">
+              <p className="text-2xl text-primary font-bold mb-8 break-keep">
                 팬덤을 넘어 매출로, 최적의 인적 인프라 배치
               </p>
               
@@ -187,7 +192,7 @@ export default function ServicePage() {
       </section>
 
       {/* Service 02: Seeding */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-5 sm:px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1">
@@ -222,10 +227,10 @@ export default function ServicePage() {
               <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-6">
                 <span className="text-primary font-semibold">Service 02</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 break-keep">
                 정예 체험단
               </h2>
-              <p className="text-2xl text-primary font-bold mb-8">
+              <p className="text-2xl text-primary font-bold mb-8 break-keep">
                 일본 시장 안착의 핵심, 신뢰 인프라 구축
               </p>
               
@@ -238,10 +243,10 @@ export default function ServicePage() {
                       </div>
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-foreground mb-2">
+                      <h4 className="text-lg font-bold text-foreground mb-2 break-keep">
                         {feature.title}
                       </h4>
-                      <p className="text-muted-foreground">
+                      <p className="text-muted-foreground break-keep">
                         {feature.description}
                       </p>
                     </div>
@@ -254,27 +259,27 @@ export default function ServicePage() {
       </section>
 
       {/* Data & Reporting Section */}
-      <section className="py-20 px-4 relative overflow-hidden bg-gradient-to-br from-background via-card/30 to-background">
+      <section className="py-20 px-5 sm:px-6 relative overflow-hidden bg-gradient-to-br from-background via-card/30 to-background">
         
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-              결과 보고를 넘어,<br />
-              <span className="text-primary">다음 성장을 설계하는</span> 인사이트 리포트
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6 break-keep">
+              <span className="inline-block">결과 보고를 넘어,</span>{' '}
+              <span className="text-primary inline-block">다음 성장을 설계하는</span>{' '}
+              <span className="inline-block">인사이트 리포트</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              코리너스는 캠페인 종료 후 단순 수치 나열이 아닌, ROAS와 트래픽 데이터를 분석하여<br />
-              브랜드의 향후 전략을 제시합니다.
+            <p className="text-lg text-muted-foreground max-w-prose mx-auto leading-relaxed break-keep">
+              코리너스는 캠페인 종료 후 단순 수치 나열이 아닌, ROAS와 트래픽 데이터를 분석하여 브랜드의 향후 전략을 제시합니다.
             </p>
           </div>
 
           {/* Section 1: 핵심 분석 지표 */}
           <div className="mb-20">
             <div className="text-center mb-10">
-              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3 break-keep">
                 단순 보고를 넘어 <span className="text-primary">성장을 설계하는 핵심 지표</span>
               </h3>
-              <p className="text-muted-foreground">데이터 시각화 기반의 정밀한 성과 분석</p>
+              <p className="text-muted-foreground break-keep">데이터 시각화 기반의 정밀한 성과 분석</p>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">

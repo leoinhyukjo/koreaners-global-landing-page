@@ -144,31 +144,31 @@ export default async function BlogDetailPage({ params }: PageProps) {
       <main className="min-h-screen bg-background">
         <Navigation />
         
-        <article className="pt-32 pb-16 px-4">
+        <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
           <div className="container mx-auto max-w-4xl">
             {/* 헤더 */}
-            <header className="mb-8">
+            <header className="mb-6 sm:mb-8">
               <Link href="/blog">
-                <Button variant="ghost" className="mb-4">
+                <Button variant="ghost" className="mb-3 sm:mb-4 min-h-[44px]">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   목록으로
                 </Button>
               </Link>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <Badge variant="secondary">{blogPost.category}</Badge>
-                    <time className="text-sm text-muted-foreground flex items-center gap-1" dateTime={blogPost.created_at}>
-                      <Calendar className="h-4 w-4" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
+                    <Badge variant="secondary" className="text-xs">{blogPost.category}</Badge>
+                    <time className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1" dateTime={blogPost.created_at}>
+                      <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                       {new Date(blogPost.created_at).toLocaleDateString('ko-KR')}
                     </time>
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight tracking-tight text-foreground dark:text-foreground">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight tracking-tight text-foreground dark:text-foreground">
                     {blogPost.title}
                   </h1>
                   {blogPost.summary && (
-                    <p className="text-xl text-muted-foreground dark:text-muted-foreground leading-relaxed tracking-normal">
+                    <p className="text-base sm:text-lg md:text-xl text-muted-foreground dark:text-muted-foreground leading-relaxed tracking-normal">
                       {blogPost.summary}
                     </p>
                   )}
@@ -187,7 +187,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </header>
 
             {/* 본문 */}
-            <Card className="p-8 md:p-12 bg-card dark:bg-card border-border dark:border-border">
+            <Card className="p-4 sm:p-6 md:p-8 lg:p-12 bg-card dark:bg-card border-border dark:border-border">
               <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-foreground dark:prose-headings:text-foreground prose-p:text-foreground/90 dark:prose-p:text-foreground/90 prose-strong:text-foreground dark:prose-strong:text-foreground">
                 <div className="text-foreground dark:text-foreground leading-relaxed tracking-normal [&_p]:mb-4 [&_p]:text-base [&_p]:md:text-lg [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-xl [&_h3]:md:text-2xl [&_h3]:font-semibold [&_h3]:leading-tight [&_ul]:my-4 [&_ol]:my-4 [&_li]:mb-2 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/50 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground">
                   <BlogContent blogPost={blogPost} />

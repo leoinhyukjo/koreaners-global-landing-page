@@ -29,14 +29,14 @@ export function Barriers() {
 
   return (
     <section className="py-24 relative bg-card/20">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance break-keep">
               <span className="text-foreground">일본 시장 진출의 </span>
               <span className="text-primary">4가지 장벽</span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground break-keep max-w-prose mx-auto">
               많은 기업들이 이 장벽 앞에서 실패합니다
             </p>
           </div>
@@ -54,10 +54,10 @@ export function Barriers() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-3">
+                    <h3 className="text-2xl font-bold text-foreground mb-3 break-keep">
                       {barrier.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed break-keep">
                       {barrier.description}
                     </p>
                   </div>
