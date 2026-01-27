@@ -42,7 +42,7 @@ export function Navigation() {
   // 최소한의 높이만 가진 빈 박스로 레이아웃 시프트 방지
   if (!mounted) {
     return (
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/90 backdrop-blur-sm">
         <div className="container mx-auto px-5 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="text-xl sm:text-2xl font-black text-white">
@@ -59,8 +59,8 @@ export function Navigation() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-black/95 backdrop-blur-sm border-b border-zinc-800'
-          : 'bg-black/90 backdrop-blur-sm'
+          ? 'bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-700/50'
+          : 'bg-zinc-900/90 backdrop-blur-sm'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
@@ -69,7 +69,7 @@ export function Navigation() {
             <div className="text-xl sm:text-2xl font-black text-white">
               KOREANERS GLOBAL
             </div>
-            <div className="text-[10px] sm:text-xs text-zinc-400 mt-0.5">
+            <div className="text-[10px] sm:text-xs text-zinc-300 mt-0.5">
               당신의 글로벌 비즈니스 파트너
             </div>
           </a>
@@ -80,7 +80,7 @@ export function Navigation() {
               <a
                 key={item.href}
                 href={item.href}
-                className="relative text-zinc-300 hover:text-white transition-all duration-200 py-2 font-bold text-sm group"
+                className="relative text-zinc-200 hover:text-white transition-all duration-200 py-2 font-bold text-sm group"
               >
                 {item.label}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>

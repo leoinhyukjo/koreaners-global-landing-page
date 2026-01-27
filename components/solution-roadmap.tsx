@@ -56,7 +56,7 @@ export function SolutionRoadmap() {
   ]
 
   return (
-    <section id="solution" className="py-12 sm:py-16 relative bg-black border-t border-zinc-800">
+    <section id="solution" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -64,7 +64,7 @@ export function SolutionRoadmap() {
               <span className="text-white">코리너스의 </span>
               <span className="text-white">4단계 솔루션</span>
             </h2>
-            <p className="text-lg text-zinc-400 break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
               데이터 기반 성장 설계로 성공을 보장합니다
             </p>
           </div>
@@ -73,7 +73,7 @@ export function SolutionRoadmap() {
             {steps.map((step, index) => (
               <Card
                 key={index}
-                className="relative p-6 bg-zinc-900 border-zinc-800 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
+                className="relative p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
               >
                 {/* Step number background */}
                 <div className="absolute top-4 right-4 text-7xl font-black text-zinc-800 group-hover:text-zinc-700 transition-all duration-200">
@@ -100,7 +100,7 @@ export function SolutionRoadmap() {
 
                   <ul className="space-y-1.5">
                     {step.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-zinc-400 break-keep text-sm">
+                      <li key={idx} className="flex items-center gap-2 text-zinc-200 break-keep text-sm">
                         <div className="w-1 h-1 bg-white" />
                         {feature}
                       </li>

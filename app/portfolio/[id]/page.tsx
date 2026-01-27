@@ -62,10 +62,10 @@ export default function PortfolioDetailPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-zinc-900">
         <Navigation />
         <div className="container mx-auto px-4 py-32 text-center">
-          <p className="text-muted-foreground">로딩 중...</p>
+          <p className="text-zinc-200">로딩 중...</p>
         </div>
       </main>
     )
@@ -73,10 +73,10 @@ export default function PortfolioDetailPage() {
 
   if (!portfolio) {
     return (
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-zinc-900">
         <Navigation />
         <div className="container mx-auto px-4 py-32 text-center">
-          <p className="text-muted-foreground">포트폴리오를 찾을 수 없습니다.</p>
+          <p className="text-zinc-200">포트폴리오를 찾을 수 없습니다.</p>
           <Link href="/portfolio">
             <Button variant="outline" className="mt-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -89,7 +89,7 @@ export default function PortfolioDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-zinc-900">
       <Navigation />
       
       <section className="pt-32 pb-16 px-4">
@@ -97,7 +97,7 @@ export default function PortfolioDetailPage() {
           {/* 헤더 */}
           <div className="mb-8">
             <Link href="/portfolio">
-              <Button variant="ghost" className="mb-4">
+              <Button variant="ghost" className="mb-4 text-white hover:bg-zinc-800 border-0">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 목록으로
               </Button>
@@ -105,12 +105,12 @@ export default function PortfolioDetailPage() {
             
             <div className="space-y-4">
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-2">{portfolio.title}</h1>
-                <p className="text-xl text-muted-foreground">{portfolio.client_name}</p>
+                <h1 className="text-4xl md:text-5xl font-black mb-2 text-white">{portfolio.title}</h1>
+                <p className="text-xl text-zinc-200">{portfolio.client_name}</p>
               </div>
 
               {portfolio.thumbnail_url && (
-                <div className="aspect-video rounded-lg overflow-hidden">
+                <div className="aspect-video rounded-none overflow-hidden border border-zinc-700/50">
                   <img
                     src={portfolio.thumbnail_url}
                     alt={portfolio.title}
@@ -125,7 +125,7 @@ export default function PortfolioDetailPage() {
                     {portfolio.category.map((cat) => (
                       <span
                         key={cat}
-                        className="px-3 py-1 text-sm rounded-full bg-primary/10 text-primary"
+                        className="px-3 py-1 text-sm rounded-none bg-white/10 text-white border border-zinc-700/50"
                       >
                         {cat}
                       </span>
@@ -138,7 +138,7 @@ export default function PortfolioDetailPage() {
                     href={portfolio.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-primary hover:underline"
+                    className="inline-flex items-center gap-2 text-white hover:underline"
                   >
                     <ExternalLink className="h-4 w-4" />
                     프로젝트 링크
@@ -149,11 +149,13 @@ export default function PortfolioDetailPage() {
           </div>
 
           {/* 본문 */}
-          <Card className="p-8">
+          <Card className="p-8 bg-zinc-800 border-zinc-700/50">
             {portfolio?.content && Array.isArray(portfolio.content) && portfolio.content.length > 0 ? (
-              <BlockNoteView editor={editor} />
+              <div className="text-zinc-200">
+                <BlockNoteView editor={editor} />
+              </div>
             ) : (
-              <p className="text-muted-foreground">콘텐츠가 없습니다.</p>
+              <p className="text-zinc-200">콘텐츠가 없습니다.</p>
             )}
           </Card>
         </div>

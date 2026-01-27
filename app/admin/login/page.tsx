@@ -213,8 +213,8 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-6 sm:py-8">
-      <Card className="w-full max-w-md p-4 sm:p-6 md:p-8">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-900 px-4 py-6 sm:py-8">
+      <Card className="w-full max-w-md p-4 sm:p-6 md:p-8 bg-zinc-800 border-zinc-700/50">
         <div className="space-y-6">
           <div>
             <h1 className="text-2xl font-bold">관리자 로그인</h1>

@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`font-sans antialiased`}>
+      <body className={`font-sans antialiased bg-zinc-900`}>
         {children}
         <Analytics />
       </body>

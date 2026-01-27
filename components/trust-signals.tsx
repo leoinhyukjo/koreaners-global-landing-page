@@ -59,13 +59,13 @@ export function TrustSignals() {
   }, [])
 
   return (
-    <section className="py-12 sm:py-16 relative overflow-hidden bg-black border-t border-zinc-800">
+    <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black mb-4 text-white break-keep">
             TRUSTED BY
           </h2>
-          <p className="text-zinc-400 text-lg break-keep max-w-prose mx-auto">
+          <p className="text-zinc-200 text-lg break-keep max-w-prose mx-auto">
             신뢰와 열정을 바탕으로 함께 성장해온 소중한 파트너들입니다
           </p>
         </div>
@@ -80,7 +80,7 @@ export function TrustSignals() {
             {duplicatedRow1.map((partner, index) => (
               <div
                 key={`row1-${partner}-${index}`}
-                className="flex-shrink-0 px-8 py-6 bg-zinc-900 border border-zinc-800 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
+                className="flex-shrink-0 px-8 py-6 bg-zinc-800 border border-zinc-700/50 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
                 style={{ minWidth: '200px' }}
               >
                 <div className="text-center">
@@ -101,7 +101,7 @@ export function TrustSignals() {
             {duplicatedRow2.map((partner, index) => (
               <div
                 key={`row2-${partner}-${index}`}
-                className="flex-shrink-0 px-8 py-6 bg-zinc-900 border border-zinc-800 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
+                className="flex-shrink-0 px-8 py-6 bg-zinc-800 border border-zinc-700/50 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
                 style={{ minWidth: '200px' }}
               >
                 <div className="text-center">
@@ -115,7 +115,7 @@ export function TrustSignals() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-zinc-400 break-keep">
+          <p className="text-sm text-zinc-200 break-keep">
             코리너스 글로벌은 <span className="text-white font-bold">수출바우처 공식 수행기관</span>입니다.
           </p>
         </div>

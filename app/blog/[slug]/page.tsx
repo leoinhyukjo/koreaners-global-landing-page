@@ -145,7 +145,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen relative overflow-hidden bg-black">
+      <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
         
         <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
@@ -153,7 +153,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             {/* 헤더 */}
             <header className="mb-8 sm:mb-12">
               <Link href="/blog">
-                <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-zinc-900 border-0">
+                <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-zinc-800 border-0">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   목록으로
                 </Button>
@@ -161,7 +161,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
               
               <div className="space-y-4 sm:space-y-6">
                 {/* 썸네일 - 제목 위에 배치 (없으면 기본 이미지) */}
-                <div className="aspect-video rounded-none overflow-hidden border border-zinc-800 relative bg-zinc-950">
+                <div className="aspect-video rounded-none overflow-hidden border border-zinc-700/50 relative bg-zinc-800">
                   <Image
                     src={thumbnailSrc}
                     alt={`${blogPost.title} - ${blogPost.category} 블로그 포스트`}
@@ -174,8 +174,8 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
                 <div>
                   <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap break-keep">
-                    <Badge variant="secondary" className="text-xs break-keep bg-zinc-900 text-zinc-300 border-zinc-800 rounded-none">{blogPost.category}</Badge>
-                    <time className="text-xs sm:text-sm text-zinc-400 flex items-center gap-1 break-keep" dateTime={blogPost.created_at}>
+                    <Badge variant="secondary" className="text-xs break-keep bg-zinc-800 text-zinc-200 border-zinc-700/50 rounded-none">{blogPost.category}</Badge>
+                    <time className="text-xs sm:text-sm text-zinc-300 flex items-center gap-1 break-keep" dateTime={blogPost.created_at}>
                       <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                       {new Date(blogPost.created_at).toLocaleDateString('ko-KR')}
                     </time>
@@ -190,19 +190,19 @@ export default async function BlogDetailPage({ params }: PageProps) {
             {/* 요약부 - 별도 박스로 구분 */}
             {blogPost.summary && (
               <div className="mb-10 sm:mb-12">
-                <div className="border border-zinc-800 bg-zinc-900/30 p-4 sm:p-6 md:p-8 rounded-none">
-                  <p className="text-base sm:text-lg md:text-xl text-zinc-300 leading-relaxed break-keep">
+                <div className="border border-zinc-700/50 bg-zinc-800 p-4 sm:p-6 md:p-8 rounded-none">
+                  <p className="text-base sm:text-lg md:text-xl text-zinc-200 leading-relaxed break-keep">
                     {blogPost.summary}
                   </p>
                 </div>
                 {/* 요약부와 본문 사이 구분선 */}
-                <div className="mt-10 sm:mt-12 border-t border-zinc-800"></div>
+                <div className="mt-10 sm:mt-12 border-t border-zinc-700/50"></div>
               </div>
             )}
 
             {/* 본문 - 큰 박스로 감싸기 */}
-            <div className={`${blogPost.summary ? 'mt-0' : 'mt-10 sm:mt-12'} border border-zinc-700 bg-zinc-900/20 p-4 sm:p-6 md:p-8 lg:p-10 rounded-none blog-content-wrapper`}>
-              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-300 leading-relaxed">
+            <div className={`${blogPost.summary ? 'mt-0' : 'mt-10 sm:mt-12'} border border-zinc-700/50 bg-zinc-800 p-4 sm:p-6 md:p-8 lg:p-10 rounded-none blog-content-wrapper`}>
+              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-200 leading-relaxed">
                 <BlogContent blogPost={blogPost} />
               </div>
             </div>

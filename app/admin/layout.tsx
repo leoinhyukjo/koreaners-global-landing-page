@@ -90,7 +90,7 @@ export default function AdminLayout({
 
   if (!isMounted) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-zinc-900">
         {isLoginPage ? (
           children
         ) : (
@@ -105,20 +105,20 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-zinc-900">
       {/* 데스크톱 사이드바 (768px 이상) */}
       {!isLoginPage && (
-        <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 border-r border-border bg-card md:block">
+        <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 border-r border-zinc-700/50 bg-zinc-800 md:block">
           <div className="flex h-full flex-col">
-            <div className="border-b border-border px-6 py-5">
-              <Link href="/admin" className="text-xl font-bold text-primary">
+            <div className="border-b border-zinc-700/50 px-6 py-5">
+              <Link href="/admin" className="text-xl font-bold text-white">
                 관리자 패널
               </Link>
             </div>
             <nav className="flex-1 space-y-1 overflow-y-auto p-4">
               <NavLinks />
             </nav>
-            <div className="space-y-2 border-t border-border p-4">
+            <div className="space-y-2 border-t border-zinc-700/50 p-4">
               <Link
                 href="/"
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
@@ -140,8 +140,8 @@ export default function AdminLayout({
 
       {/* 모바일 상단 바 + 햄버거 (768px 미만) */}
       {!isLoginPage && (
-        <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4 md:hidden">
-          <Link href="/admin" className="text-lg font-bold text-primary">
+        <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-zinc-700/50 bg-zinc-800 px-4 md:hidden">
+          <Link href="/admin" className="text-lg font-bold text-white">
             관리자 패널
           </Link>
           <Button
@@ -161,17 +161,17 @@ export default function AdminLayout({
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
           <SheetContent
             side="left"
-            className="w-72 border-r border-border bg-card p-0 sm:max-w-[288px]"
+            className="w-72 border-r border-zinc-700/50 bg-zinc-800 p-0 sm:max-w-[288px]"
           >
-            <SheetHeader className="border-b border-border px-6 py-5 text-left">
-              <SheetTitle className="text-xl font-bold text-primary">
+            <SheetHeader className="border-b border-zinc-700/50 px-6 py-5 text-left">
+              <SheetTitle className="text-xl font-bold text-white">
                 관리자 패널
               </SheetTitle>
             </SheetHeader>
             <nav className="flex-1 space-y-1 overflow-y-auto p-4">
               <NavLinks onItemClick={() => setMobileMenuOpen(false)} />
             </nav>
-            <div className="mt-auto space-y-2 border-t border-border p-4">
+            <div className="mt-auto space-y-2 border-t border-zinc-700/50 p-4">
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}

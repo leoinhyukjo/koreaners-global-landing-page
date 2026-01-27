@@ -28,7 +28,7 @@ export function Barriers() {
   ]
 
   return (
-    <section className="py-12 sm:py-16 relative bg-black border-t border-zinc-800">
+    <section className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -36,7 +36,7 @@ export function Barriers() {
               <span className="text-white">일본 시장 진출의 </span>
               <span className="text-white">4가지 장벽</span>
             </h2>
-            <p className="text-lg text-zinc-400 break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
               많은 기업들이 이 장벽 앞에서 실패합니다
             </p>
           </div>
@@ -45,7 +45,7 @@ export function Barriers() {
             {barriers.map((barrier, index) => (
               <Card
                 key={index}
-                className="p-6 bg-zinc-900 border-zinc-800 hover:border-white hover:-translate-y-1 transition-all duration-200 group rounded-none"
+                className="p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group rounded-none"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
@@ -57,7 +57,7 @@ export function Barriers() {
                     <h3 className="text-xl font-black text-white mb-2 break-keep">
                       {barrier.title}
                     </h3>
-                    <p className="text-zinc-400 leading-relaxed break-keep text-sm">
+                    <p className="text-zinc-200 leading-relaxed break-keep text-sm">
                       {barrier.description}
                     </p>
                   </div>

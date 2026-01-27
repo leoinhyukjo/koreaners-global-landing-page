@@ -29,7 +29,7 @@ export function MarketOpportunity() {
   ]
 
   return (
-    <section id="market" className="py-12 sm:py-16 relative bg-black">
+    <section id="market" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -37,7 +37,7 @@ export function MarketOpportunity() {
               <span className="text-white inline-block">폭발적으로 성장하는</span>{' '}
               <span className="text-white inline-block">일본 시장 기회</span>
             </h2>
-            <p className="text-lg text-zinc-400 break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
               지금이 일본 시장 진출의 최적기입니다
             </p>
           </div>
@@ -47,7 +47,7 @@ export function MarketOpportunity() {
             {stats.map((stat, index) => (
               <Card
                 key={index}
-                className="relative p-6 bg-zinc-900 border-zinc-800 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
+                className="relative p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
               >
                 <div className="relative z-10">
                   <div className="mb-4">
@@ -55,7 +55,7 @@ export function MarketOpportunity() {
                   </div>
                   
                   <div className="mb-2">
-                    <div className="text-xs text-zinc-400 mb-1 font-medium">
+                    <div className="text-xs text-zinc-300 mb-1 font-medium">
                       {stat.title}
                     </div>
                     <div className="text-4xl font-black text-white mb-1">
@@ -66,7 +66,7 @@ export function MarketOpportunity() {
                     </div>
                   </div>
                   
-                  <p className="text-zinc-400 text-sm leading-relaxed break-keep">
+                  <p className="text-zinc-200 text-sm leading-relaxed break-keep">
                     {stat.description}
                   </p>
                 </div>

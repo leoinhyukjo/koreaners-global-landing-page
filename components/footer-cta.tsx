@@ -213,13 +213,13 @@ export function FooterCTA() {
   }
 
   return (
-    <section className="py-12 sm:py-16 px-5 sm:px-6 relative bg-black border-t border-zinc-800">
+    <section className="py-12 sm:py-16 px-5 sm:px-6 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
       <div className="container mx-auto max-w-5xl">
         <div className="mb-8 sm:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep">
             CONTACT
           </h1>
-          <p className="text-base sm:text-lg text-zinc-300 leading-relaxed mb-2 font-medium break-keep max-w-prose">
+          <p className="text-base sm:text-lg text-zinc-200 leading-relaxed mb-2 font-medium break-keep max-w-prose">
             <span className="inline-block">국내·외 크리에이터 네트워크와</span>{' '}
             <span className="inline-block">데이터 기반 전략으로</span>{' '}
             <span className="inline-block">성과를 설계합니다.</span>
@@ -240,7 +240,7 @@ export function FooterCTA() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-none text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                 placeholder="성함을 입력해주세요."
               />
             </div>
@@ -256,7 +256,7 @@ export function FooterCTA() {
                 required
                 value={formData.company}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-none text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                 placeholder="회사명을 입력해주세요."
               />
             </div>
@@ -275,7 +275,7 @@ export function FooterCTA() {
                 required
                 value={formData.position}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-none text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                 placeholder="직급을 입력해주세요."
               />
             </div>
@@ -291,7 +291,7 @@ export function FooterCTA() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-none text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                 placeholder="example@domain.com"
               />
             </div>
@@ -313,10 +313,10 @@ export function FooterCTA() {
                 const value = e.target.value.replace(/[^0-9]/g, '')
                 setFormData({ ...formData, phone: value })
               }}
-              className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-none text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+              className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
               placeholder="01012345678 (하이픈 제외)"
             />
-            <p className="mt-1.5 text-xs text-zinc-400">
+            <p className="mt-1.5 text-xs text-zinc-300">
               하이픈(-) 없이 숫자만 입력해주세요. (10-11자리)
             </p>
           </div>
@@ -333,7 +333,7 @@ export function FooterCTA() {
               rows={6}
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-none text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
+              className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
               placeholder="문의내용을 남겨주세요."
             />
           </div>
@@ -347,13 +347,13 @@ export function FooterCTA() {
                 name="privacyConsent"
                 checked={formData.privacyConsent}
                 onChange={handleChange}
-                className="w-5 h-5 rounded-none border-2 border-zinc-800 bg-zinc-900 checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
+                className="w-5 h-5 rounded-none border-2 border-zinc-700/50 bg-zinc-800 checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
               />
               <label
                 htmlFor="footer-privacyConsent"
                 className="flex-1 cursor-pointer group"
               >
-                <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
+                <span className="text-sm text-zinc-200 group-hover:text-white transition-colors">
                   개인정보 수집 및 이용 동의{' '}
                   <button
                     type="button"
@@ -377,13 +377,13 @@ export function FooterCTA() {
                 name="marketingConsent"
                 checked={formData.marketingConsent}
                 onChange={handleChange}
-                className="w-5 h-5 rounded-none border-2 border-zinc-800 bg-zinc-900 checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
+                className="w-5 h-5 rounded-none border-2 border-zinc-700/50 bg-zinc-800 checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
               />
               <label
                 htmlFor="footer-marketingConsent"
                 className="flex-1 cursor-pointer group"
               >
-                <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
+                <span className="text-sm text-zinc-200 group-hover:text-white transition-colors">
                   마케팅 활용 동의{' '}
                   <button
                     type="button"
@@ -414,7 +414,7 @@ export function FooterCTA() {
 
           {/* Success Dialog */}
           <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-            <DialogContent className="sm:max-w-md bg-black border-zinc-800 rounded-none">
+            <DialogContent className="sm:max-w-md bg-zinc-800 border-zinc-700/50 rounded-none">
               <DialogHeader className="text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
                   <CheckCircle2 className="h-10 w-10 text-white" />
@@ -422,7 +422,7 @@ export function FooterCTA() {
                 <DialogTitle className="text-2xl font-black text-white">
                   상담 신청 완료
                 </DialogTitle>
-                <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-300">
+                <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
                   상담 신청이 정상적으로 접수되었습니다. 담당자가 확인 후 1~2 영업일 내로 연락드리겠습니다. 감사합니다.
                 </DialogDescription>
               </DialogHeader>

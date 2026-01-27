@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <footer className="py-8 border-t border-zinc-800 bg-black">
+    <footer className="py-8 border-t border-zinc-700/50 bg-zinc-900">
       <div className="container mx-auto px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           {/* Left-aligned Layout */}
@@ -11,7 +11,7 @@ export function Footer() {
             </div>
 
             {/* Business Information */}
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-zinc-400 break-keep">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-zinc-300 break-keep">
               <span className="break-keep">대표: 정태원</span>
               <span className="text-zinc-600">|</span>
               <span className="break-keep">사업자등록번호: 549-07-00178</span>
@@ -20,7 +20,7 @@ export function Footer() {
             </div>
 
             {/* Copyright */}
-            <div className="text-xs sm:text-sm text-zinc-400 break-keep">
+            <div className="text-xs sm:text-sm text-zinc-300 break-keep">
               © 2025 Koreaners Global. All rights reserved.
             </div>
           </div>

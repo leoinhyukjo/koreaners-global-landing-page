@@ -72,19 +72,19 @@ export default function PortfolioPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-zinc-900">
       <Navigation />
       
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight">
-              <span className="text-foreground">검증된 성과로 증명하는</span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
+              <span className="text-white">검증된 성과로 증명하는</span>
               <br />
-              <span className="text-primary">일본 시장 전문성</span>
+              <span className="text-white">일본 시장 전문성</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto text-pretty px-2">
+            <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty px-2">
               Beauty, Fashion, F&B 카테고리에서 일관되게 입증된 마케팅 성과
             </p>
           </div>
@@ -95,10 +95,10 @@ export default function PortfolioPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-medium transition-all text-sm sm:text-base min-h-[44px] ${
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-none font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-card text-muted-foreground hover:bg-card/80 border border-border'
+                    ? 'bg-white text-black'
+                    : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 border border-zinc-700/50'
                 }`}
               >
                 {tab.label}
@@ -109,11 +109,11 @@ export default function PortfolioPage() {
           {/* Portfolio Grid */}
           {loading ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground">로딩 중...</p>
+              <p className="text-zinc-200">로딩 중...</p>
             </div>
           ) : filteredItems.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground text-lg">
+              <p className="text-zinc-200 text-lg">
                 {portfolios.length === 0 
                   ? '등록된 포트폴리오가 없습니다.'
                   : '선택한 카테고리에 해당하는 포트폴리오가 없습니다.'}
@@ -124,31 +124,31 @@ export default function PortfolioPage() {
               {filteredItems.map(item => (
                 <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
                   <Card 
-                    className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                    className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
                   >
                     {/* Image */}
                     {item.thumbnail_url ? (
-                      <div className="aspect-video relative overflow-hidden bg-muted">
+                      <div className="aspect-video relative overflow-hidden bg-zinc-800">
                         <img
                           src={item.thumbnail_url}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 grayscale group-hover:grayscale-0"
                         />
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                          <span className="px-2 sm:px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase">
+                          <span className="px-2 sm:px-3 py-1 bg-white text-black text-xs font-bold rounded-none uppercase">
                             {getCategoryDisplay(item.category)}
                           </span>
                         </div>
                       </div>
                     ) : (
-                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                      <div className="aspect-video bg-zinc-800 relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-4xl sm:text-6xl font-bold text-primary/20 uppercase">
+                          <div className="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase">
                             {getCategoryInitial(item.category)}
                           </div>
                         </div>
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                          <span className="px-2 sm:px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase">
+                          <span className="px-2 sm:px-3 py-1 bg-white text-black text-xs font-bold rounded-none uppercase">
                             {getCategoryDisplay(item.category)}
                           </span>
                         </div>
@@ -157,20 +157,20 @@ export default function PortfolioPage() {
 
                     {/* Content */}
                     <div className="p-4 sm:p-6 flex-1 flex flex-col">
-                      <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-4 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed">
                         {item.client_name}
                       </p>
 
                       {/* Category Tags */}
                       {item.category && item.category.length > 0 && (
-                        <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex gap-2 flex-wrap">
+                        <div className="mt-auto pt-3 sm:pt-4 border-t border-zinc-700/50 flex gap-2 flex-wrap">
                           {item.category.map((cat, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
+                              className="px-2 py-1 text-xs rounded-none bg-white/10 text-white border border-zinc-700/50"
                             >
                               {cat}
                             </span>

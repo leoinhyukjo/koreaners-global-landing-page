@@ -12,9 +12,9 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-black">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-800">
       {/* Background grid effect - subtle */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       
       <div className="container mx-auto px-5 sm:px-6 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
@@ -35,7 +35,7 @@ export function HeroSection() {
           </h2>
           
           <p 
-            className={`text-lg sm:text-xl md:text-2xl text-zinc-400 mb-12 sm:mb-16 text-balance break-keep transition-all duration-1000 delay-300 font-medium ${
+            className={`text-lg sm:text-xl md:text-2xl text-zinc-200 mb-12 sm:mb-16 text-balance break-keep transition-all duration-1000 delay-300 font-medium ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
