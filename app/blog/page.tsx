@@ -43,7 +43,7 @@ export default function BlogPage() {
       // Supabase 객체 정상 생성 확인
       if (!supabase) {
         setError('환경변수 설정이 누락되었습니다.')
-        setBlogPosts([])
+        setAllBlogPosts([])
         return
       }
 
@@ -51,7 +51,7 @@ export default function BlogPage() {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
       if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co') {
         setError('환경변수 설정이 누락되었습니다.')
-        setBlogPosts([])
+        setAllBlogPosts([])
         return
       }
       
