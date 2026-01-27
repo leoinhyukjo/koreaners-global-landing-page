@@ -7,7 +7,7 @@ import { Navigation } from '@/components/navigation'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import type { BlogPost } from '@/lib/supabase'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
 const POSTS_PER_PAGE = 12
 
-export default function BlogPage() {
+function BlogContent() {
   const [allBlogPosts, setAllBlogPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -80,9 +80,7 @@ export default function BlogPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-900">
-      <Navigation />
-      
+    <>
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
@@ -248,6 +246,39 @@ export default function BlogPage() {
           )}
         </div>
       </section>
+    </>
+  )
+}
+
+export default function BlogPage() {
+  return (
+    <main className="min-h-screen bg-zinc-900">
+      <Navigation />
+      <Suspense
+        fallback={
+          <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
+            <div className="container mx-auto max-w-7xl">
+              <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight tracking-tight">
+                  <span className="text-white">글로벌 마케팅 </span>
+                  <span className="text-white">인사이트</span>
+                </h1>
+                <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty leading-relaxed tracking-normal px-2">
+                  글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식 채널
+                </p>
+              </div>
+              <div className="text-center py-20">
+                <div className="space-y-3">
+                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent"></div>
+                  <p className="text-zinc-200 text-lg">인사이트를 준비 중입니다...</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        }
+      >
+        <BlogContent />
+      </Suspense>
     </main>
   )
 }

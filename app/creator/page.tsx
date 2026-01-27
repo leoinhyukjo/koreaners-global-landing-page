@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { Navigation } from '@/components/navigation'
 import { Users, Instagram, Youtube, Music, Award, Target } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -21,7 +21,7 @@ import { CheckCircle2 } from 'lucide-react'
 
 const CREATORS_PER_PAGE = 12
 
-export default function CreatorPage() {
+function CreatorContent() {
   const [allCreators, setAllCreators] = useState<Creator[]>([])
   const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
@@ -172,9 +172,7 @@ export default function CreatorPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-900">
-      <Navigation />
-      
+    <>
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
@@ -613,6 +611,37 @@ export default function CreatorPage() {
 
         </div>
       </section>
+    </>
+  )
+}
+
+export default function CreatorPage() {
+  return (
+    <main className="min-h-screen bg-zinc-900">
+      <Navigation />
+      <Suspense
+        fallback={
+          <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
+            <div className="container mx-auto max-w-7xl">
+              <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
+                  <span className="text-white">105명의 전속 크리에이터</span>
+                  <br />
+                  <span className="text-white">검증된 전환 파워</span>
+                </h1>
+                <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty px-2">
+                  일본 Z세대 67%의 구매 결정을 이끌어내는 실질적인 전환 엔진
+                </p>
+              </div>
+              <div className="text-center py-20">
+                <p className="text-zinc-200">로딩 중...</p>
+              </div>
+            </div>
+          </section>
+        }
+      >
+        <CreatorContent />
+      </Suspense>
     </main>
   )
 }
