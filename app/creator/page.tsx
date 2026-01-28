@@ -631,6 +631,7 @@ function CreatorContent() {
                       instagram_url: '',
                       youtube_url: '',
                       tiktok_url: '',
+                      x_url: '',
                       message: '',
                     })
                   }}
