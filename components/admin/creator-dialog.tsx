@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase/client'
 import type { Creator } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
-import { X, Instagram, Youtube, Music, Twitter } from 'lucide-react'
+import { X, Instagram, Youtube, Music } from 'lucide-react'
 
 const STORAGE_BUCKET = 'website-assets'
 
@@ -292,7 +292,7 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
 
             <div className="space-y-2">
               <Label htmlFor="x" className="flex items-center gap-2">
-                <Twitter className="h-4 w-4" />
+                <X className="h-4 w-4" />
                 X (Twitter) URL
               </Label>
               <Input

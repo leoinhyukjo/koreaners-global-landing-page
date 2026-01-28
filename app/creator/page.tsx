@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { Navigation } from '@/components/navigation'
-import { Users, Instagram, Youtube, Music, Award, Target } from 'lucide-react'
+import { Users, Instagram, Youtube, Music, Award, Target, X } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase/client'
@@ -325,11 +325,11 @@ function CreatorContent() {
                           className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
                           aria-label="X (Twitter)"
                         >
-                          <Twitter className="w-4 h-4" />
+                          <X className="w-4 h-4" />
                         </a>
                       ) : (
                         <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
-                          <Twitter className="w-4 h-4 text-zinc-400" />
+                          <X className="w-4 h-4 text-zinc-400" />
                         </div>
                       )}
                     </div>
