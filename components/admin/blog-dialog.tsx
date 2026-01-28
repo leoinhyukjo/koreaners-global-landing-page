@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type ChangeEvent } from 'react'
 import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import {
@@ -164,6 +164,19 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       throw err
     } finally {
       setUploading(false)
+    }
+  }
+
+  function handleThumbnailUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] || null
+    setThumbnailFile(file)
+
+    if (file) {
+      // 로컬 미리보기 URL 생성
+      const previewUrl = URL.createObjectURL(file)
+      setThumbnailUrl(previewUrl)
+    } else {
+      setThumbnailUrl('')
     }
   }
 
