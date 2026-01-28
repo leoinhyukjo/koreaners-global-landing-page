@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { BlogContent } from '@/components/blog/blog-content'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc, toAbsoluteUrl } from '@/lib/thumbnail'
 
 interface PageProps {
@@ -162,14 +162,23 @@ export default async function BlogDetailPage({ params }: PageProps) {
               <div className="space-y-4 sm:space-y-6">
                 {/* 썸네일 - 제목 위에 배치 (없으면 기본 이미지) */}
                 <div className="aspect-video rounded-none overflow-hidden border border-zinc-700/50 relative bg-zinc-800">
-                  <Image
-                    src={thumbnailSrc}
-                    alt={`${blogPost.title} - ${blogPost.category} 블로그 포스트`}
-                    fill
-                    sizes="(min-width: 1024px) 896px, 100vw"
-                    className="object-cover"
-                    priority
-                  />
+                  {blogPost.thumbnail_url ? (
+                    <SafeImage
+                      src={thumbnailSrc}
+                      alt={`${blogPost.title} - ${blogPost.category} 블로그 포스트`}
+                      fill
+                      sizes="(min-width: 1024px) 896px, 100vw"
+                      className="object-cover"
+                      priority
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
+                      <div className="text-center px-4">
+                        <div className="text-4xl mb-2">📝</div>
+                        <p className="text-sm text-zinc-400">준비된 이미지가 없습니다</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>

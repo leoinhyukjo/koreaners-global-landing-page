@@ -13,7 +13,7 @@ import type { BlogPost } from '@/lib/supabase'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
 const POSTS_PER_PAGE = 12
@@ -134,14 +134,23 @@ function BlogContent() {
                     >
                       {/* Image */}
                       <div className="aspect-video relative overflow-hidden bg-zinc-800">
-                        <Image
-                          src={resolveThumbnailSrc(post.thumbnail_url)}
-                          alt={`${post.title} - ${post.category} 블로그 포스트`}
-                          fill
-                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                        {post.thumbnail_url ? (
+                          <SafeImage
+                            src={resolveThumbnailSrc(post.thumbnail_url)}
+                            alt={`${post.title} - ${post.category} 블로그 포스트`}
+                            fill
+                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
+                            <div className="text-center px-4">
+                              <div className="text-4xl mb-2">📝</div>
+                              <p className="text-sm text-zinc-400">준비된 이미지가 없습니다</p>
+                            </div>
+                          </div>
+                        )}
+                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
                           <Badge variant="secondary" className="text-xs bg-zinc-800 text-zinc-200 border-zinc-700/50 rounded-none">{post.category}</Badge>
                         </div>
                       </div>

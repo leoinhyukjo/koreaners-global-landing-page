@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useCreateBlockNote } from '@blocknote/react'
-import { BlockNoteView } from '@blocknote/mantine'
-import '@blocknote/mantine/style.css'
+import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import { Navigation } from '@/components/navigation'
@@ -13,34 +11,28 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 
+// BlockNote 에디터를 클라이언트 사이드에서만 로드
+const PortfolioContentClient = dynamic(
+  () => import('@/components/portfolio/portfolio-content-client').then((mod) => ({ default: mod.PortfolioContentClient })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p className="text-zinc-200">콘텐츠를 불러오는 중...</p>
+      </div>
+    ),
+  }
+)
+
 export default function PortfolioDetailPage() {
   const params = useParams()
   const id = params.id as string
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const editor = useCreateBlockNote()
-
   useEffect(() => {
     fetchPortfolio()
   }, [id])
-
-  // 에디터를 읽기 전용으로 설정
-  useEffect(() => {
-    if (editor) {
-      editor.isEditable = false
-    }
-  }, [editor])
-
-  useEffect(() => {
-    if (portfolio?.content && Array.isArray(portfolio.content) && editor && portfolio.content.length > 0) {
-      try {
-        editor.replaceBlocks(editor.document, portfolio.content)
-      } catch (error) {
-        console.error('Error loading BlockNote content:', error)
-      }
-    }
-  }, [portfolio, editor])
 
   async function fetchPortfolio() {
     try {
@@ -152,7 +144,7 @@ export default function PortfolioDetailPage() {
           <Card className="p-8 bg-zinc-800 border-zinc-700/50">
             {portfolio?.content && Array.isArray(portfolio.content) && portfolio.content.length > 0 ? (
               <div className="text-zinc-200">
-                <BlockNoteView editor={editor} />
+                <PortfolioContentClient portfolio={portfolio} />
               </div>
             ) : (
               <p className="text-zinc-200">콘텐츠가 없습니다.</p>

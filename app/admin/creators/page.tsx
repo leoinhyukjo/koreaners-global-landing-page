@@ -26,6 +26,8 @@ import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase/client'
 import type { Creator } from '@/lib/supabase'
 
+const STORAGE_BUCKET = 'website-assets'
+
 export default function CreatorsPage() {
   const [creators, setCreators] = useState<Creator[]>([])
   const [loading, setLoading] = useState(true)
@@ -39,6 +41,7 @@ export default function CreatorsPage() {
   const [instagramUrl, setInstagramUrl] = useState('')
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [tiktokUrl, setTiktokUrl] = useState('')
+  const [xUrl, setXUrl] = useState('')
 
   useEffect(() => {
     fetchCreators()
@@ -75,6 +78,7 @@ export default function CreatorsPage() {
     setInstagramUrl(creator.instagram_url || '')
     setYoutubeUrl(creator.youtube_url || '')
     setTiktokUrl(creator.tiktok_url || '')
+    setXUrl(creator.x_url || creator.twitter_url || '')
     setDialogOpen(true)
   }
 
@@ -84,6 +88,7 @@ export default function CreatorsPage() {
     setInstagramUrl('')
     setYoutubeUrl('')
     setTiktokUrl('')
+    setXUrl('')
   }
 
   async function uploadImage(file: File): Promise<string> {
@@ -91,17 +96,37 @@ export default function CreatorsPage() {
       setUploading(true)
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
+      const filePath = `creators/${fileName}`
+
+      console.log('1. 파일 업로드 시도:', fileName)
 
       const { error: uploadError } = await supabase.storage
-        .from('uploads')
+        .from(STORAGE_BUCKET)
         .upload(filePath, file)
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        if (
+          typeof uploadError.message === 'string' &&
+          uploadError.message.toLowerCase().includes('bucket') &&
+          uploadError.message.toLowerCase().includes('not found')
+        ) {
+          console.error(
+            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+          )
+        }
+        throw uploadError
+      }
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from('uploads').getPublicUrl(filePath)
+      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+      console.log('2. 획득된 Public URL:', publicUrl)
+
+      if (!publicUrl || publicUrl.trim() === '') {
+        console.error('[CreatorsPage] Public URL이 비어있음!')
+        throw new Error('이미지 URL을 생성할 수 없습니다.')
+      }
 
       return publicUrl
     } catch (error: any) {
@@ -140,7 +165,11 @@ export default function CreatorsPage() {
         instagram_url: instagramUrl || null,
         youtube_url: youtubeUrl || null,
         tiktok_url: tiktokUrl || null,
+        // X(Twitter) URL - Supabase 테이블에 x_url(text) 컬럼을 추가하세요.
+        x_url: xUrl || null,
       }
+
+      console.log('3. DB에 저장될 최종 객체:', creatorData)
 
       if (editingCreator) {
         const { error } = await supabase
@@ -214,9 +243,10 @@ export default function CreatorsPage() {
                   <TableRow>
                     <TableHead>이름</TableHead>
                     <TableHead>프로필 이미지</TableHead>
-                    <TableHead>Instagram</TableHead>
-                    <TableHead>YouTube</TableHead>
-                    <TableHead>TikTok</TableHead>
+                  <TableHead>Instagram</TableHead>
+                  <TableHead>YouTube</TableHead>
+                  <TableHead>TikTok</TableHead>
+                  <TableHead>X</TableHead>
                     <TableHead>생성일</TableHead>
                     <TableHead className="text-right">작업</TableHead>
                   </TableRow>
@@ -251,6 +281,21 @@ export default function CreatorsPage() {
                         )}
                       </TableCell>
                       <TableCell>
+                      <TableCell>
+                        {creator.x_url || creator.twitter_url ? (
+                          <a
+                            href={creator.x_url || creator.twitter_url || undefined}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline inline-flex items-center gap-1"
+                          >
+                            <X className="h-3 w-3" />
+                            <span>링크</span>
+                          </a>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
                         {creator.youtube_url ? (
                           <a
                             href={creator.youtube_url}
@@ -345,6 +390,11 @@ export default function CreatorsPage() {
                       {creator.tiktok_url && (
                         <span className="inline-flex items-center gap-1">
                           <Music className="h-3 w-3" /> TT
+                        </span>
+                      )}
+                      {(creator.x_url || creator.twitter_url) && (
+                        <span className="inline-flex items-center gap-1">
+                          <X className="h-3 w-3" /> X
                         </span>
                       )}
                       {new Date(creator.created_at).toLocaleDateString('ko-KR')}
@@ -474,6 +524,21 @@ export default function CreatorsPage() {
                 value={tiktokUrl}
                 onChange={(e) => setTiktokUrl(e.target.value)}
                 placeholder="https://tiktok.com/..."
+                type="url"
+                className="w-full"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="x" className="flex items-center gap-2">
+                <X className="h-4 w-4" />
+                X (Twitter) URL
+              </Label>
+              <Input
+                id="x"
+                value={xUrl}
+                onChange={(e) => setXUrl(e.target.value)}
+                placeholder="https://x.com/..."
                 type="url"
                 className="w-full"
               />

@@ -1,9 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useCreateBlockNote } from '@blocknote/react'
-import { BlockNoteView } from '@blocknote/mantine'
-import '@blocknote/mantine/style.css'
+import { useState, useEffect, useRef } from 'react'
+import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -27,6 +25,22 @@ import type { BlogPost } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { X } from 'lucide-react'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
+import type { BlockNoteEditor } from '@blocknote/core'
+
+const STORAGE_BUCKET = 'website-assets'
+
+// BlockNote 에디터를 클라이언트 사이드에서만 로드
+const BlogEditorWrapper = dynamic(
+  () => import('./blog-editor-wrapper').then((mod) => ({ default: mod.BlogEditorWrapper })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border border-border rounded-lg overflow-hidden bg-card min-h-[600px] flex items-center justify-center">
+        <p className="text-muted-foreground">에디터 로딩 중...</p>
+      </div>
+    ),
+  }
+)
 
 interface BlogDialogProps {
   open: boolean
@@ -47,14 +61,11 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
   const [metaDescription, setMetaDescription] = useState('')
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [editorContent, setEditorContent] = useState<any[]>([])
+  const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
+  const editorRef = useRef<BlockNoteEditor | null>(null)
   const { toast } = useToast()
-
-  // BlockNote 에디터 초기화
-  const editor = useCreateBlockNote({
-    uploadFile: async (file: File) => {
-      return await uploadImage(file)
-    },
-  })
 
   useEffect(() => {
     if (blogPost) {
@@ -66,12 +77,11 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       setPublished(blogPost.published || false)
       setMetaTitle(blogPost.meta_title || '')
       setMetaDescription(blogPost.meta_description || '')
-      if (blogPost.content && Array.isArray(blogPost.content) && editor && blogPost.content.length > 0) {
-        try {
-          editor.replaceBlocks(editor.document, blogPost.content)
-        } catch (err) {
-          console.error('Error loading BlockNote content:', err)
-        }
+      setThumbnailFile(null)
+      if (blogPost.content && Array.isArray(blogPost.content) && blogPost.content.length > 0) {
+        setInitialEditorContent(blogPost.content)
+      } else {
+        setInitialEditorContent(undefined)
       }
     } else {
       setTitle('')
@@ -82,20 +92,10 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       setPublished(false)
       setMetaTitle('')
       setMetaDescription('')
-      if (editor) {
-        try {
-          editor.replaceBlocks(editor.document, [
-            {
-              type: 'paragraph',
-              content: '',
-            },
-          ])
-        } catch (err) {
-          console.error('Error initializing BlockNote editor:', err)
-        }
-      }
+      setThumbnailFile(null)
+      setInitialEditorContent(undefined)
     }
-  }, [blogPost, open, editor])
+  }, [blogPost, open])
 
   // 제목에서 슬러그 자동 생성
   useEffect(() => {
@@ -112,21 +112,50 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
     try {
       setUploading(true)
       const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `blog/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
-        .from('uploads')
-        .upload(filePath, file)
+      console.log('1. 파일 업로드 시도:', fileName)
+      console.log('[BlogDialog] 이미지 업로드 시작:', { fileName, filePath, fileSize: file.size })
 
-      if (uploadError) throw uploadError
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (uploadError) {
+        console.error('[BlogDialog] 업로드 에러:', uploadError)
+        if (
+          typeof uploadError.message === 'string' &&
+          uploadError.message.toLowerCase().includes('bucket') &&
+          uploadError.message.toLowerCase().includes('not found')
+        ) {
+          console.error(
+            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+          )
+        }
+        throw uploadError
+      }
+
+      console.log('[BlogDialog] 업로드 성공:', uploadData)
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from('uploads').getPublicUrl(filePath)
+      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+      console.log('2. 획득된 Public URL:', publicUrl)
+      console.log('[BlogDialog] Public URL 생성:', publicUrl)
+
+      if (!publicUrl || publicUrl.trim() === '') {
+        console.error('[BlogDialog] Public URL이 비어있음!')
+        throw new Error('이미지 URL을 생성할 수 없습니다.')
+      }
 
       return publicUrl
     } catch (err: any) {
+      console.error('[BlogDialog] 업로드 실패:', err)
       toast({
         title: '업로드 실패',
         description: err.message || '이미지 업로드에 실패했습니다.',
@@ -135,22 +164,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       throw err
     } finally {
       setUploading(false)
-    }
-  }
-
-  async function handleThumbnailUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    try {
-      const url = await uploadImage(file)
-      setThumbnailUrl(url)
-      toast({
-        title: '성공',
-        description: '썸네일이 업로드되었습니다.',
-      })
-    } catch (err) {
-      // 에러는 uploadImage에서 처리됨
     }
   }
 
@@ -209,7 +222,7 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
     }
 
     // 본문 내용 검증
-    const content = editor.document
+    const content = editorRef.current?.document || editorContent
     if (!content || !Array.isArray(content) || content.length === 0) {
       toast({
         title: '필수 항목 누락',
@@ -241,26 +254,96 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
 
     setSaving(true)
     try {
-      // summary 필드 안전 처리: 빈 문자열이나 undefined를 null로 변환
+      // summary / meta 필드 안전 처리
       const safeSummary = summary && summary.trim() ? summary.trim() : null
       const safeMetaTitle = metaTitle && metaTitle.trim() ? metaTitle.trim() : null
-      const safeMetaDescription = metaDescription && metaDescription.trim() ? metaDescription.trim() : null
-      const safeThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() ? resolveThumbnailSrc(thumbnailUrl) : null
+      const safeMetaDescription = metaDescription && metaDescription.trim()
+        ? metaDescription.trim()
+        : null
+
+      // Step 1: 업로드할 파일 확인
+      const file = thumbnailFile
+      console.log('Step 1: 업로드할 파일 확인 ->', file)
+
+      // thumbnail_url 처리: 선택된 파일이 있으면 우선 업로드, 없으면 기존 URL 정규화
+      let finalThumbnailUrl: string | null = null
+
+      if (file) {
+        try {
+          setUploading(true)
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(7)}.${fileExt}`
+          const filePath = `blog/${fileName}`
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(STORAGE_BUCKET)
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false,
+            })
+
+          if (uploadError) {
+            console.error('[BlogDialog] 썸네일 업로드 에러:', uploadError)
+            if (
+              typeof uploadError.message === 'string' &&
+              uploadError.message.toLowerCase().includes('bucket') &&
+              uploadError.message.toLowerCase().includes('not found')
+            ) {
+              console.error(
+                "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+              )
+            }
+            throw uploadError
+          }
+
+          console.log('[BlogDialog] 썸네일 업로드 성공:', uploadData)
+
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+          console.log('Step 2: 생성된 Public URL ->', publicUrl)
+
+          if (!publicUrl || publicUrl.trim() === '') {
+            console.error('[BlogDialog] 썸네일 Public URL이 비어있음!')
+            throw new Error('이미지 URL을 생성할 수 없습니다.')
+          }
+
+          finalThumbnailUrl = publicUrl
+        } finally {
+          setUploading(false)
+        }
+      } else if (thumbnailUrl && thumbnailUrl.trim()) {
+        const trimmedUrl = thumbnailUrl.trim()
+        if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+          finalThumbnailUrl = trimmedUrl
+        } else {
+          finalThumbnailUrl = resolveThumbnailSrc(trimmedUrl)
+        }
+      }
+
+      const finalPayload = {
+        title: title.trim(),
+        slug: slug.trim(),
+        category,
+        thumbnail_url: finalThumbnailUrl,
+        summary: safeSummary,
+        content,
+        published: publish,
+        meta_title: safeMetaTitle,
+        meta_description: safeMetaDescription,
+      }
+
+      console.log('Step 3: DB로 전송할 최종 Payload ->', finalPayload)
 
       if (blogPost) {
         // 수정
         const { error } = await supabase
           .from('blog_posts')
           .update({
-            title: title.trim(),
-            slug: slug.trim(),
-            category,
-            thumbnail_url: safeThumbnailUrl,
-            summary: safeSummary,
-            content,
-            published: publish,
-            meta_title: safeMetaTitle,
-            meta_description: safeMetaDescription,
+            ...finalPayload,
             updated_at: new Date().toISOString(),
           })
           .eq('id', blogPost.id)
@@ -276,19 +359,7 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
         })
       } else {
         // 생성
-        const insertData = {
-          title: title.trim(),
-          slug: slug.trim(),
-          category,
-          thumbnail_url: safeThumbnailUrl,
-          summary: safeSummary,
-          content,
-          published: publish,
-          meta_title: safeMetaTitle,
-          meta_description: safeMetaDescription,
-        }
-
-        const { data, error } = await supabase.from('blog_posts').insert(insertData).select()
+        const { data, error } = await supabase.from('blog_posts').insert(finalPayload).select()
 
         if (error) {
           console.error('[BlogDialog] 생성 실패:', error.message || '알 수 없는 에러')
@@ -466,9 +537,16 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
 
           <div className="space-y-2">
             <Label>본문 내용</Label>
-            <div className="mt-1 rounded-md border">
-              <BlockNoteView editor={editor} />
-            </div>
+            <BlogEditorWrapper
+              initialContent={initialEditorContent}
+              onContentChange={(content) => {
+                setEditorContent(content)
+              }}
+              uploadFile={uploadImage}
+              onEditorReady={(editor) => {
+                editorRef.current = editor
+              }}
+            />
           </div>
 
           <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">

@@ -22,6 +22,9 @@ export type Creator = {
   instagram_url: string | null
   youtube_url: string | null
   tiktok_url: string | null
+  // X(Twitter) 링크 컬럼 (스키마에 따라 둘 중 하나 사용)
+  x_url?: string | null
+  twitter_url?: string | null
   created_at: string
 }
 

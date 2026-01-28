@@ -13,7 +13,9 @@ import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase/client'
 import type { Creator } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
-import { X, Instagram, Youtube, Music } from 'lucide-react'
+import { X, Instagram, Youtube, Music, Twitter } from 'lucide-react'
+
+const STORAGE_BUCKET = 'website-assets'
 
 interface CreatorDialogProps {
   open: boolean
@@ -27,6 +29,7 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
   const [instagramUrl, setInstagramUrl] = useState('')
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [tiktokUrl, setTiktokUrl] = useState('')
+  const [xUrl, setXUrl] = useState('')
   const [uploading, setUploading] = useState(false)
   const { toast } = useToast()
 
@@ -37,6 +40,7 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
       setInstagramUrl(creator.instagram_url || '')
       setYoutubeUrl(creator.youtube_url || '')
       setTiktokUrl(creator.tiktok_url || '')
+      setXUrl(creator.x_url || creator.twitter_url || '')
     } else {
       // 새 크리에이터인 경우 초기화
       setName('')
@@ -44,6 +48,7 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
       setInstagramUrl('')
       setYoutubeUrl('')
       setTiktokUrl('')
+      setXUrl('')
     }
   }, [creator, open])
 
@@ -52,17 +57,37 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
       setUploading(true)
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
+      const filePath = `creators/${fileName}`
+
+      console.log('1. 파일 업로드 시도:', fileName)
 
       const { error: uploadError } = await supabase.storage
-        .from('uploads')
+        .from(STORAGE_BUCKET)
         .upload(filePath, file)
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        if (
+          typeof uploadError.message === 'string' &&
+          uploadError.message.toLowerCase().includes('bucket') &&
+          uploadError.message.toLowerCase().includes('not found')
+        ) {
+          console.error(
+            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+          )
+        }
+        throw uploadError
+      }
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from('uploads').getPublicUrl(filePath)
+      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+      console.log('2. 획득된 Public URL:', publicUrl)
+
+      if (!publicUrl || publicUrl.trim() === '') {
+        console.error('[CreatorDialog] Public URL이 비어있음!')
+        throw new Error('이미지 URL을 생성할 수 없습니다.')
+      }
 
       return publicUrl
     } catch (error: any) {
@@ -106,15 +131,20 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
     try {
       if (creator) {
         // 수정
+        const finalData = {
+          name,
+          profile_image_url: profileImageUrl || null,
+          instagram_url: instagramUrl || null,
+          youtube_url: youtubeUrl || null,
+          tiktok_url: tiktokUrl || null,
+          x_url: xUrl || null,
+        }
+
+        console.log('3. DB에 저장될 최종 객체:', finalData)
+
         const { error } = await supabase
           .from('creators')
-          .update({
-            name,
-            profile_image_url: profileImageUrl || null,
-            instagram_url: instagramUrl || null,
-            youtube_url: youtubeUrl || null,
-            tiktok_url: tiktokUrl || null,
-          })
+          .update(finalData)
           .eq('id', creator.id)
 
         if (error) throw error
@@ -125,13 +155,18 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
         })
       } else {
         // 생성
-        const { error } = await supabase.from('creators').insert({
+        const finalData = {
           name,
           profile_image_url: profileImageUrl || null,
           instagram_url: instagramUrl || null,
           youtube_url: youtubeUrl || null,
           tiktok_url: tiktokUrl || null,
-        })
+          x_url: xUrl || null,
+        }
+
+        console.log('3. DB에 저장될 최종 객체:', finalData)
+
+        const { error } = await supabase.from('creators').insert(finalData)
 
         if (error) throw error
 
@@ -250,6 +285,21 @@ export function CreatorDialog({ open, onClose, creator }: CreatorDialogProps) {
                 value={tiktokUrl}
                 onChange={(e) => setTiktokUrl(e.target.value)}
                 placeholder="https://tiktok.com/..."
+                type="url"
+                className="w-full"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="x" className="flex items-center gap-2">
+                <Twitter className="h-4 w-4" />
+                X (Twitter) URL
+              </Label>
+              <Input
+                id="x"
+                value={xUrl}
+                onChange={(e) => setXUrl(e.target.value)}
+                placeholder="https://x.com/..."
                 type="url"
                 className="w-full"
               />

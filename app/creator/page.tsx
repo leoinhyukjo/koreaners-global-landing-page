@@ -42,6 +42,7 @@ function CreatorContent() {
     instagram_url: '',
     youtube_url: '',
     tiktok_url: '',
+    x_url: '',
     message: '',
   })
   const [submitting, setSubmitting] = useState(false)
@@ -131,7 +132,7 @@ function CreatorContent() {
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: cleanPhone,
-        message: `[크리에이터 신청]\n\n인스타그램: ${formData.instagram_url || '없음'}\n유튜브: ${formData.youtube_url || '없음'}\n틱톡: ${formData.tiktok_url || '없음'}\n\n요청사항:\n${formData.message.trim() || '없음'}`,
+        message: `[크리에이터 신청]\n\n인스타그램: ${formData.instagram_url || '없음'}\n유튜브: ${formData.youtube_url || '없음'}\n틱톡: ${formData.tiktok_url || '없음'}\nX(Twitter): ${formData.x_url || '없음'}\n\n요청사항:\n${formData.message.trim() || '없음'}`,
         inquiry_type: 'creator_application',
         privacy_agreement: true,
         marketing_agreement: false,
@@ -157,6 +158,7 @@ function CreatorContent() {
         instagram_url: '',
         youtube_url: '',
         tiktok_url: '',
+        x_url: '',
         message: '',
       })
     } catch (error: any) {
@@ -312,6 +314,22 @@ function CreatorContent() {
                       ) : (
                         <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
                           <Music className="w-4 h-4 text-zinc-400" />
+                        </div>
+                      )}
+
+                      {creator.x_url || creator.twitter_url ? (
+                        <a
+                          href={creator.x_url || creator.twitter_url || undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+                          aria-label="X (Twitter)"
+                        >
+                          <Twitter className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
+                          <Twitter className="w-4 h-4 text-zinc-400" />
                         </div>
                       )}
                     </div>
@@ -495,7 +513,7 @@ function CreatorContent() {
                 </div>
 
                 {/* SNS Links */}
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-4 gap-4">
                   <div>
                     <label htmlFor="creator-instagram" className="block text-sm font-bold text-white mb-2">
                       인스타그램 링크
@@ -538,6 +556,21 @@ function CreatorContent() {
                       onChange={handleFormChange}
                       className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                       placeholder="https://tiktok.com/..."
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="creator-x" className="block text-sm font-bold text-white mb-2">
+                      X 링크 (선택)
+                    </label>
+                    <input
+                      type="url"
+                      id="creator-x"
+                      name="x_url"
+                      value={formData.x_url}
+                      onChange={handleFormChange}
+                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                      placeholder="https://x.com/..."
                     />
                   </div>
                 </div>

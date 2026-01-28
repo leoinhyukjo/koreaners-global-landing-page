@@ -24,6 +24,8 @@ import { ArrowLeft, X, Save, Send } from 'lucide-react'
 import type { BlockNoteEditor } from '@blocknote/core'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
+const STORAGE_BUCKET = 'website-assets'
+
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
 const BlogEditor = nextDynamic(
   () => import('@/components/admin/blog-editor').then((mod) => ({ default: mod.BlogEditor })),
@@ -55,6 +57,7 @@ function BlogEditForm() {
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(!!postId)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [editorContent, setEditorContent] = useState<any[]>([])
   const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
   const [isMounted, setIsMounted] = useState(false)
@@ -90,6 +93,7 @@ function BlogEditForm() {
         setSummary(data.summary || '')
         setMetaTitle(data.meta_title || '')
         setMetaDescription(data.meta_description || '')
+        setThumbnailFile(null)
         
         // 에디터 초기 콘텐츠 설정
         if (data.content && Array.isArray(data.content) && data.content.length > 0) {
@@ -126,17 +130,37 @@ function BlogEditForm() {
       setUploading(true)
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
+      const filePath = `blog/${fileName}`
+
+      console.log('1. 파일 업로드 시도:', fileName)
 
       const { error: uploadError } = await supabase.storage
-        .from('uploads')
+        .from(STORAGE_BUCKET)
         .upload(filePath, file)
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        if (
+          typeof uploadError.message === 'string' &&
+          uploadError.message.toLowerCase().includes('bucket') &&
+          uploadError.message.toLowerCase().includes('not found')
+        ) {
+          console.error(
+            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+          )
+        }
+        throw uploadError
+      }
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from('uploads').getPublicUrl(filePath)
+      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+      console.log('2. 획득된 Public URL:', publicUrl)
+
+      if (!publicUrl || publicUrl.trim() === '') {
+        console.error('[BlogEdit] Public URL이 비어있음!')
+        throw new Error('이미지 URL을 생성할 수 없습니다.')
+      }
 
       return publicUrl
     } catch (err: any) {
@@ -148,22 +172,6 @@ function BlogEditForm() {
       throw err
     } finally {
       setUploading(false)
-    }
-  }
-
-  async function handleThumbnailUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    try {
-      const url = await uploadImage(file)
-      setThumbnailUrl(url)
-      toast({
-        title: '성공',
-        description: '썸네일이 업로드되었습니다.',
-      })
-    } catch (err) {
-      // 에러는 uploadImage에서 처리됨
     }
   }
 
@@ -282,11 +290,73 @@ function BlogEditForm() {
     setSaving(true)
     
     try {
-      // summary 필드 안전 처리: 빈 문자열이나 undefined를 null로 변환
+      // summary / meta 필드 안전 처리
       const safeSummary = summary && summary.trim() ? summary.trim() : null
       const safeMetaTitle = metaTitle && metaTitle.trim() ? metaTitle.trim() : null
-      const safeMetaDescription = metaDescription && metaDescription.trim() ? metaDescription.trim() : null
-      const safeThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() ? resolveThumbnailSrc(thumbnailUrl) : null
+      const safeMetaDescription = metaDescription && metaDescription.trim()
+        ? metaDescription.trim()
+        : null
+
+      // Step 1: 업로드할 파일 확인
+      const file = thumbnailFile
+      console.log('Step 1: 업로드할 파일 확인 ->', file)
+
+      // thumbnail_url 처리: 선택된 파일이 있으면 우선 업로드, 없으면 기존 URL 정규화
+      let finalThumbnailUrl: string | null = null
+
+      if (file) {
+        try {
+          setUploading(true)
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+          const filePath = `blog/${fileName}`
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(STORAGE_BUCKET)
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false,
+            })
+
+          if (uploadError) {
+            console.error('[BlogEdit] 썸네일 업로드 에러:', uploadError)
+            if (
+              typeof uploadError.message === 'string' &&
+              uploadError.message.toLowerCase().includes('bucket') &&
+              uploadError.message.toLowerCase().includes('not found')
+            ) {
+              console.error(
+                "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+              )
+            }
+            throw uploadError
+          }
+
+          console.log('[BlogEdit] 썸네일 업로드 성공:', uploadData)
+
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+          console.log('Step 2: 생성된 Public URL ->', publicUrl)
+
+          if (!publicUrl || publicUrl.trim() === '') {
+            console.error('[BlogEdit] 썸네일 Public URL이 비어있음!')
+            throw new Error('이미지 URL을 생성할 수 없습니다.')
+          }
+
+          finalThumbnailUrl = publicUrl
+        } finally {
+          setUploading(false)
+        }
+      } else if (thumbnailUrl && thumbnailUrl.trim()) {
+        const trimmedUrl = thumbnailUrl.trim()
+        if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+          finalThumbnailUrl = trimmedUrl
+        } else {
+          finalThumbnailUrl = resolveThumbnailSrc(trimmedUrl)
+        }
+      }
 
       if (postId) {
         // 수정
@@ -295,7 +365,7 @@ function BlogEditForm() {
           title: title.trim(),
           slug: slug.trim(),
           category,
-          thumbnail_url: safeThumbnailUrl,
+          thumbnail_url: finalThumbnailUrl,
           summary: safeSummary,
           content,
           published: publish,
@@ -304,6 +374,7 @@ function BlogEditForm() {
           updated_at: new Date().toISOString(),
         }
         console.log('8-1. 업데이트 데이터:', updateData)
+        console.log('Step 3: DB로 전송할 최종 Payload ->', updateData)
 
         const { data: updateResult, error } = await supabase
           .from('blog_posts')
@@ -322,8 +393,8 @@ function BlogEditForm() {
             postId,
           })
           const errorMessage = error.message || '알 수 없는 에러'
-          alert(`DB 업데이트 실패: ${errorMessage}`)
-          throw error
+          console.error('DB 업데이트 실패:', errorMessage)
+          throw new Error(errorMessage)
         }
 
         if (!updateResult || updateResult.length === 0) {
@@ -354,7 +425,7 @@ function BlogEditForm() {
           title: title.trim(),
           slug: slug.trim(),
           category,
-          thumbnail_url: safeThumbnailUrl,
+          thumbnail_url: finalThumbnailUrl,
           summary: safeSummary,
           content,
           published: publish,
@@ -368,6 +439,7 @@ function BlogEditForm() {
           summary: insertData.summary || '(없음)',
           published: insertData.published,
         })
+        console.log('Step 3: DB로 전송할 최종 Payload ->', insertData)
 
         const { data, error } = await supabase.from('blog_posts').insert(insertData).select()
 
@@ -381,14 +453,13 @@ function BlogEditForm() {
             insertData: { ...insertData, content: 'Array(...)' },
           })
           const errorMessage = error.message || '알 수 없는 에러'
-          alert(`DB 저장 실패: ${errorMessage}`)
-          throw error
+          console.error('DB 저장 실패:', errorMessage)
+          throw new Error(errorMessage)
         }
 
         if (!data || data.length === 0) {
           const errorMsg = '데이터가 저장되지 않았습니다.'
           console.error('[BlogEdit] 저장 결과 없음', { insertData: { ...insertData, content: 'Array(...)' } })
-          alert(errorMsg)
           throw new Error(errorMsg)
         }
 
@@ -568,7 +639,16 @@ function BlogEditForm() {
                   <Input
                     type="file"
                     accept="image/*"
-                    onChange={handleThumbnailUpload}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null
+                      setThumbnailFile(file)
+                      if (file) {
+                        const previewUrl = URL.createObjectURL(file)
+                        setThumbnailUrl(previewUrl)
+                      } else {
+                        setThumbnailUrl('')
+                      }
+                    }}
                     disabled={uploading}
                     className="w-full"
                   />

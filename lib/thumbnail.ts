@@ -1,5 +1,10 @@
 export const DEFAULT_THUMBNAIL_SRC = '/placeholder.jpg'
 
+/**
+ * 이미지가 없을 때 표시할 플레이스홀더 텍스트
+ */
+export const PLACEHOLDER_TEXT = '준비된 이미지가 없습니다'
+
 function isAbsoluteUrl(src: string) {
   return src.startsWith('http://') || src.startsWith('https://')
 }

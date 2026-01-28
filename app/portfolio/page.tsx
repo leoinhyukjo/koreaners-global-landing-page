@@ -133,8 +133,27 @@ export default function PortfolioPage() {
                           src={item.thumbnail_url}
                           alt={item.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 grayscale group-hover:grayscale-0"
+                          onError={(e) => {
+                            // 이미지 로드 실패 시 플레이스홀더로 대체
+                            const target = e.target as HTMLImageElement
+                            target.style.display = 'none'
+                            const parent = target.parentElement
+                            if (parent && !parent.querySelector('.placeholder-fallback')) {
+                              const placeholder = document.createElement('div')
+                              placeholder.className = 'placeholder-fallback absolute inset-0 flex items-center justify-center bg-zinc-800'
+                              placeholder.innerHTML = `
+                                <div class="text-center px-4">
+                                  <div class="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase mb-2">
+                                    ${getCategoryInitial(item.category)}
+                                  </div>
+                                  <p class="text-xs text-zinc-400">준비된 이미지가 없습니다</p>
+                                </div>
+                              `
+                              parent.appendChild(placeholder)
+                            }
+                          }}
                         />
-                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
                           <span className="px-2 sm:px-3 py-1 bg-white text-black text-xs font-bold rounded-none uppercase">
                             {getCategoryDisplay(item.category)}
                           </span>
@@ -143,11 +162,14 @@ export default function PortfolioPage() {
                     ) : (
                       <div className="aspect-video bg-zinc-800 relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase">
-                            {getCategoryInitial(item.category)}
+                          <div className="text-center px-4">
+                            <div className="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase mb-2">
+                              {getCategoryInitial(item.category)}
+                            </div>
+                            <p className="text-xs text-zinc-400">준비된 이미지가 없습니다</p>
                           </div>
                         </div>
-                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
                           <span className="px-2 sm:px-3 py-1 bg-white text-black text-xs font-bold rounded-none uppercase">
                             {getCategoryDisplay(item.category)}
                           </span>

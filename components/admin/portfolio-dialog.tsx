@@ -1,9 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useCreateBlockNote } from '@blocknote/react'
-import { BlockNoteView } from '@blocknote/mantine'
-import '@blocknote/mantine/style.css'
+import { useState, useEffect, useRef } from 'react'
+import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,6 +22,22 @@ import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { Upload, X } from 'lucide-react'
+import type { BlockNoteEditor } from '@blocknote/core'
+
+const STORAGE_BUCKET = 'website-assets'
+
+// BlockNote 에디터를 클라이언트 사이드에서만 로드
+const PortfolioEditorWrapper = dynamic(
+  () => import('./portfolio-editor-wrapper').then((mod) => ({ default: mod.PortfolioEditorWrapper })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border border-border rounded-lg overflow-hidden bg-card min-h-[600px] flex items-center justify-center">
+        <p className="text-muted-foreground">에디터 로딩 중...</p>
+      </div>
+    ),
+  }
+)
 
 interface PortfolioDialogProps {
   open: boolean
@@ -40,15 +54,11 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
   const [category, setCategory] = useState<string>('')
   const [link, setLink] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [editorContent, setEditorContent] = useState<any[]>([])
+  const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
+  const editorRef = useRef<BlockNoteEditor | null>(null)
   const { toast } = useToast()
-
-  // BlockNote 에디터 초기화
-  const editor = useCreateBlockNote({
-    uploadFile: async (file: File) => {
-      // 이미지 업로드 함수
-      return await uploadImage(file)
-    },
-  })
 
   useEffect(() => {
     if (portfolio) {
@@ -58,13 +68,12 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
       // 카테고리는 첫 번째 값만 사용 (단일 선택)
       setCategory(portfolio.category && portfolio.category.length > 0 ? portfolio.category[0] : '')
       setLink(portfolio.link || '')
+      setThumbnailFile(null)
       // BlockNote 에디터에 기존 콘텐츠 로드
-      if (portfolio.content && Array.isArray(portfolio.content) && editor && portfolio.content.length > 0) {
-        try {
-          editor.replaceBlocks(editor.document, portfolio.content)
-        } catch (error) {
-          console.error('Error loading BlockNote content:', error)
-        }
+      if (portfolio.content && Array.isArray(portfolio.content) && portfolio.content.length > 0) {
+        setInitialEditorContent(portfolio.content)
+      } else {
+        setInitialEditorContent(undefined)
       }
     } else {
       // 새 포트폴리오인 경우 초기화
@@ -73,41 +82,59 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
       setThumbnailUrl('')
       setCategory('')
       setLink('')
-      // 빈 문서로 초기화
-      if (editor) {
-        try {
-          editor.replaceBlocks(editor.document, [
-            {
-              type: 'paragraph',
-              content: '',
-            },
-          ])
-        } catch (error) {
-          console.error('Error initializing BlockNote editor:', error)
-        }
-      }
+      setThumbnailFile(null)
+      setInitialEditorContent(undefined)
     }
-  }, [portfolio, open, editor])
+  }, [portfolio, open])
 
   async function uploadImage(file: File): Promise<string> {
     try {
       setUploading(true)
       const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `portfolios/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
-        .from('uploads')
-        .upload(filePath, file)
+      console.log('1. 파일 업로드 시도:', fileName)
+      console.log('[PortfolioDialog] 이미지 업로드 시작:', { fileName, filePath, fileSize: file.size })
 
-      if (uploadError) throw uploadError
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (uploadError) {
+        console.error('[PortfolioDialog] 업로드 에러:', uploadError)
+        if (
+          typeof uploadError.message === 'string' &&
+          uploadError.message.toLowerCase().includes('bucket') &&
+          uploadError.message.toLowerCase().includes('not found')
+        ) {
+          console.error(
+            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+          )
+        }
+        throw uploadError
+      }
+
+      console.log('[PortfolioDialog] 업로드 성공:', uploadData)
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from('uploads').getPublicUrl(filePath)
+      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+      console.log('2. 획득된 Public URL:', publicUrl)
+      console.log('[PortfolioDialog] Public URL 생성:', publicUrl)
+
+      if (!publicUrl || publicUrl.trim() === '') {
+        console.error('[PortfolioDialog] Public URL이 비어있음!')
+        throw new Error('이미지 URL을 생성할 수 없습니다.')
+      }
 
       return publicUrl
     } catch (error: any) {
+      console.error('[PortfolioDialog] 업로드 실패:', error)
       toast({
         title: '업로드 실패',
         description: error.message || '이미지 업로드에 실패했습니다.',
@@ -116,22 +143,6 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
       throw error
     } finally {
       setUploading(false)
-    }
-  }
-
-  async function handleThumbnailUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    try {
-      const url = await uploadImage(file)
-      setThumbnailUrl(url)
-      toast({
-        title: '성공',
-        description: '썸네일이 업로드되었습니다.',
-      })
-    } catch (error) {
-      // 에러는 uploadImage에서 처리됨
     }
   }
 
@@ -166,43 +177,108 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
     }
 
     try {
-      const content = editor.document
+      const content = editorRef.current?.document || editorContent
       // 카테고리는 배열로 저장하되, 단일 값만 포함 (DB 스키마가 배열 타입인 경우 대비)
       const categoryArray = [category]
+
+      // Step 1: 업로드할 파일 확인
+      const file = thumbnailFile
+      console.log('Step 1: 업로드할 파일 확인 ->', file)
+
+      // thumbnail_url 처리: 선택된 파일이 있으면 우선 업로드, 없으면 기존 URL 사용
+      let finalThumbnailUrl: string | null = null
+
+      if (file) {
+        try {
+          setUploading(true)
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(7)}.${fileExt}`
+
+          const filePath = `portfolios/${fileName}`
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(STORAGE_BUCKET)
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false,
+            })
+
+          if (uploadError) {
+            console.error('[PortfolioDialog] 썸네일 업로드 에러:', uploadError)
+            if (
+              typeof uploadError.message === 'string' &&
+              uploadError.message.toLowerCase().includes('bucket') &&
+              uploadError.message.toLowerCase().includes('not found')
+            ) {
+              console.error(
+                "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
+              )
+            }
+            throw uploadError
+          }
+
+          console.log('[PortfolioDialog] 썸네일 업로드 성공:', uploadData)
+
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+
+          console.log('Step 2: 생성된 Public URL ->', publicUrl)
+
+          if (!publicUrl || publicUrl.trim() === '') {
+            console.error('[PortfolioDialog] 썸네일 Public URL이 비어있음!')
+            throw new Error('이미지 URL을 생성할 수 없습니다.')
+          }
+
+          finalThumbnailUrl = publicUrl
+        } finally {
+          setUploading(false)
+        }
+      } else if (thumbnailUrl && thumbnailUrl.trim()) {
+        finalThumbnailUrl = thumbnailUrl.trim()
+      }
+
+      const finalPayload = {
+        title,
+        client_name: clientName,
+        thumbnail_url: finalThumbnailUrl,
+        hasThumbnail: !!finalThumbnailUrl,
+        category: categoryArray,
+        link: link || null,
+        content,
+      }
+
+      console.log('Step 3: DB로 전송할 최종 Payload ->', finalPayload)
 
       if (portfolio) {
         // 수정
         const { error } = await supabase
           .from('portfolios')
-          .update({
-            title,
-            client_name: clientName,
-            thumbnail_url: thumbnailUrl || null,
-            category: categoryArray,
-            link: link || null,
-            content,
-          })
+          .update(finalPayload)
           .eq('id', portfolio.id)
 
-        if (error) throw error
+        if (error) {
+          console.error('[PortfolioDialog] 업데이트 에러:', error)
+          throw error
+        }
 
+        console.log('[PortfolioDialog] 포트폴리오 수정 완료')
         toast({
           title: '성공',
           description: '포트폴리오가 수정되었습니다.',
         })
       } else {
         // 생성
-        const { error } = await supabase.from('portfolios').insert({
-          title,
-          client_name: clientName,
-          thumbnail_url: thumbnailUrl || null,
-          category: categoryArray,
-          link: link || null,
-          content,
-        })
+        const { data, error } = await supabase.from('portfolios').insert(finalPayload).select()
 
-        if (error) throw error
+        if (error) {
+          console.error('[PortfolioDialog] 생성 에러:', error)
+          throw error
+        }
 
+        console.log('[PortfolioDialog] 포트폴리오 생성 완료:', data)
         toast({
           title: '성공',
           description: '포트폴리오가 생성되었습니다.',
@@ -276,7 +352,16 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
                 <Input
                   type="file"
                   accept="image/*"
-                  onChange={handleThumbnailUpload}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null
+                    setThumbnailFile(file)
+                    if (file) {
+                      const previewUrl = URL.createObjectURL(file)
+                      setThumbnailUrl(previewUrl)
+                    } else {
+                      setThumbnailUrl('')
+                    }
+                  }}
                   disabled={uploading}
                   className="w-full flex-1"
                 />
@@ -319,9 +404,16 @@ export function PortfolioDialog({ open, onClose, portfolio }: PortfolioDialogPro
 
           <div className="space-y-2">
             <Label>본문 내용</Label>
-            <div className="mt-1 rounded-md border">
-              <BlockNoteView editor={editor} />
-            </div>
+            <PortfolioEditorWrapper
+              initialContent={initialEditorContent}
+              onContentChange={(content) => {
+                setEditorContent(content)
+              }}
+              uploadFile={uploadImage}
+              onEditorReady={(editor) => {
+                editorRef.current = editor
+              }}
+            />
           </div>
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

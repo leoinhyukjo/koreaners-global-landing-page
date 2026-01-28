@@ -158,10 +158,13 @@ export function Performance() {
                           ) : (
                             <div className="aspect-video bg-zinc-950 relative overflow-hidden">
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-6xl font-black text-zinc-800 uppercase">
-                                  {item.category && item.category.length > 0 
-                                    ? item.category[0].charAt(0) 
-                                    : 'E'}
+                                <div className="text-center px-4">
+                                  <div className="text-6xl font-black text-zinc-800 uppercase mb-2">
+                                    {item.category && item.category.length > 0 
+                                      ? item.category[0].charAt(0) 
+                                      : 'E'}
+                                  </div>
+                                  <p className="text-xs text-zinc-400">준비된 이미지가 없습니다</p>
                                 </div>
                               </div>
                               <div className="absolute top-4 left-4 z-10">

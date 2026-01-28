@@ -122,6 +122,8 @@ export default function PortfoliosPage() {
         content: {},
       }
 
+      console.log('3. DB에 저장될 최종 객체:', portfolioData)
+
       if (editingPortfolio) {
         const { error } = await supabase
           .from('portfolios')
