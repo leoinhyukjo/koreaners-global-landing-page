@@ -17,6 +17,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { RealtimeNotification } from '@/components/admin/realtime-notification'
 
 export default function AdminLayout({
   children,
@@ -110,9 +111,12 @@ export default function AdminLayout({
       {!isLoginPage && (
         <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 border-r border-zinc-700/50 bg-zinc-800 md:block">
           <div className="flex h-full flex-col">
-            <div className="border-b border-zinc-700/50 px-6 py-5">
+            <div className="border-b border-zinc-700/50 px-6 py-5 flex items-center justify-between">
               <Link href="/admin" className="text-xl font-bold text-white">
                 관리자 패널
+              </Link>
+              <Link href="/admin/inquiries">
+                <RealtimeNotification />
               </Link>
             </div>
             <nav className="flex-1 space-y-1 overflow-y-auto p-4">
@@ -144,15 +148,20 @@ export default function AdminLayout({
           <Link href="/admin" className="text-lg font-bold text-white">
             관리자 패널
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 shrink-0"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="메뉴 열기"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
+          <div className="flex items-center gap-4">
+            <Link href="/admin/inquiries">
+              <RealtimeNotification />
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 shrink-0"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="메뉴 열기"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
         </header>
       )}
 

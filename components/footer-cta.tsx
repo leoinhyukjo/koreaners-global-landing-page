@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
+import { toast as sonnerToast } from 'sonner'
 import { ConsentModal } from '@/components/consent-modal'
 import {
   Dialog,
@@ -121,6 +122,12 @@ export function FooterCTA() {
 
       // 성공 Dialog 표시
       setSuccessDialogOpen(true)
+      
+      // Sonner Toast 표시
+      sonnerToast.success('문의가 성공적으로 접수되었습니다!', {
+        description: '빠른 시일 내에 연락드리겠습니다.',
+        duration: 5000,
+      })
 
       // Notion에 데이터 저장 (비동기, 실패해도 사용자 경험에 영향 없음)
       try {

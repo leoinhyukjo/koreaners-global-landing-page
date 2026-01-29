@@ -2,6 +2,8 @@
 
 import { Card } from '@/components/ui/card'
 import { TrendingUp, Users, ShoppingBag } from 'lucide-react'
+import { FadeIn } from '@/components/ui/fade-in'
+import { Counter } from '@/components/ui/counter'
 
 export function MarketOpportunity() {
   const stats = [
@@ -45,6 +47,7 @@ export function MarketOpportunity() {
           {/* Bento Grid */}
           <div className="grid md:grid-cols-3 gap-4">
             {stats.map((stat, index) => (
+              <FadeIn key={index} delay={index * 0.1}>
               <Card
                 key={index}
                 className="relative p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
@@ -59,7 +62,9 @@ export function MarketOpportunity() {
                       {stat.title}
                     </div>
                     <div className="text-4xl font-black text-white mb-1">
-                      {stat.value}
+                      {index === 0 ? <><Counter end={500} />만</> : 
+                       index === 1 ? <><Counter end={25} />%</> : 
+                       <><Counter end={90} />%</>}
                     </div>
                     <div className="text-base text-white font-bold">
                       {stat.subtitle}
@@ -71,6 +76,7 @@ export function MarketOpportunity() {
                   </p>
                 </div>
               </Card>
+              </FadeIn>
             ))}
           </div>
         </div>

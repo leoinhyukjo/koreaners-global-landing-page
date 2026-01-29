@@ -8,6 +8,7 @@ import Link from 'next/link'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { SkeletonGrid } from '@/components/ui/skeleton-card'
 
 export function Performance() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
@@ -76,9 +77,7 @@ export function Performance() {
 
           {/* Portfolio Carousel */}
           {loading ? (
-            <div className="text-center py-20">
-              <p className="text-zinc-200">로딩 중...</p>
-            </div>
+            <SkeletonGrid count={3} />
           ) : portfolios.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-zinc-200 text-lg">
@@ -118,7 +117,7 @@ export function Performance() {
                     <div key={item.id} className="flex-[0_0_100%] md:flex-[0_0_calc(50%-8px)] lg:flex-[0_0_calc(33.333%-11px)] min-w-0">
                       <Link href={`/portfolio/${item.id}`}>
                         <Card 
-                          className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-200 cursor-pointer h-full rounded-none"
+                          className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer h-full rounded-none"
                         >
                           {/* Image */}
                           {item.thumbnail_url ? (
