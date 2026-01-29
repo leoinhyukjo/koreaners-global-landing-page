@@ -264,7 +264,7 @@ function CreatorContent() {
                   {/* Creator Info */}
                   <div className="p-4">
                     <h3 className="text-lg font-bold text-white mb-3 group-hover:text-white transition-colors">
-                      {creator.name}
+                      {creator.instagram_url ? '@' + creator.instagram_url.replace(/\/$/, '').split('/').pop() : creator.name}
                     </h3>
                     
                     {/* SNS 링크 */}
