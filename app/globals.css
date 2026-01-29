@@ -354,3 +354,14 @@
   background: var(--card) !important;
   border-color: var(--border) !important;
 }
+
+/* 어드민: 테이블/박스 내부 여백 통일 */
+.admin-content [data-slot="table-head"] {
+  padding: 1rem 1.5rem;
+}
+.admin-content [data-slot="table-cell"] {
+  padding: 1rem 1.5rem;
+}
+.admin-content [data-slot="table-row"] {
+  min-height: 3.5rem;
+}

@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { BlogContent } from '@/components/blog/blog-content'
+import { MarketingCTA } from '@/components/common/marketing-cta'
 import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc, toAbsoluteUrl } from '@/lib/thumbnail'
 
@@ -215,6 +216,9 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 <BlogContent blogPost={blogPost} />
               </div>
             </div>
+
+            {/* 마케팅 문의 CTA */}
+            <MarketingCTA />
           </div>
         </article>
       </main>

@@ -205,7 +205,7 @@ export default function CreatorsPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold sm:text-3xl">크리에이터 관리</h1>
           <p className="mt-1 text-sm text-muted-foreground sm:text-base">
@@ -219,15 +219,15 @@ export default function CreatorsPage() {
       </div>
 
       {loading ? (
-        <Card className="p-8 text-center text-muted-foreground">로딩 중...</Card>
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">로딩 중...</Card>
       ) : creators.length === 0 ? (
-        <Card className="p-8 text-center text-muted-foreground">
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
           등록된 크리에이터가 없습니다.
         </Card>
       ) : (
         <>
           <div className="hidden md:block">
-            <Card>
+            <Card className="rounded-lg border shadow-sm overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -293,7 +293,7 @@ export default function CreatorsPage() {
 
           <div className="space-y-4 md:hidden">
             {creators.map((creator) => (
-              <Card key={creator.id} className="p-4">
+              <Card key={creator.id} className="rounded-lg border shadow-sm p-6">
                 <div className="flex items-center gap-4">
                   {creator.profile_image_url && (
                     <img src={creator.profile_image_url} alt="" className="h-12 w-12 rounded-full object-cover" />

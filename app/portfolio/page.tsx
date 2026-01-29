@@ -132,7 +132,7 @@ export default function PortfolioPage() {
                         <img
                           src={item.thumbnail_url}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 grayscale group-hover:grayscale-0"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           onError={(e) => {
                             // 이미지 로드 실패 시 플레이스홀더로 대체
                             const target = e.target as HTMLImageElement

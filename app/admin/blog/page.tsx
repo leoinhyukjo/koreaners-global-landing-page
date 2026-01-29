@@ -82,7 +82,7 @@ export default function BlogPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold sm:text-3xl">글로벌 마케팅 인사이트 관리</h1>
           <p className="mt-1 text-sm text-muted-foreground sm:text-base">
@@ -96,16 +96,16 @@ export default function BlogPage() {
       </div>
 
       {loading ? (
-        <Card className="p-8 text-center text-muted-foreground">로딩 중...</Card>
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">로딩 중...</Card>
       ) : blogPosts.length === 0 ? (
-        <Card className="p-8 text-center text-muted-foreground">
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
           작성된 인사이트가 없습니다.
         </Card>
       ) : (
         <>
           {/* 데스크톱: 테이블 */}
           <div className="hidden md:block">
-            <Card>
+            <Card className="rounded-lg border shadow-sm overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -169,9 +169,9 @@ export default function BlogPage() {
             {blogPosts.map((post) => (
               <Card
                 key={post.id}
-                className="overflow-hidden border-border transition-colors hover:border-primary/30"
+                className="rounded-lg border shadow-sm overflow-hidden border-border transition-colors hover:border-primary/30"
               >
-                <div className="p-4 sm:p-5">
+                <div className="p-6">
                   <h3 className="font-semibold leading-snug line-clamp-2">{post.title}</h3>
                   <p className="mt-1 truncate text-xs text-muted-foreground">{post.slug}</p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">

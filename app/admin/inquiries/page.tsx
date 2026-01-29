@@ -109,7 +109,7 @@ export default function InquiriesPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div>
+      <div className="mb-8">
         <h1 className="text-2xl font-bold sm:text-3xl">문의 내역 관리</h1>
         <p className="mt-1 text-sm text-muted-foreground sm:text-base">
           접수된 문의 내역을 확인하고 관리할 수 있습니다
@@ -117,16 +117,16 @@ export default function InquiriesPage() {
       </div>
 
       {loading ? (
-        <Card className="p-8 text-center text-muted-foreground">로딩 중...</Card>
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">로딩 중...</Card>
       ) : inquiries.length === 0 ? (
-        <Card className="p-8 text-center text-muted-foreground">
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
           등록된 문의 내역이 없습니다.
         </Card>
       ) : (
         <>
           {/* 데스크톱: 테이블 */}
           <div className="hidden md:block">
-            <Card>
+            <Card className="rounded-lg border shadow-sm overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -209,11 +209,11 @@ export default function InquiriesPage() {
             {inquiries.map((inquiry) => (
               <Card
                 key={inquiry.id}
-                className={`overflow-hidden border-border transition-colors hover:border-primary/30 ${
+                className={`rounded-lg border shadow-sm overflow-hidden border-border transition-colors hover:border-primary/30 ${
                   inquiry.is_read ? 'opacity-75 bg-muted/20' : ''
                 }`}
               >
-                <div className="p-4 sm:p-5">
+                <div className="p-6">
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">

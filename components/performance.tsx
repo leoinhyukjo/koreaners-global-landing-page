@@ -125,7 +125,7 @@ export function Performance() {
                               <img
                                 src={item.thumbnail_url}
                                 alt={item.title || 'Portfolio image'}
-                                className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-105"
+                                className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
                                 loading="lazy"
                                 onError={(e) => {
                                   // 이미지 로드 실패 시 플레이스홀더로 대체

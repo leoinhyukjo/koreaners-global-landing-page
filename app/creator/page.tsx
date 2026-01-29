@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { Navigation } from '@/components/navigation'
-import { Users, Instagram, Youtube, Music, Award, Target, X } from 'lucide-react'
+import { Users, Instagram, Youtube, Music, Award, Target, X, Plus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase/client'
@@ -77,48 +77,11 @@ function CreatorContent() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // 필수 필드 검증
-    if (!formData.name.trim()) {
+    // 필수: 인스타그램 링크만 검증
+    if (!formData.instagram_url.trim()) {
       toast({
         title: '입력 오류',
-        description: '이름을 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!formData.email.trim()) {
-      toast({
-        title: '입력 오류',
-        description: '이메일을 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!formData.email.includes('@')) {
-      toast({
-        title: '입력 오류',
-        description: '올바른 이메일 형식을 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!formData.phone.trim()) {
-      toast({
-        title: '입력 오류',
-        description: '연락처를 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    const cleanPhone = formData.phone.replace(/[^0-9]/g, '')
-    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
-      toast({
-        title: '입력 오류',
-        description: '올바른 전화번호 형식을 입력해주세요.',
+        description: '인스타그램 링크는 필수입니다.',
         variant: 'destructive',
       })
       return
@@ -127,12 +90,15 @@ function CreatorContent() {
     try {
       setSubmitting(true)
 
-      // Supabase inquiries 테이블에 저장 (type: 'creator_application')
+      const cleanPhone = formData.phone.replace(/[^0-9]/g, '')
+      const phoneValue = formData.phone.trim() ? cleanPhone : ''
+
+      // Supabase inquiries 테이블에 저장 (type: 'creator_application') — 선택 항목은 빈 문자열 또는 없음으로 전송
       const insertData = {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: cleanPhone,
-        message: `[크리에이터 신청]\n\n인스타그램: ${formData.instagram_url || '없음'}\n유튜브: ${formData.youtube_url || '없음'}\n틱톡: ${formData.tiktok_url || '없음'}\nX(Twitter): ${formData.x_url || '없음'}\n\n요청사항:\n${formData.message.trim() || '없음'}`,
+        name: formData.name.trim() || '',
+        email: formData.email.trim() || '',
+        phone: phoneValue,
+        message: `[크리에이터 신청]\n\n인스타그램: ${formData.instagram_url.trim()}\n유튜브: ${formData.youtube_url?.trim() || '없음'}\n틱톡: ${formData.tiktok_url?.trim() || '없음'}\nX(Twitter): ${formData.x_url?.trim() || '없음'}\n\n요청사항:\n${formData.message.trim() || '없음'}`,
         inquiry_type: 'creator_application',
         privacy_agreement: true,
         marketing_agreement: false,
@@ -349,6 +315,25 @@ function CreatorContent() {
                     </Card>
                   )
                 })}
+                {/* 업데이트 중 플레이스홀더 카드 2개 */}
+                {[1, 2].map((i) => (
+                  <Card
+                    key={`placeholder-${i}`}
+                    className="overflow-hidden bg-zinc-800/40 border border-dashed border-zinc-600/60 opacity-60 pointer-events-none"
+                  >
+                    <div className="aspect-[3/4] bg-zinc-800/50 relative flex items-center justify-center">
+                      <Plus className="w-12 h-12 text-zinc-500" />
+                    </div>
+                    <div className="p-4 sm:p-5 h-[88px] sm:h-[92px]" />
+                  </Card>
+                ))}
+              </div>
+              {/* 하단 멘트 및 그라데이션 */}
+              <div className="text-center py-12 mt-8 sm:mt-12">
+                <p className="text-zinc-500 text-sm sm:text-base italic">
+                  현재 수십 명의 크리에이터가 포트폴리오를 업데이트 중입니다.
+                </p>
+                <div className="mt-4 h-12 bg-gradient-to-b from-transparent to-zinc-900/80 pointer-events-none" aria-hidden />
               </div>
             </>
           )}
@@ -469,17 +454,16 @@ function CreatorContent() {
               </div>
 
               <form onSubmit={handleFormSubmit} className="space-y-6">
-                {/* Name and Phone */}
+                {/* Name and Phone — 선택 */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="creator-name" className="block text-sm font-bold text-white mb-2">
-                      성함 <span className="text-white">*</span>
+                      성함 <span className="text-zinc-400 font-normal">(선택)</span>
                     </label>
                     <input
                       type="text"
                       id="creator-name"
                       name="name"
-                      required
                       value={formData.name}
                       onChange={handleFormChange}
                       className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
@@ -489,16 +473,14 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-phone" className="block text-sm font-bold text-white mb-2">
-                      연락처 <span className="text-white">*</span>
+                      연락처 <span className="text-zinc-400 font-normal">(선택)</span>
                     </label>
                     <input
                       type="tel"
                       id="creator-phone"
                       name="phone"
-                      required
                       value={formData.phone}
                       onChange={(e) => {
-                        // 숫자만 추출 (하이픈, 공백, 기타 문자 제거)
                         const value = e.target.value.replace(/[^0-9]/g, '')
                         setFormData({ ...formData, phone: value })
                       }}
@@ -508,16 +490,15 @@ function CreatorContent() {
                   </div>
                 </div>
 
-                {/* Email */}
+                {/* Email — 선택 */}
                 <div>
                   <label htmlFor="creator-email" className="block text-sm font-bold text-white mb-2">
-                    이메일 <span className="text-white">*</span>
+                    이메일 <span className="text-zinc-400 font-normal">(선택)</span>
                   </label>
                   <input
                     type="email"
                     id="creator-email"
                     name="email"
-                    required
                     value={formData.email}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
@@ -525,11 +506,11 @@ function CreatorContent() {
                   />
                 </div>
 
-                {/* SNS Links */}
+                {/* SNS Links — 인스타그램만 필수 */}
                 <div className="grid md:grid-cols-4 gap-4">
                   <div>
                     <label htmlFor="creator-instagram" className="block text-sm font-bold text-white mb-2">
-                      인스타그램 링크
+                      인스타그램 링크 <span className="text-white">*</span>
                     </label>
                     <input
                       type="url"
@@ -544,7 +525,7 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-youtube" className="block text-sm font-bold text-white mb-2">
-                      유튜브 링크
+                      유튜브 링크 <span className="text-zinc-400 font-normal">(선택)</span>
                     </label>
                     <input
                       type="url"
@@ -559,7 +540,7 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-tiktok" className="block text-sm font-bold text-white mb-2">
-                      틱톡 링크
+                      틱톡 링크 <span className="text-zinc-400 font-normal">(선택)</span>
                     </label>
                     <input
                       type="url"
@@ -574,7 +555,7 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-x" className="block text-sm font-bold text-white mb-2">
-                      X 링크 (선택)
+                      X 링크 <span className="text-zinc-400 font-normal">(선택)</span>
                     </label>
                     <input
                       type="url"
@@ -588,10 +569,10 @@ function CreatorContent() {
                   </div>
                 </div>
 
-                {/* Message */}
+                {/* Message — 선택 */}
                 <div>
                   <label htmlFor="creator-message" className="block text-sm font-bold text-white mb-2">
-                    메시지
+                    메시지 <span className="text-zinc-400 font-normal">(선택)</span>
                   </label>
                   <textarea
                     id="creator-message"

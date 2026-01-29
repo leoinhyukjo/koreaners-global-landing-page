@@ -103,7 +103,7 @@ export default function AdminDashboard() {
         </div>
         <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="overflow-hidden">
+            <Card key={i} className="rounded-lg border shadow-sm overflow-hidden">
               <CardHeader className="space-y-0 pb-2">
                 <div className="h-4 w-24 animate-pulse rounded bg-muted" />
               </CardHeader>
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
           ))}
         </div>
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
-          <Card>
+          <Card className="rounded-lg border shadow-sm">
             <CardHeader>
               <div className="h-5 w-32 animate-pulse rounded bg-muted" />
               <div className="h-4 w-48 animate-pulse rounded bg-muted" />
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
               <div className="h-4 w-full animate-pulse rounded bg-muted" />
             </CardContent>
           </Card>
-          <Card>
+          <Card className="rounded-lg border shadow-sm">
             <CardHeader>
               <div className="h-5 w-36 animate-pulse rounded bg-muted" />
               <div className="h-4 w-52 animate-pulse rounded bg-muted" />
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div>
+      <div className="mb-8">
         <h1 className="text-2xl font-bold sm:text-3xl">대시보드</h1>
         <p className="mt-1 text-sm text-muted-foreground sm:text-base">관리자 패널에 오신 것을 환영합니다</p>
       </div>
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
           const Icon = stat.icon
           return (
             <Link key={stat.title} href={stat.href}>
-              <Card className="cursor-pointer transition-all hover:border-primary/50 group">
+              <Card className="rounded-lg border shadow-sm cursor-pointer transition-all hover:border-primary/50 group">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
                   <Icon className={`h-5 w-5 shrink-0 ${stat.color} transition-transform group-hover:scale-110`} />
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
 
       {/* 최근 활동 */}
       <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="rounded-lg border shadow-sm">
           <CardHeader>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
                 {recentPortfolios.map((portfolio) => (
                   <Link
                     key={portfolio.id}
-                    href="/admin/portfolios"
+                    href={`/admin/portfolios/${portfolio.id}`}
                     className="block rounded-lg border border-border p-3 transition-all hover:border-primary/50 hover:bg-accent/50"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-lg border shadow-sm">
           <CardHeader>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
