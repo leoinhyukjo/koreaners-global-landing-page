@@ -1,67 +1,63 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+const PARTNERS_ALL = [
+  'BBIA', 'FOODOLOGY', 'INGA', 'Matin Kim', 'medicube', 'MEDI-PEEL', 'MENTHOLOGY', '미쟝센', 'moev', 'OVMENT', 'TREEMINGBIRD', 'WHIPPED', '강남언니', '녹십자웰빙', '뉴트리원', '더멜라닌', '모아씨앤씨', '세예의원', '아비쥬클리닉', '오운의원', '오퓰리크', '와우바이오텍', '플랜에스클리닉', 'BNC KOREA', 'JUVENTA HEALTHCARE', 'KATE의원', 'Onlif', '더북컴퍼니', '미디어앤아트', '바비톡', '바이트랩', '스크럽대디', '인에디트', '코모래비', '트웨니스', 'Hakit', 'The SMC Group', '감자밭', '구미곱창', '논두렁오리주물럭', '맘스피자', '판동면옥', 'Bocado Butter', 'newmix', '가나스윔', 'narka', 'NUMBERING', '네이처리퍼블릭', '뉴베러', '리포데이', 'MAJOURNEE', '블랑디바', '샵한현재', '싱글즈', '아일로', '엔트로피', 'OJOS', '와이낫', '원데이즈유', '정샘물뷰티', '코스노리', 'TNMORPH', "AGE20'S", 'ArteSinsa', 'Biodance', 'BIOHEAL BOH', "d'Alba", 'Dr. Althea', 'Dr. G',
+]
+
+const ROW_SIZE = 27
+const PARTNERS_ROW1 = PARTNERS_ALL.slice(0, ROW_SIZE)
+const PARTNERS_ROW2 = PARTNERS_ALL.slice(ROW_SIZE, ROW_SIZE * 2)
+const PARTNERS_ROW3 = PARTNERS_ALL.slice(ROW_SIZE * 2)
+
+/** 로고 이미지 경로: public/images/partners/{slug}.png 로 두면 나중에 대체 가능 */
+function partnerSlug(name: string): string {
+  return name.replace(/\s+/g, '-').replace(/['']/g, '')
+}
+
+function PartnerBadge({ name }: { name: string }) {
+  const slug = partnerSlug(name)
+  return (
+    <div
+      data-partner={slug}
+      className="flex-shrink-0 flex items-center justify-center px-6 py-4 min-w-[140px] sm:min-w-[160px] rounded-lg border border-zinc-700/60 bg-zinc-800/80 opacity-70 hover:opacity-100 hover:border-zinc-500 transition-all duration-200"
+    >
+      {/* 나중에 로고 이미지 사용 시: <img src={`/images/partners/${slug}.png`} alt={name} className="h-8 object-contain" /> */}
+      <span className="text-sm sm:text-base font-semibold text-white text-center truncate max-w-[120px] sm:max-w-[140px]">
+        {name}
+      </span>
+    </div>
+  )
+}
+
+function MarqueeRow({
+  partners,
+  direction,
+}: {
+  partners: string[]
+  direction: 'left' | 'right'
+}) {
+  const duplicated = [...partners, ...partners]
+  return (
+    <div className="overflow-hidden py-3" aria-hidden>
+      <div
+        className="flex gap-4 w-max"
+        style={{
+          animation: direction === 'left' ? 'marquee-left 50s linear infinite' : 'marquee-right 50s linear infinite',
+        }}
+      >
+        {duplicated.map((name, index) => (
+          <PartnerBadge key={`${name}-${index}`} name={name} />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function TrustSignals() {
-  const scrollRef1 = useRef<HTMLDivElement>(null)
-  const scrollRef2 = useRef<HTMLDivElement>(null)
-
-  const partnersRow1 = [
-    'LG생활건강', '아모레퍼시픽', 'CJ제일제당', '오리온', '농심',
-    '빙그레', '매일유업', 'SPC그룹'
-  ]
-
-  const partnersRow2 = [
-    '롯데제과', '동서식품', '하이트진로', '코오롱FnC', 'LF', 
-    '한섬', '휠라코리아', '네이처리퍼블릭'
-  ]
-
-  // Duplicate for seamless loop
-  const duplicatedRow1 = [...partnersRow1, ...partnersRow1, ...partnersRow1]
-  const duplicatedRow2 = [...partnersRow2, ...partnersRow2, ...partnersRow2]
-
-  useEffect(() => {
-    const scrollContainer1 = scrollRef1.current
-    const scrollContainer2 = scrollRef2.current
-    if (!scrollContainer1 || !scrollContainer2) return
-
-    let animationId: number
-    let scrollPosition1 = 0
-    let scrollPosition2 = 0
-    const scrollSpeed = 0.8
-
-    const animate = () => {
-      // First row - scroll right
-      scrollPosition1 += scrollSpeed
-      if (scrollPosition1 >= scrollContainer1.scrollWidth / 3) {
-        scrollPosition1 = 0
-      }
-      scrollContainer1.scrollLeft = scrollPosition1
-
-      // Second row - scroll left (opposite direction)
-      scrollPosition2 -= scrollSpeed
-      if (scrollPosition2 <= 0) {
-        scrollPosition2 = scrollContainer2.scrollWidth / 3
-      }
-      scrollContainer2.scrollLeft = scrollPosition2
-
-      animationId = requestAnimationFrame(animate)
-    }
-
-    // Initialize second row position
-    scrollContainer2.scrollLeft = scrollContainer2.scrollWidth / 3
-
-    animationId = requestAnimationFrame(animate)
-
-    return () => {
-      cancelAnimationFrame(animationId)
-    }
-  }, [])
-
   return (
-    <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
-      <div className="container mx-auto px-5 sm:px-6">
-        <div className="text-center mb-12">
+    <section className="py-14 sm:py-20 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
+      <div className="container mx-auto px-6 sm:px-8 md:px-10">
+        <div className="text-center mb-12 sm:mb-14">
           <h2 className="text-4xl md:text-5xl font-black mb-4 text-white break-keep">
             TRUSTED BY
           </h2>
@@ -70,51 +66,13 @@ export function TrustSignals() {
           </p>
         </div>
 
-        <div className="space-y-4">
-          {/* First Row - Scroll Right */}
-          <div 
-            ref={scrollRef1}
-            className="flex gap-4 overflow-x-hidden py-4"
-            style={{ scrollBehavior: 'auto' }}
-          >
-            {duplicatedRow1.map((partner, index) => (
-              <div
-                key={`row1-${partner}-${index}`}
-                className="flex-shrink-0 px-8 py-6 bg-zinc-800 border border-zinc-700/50 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
-                style={{ minWidth: '200px' }}
-              >
-                <div className="text-center">
-                  <span className="text-lg font-bold text-white">
-                    {partner}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Second Row - Scroll Left */}
-          <div 
-            ref={scrollRef2}
-            className="flex gap-4 overflow-x-hidden py-4"
-            style={{ scrollBehavior: 'auto' }}
-          >
-            {duplicatedRow2.map((partner, index) => (
-              <div
-                key={`row2-${partner}-${index}`}
-                className="flex-shrink-0 px-8 py-6 bg-zinc-800 border border-zinc-700/50 rounded-none hover:border-white hover:scale-105 transition-all duration-200"
-                style={{ minWidth: '200px' }}
-              >
-                <div className="text-center">
-                  <span className="text-lg font-bold text-white">
-                    {partner}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="space-y-2 sm:space-y-3">
+          <MarqueeRow partners={PARTNERS_ROW1} direction="left" />
+          <MarqueeRow partners={PARTNERS_ROW2} direction="right" />
+          <MarqueeRow partners={PARTNERS_ROW3} direction="left" />
         </div>
 
-        <div className="mt-12 text-center">
+        <div className="mt-14 text-center">
           <p className="text-sm text-zinc-200 break-keep">
             코리너스 글로벌은 <span className="text-white font-bold">수출바우처 공식 수행기관</span>입니다.
           </p>

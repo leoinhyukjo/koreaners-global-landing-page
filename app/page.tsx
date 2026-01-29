@@ -7,7 +7,6 @@ import { TrustSignals } from '@/components/trust-signals'
 import { FinalCTA } from '@/components/final-cta'
 import { Navigation } from '@/components/navigation'
 import { FooterCTA } from '@/components/footer-cta'
-import { Footer } from '@/components/footer'
 import { FloatingCTA } from '@/components/floating-cta'
 import { WelcomePopup } from '@/components/welcome-popup'
 
@@ -23,7 +22,6 @@ export default function Page() {
       <FinalCTA />
       <TrustSignals />
       <FooterCTA />
-      <Footer />
       <FloatingCTA />
       <WelcomePopup />
     </main>

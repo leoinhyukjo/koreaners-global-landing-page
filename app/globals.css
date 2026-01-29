@@ -365,3 +365,13 @@
 .admin-content [data-slot="table-row"] {
   min-height: 3.5rem;
 }
+
+/* Trusted By: infinite marquee */
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
