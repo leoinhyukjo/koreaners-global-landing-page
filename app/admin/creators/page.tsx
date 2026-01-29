@@ -1,11 +1,10 @@
 'use client'
 
-// 관리자 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
+import NextDynamic from 'next/dynamic'
 import { Plus, Edit, Trash2, Instagram, Youtube, Music, X } from 'lucide-react'
-import nextDynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -26,12 +25,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase/client'
 import type { Creator } from '@/lib/supabase'
-import type { BlockNoteEditor } from '@blocknote/core'
 
 const STORAGE_BUCKET = 'website-assets'
 
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
-const PortfolioEditorWrapper = nextDynamic(
+const PortfolioEditorWrapper = NextDynamic(
   () => import('@/components/admin/portfolio-editor-wrapper').then((mod) => ({ default: mod.PortfolioEditorWrapper })),
   {
     ssr: false,
@@ -57,10 +55,6 @@ export default function CreatorsPage() {
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [tiktokUrl, setTiktokUrl] = useState('')
   const [xUrl, setXUrl] = useState('')
-  
-  const [editorContent, setEditorContent] = useState<any[]>([])
-  const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
-  const editorRef = useRef<BlockNoteEditor | null>(null)
 
   useEffect(() => {
     fetchCreators()
@@ -98,14 +92,6 @@ export default function CreatorsPage() {
     setYoutubeUrl(creator.youtube_url || '')
     setTiktokUrl(creator.tiktok_url || '')
     setXUrl(creator.x_url || creator.twitter_url || '')
-    
-    // 에디터 콘텐츠 설정
-    if (creator.content && Array.isArray(creator.content) && creator.content.length > 0) {
-      setInitialEditorContent(creator.content)
-    } else {
-      setInitialEditorContent(undefined)
-    }
-    
     setDialogOpen(true)
   }
 
@@ -116,8 +102,6 @@ export default function CreatorsPage() {
     setYoutubeUrl('')
     setTiktokUrl('')
     setXUrl('')
-    setInitialEditorContent(undefined)
-    setEditorContent([])
   }
 
   async function uploadImage(file: File): Promise<string> {
@@ -169,8 +153,6 @@ export default function CreatorsPage() {
 
     try {
       setSaving(true)
-      const content = editorRef.current?.document || editorContent
-
       const creatorData = {
         name,
         profile_image_url: profileImageUrl || null,
@@ -178,7 +160,6 @@ export default function CreatorsPage() {
         youtube_url: youtubeUrl || null,
         tiktok_url: tiktokUrl || null,
         x_url: xUrl || null,
-        content: content,
       }
 
       if (editingCreator) {
@@ -373,16 +354,6 @@ export default function CreatorsPage() {
                 <Label>X (Twitter) URL</Label>
                 <Input value={xUrl} onChange={(e) => setXUrl(e.target.value)} placeholder="https://..." />
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>본문 내용 (에디터)</Label>
-              <PortfolioEditorWrapper
-                initialContent={initialEditorContent}
-                onContentChange={setEditorContent}
-                uploadFile={uploadImage}
-                onEditorReady={(editor) => (editorRef.current = editor)}
-              />
             </div>
 
             <div className="flex justify-end gap-2 pt-4">

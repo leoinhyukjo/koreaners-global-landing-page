@@ -240,102 +240,115 @@ function CreatorContent() {
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-20">
-                {creators.map(creator => (
-                <Card 
-                  key={creator.id}
-                  className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300"
-                >
-                  {/* Creator Avatar */}
-                  <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
-                    {/* 프로필 이미지 */}
-                    {creator.profile_image_url ? (
-                      <img
-                        src={creator.profile_image_url}
-                        alt={creator.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Users className="w-20 h-20 text-primary/30" />
+                {creators.map((creator) => {
+                  const instagramHandle = creator.instagram_url
+                    ? '@' + creator.instagram_url.replace(/\/$/, '').split('/').pop()
+                    : null
+
+                  return (
+                    <Card
+                      key={creator.id}
+                      className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300"
+                    >
+                      {/* Creator Avatar */}
+                      <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                        {/* 프로필 이미지 */}
+                        {creator.profile_image_url ? (
+                          <img
+                            src={creator.profile_image_url}
+                            alt={creator.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Users className="w-20 h-20 text-primary/30" />
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
 
-                  {/* Creator Info */}
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-white transition-colors">
-                      {creator.instagram_url ? '@' + creator.instagram_url.replace(/\/$/, '').split('/').pop() : creator.name}
-                    </h3>
-                    
-                    {/* SNS 링크 */}
-                    <div className="flex gap-3">
-                      {creator.instagram_url ? (
-                        <a
-                          href={creator.instagram_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
-                          aria-label="Instagram"
-                        >
-                          <Instagram className="w-4 h-4" />
-                        </a>
-                      ) : (
-                        <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
-                          <Instagram className="w-4 h-4 text-zinc-400" />
+                      {/* Creator Info */}
+                      <div className="p-4 sm:p-5">
+                        <div className="mb-3 flex items-baseline justify-between gap-2">
+                          <span className="text-base sm:text-lg font-bold text-white truncate">
+                            {creator.name}
+                          </span>
+                          {instagramHandle && (
+                            <span className="text-xs sm:text-sm text-zinc-400 truncate max-w-[55%] text-right">
+                              {instagramHandle}
+                            </span>
+                          )}
                         </div>
-                      )}
-                      
-                      {creator.youtube_url ? (
-                        <a
-                          href={creator.youtube_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
-                          aria-label="YouTube"
-                        >
-                          <Youtube className="w-4 h-4" />
-                        </a>
-                      ) : (
-                        <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
-                          <Youtube className="w-4 h-4 text-zinc-400" />
-                        </div>
-                      )}
-                      
-                      {creator.tiktok_url ? (
-                        <a
-                          href={creator.tiktok_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
-                          aria-label="TikTok"
-                        >
-                          <Music className="w-4 h-4" />
-                        </a>
-                      ) : (
-                        <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
-                          <Music className="w-4 h-4 text-zinc-400" />
-                        </div>
-                      )}
 
-                      {creator.x_url || creator.twitter_url ? (
-                        <a
-                          href={creator.x_url || creator.twitter_url || undefined}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
-                          aria-label="X (Twitter)"
-                        >
-                          <X className="w-4 h-4" />
-                        </a>
-                      ) : (
-                        <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
-                          <X className="w-4 h-4 text-zinc-400" />
+                        {/* SNS 링크 */}
+                        <div className="flex gap-3">
+                          {creator.instagram_url ? (
+                            <a
+                              href={creator.instagram_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+                              aria-label="Instagram"
+                            >
+                              <Instagram className="w-4 h-4" />
+                            </a>
+                          ) : (
+                            <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
+                              <Instagram className="w-4 h-4 text-zinc-400" />
+                            </div>
+                          )}
+
+                          {creator.youtube_url ? (
+                            <a
+                              href={creator.youtube_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+                              aria-label="YouTube"
+                            >
+                              <Youtube className="w-4 h-4" />
+                            </a>
+                          ) : (
+                            <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
+                              <Youtube className="w-4 h-4 text-zinc-400" />
+                            </div>
+                          )}
+
+                          {creator.tiktok_url ? (
+                            <a
+                              href={creator.tiktok_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+                              aria-label="TikTok"
+                            >
+                              <Music className="w-4 h-4" />
+                            </a>
+                          ) : (
+                            <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
+                              <Music className="w-4 h-4 text-zinc-400" />
+                            </div>
+                          )}
+
+                          {creator.x_url || creator.twitter_url ? (
+                            <a
+                              href={creator.x_url || creator.twitter_url || undefined}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+                              aria-label="X (Twitter)"
+                            >
+                              <X className="w-4 h-4" />
+                            </a>
+                          ) : (
+                            <div className="p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none">
+                              <X className="w-4 h-4 text-zinc-400" />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ))}
+                      </div>
+                    </Card>
+                  )
+                })}
               </div>
             </>
           )}

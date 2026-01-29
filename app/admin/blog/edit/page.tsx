@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import nextDynamic from 'next/dynamic'
+import NextDynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -27,7 +27,7 @@ import { resolveThumbnailSrc } from '@/lib/thumbnail'
 const STORAGE_BUCKET = 'website-assets'
 
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
-const BlogEditor = nextDynamic(
+const BlogEditor = NextDynamic(
   () => import('@/components/admin/blog-editor').then((mod) => ({ default: mod.BlogEditor })),
   {
     ssr: false,

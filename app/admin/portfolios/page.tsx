@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect, useState, useRef } from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
-import nextDynamic from 'next/dynamic'
+import NextDynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -38,7 +38,7 @@ import type { BlockNoteEditor } from '@blocknote/core'
 const STORAGE_BUCKET = 'website-assets'
 
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
-const PortfolioEditorWrapper = nextDynamic(
+const PortfolioEditorWrapper = NextDynamic(
   () => import('@/components/admin/portfolio-editor-wrapper').then((mod) => ({ default: mod.PortfolioEditorWrapper })),
   {
     ssr: false,
