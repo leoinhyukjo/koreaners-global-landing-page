@@ -3,8 +3,9 @@
 // 관리자 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Plus, Edit, Trash2, Instagram, Youtube, Music, X } from 'lucide-react'
+import nextDynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -25,8 +26,22 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase/client'
 import type { Creator } from '@/lib/supabase'
+import type { BlockNoteEditor } from '@blocknote/core'
 
 const STORAGE_BUCKET = 'website-assets'
+
+// BlockNote 에디터를 클라이언트 사이드에서만 로드
+const PortfolioEditorWrapper = nextDynamic(
+  () => import('@/components/admin/portfolio-editor-wrapper').then((mod) => ({ default: mod.PortfolioEditorWrapper })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border border-border rounded-lg overflow-hidden bg-card min-h-[400px] flex items-center justify-center">
+        <p className="text-muted-foreground">에디터 로딩 중...</p>
+      </div>
+    ),
+  }
+)
 
 export default function CreatorsPage() {
   const [creators, setCreators] = useState<Creator[]>([])
@@ -42,6 +57,10 @@ export default function CreatorsPage() {
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [tiktokUrl, setTiktokUrl] = useState('')
   const [xUrl, setXUrl] = useState('')
+  
+  const [editorContent, setEditorContent] = useState<any[]>([])
+  const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
+  const editorRef = useRef<BlockNoteEditor | null>(null)
 
   useEffect(() => {
     fetchCreators()
@@ -71,7 +90,7 @@ export default function CreatorsPage() {
     setDialogOpen(true)
   }
 
-  function handleEdit(creator: Creator) {
+  function handleEdit(creator: any) {
     setEditingCreator(creator)
     setName(creator.name)
     setProfileImageUrl(creator.profile_image_url || '')
@@ -79,6 +98,14 @@ export default function CreatorsPage() {
     setYoutubeUrl(creator.youtube_url || '')
     setTiktokUrl(creator.tiktok_url || '')
     setXUrl(creator.x_url || creator.twitter_url || '')
+    
+    // 에디터 콘텐츠 설정
+    if (creator.content && Array.isArray(creator.content) && creator.content.length > 0) {
+      setInitialEditorContent(creator.content)
+    } else {
+      setInitialEditorContent(undefined)
+    }
+    
     setDialogOpen(true)
   }
 
@@ -89,44 +116,28 @@ export default function CreatorsPage() {
     setYoutubeUrl('')
     setTiktokUrl('')
     setXUrl('')
+    setInitialEditorContent(undefined)
+    setEditorContent([])
   }
 
   async function uploadImage(file: File): Promise<string> {
     try {
       setUploading(true)
       const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random()}.${fileExt}`
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
       const filePath = `creators/${fileName}`
-
-      console.log('1. 파일 업로드 시도:', fileName)
 
       const { error: uploadError } = await supabase.storage
         .from(STORAGE_BUCKET)
         .upload(filePath, file)
 
-      if (uploadError) {
-        if (
-          typeof uploadError.message === 'string' &&
-          uploadError.message.toLowerCase().includes('bucket') &&
-          uploadError.message.toLowerCase().includes('not found')
-        ) {
-          console.error(
-            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
-          )
-        }
-        throw uploadError
-      }
+      if (uploadError) throw uploadError
 
       const {
         data: { publicUrl },
       } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
 
-      console.log('2. 획득된 Public URL:', publicUrl)
-
-      if (!publicUrl || publicUrl.trim() === '') {
-        console.error('[CreatorsPage] Public URL이 비어있음!')
-        throw new Error('이미지 URL을 생성할 수 없습니다.')
-      }
+      if (!publicUrl) throw new Error('이미지 URL을 생성할 수 없습니다.')
 
       return publicUrl
     } catch (error: any) {
@@ -158,6 +169,7 @@ export default function CreatorsPage() {
 
     try {
       setSaving(true)
+      const content = editorRef.current?.document || editorContent
 
       const creatorData = {
         name,
@@ -165,11 +177,9 @@ export default function CreatorsPage() {
         instagram_url: instagramUrl || null,
         youtube_url: youtubeUrl || null,
         tiktok_url: tiktokUrl || null,
-        // X(Twitter) URL - Supabase 테이블에 x_url(text) 컬럼을 추가하세요.
         x_url: xUrl || null,
+        content: content,
       }
-
-      console.log('3. DB에 저장될 최종 객체:', creatorData)
 
       if (editingCreator) {
         const { error } = await supabase
@@ -235,7 +245,6 @@ export default function CreatorsPage() {
         </Card>
       ) : (
         <>
-          {/* 데스크톱: 테이블 */}
           <div className="hidden md:block">
             <Card>
               <Table>
@@ -243,10 +252,7 @@ export default function CreatorsPage() {
                   <TableRow>
                     <TableHead>이름</TableHead>
                     <TableHead>프로필 이미지</TableHead>
-                  <TableHead>Instagram</TableHead>
-                  <TableHead>YouTube</TableHead>
-                  <TableHead>TikTok</TableHead>
-                  <TableHead>X</TableHead>
+                    <TableHead>SNS</TableHead>
                     <TableHead>생성일</TableHead>
                     <TableHead className="text-right">작업</TableHead>
                   </TableRow>
@@ -267,61 +273,12 @@ export default function CreatorsPage() {
                         )}
                       </TableCell>
                       <TableCell>
-                        {creator.instagram_url ? (
-                          <a
-                            href={creator.instagram_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline"
-                          >
-                            링크
-                          </a>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                      <TableCell>
-                        {creator.x_url || creator.twitter_url ? (
-                          <a
-                            href={creator.x_url || creator.twitter_url || undefined}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline inline-flex items-center gap-1"
-                          >
-                            <X className="h-3 w-3" />
-                            <span>링크</span>
-                          </a>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                        {creator.youtube_url ? (
-                          <a
-                            href={creator.youtube_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline"
-                          >
-                            링크
-                          </a>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {creator.tiktok_url ? (
-                          <a
-                            href={creator.tiktok_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline"
-                          >
-                            링크
-                          </a>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">-</span>
-                        )}
+                        <div className="flex gap-2">
+                          {creator.instagram_url && <Instagram className="h-4 w-4 text-muted-foreground" />}
+                          {creator.youtube_url && <Youtube className="h-4 w-4 text-muted-foreground" />}
+                          {creator.tiktok_url && <Music className="h-4 w-4 text-muted-foreground" />}
+                          {(creator.x_url || creator.twitter_url) && <X className="h-4 w-4 text-muted-foreground" />}
+                        </div>
                       </TableCell>
                       <TableCell>
                         {new Date(creator.created_at).toLocaleDateString('ko-KR')}
@@ -353,72 +310,24 @@ export default function CreatorsPage() {
             </Card>
           </div>
 
-          {/* 모바일: 카드 리스트 */}
           <div className="space-y-4 md:hidden">
             {creators.map((creator) => (
-              <Card
-                key={creator.id}
-                className="overflow-hidden border-border transition-colors hover:border-primary/30"
-              >
-                <div className="flex gap-4 p-4 sm:p-5">
-                  <div className="shrink-0">
-                    {creator.profile_image_url ? (
-                      <img
-                        src={creator.profile_image_url}
-                        alt={creator.name}
-                        className="h-14 w-14 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                        <span className="text-xs">없음</span>
-                      </div>
-                    )}
+              <Card key={creator.id} className="p-4">
+                <div className="flex items-center gap-4">
+                  {creator.profile_image_url && (
+                    <img src={creator.profile_image_url} alt="" className="h-12 w-12 rounded-full object-cover" />
+                  )}
+                  <div className="flex-1">
+                    <h3 className="font-semibold">{creator.name}</h3>
+                    <p className="text-xs text-muted-foreground">{new Date(creator.created_at).toLocaleDateString()}</p>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold leading-snug">{creator.name}</h3>
-                    <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                      {creator.instagram_url && (
-                        <span className="inline-flex items-center gap-1">
-                          <Instagram className="h-3 w-3" /> IG
-                        </span>
-                      )}
-                      {creator.youtube_url && (
-                        <span className="inline-flex items-center gap-1">
-                          <Youtube className="h-3 w-3" /> YT
-                        </span>
-                      )}
-                      {creator.tiktok_url && (
-                        <span className="inline-flex items-center gap-1">
-                          <Music className="h-3 w-3" /> TT
-                        </span>
-                      )}
-                      {(creator.x_url || creator.twitter_url) && (
-                        <span className="inline-flex items-center gap-1">
-                          <X className="h-3 w-3" /> X
-                        </span>
-                      )}
-                      {new Date(creator.created_at).toLocaleDateString('ko-KR')}
-                    </div>
-                    <div className="mt-4 flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(creator)}
-                        className="min-h-[44px] flex-1 gap-2 touch-manipulation"
-                      >
-                        <Edit className="h-4 w-4 shrink-0" />
-                        수정
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(creator.id)}
-                        className="min-h-[44px] flex-1 gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive touch-manipulation"
-                      >
-                        <Trash2 className="h-4 w-4 shrink-0" />
-                        삭제
-                      </Button>
-                    </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(creator)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(creator.id)} className="text-destructive">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -428,131 +337,57 @@ export default function CreatorsPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent
-          className={[
-            'overflow-y-auto',
-            'h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4',
-            'inset-0 top-0 left-0 translate-x-0 translate-y-0',
-            'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-auto md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-lg md:border md:p-6',
-          ].join(' ')}
-        >
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              {editingCreator ? '크리에이터 수정' : '새 크리에이터'}
-            </DialogTitle>
+            <DialogTitle>{editingCreator ? '크리에이터 수정' : '새 크리에이터'}</DialogTitle>
           </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">이름 *</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="크리에이터 이름"
-                className="w-full"
-              />
+          <div className="space-y-6 py-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name">이름 *</Label>
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름" />
+              </div>
+              <div className="space-y-2">
+                <Label>프로필 이미지</Label>
+                <div className="flex items-center gap-4">
+                  <Input type="file" accept="image/*" onChange={handleProfileImageUpload} disabled={uploading} />
+                  {profileImageUrl && <img src={profileImageUrl} alt="" className="h-10 w-10 rounded-full object-cover" />}
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>프로필 이미지</Label>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfileImageUpload}
-                  disabled={uploading}
-                  className="w-full flex-1"
-                />
-                {profileImageUrl && (
-                  <div className="relative h-20 w-20 shrink-0">
-                    <img
-                      src={profileImageUrl}
-                      alt="Profile"
-                      className="h-full w-full rounded-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setProfileImageUrl('')}
-                      className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white"
-                      aria-label="이미지 제거"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                )}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Instagram URL</Label>
+                <Input value={instagramUrl} onChange={(e) => setInstagramUrl(e.target.value)} placeholder="https://..." />
+              </div>
+              <div className="space-y-2">
+                <Label>YouTube URL</Label>
+                <Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="https://..." />
+              </div>
+              <div className="space-y-2">
+                <Label>TikTok URL</Label>
+                <Input value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://..." />
+              </div>
+              <div className="space-y-2">
+                <Label>X (Twitter) URL</Label>
+                <Input value={xUrl} onChange={(e) => setXUrl(e.target.value)} placeholder="https://..." />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="instagram" className="flex items-center gap-2">
-                <Instagram className="h-4 w-4" />
-                Instagram URL
-              </Label>
-              <Input
-                id="instagram"
-                value={instagramUrl}
-                onChange={(e) => setInstagramUrl(e.target.value)}
-                placeholder="https://instagram.com/..."
-                type="url"
-                className="w-full"
+              <Label>본문 내용 (에디터)</Label>
+              <PortfolioEditorWrapper
+                initialContent={initialEditorContent}
+                onContentChange={setEditorContent}
+                uploadFile={uploadImage}
+                onEditorReady={(editor) => (editorRef.current = editor)}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="youtube" className="flex items-center gap-2">
-                <Youtube className="h-4 w-4" />
-                YouTube URL
-              </Label>
-              <Input
-                id="youtube"
-                value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
-                placeholder="https://youtube.com/..."
-                type="url"
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="tiktok" className="flex items-center gap-2">
-                <Music className="h-4 w-4" />
-                TikTok URL
-              </Label>
-              <Input
-                id="tiktok"
-                value={tiktokUrl}
-                onChange={(e) => setTiktokUrl(e.target.value)}
-                placeholder="https://tiktok.com/..."
-                type="url"
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="x" className="flex items-center gap-2">
-                <X className="h-4 w-4" />
-                X (Twitter) URL
-              </Label>
-              <Input
-                id="x"
-                value={xUrl}
-                onChange={(e) => setXUrl(e.target.value)}
-                placeholder="https://x.com/..."
-                type="url"
-                className="w-full"
-              />
-            </div>
-
-            <div className="flex flex-col-reverse gap-2 pt-4 sm:flex-row sm:justify-end">
-              <Button variant="outline" onClick={() => setDialogOpen(false)} className="w-full sm:w-auto">
-                취소
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={saving || uploading}
-                className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
-              >
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>취소</Button>
+              <Button onClick={handleSave} disabled={saving || uploading}>
                 {saving ? '저장 중...' : editingCreator ? '수정' : '생성'}
               </Button>
             </div>

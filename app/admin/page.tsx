@@ -36,15 +36,15 @@ export default function AdminDashboard() {
 
       // 통계 데이터 가져오기
       const [portfoliosResult, blogPostsResult, creatorsResult] = await Promise.all([
-        supabase.from('portfolios').select('id', { count: 'exact', head: true }),
-        supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
-        supabase.from('creators').select('id', { count: 'exact', head: true }),
+        supabase.from('portfolios').select('*', { count: 'exact', head: true }),
+        supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
+        supabase.from('creators').select('*', { count: 'exact', head: true }),
       ])
 
       setStats({
-        portfolios: portfoliosResult.count || 0,
-        blogPosts: blogPostsResult.count || 0,
-        creators: creatorsResult.count || 0,
+        portfolios: portfoliosResult.count ?? 0,
+        blogPosts: blogPostsResult.count ?? 0,
+        creators: creatorsResult.count ?? 0,
       })
 
       // 최근 포트폴리오 가져오기
