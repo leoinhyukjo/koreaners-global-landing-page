@@ -75,96 +75,57 @@ export async function POST(request: NextRequest) {
       marketing_agreement,
     } = body
 
-    // 필수 필드 검증
-    if (!name || !email || !phone || !message) {
-      console.error('[Notion API] 필수 필드 누락:', {
-        name: !!name,
-        email: !!email,
-        phone: !!phone,
-        message: !!message,
-      })
-      return NextResponse.json(
-        { error: '필수 필드가 누락되었습니다.' },
-        { status: 400 }
-      )
+    // 필수 필드 검증 (name, email, message만 필수 / phone, company, position은 선택)
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return NextResponse.json({ error: '성함을 입력해주세요.' }, { status: 400 })
+    }
+    if (!email || typeof email !== 'string' || !email.trim()) {
+      return NextResponse.json({ error: '이메일을 입력해주세요.' }, { status: 400 })
+    }
+    if (!message || typeof message !== 'string' || !message.trim()) {
+      return NextResponse.json({ error: '문의내용을 입력해주세요.' }, { status: 400 })
     }
 
+    const trim = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
+    const has = (v: unknown) => trim(v).length > 0
+
     // Notion 데이터베이스에 페이지 생성
-    // ⚠️ 중요: 아래 속성 이름은 Notion 데이터베이스의 속성 이름과 정확히 일치해야 합니다!
-    // 속성 이름은 대소문자를 구분하므로 정확히 일치해야 합니다.
-    // 
-    // 필드명 대소문자 확인:
-    // - Name (대문자 N)
-    // - Company (대문자 C)
-    // - Position (대문자 P)
-    // - Email (대문자 E)
-    // - Phone (대문자 P)
-    // - Message (대문자 M)
-    // - Privacy Agreement (대문자 P, A, 공백 포함)
-    // - Marketing Agreement (대문자 M, A, 공백 포함)
+    // ⚠️ 속성 이름은 Notion DB와 정확히 일치해야 합니다. 선택 필드는 값이 있을 때만 포함합니다.
     properties = {
-      // Name (title 타입) - Notion DB 속성 이름: "Name"
       Name: {
-        title: [
-          {
-            text: {
-              content: name,
-            },
-          },
-        ],
+        title: [{ text: { content: trim(name) } }],
       },
-      // Company (rich_text 타입) - Notion DB 속성 이름: "Company"
-      Company: {
-        rich_text: [
-          {
-            text: {
-              content: company || '',
-            },
-          },
-        ],
-      },
-      // Position (rich_text 타입) - Notion DB 속성 이름: "Position"
-      Position: {
-        rich_text: [
-          {
-            text: {
-              content: position || '',
-            },
-          },
-        ],
-      },
-      // Email (email 타입) - Notion DB 속성 이름: "Email"
-      Email: {
-        email: email || null,
-      },
-      // Phone (rich_text 타입) - Notion DB 속성 이름: "Phone" (텍스트 유형)
-      Phone: {
-        rich_text: [
-          {
-            text: {
-              content: phone || '',
-            },
-          },
-        ],
-      },
-      // Message (rich_text 타입) - Notion DB 속성 이름: "Message"
       Message: {
-        rich_text: [
-          {
-            text: {
-              content: message || '',
-            },
-          },
-        ],
+        rich_text: [{ text: { content: trim(message) } }],
       },
-      // Privacy Agreement (checkbox 타입) - Notion DB 속성 이름: "Privacy Agreement" (공백 포함)
       'Privacy Agreement': {
-        checkbox: privacy_agreement || false,
+        checkbox: Boolean(privacy_agreement),
       },
-      // Marketing Agreement (checkbox 타입) - Notion DB 속성 이름: "Marketing Agreement" (공백 포함)
       'Marketing Agreement': {
-        checkbox: marketing_agreement || false,
+        checkbox: Boolean(marketing_agreement),
       },
+    }
+
+    // Email: 값이 있을 때만 포함 (Notion email 타입은 빈 값 시 validation_error 발생 가능)
+    if (has(email)) {
+      (properties as Record<string, unknown>)['Email'] = { email: trim(email) }
+    }
+
+    // 선택 필드: 값이 있을 때만 포함 (빈 문자열/undefined 전송 시 에러 방지)
+    if (has(company)) {
+      (properties as Record<string, unknown>)['Company'] = {
+        rich_text: [{ text: { content: trim(company) } }],
+      }
+    }
+    if (has(position)) {
+      (properties as Record<string, unknown>)['Position'] = {
+        rich_text: [{ text: { content: trim(position) } }],
+      }
+    }
+    if (has(phone)) {
+      (properties as Record<string, unknown>)['Phone'] = {
+        rich_text: [{ text: { content: trim(phone) } }],
+      }
     }
 
     console.log('[Notion API] Notion API 호출 시작...')
@@ -230,38 +191,21 @@ export async function POST(request: NextRequest) {
     }
 
     if (error.code === 'validation_error') {
-      console.error('[Notion API] ❌ 속성 검증 실패!')
-      console.error('[Notion API] 에러 메시지:', error.message)
-      
-      // Notion API validation_error는 보통 어떤 필드에서 문제가 났는지 구체적인 정보를 제공합니다
-      if (error.body) {
-        console.error('[Notion API] ====== 상세 에러 정보 ======')
-        console.error('[Notion API] 에러 본문 (전체):', JSON.stringify(error.body, null, 2))
-        
-        // validation_error의 경우 보통 path와 message를 포함합니다
-        if (error.body.path) {
-          console.error('[Notion API] 문제가 발생한 필드 경로:', error.body.path)
-        }
-        if (error.body.message) {
-          console.error('[Notion API] 구체적인 에러 메시지:', error.body.message)
-        }
-        if (error.body.code) {
-          console.error('[Notion API] 에러 코드:', error.body.code)
-        }
-        console.error('[Notion API] =========================')
+      const path = error?.body?.path ?? 'unknown'
+      const bodyMessage = error?.body?.message ?? error?.message ?? ''
+      console.error('[Notion API] ❌ validation_error — 필드 경로:', path, '| 메시지:', bodyMessage)
+      if (error?.body) {
+        console.error('[Notion API] 에러 본문:', JSON.stringify(error.body, null, 2))
       }
-      
-      // 요청했던 properties도 함께 출력하여 비교 가능하게 함 (정의된 경우에만)
       if (properties) {
-        console.error('[Notion API] 전송했던 Properties:', JSON.stringify(properties, null, 2))
+        console.error('[Notion API] 전송했던 Properties 키:', Object.keys(properties))
       }
-      
       return NextResponse.json(
-        { 
-          error: 'Notion 데이터베이스 속성 검증에 실패했습니다. 속성 이름과 타입을 확인해주세요.',
-          details: error.message,
-          body: error.body,
-          sentProperties: properties || null,
+        {
+          error: 'Notion 데이터베이스 속성 검증에 실패했습니다.',
+          validationError: { path, message: bodyMessage },
+          body: error?.body ?? null,
+          sentPropertyKeys: properties ? Object.keys(properties) : null,
         },
         { status: 400 }
       )

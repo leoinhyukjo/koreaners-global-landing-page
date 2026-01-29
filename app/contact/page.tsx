@@ -66,20 +66,12 @@ export default function ContactPage() {
       return
     }
 
-    // 전화번호 유효성 검사
+    // 전화번호: 선택 사항. 입력 시에만 10~11자리 검사
     const cleanPhone = formData.phone.replace(/[^0-9]/g, '')
-    if (!cleanPhone || cleanPhone.length === 0) {
+    if (cleanPhone.length > 0 && (cleanPhone.length < 10 || cleanPhone.length > 11)) {
       toast({
         title: '입력 오류',
-        description: '전화번호를 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
-      toast({
-        title: '입력 오류',
-        description: '올바른 전화번호 형식을 입력해주세요.',
+        description: '올바른 전화번호 형식을 입력해주세요. (10~11자리)',
         variant: 'destructive',
       })
       return
@@ -147,6 +139,12 @@ export default function ContactPage() {
           console.error('[Contact Form] ❌ Notion 저장 실패!')
           console.error('[Contact Form] 에러 상태 코드:', notionResponse.status)
           console.error('[Contact Form] 에러 데이터:', JSON.stringify(errorData, null, 2))
+          if (errorData?.validationError) {
+            console.error('[Contact Form] validation_error — 필드 경로:', errorData.validationError.path, '| 메시지:', errorData.validationError.message)
+          }
+          if (errorData?.sentPropertyKeys) {
+            console.error('[Contact Form] 전송했던 속성 키:', errorData.sentPropertyKeys)
+          }
           // Notion 저장 실패는 로그만 남기고 사용자에게는 알리지 않음
         } else {
           const successData = await notionResponse.json()
@@ -305,13 +303,12 @@ export default function ContactPage() {
               {/* Phone */}
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2 break-keep">
-                  전화번호 <span className="text-primary">*</span>
+                  전화번호 <span className="text-muted-foreground">(선택)</span>
                 </label>
                 <input
                   type="tel"
                   id="phone"
                   name="phone"
-                  required
                   value={formData.phone}
                   onChange={(e) => {
                     // 숫자만 추출 (하이픈, 공백, 기타 문자 제거)
