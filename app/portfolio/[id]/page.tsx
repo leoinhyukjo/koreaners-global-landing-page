@@ -78,7 +78,7 @@ export default function PortfolioDetailPage() {
     return (
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
-        <div className="container mx-auto max-w-4xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
+        <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
           <p className="text-zinc-200">로딩 중...</p>
         </div>
       </main>
@@ -89,7 +89,7 @@ export default function PortfolioDetailPage() {
     return (
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
-        <div className="container mx-auto max-w-4xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
+        <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
           <p className="text-zinc-200 mb-6">포트폴리오를 찾을 수 없습니다.</p>
           <Link href="/portfolio">
             <Button variant="ghost" className="min-h-[44px] text-white hover:bg-zinc-800 border-0">
@@ -109,7 +109,7 @@ export default function PortfolioDetailPage() {
       <Navigation />
 
       <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           {/* 헤더 */}
           <header className="mb-8 sm:mb-12">
             <Link href="/portfolio">

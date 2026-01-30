@@ -43,7 +43,7 @@ export function Navigation() {
   if (!mounted) {
     return (
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/90 backdrop-blur-sm">
-        <div className="container mx-auto px-5 sm:px-6 py-3 sm:py-4">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="text-xl sm:text-2xl font-black text-white">
               KOREANERS GLOBAL
@@ -63,7 +63,7 @@ export function Navigation() {
           : 'bg-zinc-900/90 backdrop-blur-sm'
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0">
             <div className="text-xl sm:text-2xl font-black text-white">

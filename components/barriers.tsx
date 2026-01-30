@@ -29,8 +29,7 @@ export function Barriers() {
 
   return (
     <section className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
-      <div className="container mx-auto px-5 sm:px-6">
-        <div className="max-w-6xl mx-auto">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
               <span className="text-white">일본 시장 진출의 </span>
@@ -65,7 +64,6 @@ export function Barriers() {
               </Card>
             ))}
           </div>
-        </div>
       </div>
     </section>
   )

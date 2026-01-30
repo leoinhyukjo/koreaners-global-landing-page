@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { HeroSection } from '@/components/hero-section'
 import { MarketOpportunity } from '@/components/market-opportunity'
 import { Barriers } from '@/components/barriers'
@@ -9,6 +10,10 @@ import { Navigation } from '@/components/navigation'
 import { FooterCTA } from '@/components/footer-cta'
 import { FloatingCTA } from '@/components/floating-cta'
 import { WelcomePopup } from '@/components/welcome-popup'
+
+export const metadata: Metadata = {
+  title: '코리너스 글로벌 | 일본 마케팅 & 현지화 전략 파트너',
+}
 
 export default function Page() {
   return (

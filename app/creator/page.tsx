@@ -441,8 +441,8 @@ function CreatorContent() {
           </div>
 
           {/* Creator Application Form */}
-          <section className="py-12 sm:py-16 px-5 sm:px-6 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 mb-20">
-            <div className="container mx-auto max-w-5xl">
+          <section className="py-12 sm:py-16 px-4 sm:px-6 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 mb-20">
+            <div className="container mx-auto max-w-7xl">
               <div className="mb-8 sm:mb-12">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep">
                   전속 크리에이터 합류 신청

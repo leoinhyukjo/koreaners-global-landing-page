@@ -3,7 +3,7 @@
 export function FinalCTA() {
   return (
     <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
-      <div className="container mx-auto px-5 sm:px-6 relative z-10">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 text-balance leading-tight break-keep">
             <span className="text-white inline-block">데이터로 진단하고</span>{' '}

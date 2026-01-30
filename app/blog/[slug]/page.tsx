@@ -150,7 +150,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         <Navigation />
         
         <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
-          <div className="container mx-auto max-w-4xl">
+          <div className="container mx-auto max-w-7xl">
             {/* 헤더 */}
             <header className="mb-8 sm:mb-12">
               <Link href="/blog">

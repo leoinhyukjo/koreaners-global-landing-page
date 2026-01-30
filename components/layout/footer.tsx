@@ -5,8 +5,7 @@
 export function Footer() {
   return (
     <footer className="py-8 border-t border-zinc-700/50 bg-zinc-900">
-      <div className="container mx-auto px-5 sm:px-6">
-        <div className="max-w-6xl mx-auto">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* Left-aligned Layout */}
           <div className="flex flex-col items-start gap-4">
             {/* Brand Logo */}
@@ -28,7 +27,6 @@ export function Footer() {
               © 2025 Koreaners Global. All rights reserved.
             </div>
           </div>
-        </div>
       </div>
     </footer>
   )

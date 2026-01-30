@@ -9,25 +9,27 @@ import { Footer } from '@/components/layout/footer'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+  ? process.env.NEXT_PUBLIC_APP_URL.startsWith('http')
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : `https://${process.env.NEXT_PUBLIC_APP_URL}`
+  : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000'
+
 export const metadata: Metadata = {
-  title: 'KOREANERS GLOBAL - 글로벌 비즈니스 파트너',
-  description: '데이터로 진단하고 인프라로 성장을 설계하는 마케팅 아키텍트',
+  metadataBase: new URL(baseUrl),
+  title: '코리너스 글로벌 | KOREANERS GLOBAL',
+  description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
   generator: 'v0.app',
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/icon-dark-32x32.png', sizes: '32x32' },
+      { url: '/icon-light-32x32.png', sizes: '32x32', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', sizes: '32x32', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
+    shortcut: '/icon-dark-32x32.png',
     apple: '/apple-icon.png',
   },
 }

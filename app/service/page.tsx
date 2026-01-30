@@ -71,9 +71,9 @@ export default function ServicePage() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-5 sm:px-6 relative overflow-hidden">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
-        <div className="container mx-auto max-w-5xl relative z-10">
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center space-y-4 sm:space-y-6">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight break-keep">
               <div className="flex flex-col items-center gap-2">
@@ -92,8 +92,8 @@ export default function ServicePage() {
       </section>
 
       {/* Problem & Insight Section */}
-      <section className="py-12 sm:py-20 px-5 sm:px-6">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-12 sm:py-20 px-4 sm:px-6">
+        <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 break-keep">
               일본 마케팅, 왜 비용만 쓰고 성과는 없는가?
@@ -125,8 +125,8 @@ export default function ServicePage() {
       </section>
 
       {/* Service 01: Influencer Marketing */}
-      <section className="py-20 px-5 sm:px-6 bg-zinc-800/30">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-20 px-4 sm:px-6 bg-zinc-800/30">
+        <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-block px-4 py-2 bg-white/10 rounded-none mb-6">
@@ -192,8 +192,8 @@ export default function ServicePage() {
       </section>
 
       {/* Service 02: Seeding */}
-      <section className="py-20 px-5 sm:px-6">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-20 px-4 sm:px-6">
+        <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1">
               <Card className="p-8 bg-zinc-800 border-zinc-700/50">
@@ -259,9 +259,9 @@ export default function ServicePage() {
       </section>
 
       {/* Data & Reporting Section */}
-      <section className="py-20 px-5 sm:px-6 relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800/30 to-zinc-900">
+      <section className="py-20 px-4 sm:px-6 relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800/30 to-zinc-900">
         
-        <div className="container mx-auto max-w-6xl relative z-10">
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-white mb-6 break-keep">
               <span className="inline-block">결과 보고를 넘어,</span>{' '}

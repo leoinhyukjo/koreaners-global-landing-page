@@ -56,7 +56,7 @@ function MarqueeRow({
 export function TrustSignals() {
   return (
     <section className="py-14 sm:py-20 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
-      <div className="container mx-auto px-6 sm:px-8 md:px-10">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-14">
           <h2 className="text-4xl md:text-5xl font-black mb-4 text-white break-keep">
             TRUSTED BY

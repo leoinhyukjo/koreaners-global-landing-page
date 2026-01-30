@@ -32,8 +32,7 @@ export function MarketOpportunity() {
 
   return (
     <section id="market" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800">
-      <div className="container mx-auto px-5 sm:px-6">
-        <div className="max-w-6xl mx-auto">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
               <span className="text-white inline-block">폭발적으로 성장하는</span>{' '}
@@ -79,7 +78,6 @@ export function MarketOpportunity() {
               </FadeIn>
             ))}
           </div>
-        </div>
       </div>
     </section>
   )

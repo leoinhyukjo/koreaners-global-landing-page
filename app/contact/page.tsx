@@ -215,8 +215,8 @@ export default function ContactPage() {
     <main className="min-h-screen bg-background">
       <Navigation />
       
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-5 sm:px-6">
-        <div className="container mx-auto max-w-4xl">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
+        <div className="container mx-auto max-w-7xl">
           <div className="mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 break-keep">
               CONTACT

@@ -16,7 +16,7 @@ export function HeroSection() {
       {/* Background grid effect - subtle */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       
-      <div className="container mx-auto px-5 sm:px-6 relative z-10">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
           {/* BEYOND AGENCY: 뒤쪽 글로우/블러 효과만 */}
           <div className="relative py-8 sm:py-10">
