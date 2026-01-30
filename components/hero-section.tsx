@@ -22,14 +22,14 @@ export function HeroSection() {
       
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
-          {/* BEYOND AGENCY: 뒤쪽 글로우/블러 효과만 */}
-          <div className="relative py-8 sm:py-10">
+          {/* BEYOND AGENCY: 뒤쪽 글로우/블러 효과만 (위 패딩 = BEYOND AGENCY~브랜드명 사이 간격과 동일) */}
+          <div className="relative pt-20 sm:pt-24 pb-8 sm:pb-10">
             <div 
               className="absolute inset-0 flex items-center justify-center pointer-events-none"
               aria-hidden
             >
               <div className="w-[120%] max-w-[32rem] h-32 sm:h-40 md:h-48 bg-white/10 rounded-full blur-3xl" />
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-[20rem] h-24 sm:h-28 bg-amber-400/20 rounded-full blur-2xl" />
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-[20rem] h-24 sm:h-28 bg-white/10 rounded-full blur-2xl" />
             </div>
             <h1 
               className={`relative text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black mb-2 text-balance break-keep transition-all duration-1000 leading-tight ${
@@ -52,12 +52,9 @@ export function HeroSection() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
             <h2 
-              className="relative text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance break-keep leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-amber-200/90"
+              className="relative text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance break-words leading-tight text-white"
             >
               {t('heroBrandName')}
-              <span className="block mt-1 text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white/90">
-                (KOREANERS GLOBAL)
-              </span>
             </h2>
           </div>
           

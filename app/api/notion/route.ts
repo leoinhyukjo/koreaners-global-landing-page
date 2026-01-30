@@ -14,7 +14,7 @@ const notion = new Client({
  * - NOTION_DATABASE_ID: Notion Database ID
  * 
  * Notion Database 속성 예시:
- * - Name (title): 성함
+ * - Name (title): 이름
  * - Company (rich_text): 회사명
  * - Position (rich_text): 직급
  * - Email (email): 이메일
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     // 필수 필드 검증 (name, email, message만 필수 / phone, company, position은 선택)
     if (!name || typeof name !== 'string' || !name.trim()) {
-      return NextResponse.json({ error: '성함을 입력해주세요.' }, { status: 400 })
+      return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
     }
     if (!email || typeof email !== 'string' || !email.trim()) {
       return NextResponse.json({ error: '이메일을 입력해주세요.' }, { status: 400 })

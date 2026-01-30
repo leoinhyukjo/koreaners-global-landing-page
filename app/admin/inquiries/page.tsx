@@ -134,7 +134,7 @@ export default function InquiriesPage() {
                       <span className="sr-only">확인</span>
                     </TableHead>
                     <TableHead>인입 시각</TableHead>
-                    <TableHead>성함</TableHead>
+                    <TableHead>이름</TableHead>
                     <TableHead>회사명</TableHead>
                     <TableHead>전화번호</TableHead>
                     <TableHead>문의내용</TableHead>
@@ -310,7 +310,7 @@ export default function InquiriesPage() {
             <div className="space-y-4 py-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <p className="text-sm font-medium text-muted-foreground">성함</p>
+                  <p className="text-sm font-medium text-muted-foreground">이름</p>
                   <p className="text-base font-medium">{selectedInquiry.name}</p>
                 </div>
                 <div className="space-y-1.5">

@@ -263,7 +263,7 @@ export default function ServicePage() {
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white transition-all duration-500">
+              <Card className="p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricEfficiency')}</h4>
@@ -321,7 +321,7 @@ export default function ServicePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.2)] transition-all duration-500">
+              <Card className="p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricInflow')}</h4>
@@ -377,7 +377,7 @@ export default function ServicePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.2)] transition-all duration-500">
+              <Card className="p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricSpread')}</h4>
@@ -425,7 +425,7 @@ export default function ServicePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.2)] transition-all duration-500">
+              <Card className="p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricQualitative')}</h4>
