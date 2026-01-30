@@ -101,7 +101,7 @@ export default function InquiriesPage() {
     }
   }
 
-  // 마케팅 내용 미리보기 (50자 제한)
+  // 문의내용 미리보기 (50자 제한)
   function getMessagePreview(message: string) {
     if (message.length <= 50) return message
     return message.substring(0, 50) + '...'
@@ -137,7 +137,7 @@ export default function InquiriesPage() {
                     <TableHead>성함</TableHead>
                     <TableHead>회사명</TableHead>
                     <TableHead>전화번호</TableHead>
-                    <TableHead>마케팅 내용</TableHead>
+                    <TableHead>문의내용</TableHead>
                     <TableHead className="text-right">작업</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -248,7 +248,7 @@ export default function InquiriesPage() {
                       })}
                     </p>
                     <div className="mt-2 rounded-lg border border-border bg-muted/30 p-3">
-                      <p className="text-xs font-medium text-muted-foreground mb-1">마케팅 내용</p>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">문의내용</p>
                       <p className="text-sm leading-relaxed line-clamp-3">
                         {inquiry.message}
                       </p>
@@ -328,7 +328,7 @@ export default function InquiriesPage() {
               </div>
 
               <div className="space-y-1.5 border-t pt-4">
-                <p className="text-sm font-medium text-muted-foreground">마케팅 내용</p>
+                <p className="text-sm font-medium text-muted-foreground">문의내용</p>
                 <div className="rounded-lg border border-border bg-muted/30 p-4">
                   <p className="whitespace-pre-wrap text-sm leading-relaxed">
                     {selectedInquiry.message}

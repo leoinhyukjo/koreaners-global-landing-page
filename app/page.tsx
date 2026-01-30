@@ -13,6 +13,7 @@ import { WelcomePopup } from '@/components/welcome-popup'
 
 export const metadata: Metadata = {
   title: '코리너스 글로벌 | 일본 마케팅 & 현지화 전략 파트너',
+  description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
 }
 
 export default function Page() {

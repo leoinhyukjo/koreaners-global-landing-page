@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase/client'
 import type { Portfolio, BlogPost, Creator } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { FolderOpen, FileText, Users, ArrowRight, Calendar } from 'lucide-react'
+import { FolderOpen, FileText, Users, ArrowRight, Calendar, MessageSquare, Mail, Inbox } from 'lucide-react'
 import Link from 'next/link'
 
 export function DashboardPage() {
@@ -14,6 +14,11 @@ export function DashboardPage() {
     portfolios: 0,
     blogPosts: 0,
     creators: 0,
+  })
+  const [inquiryStats, setInquiryStats] = useState({
+    unread: 0,
+    today: 0,
+    total: 0,
   })
   const [recentPortfolios, setRecentPortfolios] = useState<Portfolio[]>([])
   const [recentBlogPosts, setRecentBlogPosts] = useState<BlogPost[]>([])
@@ -31,16 +36,33 @@ export function DashboardPage() {
     try {
       setLoading(true)
 
-      const [portfoliosResult, blogPostsResult, creatorsResult] = await Promise.all([
-        supabase.from('portfolios').select('*', { count: 'exact', head: true }),
-        supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
-        supabase.from('creators').select('*', { count: 'exact', head: true }),
-      ])
+      const now = new Date()
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000)
+
+      const [portfoliosResult, blogPostsResult, creatorsResult, inquiryTotalResult, inquiryUnreadResult, inquiryTodayResult] =
+        await Promise.all([
+          supabase.from('portfolios').select('*', { count: 'exact', head: true }),
+          supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
+          supabase.from('creators').select('*', { count: 'exact', head: true }),
+          supabase.from('inquiries').select('*', { count: 'exact', head: true }),
+          supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('is_read', false),
+          supabase
+            .from('inquiries')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', startOfToday.toISOString())
+            .lt('created_at', endOfToday.toISOString()),
+        ])
 
       setStats({
         portfolios: portfoliosResult.count ?? 0,
         blogPosts: blogPostsResult.count ?? 0,
         creators: creatorsResult.count ?? 0,
+      })
+      setInquiryStats({
+        total: inquiryTotalResult.count ?? 0,
+        unread: inquiryUnreadResult.error ? 0 : (inquiryUnreadResult.count ?? 0),
+        today: inquiryTodayResult.count ?? 0,
       })
 
       const { data: portfolios } = await supabase
@@ -78,7 +100,7 @@ export function DashboardPage() {
           <div className="mt-2 h-5 w-64 animate-pulse rounded bg-muted" />
         </div>
         <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <Card key={i} className="rounded-lg border shadow-sm overflow-hidden">
               <CardHeader className="space-y-0 pb-2">
                 <div className="h-4 w-24 animate-pulse rounded bg-muted" />
@@ -114,6 +136,12 @@ export function DashboardPage() {
     )
   }
 
+  const inquiryStatCards = [
+    { title: '미열람 문의', value: inquiryStats.unread, icon: Mail, href: '/admin/inquiries', color: 'text-amber-500' },
+    { title: '오늘 들어온 문의', value: inquiryStats.today, icon: Inbox, href: '/admin/inquiries', color: 'text-cyan-500' },
+    { title: '전체 문의', value: inquiryStats.total, icon: MessageSquare, href: '/admin/inquiries', color: 'text-indigo-500' },
+  ]
+
   return (
     <div className="space-y-6 sm:space-y-8">
       <div className="mb-8">
@@ -121,7 +149,38 @@ export function DashboardPage() {
         <p className="mt-1 text-sm text-muted-foreground sm:text-base">관리자 패널에 오신 것을 환영합니다</p>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">문의 요약</h2>
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+          {inquiryStatCards.map((stat) => {
+            const Icon = stat.icon
+            return (
+              <Link key={stat.title} href={stat.href}>
+                <Card className="rounded-lg border shadow-sm cursor-pointer transition-all hover:border-primary/50 group">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                    <Icon className={`h-5 w-5 shrink-0 ${stat.color} transition-transform group-hover:scale-110`} />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold sm:text-3xl">
+                      {loading ? (
+                        <span className="inline-block h-8 w-10 animate-pulse rounded bg-muted" aria-hidden />
+                      ) : (
+                        stat.value
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">문의 내역에서 확인</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">콘텐츠 현황</h2>
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         {statCards.map((stat) => {
           const Icon = stat.icon
           return (
@@ -139,6 +198,7 @@ export function DashboardPage() {
             </Link>
           )
         })}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:gap-6 md:grid-cols-2">

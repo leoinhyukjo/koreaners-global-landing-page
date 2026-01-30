@@ -4,7 +4,7 @@ import { PortfoliosListPage } from '@/components/admin/portfolios-list-page'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: '포트폴리오',
+  title: '어드민 | 포트폴리오',
 }
 
 export default function AdminPortfoliosPage() {

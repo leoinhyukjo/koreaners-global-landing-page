@@ -23,9 +23,14 @@ export const metadata: Metadata = {
   description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
   generator: 'v0.app',
   icons: {
-    icon: [{ url: '/favicon.png', type: 'image/png' }],
+    icon: '/favicon.png',
     shortcut: '/favicon.png',
     apple: '/favicon.png',
+  },
+  openGraph: {
+    title: '코리너스 글로벌 | KOREANERS GLOBAL',
+    description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
+    url: baseUrl,
   },
 }
 
