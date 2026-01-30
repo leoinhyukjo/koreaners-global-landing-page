@@ -23,14 +23,9 @@ export const metadata: Metadata = {
   description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
   generator: 'v0.app',
   icons: {
-    icon: [
-      { url: '/icon-dark-32x32.png', sizes: '32x32' },
-      { url: '/icon-light-32x32.png', sizes: '32x32', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', sizes: '32x32', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    shortcut: '/icon-dark-32x32.png',
-    apple: '/apple-icon.png',
+    icon: [{ url: '/favicon.png', type: 'image/png' }],
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
 }
 
