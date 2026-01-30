@@ -13,6 +13,10 @@ export type Portfolio = {
   link: string | null
   content: any // BlockNote JSON
   created_at: string
+  // 일본어 (KR=기존 필드, JP=아래)
+  title_jp?: string | null
+  client_name_jp?: string | null
+  content_jp?: any | null
 }
 
 export type Creator = {
@@ -41,6 +45,12 @@ export type BlogPost = {
   meta_description: string | null
   created_at: string
   updated_at: string
+  // 일본어
+  title_jp?: string | null
+  summary_jp?: string | null
+  content_jp?: any | null
+  meta_title_jp?: string | null
+  meta_description_jp?: string | null
 }
 
 export type Inquiry = {

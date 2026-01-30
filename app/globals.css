@@ -77,7 +77,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
+  /* Include Noto Sans JP for Japanese text; Geist for Latin */
+  --font-sans: 'Geist', var(--font-noto-sans-jp, 'Noto Sans JP'), 'Geist Fallback', sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);

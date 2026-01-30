@@ -1,13 +1,15 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Noto_Sans_JP } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { Footer } from '@/components/layout/footer'
+import { LocaleProvider } from '@/contexts/locale-context'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const geist = Geist({ subsets: ["latin"] })
+const geistMono = Geist_Mono({ subsets: ["latin"] })
+const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], variable: '--font-noto-sans-jp', display: 'swap' })
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL
   ? process.env.NEXT_PUBLIC_APP_URL.startsWith('http')
@@ -40,10 +42,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko">
-      <body className="flex min-h-screen flex-col font-sans antialiased bg-zinc-900">
-        {children}
-        <Footer />
+    <html lang="ko" className={notoSansJP.variable}>
+      <body className={`${geist.className} flex min-h-screen flex-col font-sans antialiased bg-zinc-900`}>
+        <LocaleProvider>
+          {children}
+          <Footer />
+        </LocaleProvider>
         <Toaster />
         <Analytics />
       </body>

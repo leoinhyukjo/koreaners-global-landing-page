@@ -4,6 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import { Navigation } from '@/components/navigation'
+import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,15 +16,20 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
+import { getBlogTitle, getBlogSummary } from '@/lib/localized-content'
 
 const POSTS_PER_PAGE = 12
 
 function BlogContent() {
+  const { locale } = useLocale()
   const [allBlogPosts, setAllBlogPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   
   const currentPage = parseInt(searchParams.get('page') || '1', 10)
   const totalPages = Math.ceil(allBlogPosts.length / POSTS_PER_PAGE)
@@ -42,7 +48,7 @@ function BlogContent() {
       
       // Supabase 객체 정상 생성 확인
       if (!supabase) {
-        setError('환경변수 설정이 누락되었습니다.')
+        setError(t('blogEnvError'))
         setAllBlogPosts([])
         return
       }
@@ -50,7 +56,7 @@ function BlogContent() {
       // Supabase URL이 placeholder인지 확인
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
       if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co') {
-        setError('환경변수 설정이 누락되었습니다.')
+        setError(t('blogEnvError'))
         setAllBlogPosts([])
         return
       }
@@ -70,7 +76,7 @@ function BlogContent() {
       const posts = Array.isArray(data) ? data : []
       setAllBlogPosts(posts)
     } catch (err: any) {
-      const errorMessage = err?.message || '인사이트를 불러오는 중 오류가 발생했습니다.'
+      const errorMessage = err?.message || t('blogLoadError')
       console.error('[Blog] 에러: ' + errorMessage)
       setError(errorMessage)
       setAllBlogPosts([])
@@ -86,11 +92,11 @@ function BlogContent() {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight tracking-tight">
-              <span className="text-white">글로벌 마케팅 </span>
-              <span className="text-white">인사이트</span>
+              <span className="text-white">{t('blogHeroTitle')}</span>
+              <span className="text-white">{t('blogHeroTitle2')}</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty leading-relaxed tracking-normal px-2">
-              글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식 채널
+              {t('blogHeroDesc')}
             </p>
           </div>
 
@@ -99,7 +105,7 @@ function BlogContent() {
             <div className="text-center py-20">
               <div className="space-y-3">
                 <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent"></div>
-                <p className="text-zinc-200 text-lg">인사이트를 준비 중입니다...</p>
+                <p className="text-zinc-200 text-lg">{t('blogLoading')}</p>
               </div>
             </div>
           ) : error ? (
@@ -111,7 +117,7 @@ function BlogContent() {
                   onClick={fetchBlogPosts}
                   className="text-white hover:underline text-sm"
                 >
-                  다시 시도
+                  {t('blogRetry')}
                 </button>
               </div>
             </div>
@@ -119,8 +125,8 @@ function BlogContent() {
             <div className="text-center py-20">
               <div className="space-y-3">
                 <div className="text-zinc-200 text-4xl">📝</div>
-                <p className="text-zinc-200 text-lg">아직 작성된 글이 없습니다.</p>
-                <p className="text-zinc-300 text-sm">곧 새로운 인사이트를 공유할 예정입니다.</p>
+                <p className="text-zinc-200 text-lg">{t('blogEmpty')}</p>
+                <p className="text-zinc-300 text-sm">{t('blogEmptySub')}</p>
               </div>
             </div>
           ) : (
@@ -137,7 +143,7 @@ function BlogContent() {
                         {post.thumbnail_url ? (
                           <SafeImage
                             src={resolveThumbnailSrc(post.thumbnail_url)}
-                            alt={`${post.title} - ${post.category} 블로그 포스트`}
+                            alt={`${getBlogTitle(post, locale)} - ${post.category}`}
                             fill
                             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -146,7 +152,7 @@ function BlogContent() {
                           <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
                             <div className="text-center px-4">
                               <div className="text-4xl mb-2">📝</div>
-                              <p className="text-sm text-zinc-400">준비된 이미지가 없습니다</p>
+                              <p className="text-sm text-zinc-400">{t('performanceNoImage')}</p>
                             </div>
                           </div>
                         )}
@@ -158,11 +164,11 @@ function BlogContent() {
                       {/* Content */}
                       <div className="p-4 sm:p-6 flex-1 flex flex-col">
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors leading-tight tracking-tight">
-                          {post.title}
+                          {getBlogTitle(post, locale)}
                         </h2>
-                        {post.summary && (
+                        {(getBlogSummary(post, locale) ?? post.summary) && (
                           <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed line-clamp-3 tracking-normal">
-                            {post.summary}
+                            {getBlogSummary(post, locale) ?? post.summary}
                           </p>
                         )}
 
@@ -172,7 +178,7 @@ function BlogContent() {
                             {new Date(post.created_at).toLocaleDateString('ko-KR')}
                           </time>
                           <span className="text-xs text-white flex items-center gap-1 group-hover:gap-2 transition-all">
-                            읽기
+                            {t('read')}
                             <ArrowRight className="h-3 w-3" />
                           </span>
                         </div>
@@ -197,7 +203,7 @@ function BlogContent() {
                     className="rounded-none border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
-                    이전
+                    {t('prev')}
                   </Button>
 
                   <div className="flex gap-1">
@@ -246,7 +252,7 @@ function BlogContent() {
                     disabled={currentPage === totalPages}
                     className="rounded-none border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    다음
+                    {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </Button>
                 </div>
@@ -259,35 +265,29 @@ function BlogContent() {
   )
 }
 
+const BlogSkeleton = () => (
+  <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 min-h-screen" aria-hidden="true">
+    <div className="container mx-auto max-w-7xl">
+      <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-5 max-w-3xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+      </div>
+      <div className="text-center py-20">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
+      </div>
+    </div>
+  </section>
+)
+
 export default function BlogPage() {
   return (
     <main className="min-h-screen bg-zinc-900">
       <Navigation />
-      <Suspense
-        fallback={
-          <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
-            <div className="container mx-auto max-w-7xl">
-              <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight tracking-tight">
-                  <span className="text-white">글로벌 마케팅 </span>
-                  <span className="text-white">인사이트</span>
-                </h1>
-                <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty leading-relaxed tracking-normal px-2">
-                  글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식 채널
-                </p>
-              </div>
-              <div className="text-center py-20">
-                <div className="space-y-3">
-                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent"></div>
-                  <p className="text-zinc-200 text-lg">인사이트를 준비 중입니다...</p>
-                </div>
-              </div>
-            </div>
-          </section>
-        }
-      >
-        <BlogContent />
-      </Suspense>
+      <SafeHydration fallback={<BlogSkeleton />}>
+        <Suspense fallback={<BlogSkeleton />}>
+          <BlogContent />
+        </Suspense>
+      </SafeHydration>
     </main>
   )
 }

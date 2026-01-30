@@ -54,14 +54,21 @@ function BlogEditForm() {
   const [summary, setSummary] = useState('')
   const [metaTitle, setMetaTitle] = useState('')
   const [metaDescription, setMetaDescription] = useState('')
+  const [titleJp, setTitleJp] = useState('')
+  const [summaryJp, setSummaryJp] = useState('')
+  const [metaTitleJp, setMetaTitleJp] = useState('')
+  const [metaDescriptionJp, setMetaDescriptionJp] = useState('')
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(!!postId)
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [editorContent, setEditorContent] = useState<any[]>([])
   const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
+  const [editorContentJp, setEditorContentJp] = useState<any[]>([])
+  const [initialEditorContentJp, setInitialEditorContentJp] = useState<any[] | undefined>(undefined)
   const [isMounted, setIsMounted] = useState(false)
   const editorRef = useRef<BlockNoteEditor | null>(null)
+  const editorRefJp = useRef<BlockNoteEditor | null>(null)
 
   // 하이드레이션 불일치 방지를 위한 마운트 체크
   useEffect(() => {
@@ -93,13 +100,20 @@ function BlogEditForm() {
         setSummary(data.summary || '')
         setMetaTitle(data.meta_title || '')
         setMetaDescription(data.meta_description || '')
+        setTitleJp(data.title_jp ?? '')
+        setSummaryJp(data.summary_jp ?? '')
+        setMetaTitleJp(data.meta_title_jp ?? '')
+        setMetaDescriptionJp(data.meta_description_jp ?? '')
         setThumbnailFile(null)
-        
-        // 에디터 초기 콘텐츠 설정
         if (data.content && Array.isArray(data.content) && data.content.length > 0) {
           setInitialEditorContent(data.content)
         } else {
           setInitialEditorContent(undefined)
+        }
+        if (data.content_jp && Array.isArray(data.content_jp) && data.content_jp.length > 0) {
+          setInitialEditorContentJp(data.content_jp)
+        } else {
+          setInitialEditorContentJp(undefined)
         }
       }
     } catch (err: any) {
@@ -361,6 +375,7 @@ function BlogEditForm() {
       if (postId) {
         // 수정
         console.log('8. 수정 모드 - DB 업데이트 시도', { postId })
+        const contentJp = editorRefJp.current?.document ?? editorContentJp
         const updateData = {
           title: title.trim(),
           slug: slug.trim(),
@@ -371,6 +386,11 @@ function BlogEditForm() {
           published: publish,
           meta_title: safeMetaTitle,
           meta_description: safeMetaDescription,
+          title_jp: titleJp.trim() || null,
+          summary_jp: summaryJp.trim() || null,
+          content_jp: Array.isArray(contentJp) && contentJp.length > 0 ? contentJp : null,
+          meta_title_jp: metaTitleJp.trim() || null,
+          meta_description_jp: metaDescriptionJp.trim() || null,
           updated_at: new Date().toISOString(),
         }
         console.log('8-1. 업데이트 데이터:', updateData)
@@ -421,6 +441,7 @@ function BlogEditForm() {
         // 생성
         console.log('9. 생성 모드 - DB 저장 시도')
         const now = new Date().toISOString()
+        const contentJp = editorRefJp.current?.document ?? editorContentJp
         const insertData = {
           title: title.trim(),
           slug: slug.trim(),
@@ -431,7 +452,12 @@ function BlogEditForm() {
           published: publish,
           meta_title: safeMetaTitle,
           meta_description: safeMetaDescription,
-          updated_at: now, // 생성 시에도 updated_at 설정
+          title_jp: titleJp.trim() || null,
+          summary_jp: summaryJp.trim() || null,
+          content_jp: Array.isArray(contentJp) && contentJp.length > 0 ? contentJp : null,
+          meta_title_jp: metaTitleJp.trim() || null,
+          meta_description_jp: metaDescriptionJp.trim() || null,
+          updated_at: now,
         }
         console.log('9-1. 저장 데이터:', { 
           ...insertData, 
@@ -633,6 +659,29 @@ function BlogEditForm() {
                 />
               </div>
 
+              <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2 pt-4">[일본어]</h3>
+              <div className="space-y-2">
+                <Label htmlFor="title_jp">제목 (JP)</Label>
+                <Input
+                  id="title_jp"
+                  value={titleJp}
+                  onChange={(e) => setTitleJp(e.target.value)}
+                  placeholder="タイトル（日本語）"
+                  className="mt-1 w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="summary_jp">요약 (JP)</Label>
+                <Textarea
+                  id="summary_jp"
+                  value={summaryJp}
+                  onChange={(e) => setSummaryJp(e.target.value)}
+                  placeholder="要約（日本語）"
+                  className="mt-1 w-full"
+                  rows={3}
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label>썸네일 이미지</Label>
                 <div className="mt-1 space-y-2">
@@ -701,6 +750,30 @@ function BlogEditForm() {
                 />
                 <p className="mt-1 text-xs text-muted-foreground">{metaDescription.length}/160자</p>
               </div>
+              <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2 pt-4">[일본어] SEO</h3>
+              <div className="space-y-2">
+                <Label htmlFor="meta_title_jp">Meta Title (JP)</Label>
+                <Input
+                  id="meta_title_jp"
+                  value={metaTitleJp}
+                  onChange={(e) => setMetaTitleJp(e.target.value)}
+                  placeholder={titleJp || 'Meta Title（日本語）'}
+                  maxLength={60}
+                  className="mt-1 w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="meta_description_jp">Meta Description (JP)</Label>
+                <Textarea
+                  id="meta_description_jp"
+                  value={metaDescriptionJp}
+                  onChange={(e) => setMetaDescriptionJp(e.target.value)}
+                  placeholder={summaryJp || 'Meta Description（日本語）'}
+                  maxLength={160}
+                  rows={3}
+                  className="mt-1 w-full"
+                />
+              </div>
             </div>
           </div>
 
@@ -714,6 +787,7 @@ function BlogEditForm() {
                 </div>
               ) : (
                 <>
+                  <Label className="block mb-2">[한국어] 본문 내용 *</Label>
                   <BlogEditor
                     initialContent={initialEditorContent}
                     onContentChange={(content) => {
@@ -724,6 +798,19 @@ function BlogEditForm() {
                       editorRef.current = editor
                     }}
                   />
+                  <div className="mt-6">
+                    <Label className="block mb-2">[일본어] 본문 내용 (JP)</Label>
+                    <BlogEditor
+                      initialContent={initialEditorContentJp}
+                      onContentChange={(content) => {
+                        setEditorContentJp(content)
+                      }}
+                      uploadFile={uploadImage}
+                      editorRef={(editor) => {
+                        editorRefJp.current = editor
+                      }}
+                    />
+                  </div>
                   <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-md">
                     <div className="text-sm text-muted-foreground">
                       <strong className="text-foreground">💡 서식 팁:</strong> 텍스트를 선택하면 상단 툴바에서 

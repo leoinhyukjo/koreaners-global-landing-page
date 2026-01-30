@@ -3,8 +3,12 @@
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 export function HeroSection() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export function HeroSection() {
             <h2 
               className="relative text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance break-keep leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-amber-200/90"
             >
-              코리너스 글로벌
+              {t('heroBrandName')}
               <span className="block mt-1 text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white/90">
                 (KOREANERS GLOBAL)
               </span>
@@ -64,13 +68,13 @@ export function HeroSection() {
           >
             <a href="/contact">
               <Button size="lg" className="text-lg px-8 w-full sm:w-auto font-black">
-                무료 상담 신청
+                {t('heroCtaFreeConsult')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </a>
             <a href="/portfolio">
               <Button size="lg" variant="outline" className="text-lg px-8 w-full sm:w-auto font-black">
-                성공 사례 보기
+                {t('heroCtaViewCases')}
               </Button>
             </a>
           </div>

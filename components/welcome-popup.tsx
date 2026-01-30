@@ -7,8 +7,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 export function WelcomePopup() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [isOpen, setIsOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -36,7 +40,7 @@ export function WelcomePopup() {
     e.preventDefault()
     
     if (!email || !email.includes('@')) {
-      toast.error('올바른 이메일을 입력해주세요')
+      toast.error(t('welcomePopupErrorEmail'))
       return
     }
 
@@ -54,14 +58,14 @@ export function WelcomePopup() {
 
       if (error) throw error
 
-      toast.success('신청이 완료되었습니다!', {
-        description: '빠른 시일 내에 연락드리겠습니다.',
+      toast.success(t('welcomePopupSuccess'), {
+        description: t('welcomePopupSuccessDesc'),
       })
       
       handleClose()
     } catch (error) {
       console.error('Error:', error)
-      toast.error('신청 중 오류가 발생했습니다')
+      toast.error(t('welcomePopupErrorSubmit'))
     } finally {
       setSubmitting(false)
     }
@@ -96,24 +100,22 @@ export function WelcomePopup() {
                 <X className="w-5 h-5" />
               </button>
 
-              {/* Content */}
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-black text-white mb-2">
-                  일본 시장 진출
+                  {t('welcomePopupTitle1')}
                 </h3>
                 <h2 className="text-3xl font-black text-white mb-4">
-                  무료 진단 받기
+                  {t('welcomePopupTitle2')}
                 </h2>
                 <p className="text-zinc-300 text-sm">
-                  이메일을 남겨주시면 맞춤형 진단 결과를 보내드립니다
+                  {t('welcomePopupDesc')}
                 </p>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   type="email"
-                  placeholder="이메일 주소"
+                  placeholder={t('welcomePopupPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-zinc-800 border-zinc-700 text-white rounded-none"
@@ -124,12 +126,12 @@ export function WelcomePopup() {
                   disabled={submitting}
                   className="w-full bg-white text-black hover:bg-zinc-200 rounded-none font-black"
                 >
-                  {submitting ? '신청 중...' : '무료 진단 받기'}
+                  {submitting ? t('welcomePopupSubmitting') : t('welcomePopupSubmit')}
                 </Button>
               </form>
 
               <p className="text-xs text-zinc-500 text-center mt-4">
-                신청 시 개인정보 수집 및 마케팅 활용에 동의한 것으로 간주됩니다
+                {t('welcomePopupConsent')}
               </p>
             </div>
           </motion.div>

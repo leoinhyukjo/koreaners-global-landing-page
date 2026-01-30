@@ -2,29 +2,19 @@
 
 import { Card } from '@/components/ui/card'
 import { Database, Shield, Target, AlertTriangle } from 'lucide-react'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
+
+const BARRIER_DESC_KEYS = ['barrier1Desc', 'barrier2Desc', 'barrier3Desc', 'barrier4Desc'] as const
 
 export function Barriers() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const barriers = [
-    {
-      icon: Database,
-      title: 'Data Black-box',
-      description: '시장 데이터가 불투명해 정확한 진단이 불가능',
-    },
-    {
-      icon: Shield,
-      title: 'Trust Barrier',
-      description: '현지 소비자 신뢰 구축이 어렵고 시간이 오래 걸림',
-    },
-    {
-      icon: Target,
-      title: 'Lack of Strategy',
-      description: '일회성 캠페인으로는 지속 가능한 성장 불가',
-    },
-    {
-      icon: AlertTriangle,
-      title: 'Operational Risk',
-      description: '언어, 문화, 운영 리스크로 인한 실패 가능성',
-    },
+    { icon: Database, title: 'Data Black-box', descKey: BARRIER_DESC_KEYS[0] },
+    { icon: Shield, title: 'Trust Barrier', descKey: BARRIER_DESC_KEYS[1] },
+    { icon: Target, title: 'Lack of Strategy', descKey: BARRIER_DESC_KEYS[2] },
+    { icon: AlertTriangle, title: 'Operational Risk', descKey: BARRIER_DESC_KEYS[3] },
   ]
 
   return (
@@ -32,11 +22,11 @@ export function Barriers() {
       <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white">일본 시장 진출의 </span>
-              <span className="text-white">4가지 장벽</span>
+              <span className="text-white">{t('barriersTitle1')}</span>
+              <span className="text-white">{t('barriersTitle2')}</span>
             </h2>
             <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
-              많은 기업들이 이 장벽 앞에서 실패합니다
+              {t('barriersSubtitle')}
             </p>
           </div>
 
@@ -57,7 +47,7 @@ export function Barriers() {
                       {barrier.title}
                     </h3>
                     <p className="text-zinc-200 leading-relaxed break-keep text-sm">
-                      {barrier.description}
+                      {t(barrier.descKey)}
                     </p>
                   </div>
                 </div>

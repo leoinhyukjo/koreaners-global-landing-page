@@ -1,16 +1,37 @@
 'use client'
 
 import { Navigation } from '@/components/navigation'
+import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import Link from 'next/link'
+import { useLocale } from '@/contexts/locale-context'
+import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
+import { getTranslation } from '@/lib/translations'
+
+const PortfolioSkeleton = () => (
+  <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 min-h-screen" aria-hidden="true">
+    <div className="container mx-auto max-w-7xl">
+      <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-5 max-w-3xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+      </div>
+      <div className="text-center py-20">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
+      </div>
+    </div>
+  </section>
+)
 
 export default function PortfolioPage() {
+  const { locale } = useLocale()
   const [activeTab, setActiveTab] = useState('all')
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [loading, setLoading] = useState(true)
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
+  const noImageText = t('performanceNoImage')
 
   useEffect(() => {
     fetchPortfolios()
@@ -74,18 +95,18 @@ export default function PortfolioPage() {
   return (
     <main className="min-h-screen bg-zinc-900">
       <Navigation />
-      
+      <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
-              <span className="text-white">검증된 성과로 증명하는</span>
+              <span className="text-white">{t('portfolioPageHero1')}</span>
               <br />
-              <span className="text-white">일본 시장 전문성</span>
+              <span className="text-white">{t('portfolioPageHero2')}</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty px-2">
-              Beauty, Fashion, F&B 카테고리에서 일관되게 입증된 마케팅 성과
+              {t('portfolioPageHeroSub')}
             </p>
           </div>
 
@@ -109,14 +130,12 @@ export default function PortfolioPage() {
           {/* Portfolio Grid */}
           {loading ? (
             <div className="text-center py-20">
-              <p className="text-zinc-200">로딩 중...</p>
+              <p className="text-zinc-200">{t('loading')}</p>
             </div>
           ) : filteredItems.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-zinc-200 text-lg">
-                {portfolios.length === 0 
-                  ? '등록된 포트폴리오가 없습니다.'
-                  : '선택한 카테고리에 해당하는 포트폴리오가 없습니다.'}
+                {portfolios.length === 0 ? t('portfolioEmpty') : t('portfolioEmptyFilter')}
               </p>
             </div>
           ) : (
@@ -131,7 +150,7 @@ export default function PortfolioPage() {
                       <div className="aspect-video relative overflow-hidden bg-zinc-800">
                         <img
                           src={item.thumbnail_url}
-                          alt={item.title}
+                          alt={getPortfolioTitle(item, locale)}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           onError={(e) => {
                             // 이미지 로드 실패 시 플레이스홀더로 대체
@@ -146,7 +165,7 @@ export default function PortfolioPage() {
                                   <div class="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase mb-2">
                                     ${getCategoryInitial(item.category)}
                                   </div>
-                                  <p class="text-xs text-zinc-400">준비된 이미지가 없습니다</p>
+                                  <p class="text-xs text-zinc-400">${noImageText}</p>
                                 </div>
                               `
                               parent.appendChild(placeholder)
@@ -166,7 +185,7 @@ export default function PortfolioPage() {
                             <div className="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase mb-2">
                               {getCategoryInitial(item.category)}
                             </div>
-                            <p className="text-xs text-zinc-400">준비된 이미지가 없습니다</p>
+                            <p className="text-xs text-zinc-400">{noImageText}</p>
                           </div>
                         </div>
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
@@ -180,10 +199,10 @@ export default function PortfolioPage() {
                     {/* Content */}
                     <div className="p-4 sm:p-6 flex-1 flex flex-col">
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors">
-                        {item.title}
+                        {getPortfolioTitle(item, locale)}
                       </h3>
                       <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed">
-                        {item.client_name}
+                        {getPortfolioClientName(item, locale)}
                       </p>
 
                       {/* Category Tags */}
@@ -207,6 +226,7 @@ export default function PortfolioPage() {
           )}
         </div>
       </section>
+      </SafeHydration>
     </main>
   )
 }

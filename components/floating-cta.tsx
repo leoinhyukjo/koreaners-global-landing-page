@@ -4,8 +4,12 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 export function FloatingCTA() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [isVisible, setIsVisible] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -43,14 +47,14 @@ export function FloatingCTA() {
               className="bg-white text-black rounded-none shadow-2xl p-4 flex items-center gap-3"
             >
               <div className="flex flex-col">
-                <span className="font-black text-sm whitespace-nowrap">무료 상담 신청</span>
-                <span className="text-xs text-zinc-600">지금 바로 문의하세요</span>
+                <span className="font-black text-sm whitespace-nowrap">{t('floatingCtaLabel')}</span>
+                <span className="text-xs text-zinc-600">{t('floatingCtaSublabel')}</span>
               </div>
               <Button
                 onClick={scrollToContact}
                 className="bg-black text-white hover:bg-zinc-800 rounded-none font-black px-4"
               >
-                신청하기
+                {t('floatingCtaApply')}
               </Button>
               <button
                 onClick={() => setIsExpanded(false)}

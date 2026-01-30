@@ -8,6 +8,8 @@ import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { toast as sonnerToast } from 'sonner'
 import { ConsentModal } from '@/components/consent-modal'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 import {
   Dialog,
   DialogContent,
@@ -19,6 +21,8 @@ import {
 import { CheckCircle2 } from 'lucide-react'
 
 export function FooterCTA() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const { toast } = useToast()
   const [formData, setFormData] = useState({
     name: '',
@@ -38,48 +42,77 @@ export function FooterCTA() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // 필수 동의 확인
     if (!formData.privacyConsent) {
       toast({
-        title: '필수 동의',
-        description: '개인정보 수집 및 이용에 동의해주세요.',
+        title: t('toastRequiredConsent'),
+        description: t('toastRequiredConsentDesc'),
         variant: 'destructive',
       })
       return
     }
 
-    // 이메일 유효성 검사
+    if (!formData.name?.trim()) {
+      toast({
+        title: t('toastInputError'),
+        description: t('toastNameRequired'),
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!formData.company?.trim()) {
+      toast({
+        title: t('toastInputError'),
+        description: t('toastCompanyRequired'),
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!formData.position?.trim()) {
+      toast({
+        title: t('toastInputError'),
+        description: t('toastPositionRequired'),
+        variant: 'destructive',
+      })
+      return
+    }
     if (!formData.email || !formData.email.trim()) {
       toast({
-        title: '입력 오류',
-        description: '이메일을 입력해주세요.',
+        title: t('toastInputError'),
+        description: t('toastEmailRequired'),
         variant: 'destructive',
       })
       return
     }
     if (!formData.email.includes('@')) {
       toast({
-        title: '입력 오류',
-        description: '올바른 이메일 형식을 입력해주세요.',
+        title: t('toastInputError'),
+        description: t('toastEmailInvalid'),
         variant: 'destructive',
       })
       return
     }
 
-    // 전화번호 유효성 검사
     const cleanPhone = formData.phone.replace(/[^0-9]/g, '')
     if (!cleanPhone || cleanPhone.length === 0) {
       toast({
-        title: '입력 오류',
-        description: '전화번호를 입력해주세요.',
+        title: t('toastInputError'),
+        description: t('toastPhoneRequired'),
         variant: 'destructive',
       })
       return
     }
     if (cleanPhone.length < 10 || cleanPhone.length > 11) {
       toast({
-        title: '입력 오류',
-        description: '올바른 전화번호 형식을 입력해주세요.',
+        title: t('toastInputError'),
+        description: t('toastPhoneInvalid'),
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!formData.message?.trim()) {
+      toast({
+        title: t('toastInputError'),
+        description: t('toastMessageRequired'),
         variant: 'destructive',
       })
       return
@@ -123,9 +156,8 @@ export function FooterCTA() {
       // 성공 Dialog 표시
       setSuccessDialogOpen(true)
       
-      // Sonner Toast 표시
-      sonnerToast.success('문의가 성공적으로 접수되었습니다!', {
-        description: '빠른 시일 내에 연락드리겠습니다.',
+      sonnerToast.success(t('toastSuccessTitle'), {
+        description: t('toastSuccessDesc'),
         duration: 5000,
       })
 
@@ -173,8 +205,7 @@ export function FooterCTA() {
       console.error('[Footer CTA] Error type:', typeof error)
       console.error('[Footer CTA] Error keys:', Object.keys(error || {}))
       
-      // 에러 메시지 구성
-      let errorMessage = '신청 처리 중 오류가 발생했습니다. 다시 시도해주세요.'
+      let errorMessage = t('toastErrorDefault')
       
       if (error) {
         if (error.message) {
@@ -194,7 +225,7 @@ export function FooterCTA() {
       }
 
       toast({
-        title: '오류 발생',
+        title: t('toastErrorTitle'),
         description: errorMessage,
         variant: 'destructive',
       })
@@ -224,12 +255,12 @@ export function FooterCTA() {
       <div className="container mx-auto max-w-7xl">
         <div className="mb-8 sm:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep">
-            CONTACT
+            {t('footerCtaTitle')}
           </h1>
           <p className="text-base sm:text-lg text-zinc-200 leading-relaxed mb-2 font-medium break-keep max-w-prose">
-            <span className="inline-block">국내·외 크리에이터 네트워크와</span>{' '}
-            <span className="inline-block">데이터 기반 전략으로</span>{' '}
-            <span className="inline-block">성과를 설계합니다.</span>
+            <span className="inline-block">{t('footerCtaDesc1')}</span>{' '}
+            <span className="inline-block">{t('footerCtaDesc2')}</span>{' '}
+            <span className="inline-block">{t('footerCtaDesc3')}</span>
           </p>
         </div>
 
@@ -238,7 +269,7 @@ export function FooterCTA() {
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="footer-name" className="block text-sm font-bold text-white mb-2">
-                성함 <span className="text-white">*</span>
+                {t('formName')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -248,13 +279,13 @@ export function FooterCTA() {
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                placeholder="성함을 입력해주세요."
+                placeholder={t('formPlaceholderName')}
               />
             </div>
 
             <div>
               <label htmlFor="footer-company" className="block text-sm font-bold text-white mb-2">
-                회사명 <span className="text-white">*</span>
+                {t('formCompany')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -264,16 +295,15 @@ export function FooterCTA() {
                 value={formData.company}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                placeholder="회사명을 입력해주세요."
+                placeholder={t('formPlaceholderCompany')}
               />
             </div>
           </div>
 
-          {/* Position and Email */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="footer-position" className="block text-sm font-bold text-white mb-2">
-                직급 <span className="text-white">*</span>
+                {t('formPosition')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -283,13 +313,13 @@ export function FooterCTA() {
                 value={formData.position}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                placeholder="직급을 입력해주세요."
+                placeholder={t('formPlaceholderPosition')}
               />
             </div>
 
             <div>
               <label htmlFor="footer-email" className="block text-sm font-bold text-white mb-2">
-                이메일 <span className="text-white">*</span>
+                {t('formEmail')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -304,10 +334,9 @@ export function FooterCTA() {
             </div>
           </div>
 
-          {/* Phone */}
           <div>
             <label htmlFor="footer-phone" className="block text-sm font-bold text-white mb-2">
-              전화번호 <span className="text-white">*</span>
+              {t('formPhone')} <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
@@ -316,22 +345,20 @@ export function FooterCTA() {
               required
               value={formData.phone}
               onChange={(e) => {
-                // 숫자만 추출 (하이픈, 공백, 기타 문자 제거)
                 const value = e.target.value.replace(/[^0-9]/g, '')
                 setFormData({ ...formData, phone: value })
               }}
               className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-              placeholder="01012345678 (하이픈 제외)"
+              placeholder={t('formPlaceholderPhone')}
             />
             <p className="mt-1.5 text-xs text-zinc-300">
-              하이픈(-) 없이 숫자만 입력해주세요. (10-11자리)
+              {t('formPhoneHint')}
             </p>
           </div>
 
-          {/* Message */}
           <div>
             <label htmlFor="footer-message" className="block text-sm font-bold text-white mb-2">
-              문의내용 <span className="text-white">*</span>
+              {t('formMessage')} <span className="text-red-500">*</span>
             </label>
             <textarea
               id="footer-message"
@@ -341,7 +368,7 @@ export function FooterCTA() {
               value={formData.message}
               onChange={handleChange}
               className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
-              placeholder="문의내용을 남겨주세요."
+              placeholder={t('formPlaceholderMessage')}
             />
           </div>
 
@@ -361,7 +388,6 @@ export function FooterCTA() {
                 className="flex-1 cursor-pointer group"
               >
                 <span className="text-sm text-zinc-200 group-hover:text-white transition-colors">
-                  개인정보 수집 및 이용 동의{' '}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -370,9 +396,9 @@ export function FooterCTA() {
                     }}
                     className="text-white underline hover:no-underline focus:outline-none"
                   >
-                    [필수]
+                    {t('formPrivacyLabel')}
                   </button>{' '}
-                  <span className="text-white">*</span>
+                  <span className="text-red-500">*</span>
                 </span>
               </label>
             </div>
@@ -391,7 +417,6 @@ export function FooterCTA() {
                 className="flex-1 cursor-pointer group"
               >
                 <span className="text-sm text-zinc-200 group-hover:text-white transition-colors">
-                  마케팅 활용 동의{' '}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -400,7 +425,7 @@ export function FooterCTA() {
                     }}
                     className="text-white underline hover:no-underline focus:outline-none"
                   >
-                    [선택]
+                    {t('formMarketingLabel')}
                   </button>
                 </span>
               </label>
@@ -427,17 +452,16 @@ export function FooterCTA() {
                   <CheckCircle2 className="h-10 w-10 text-white" />
                 </div>
                 <DialogTitle className="text-2xl font-black text-white">
-                  상담 신청 완료
+                  {t('dialogSuccessTitle')}
                 </DialogTitle>
                 <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
-                  상담 신청이 정상적으로 접수되었습니다. 담당자가 확인 후 1~2 영업일 내로 연락드리겠습니다. 감사합니다.
+                  {t('dialogSuccessDesc')}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter className="sm:justify-center">
                 <Button
                   onClick={() => {
                     setSuccessDialogOpen(false)
-                    // 폼 초기화
                     setFormData({
                       name: '',
                       company: '',
@@ -451,20 +475,19 @@ export function FooterCTA() {
                   }}
                   className="w-full sm:w-auto px-8 font-black rounded-none"
                 >
-                  확인
+                  {t('dialogConfirm')}
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
-          {/* Submit Button */}
           <div className="text-center pt-4">
             <Button 
               type="submit" 
               disabled={submitting}
               className="px-12 py-6 text-lg font-black rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? '처리 중...' : '무료 상담 신청하기'}
+              {submitting ? t('formSubmitting') : t('formSubmit')}
             </Button>
           </div>
         </form>

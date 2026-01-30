@@ -6,27 +6,49 @@ import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import { Navigation } from '@/components/navigation'
+import { SafeHydration } from '@/components/common/SafeHydration'
 import { MarketingCTA } from '@/components/common/marketing-cta'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale } from '@/contexts/locale-context'
+import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
+import { getTranslation } from '@/lib/translations'
+
+function PortfolioContentLoadingPlaceholder() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
+  return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <p className="text-zinc-200">{t('contentLoading')}</p>
+    </div>
+  )
+}
 
 const PortfolioContentClient = dynamic(
   () => import('@/components/portfolio/portfolio-content-client').then((mod) => ({ default: mod.PortfolioContentClient })),
   {
     ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <p className="text-zinc-200">콘텐츠를 불러오는 중...</p>
-      </div>
-    ),
+    loading: () => <PortfolioContentLoadingPlaceholder />,
   }
+)
+
+const PortfolioDetailSkeleton = () => (
+  <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 min-h-screen" aria-hidden="true">
+    <div className="container mx-auto max-w-7xl">
+      <div className="h-10 w-48 bg-zinc-800/50 rounded animate-pulse mb-8" />
+      <div className="aspect-video bg-zinc-800/50 rounded animate-pulse mb-6" />
+      <div className="h-8 max-w-2xl bg-zinc-800/50 rounded animate-pulse" />
+    </div>
+  </div>
 )
 
 export default function PortfolioDetailPage() {
   const params = useParams()
   const id = params.id as string
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [otherPortfolios, setOtherPortfolios] = useState<Portfolio[]>([])
   const [loading, setLoading] = useState(true)
@@ -78,9 +100,11 @@ export default function PortfolioDetailPage() {
     return (
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
-        <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
-          <p className="text-zinc-200">로딩 중...</p>
-        </div>
+        <SafeHydration fallback={<PortfolioDetailSkeleton />}>
+          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
+            <p className="text-zinc-200">{t('loading')}</p>
+          </div>
+        </SafeHydration>
       </main>
     )
   }
@@ -89,50 +113,55 @@ export default function PortfolioDetailPage() {
     return (
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
-        <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
-          <p className="text-zinc-200 mb-6">포트폴리오를 찾을 수 없습니다.</p>
-          <Link href="/portfolio">
-            <Button variant="ghost" className="min-h-[44px] text-white hover:bg-zinc-800 border-0">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              목록으로
-            </Button>
-          </Link>
-        </div>
+        <SafeHydration fallback={<PortfolioDetailSkeleton />}>
+          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
+            <p className="text-zinc-200 mb-6">{t('portfolioNotFound')}</p>
+            <Link href="/portfolio">
+              <Button variant="ghost" className="min-h-[44px] text-white hover:bg-zinc-800 border-0">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {t('backToList')}
+              </Button>
+            </Link>
+          </div>
+        </SafeHydration>
       </main>
     )
   }
 
-  const hasContent = portfolio.content && Array.isArray(portfolio.content) && portfolio.content.length > 0
+  const displayTitle = getPortfolioTitle(portfolio, locale)
+  const displayClientName = getPortfolioClientName(portfolio, locale)
+  const contentToShow = locale === 'ja' && portfolio.content_jp && Array.isArray(portfolio.content_jp) && portfolio.content_jp.length > 0
+    ? portfolio.content_jp
+    : (portfolio.content && Array.isArray(portfolio.content) ? portfolio.content : [])
+  const hasContent = contentToShow.length > 0
 
   return (
     <main className="min-h-screen relative overflow-hidden bg-zinc-900">
       <Navigation />
-
+      <SafeHydration fallback={<PortfolioDetailSkeleton />}>
       <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
         <div className="container mx-auto max-w-7xl">
-          {/* 헤더 */}
           <header className="mb-8 sm:mb-12">
             <Link href="/portfolio">
               <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-zinc-800 border-0">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                목록으로
+                {t('backToList')}
               </Button>
             </Link>
 
             <div className="space-y-4 sm:space-y-6">
-              {/* Hero Image - 블로그와 동일하게 상단 배치 */}
               <div className="aspect-video rounded-none overflow-hidden border border-zinc-700/50 relative bg-zinc-800">
                 {portfolio.thumbnail_url ? (
                   <img
                     src={portfolio.thumbnail_url}
-                    alt={portfolio.title}
+                    alt={displayTitle}
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
                     <div className="text-center px-4">
                       <div className="text-4xl mb-2">📁</div>
-                      <p className="text-sm text-zinc-400">준비된 이미지가 없습니다</p>
+                      <p className="text-sm text-zinc-400">{t('performanceNoImage')}</p>
                     </div>
                   </div>
                 )}
@@ -141,11 +170,11 @@ export default function PortfolioDetailPage() {
               {/* 타이틀 섹션: 제목 + 제작 날짜만 */}
               <div>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight break-keep text-white">
-                  {portfolio.title}
+                  {displayTitle}
                 </h1>
                 <time className="text-xs sm:text-sm text-zinc-400 flex items-center gap-1.5 break-keep" dateTime={portfolio.created_at}>
                   <Calendar className="h-3.5 w-3.5" />
-                  {new Date(portfolio.created_at).toLocaleDateString('ko-KR')}
+                  {new Date(portfolio.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                 </time>
               </div>
             </div>
@@ -158,20 +187,18 @@ export default function PortfolioDetailPage() {
           <div className="border border-zinc-700/50 bg-zinc-800 p-4 sm:p-6 md:p-8 lg:p-10 rounded-none blog-content-wrapper">
             {hasContent ? (
               <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-200 leading-relaxed">
-                <PortfolioContentClient portfolio={portfolio} />
+                <PortfolioContentClient portfolio={portfolio} content={contentToShow} />
               </div>
             ) : (
-              <p className="text-zinc-400">콘텐츠가 없습니다.</p>
+              <p className="text-zinc-400">{t('portfolioNoContent')}</p>
             )}
           </div>
 
-          {/* 마케팅 문의 CTA */}
           <MarketingCTA />
 
-          {/* 다른 포트폴리오 보기 - 블로그의 관련 게시글 영역 대체 */}
           {otherPortfolios.length > 0 && (
             <section className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-zinc-700/50">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">다른 포트폴리오 보기</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">{t('portfolioOther')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {otherPortfolios.map((item) => (
                   <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
@@ -180,7 +207,7 @@ export default function PortfolioDetailPage() {
                         {item.thumbnail_url ? (
                           <img
                             src={item.thumbnail_url}
-                            alt={item.title}
+                            alt={getPortfolioTitle(item, locale)}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
                         ) : (
@@ -193,9 +220,9 @@ export default function PortfolioDetailPage() {
                       </div>
                       <div className="p-4">
                         <h3 className="font-bold text-white group-hover:text-white transition-colors line-clamp-2">
-                          {item.title}
+                          {getPortfolioTitle(item, locale)}
                         </h3>
-                        <p className="text-sm text-zinc-400 mt-1">{item.client_name}</p>
+                        <p className="text-sm text-zinc-400 mt-1">{getPortfolioClientName(item, locale)}</p>
                       </div>
                     </Card>
                   </Link>
@@ -204,7 +231,7 @@ export default function PortfolioDetailPage() {
               <div className="mt-6 text-center">
                 <Link href="/portfolio">
                   <Button variant="outline" className="text-white border-zinc-600 hover:bg-zinc-800 hover:text-white rounded-none">
-                    포트폴리오 전체 보기
+                    {t('portfolioViewAll')}
                   </Button>
                 </Link>
               </div>
@@ -212,6 +239,7 @@ export default function PortfolioDetailPage() {
           )}
         </div>
       </article>
+      </SafeHydration>
     </main>
   )
 }

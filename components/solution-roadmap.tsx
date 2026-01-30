@@ -2,69 +2,31 @@
 
 import { Card } from '@/components/ui/card'
 import { Activity, Sprout, Zap, Settings } from 'lucide-react'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
+
+const STEP_KEYS = [
+  { number: '01', icon: Activity, tag: 'Diagnostic', titleKey: 'solutionStep1Title' as const, descKey: 'solutionStep1Desc' as const, featureKeys: ['solutionStep1F1', 'solutionStep1F2', 'solutionStep1F3'] as const },
+  { number: '02', icon: Sprout, tag: 'Seeding', titleKey: 'solutionStep2Title' as const, descKey: 'solutionStep2Desc' as const, featureKeys: ['solutionStep2F1', 'solutionStep2F2', 'solutionStep2F3'] as const },
+  { number: '03', icon: Zap, tag: 'Impact', titleKey: 'solutionStep3Title' as const, descKey: 'solutionStep3Desc' as const, featureKeys: ['solutionStep3F1', 'solutionStep3F2', 'solutionStep3F3'] as const },
+  { number: '04', icon: Settings, tag: 'Management', titleKey: 'solutionStep4Title' as const, descKey: 'solutionStep4Desc' as const, featureKeys: ['solutionStep4F1', 'solutionStep4F2', 'solutionStep4F3'] as const },
+]
 
 export function SolutionRoadmap() {
-  const steps = [
-    {
-      number: '01',
-      icon: Activity,
-      tag: 'Diagnostic',
-      title: '시장 진단 및 성과 설계',
-      description: '30만 커뮤니티 빅데이터 활용',
-      features: [
-        '일본 소비자 트렌드 분석',
-        '경쟁사 벤치마킹',
-        '성장 로드맵 설계',
-      ],
-    },
-    {
-      number: '02',
-      icon: Sprout,
-      tag: 'Seeding',
-      title: '검색 장벽 제거',
-      description: '5,000명 체험단 & 로컬 미디어',
-      features: [
-        '인플루언서 체험단 운영',
-        '구전 효과 극대화',
-        '검색 노출 최적화',
-      ],
-    },
-    {
-      number: '03',
-      icon: Zap,
-      tag: 'Impact',
-      title: '전환 극대화',
-      description: '105명 전속 크리에이터 기반 구매 엔진',
-      features: [
-        '고품질 콘텐츠 제작',
-        '퍼포먼스 마케팅',
-        '실시간 성과 최적화',
-      ],
-    },
-    {
-      number: '04',
-      icon: Settings,
-      tag: 'Management',
-      title: '운영 리스크 제로',
-      description: '인하우스 1:1 전담 시스템',
-      features: [
-        '일본어 네이티브 지원',
-        'CS 및 운영 대행',
-        '지속적인 개선',
-      ],
-    },
-  ]
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
+  const steps = STEP_KEYS
 
   return (
     <section id="solution" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white">코리너스의 </span>
-              <span className="text-white">4단계 솔루션</span>
+              <span className="text-white">{t('solutionTitle1')}</span>
+              <span className="text-white">{t('solutionTitle2')}</span>
             </h2>
             <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
-              데이터 기반 성장 설계로 성공을 보장합니다
+              {t('solutionSubtitle')}
             </p>
           </div>
 
@@ -74,7 +36,6 @@ export function SolutionRoadmap() {
                 key={index}
                 className="relative p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
               >
-                {/* Step number background */}
                 <div className="absolute top-4 right-4 text-7xl font-black text-zinc-800 group-hover:text-zinc-700 transition-all duration-200">
                   {step.number}
                 </div>
@@ -90,18 +51,18 @@ export function SolutionRoadmap() {
                   </div>
 
                   <h3 className="text-xl font-black text-white mb-2 break-keep">
-                    {step.title}
+                    {t(step.titleKey)}
                   </h3>
                   
                   <p className="text-white font-bold mb-4 break-keep text-sm">
-                    {step.description}
+                    {t(step.descKey)}
                   </p>
 
                   <ul className="space-y-1.5">
-                    {step.features.map((feature, idx) => (
+                    {step.featureKeys.map((key, idx) => (
                       <li key={idx} className="flex items-center gap-2 text-zinc-200 break-keep text-sm">
                         <div className="w-1 h-1 bg-white" />
-                        {feature}
+                        {t(key)}
                       </li>
                     ))}
                   </ul>

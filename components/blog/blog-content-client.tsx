@@ -8,12 +8,14 @@ import type { BlogPost } from '@/lib/supabase'
 
 interface BlogContentClientProps {
   blogPost: BlogPost
+  /** 로케일별 본문. 없으면 blogPost.content 사용 */
+  content?: any[]
 }
 
-export function BlogContentClient({ blogPost }: BlogContentClientProps) {
+export function BlogContentClient({ blogPost, content }: BlogContentClientProps) {
   const editor = useCreateBlockNote()
+  const blocks = content ?? (blogPost?.content && Array.isArray(blogPost.content) ? blogPost.content : [])
 
-  // 에디터를 읽기 전용으로 설정
   useEffect(() => {
     if (editor) {
       editor.isEditable = false
@@ -21,16 +23,16 @@ export function BlogContentClient({ blogPost }: BlogContentClientProps) {
   }, [editor])
 
   useEffect(() => {
-    if (blogPost?.content && Array.isArray(blogPost.content) && editor && blogPost.content.length > 0) {
+    if (blocks && Array.isArray(blocks) && editor && blocks.length > 0) {
       try {
-        editor.replaceBlocks(editor.document, blogPost.content)
+        editor.replaceBlocks(editor.document, blocks)
       } catch (err) {
         console.error('Error loading BlockNote content:', err)
       }
     }
-  }, [blogPost, editor])
+  }, [blocks, editor])
 
-  if (!blogPost?.content || !Array.isArray(blogPost.content) || blogPost.content.length === 0) {
+  if (!blocks || !Array.isArray(blocks) || blocks.length === 0) {
     return <p className="text-muted-foreground">콘텐츠가 없습니다.</p>
   }
 

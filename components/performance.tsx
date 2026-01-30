@@ -9,8 +9,13 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SkeletonGrid } from '@/components/ui/skeleton-card'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
+import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 
 export function Performance() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -66,11 +71,11 @@ export function Performance() {
       <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white">검증된 </span>
-              <span className="text-white">성과</span>
+              <span className="text-white">{t('performanceTitle1')}</span>
+              <span className="text-white">{t('performanceTitle2')}</span>
             </h2>
             <p className="text-lg text-zinc-200 mb-8 break-keep max-w-prose mx-auto">
-              다양한 산업군에서 탁월한 결과를 만들어냈습니다
+              {t('performanceSubtitle')}
             </p>
           </div>
 
@@ -80,7 +85,7 @@ export function Performance() {
           ) : portfolios.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-zinc-200 text-lg">
-                등록된 포트폴리오가 없습니다.
+                {t('performanceEmpty')}
               </p>
             </div>
           ) : (
@@ -93,7 +98,7 @@ export function Performance() {
                   onClick={scrollPrev}
                   disabled={prevBtnDisabled}
                   className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
-                  aria-label="이전 슬라이드"
+                  aria-label={t('performancePrevSlide')}
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
@@ -103,7 +108,7 @@ export function Performance() {
                   onClick={scrollNext}
                   disabled={nextBtnDisabled}
                   className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
-                  aria-label="다음 슬라이드"
+                  aria-label={t('performanceNextSlide')}
                 >
                   <ChevronRight className="h-5 w-5" />
                 </Button>
@@ -123,7 +128,7 @@ export function Performance() {
                             <div className="aspect-video relative overflow-hidden bg-zinc-950">
                               <img
                                 src={item.thumbnail_url}
-                                alt={item.title || 'Portfolio image'}
+                                alt={getPortfolioTitle(item, locale) || 'Portfolio image'}
                                 className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
                                 loading="lazy"
                                 onError={(e) => {
@@ -162,7 +167,7 @@ export function Performance() {
                                       ? item.category[0].charAt(0) 
                                       : 'E'}
                                   </div>
-                                  <p className="text-xs text-zinc-400">준비된 이미지가 없습니다</p>
+                                  <p className="text-xs text-zinc-400">{t('performanceNoImage')}</p>
                                 </div>
                               </div>
                               <div className="absolute top-4 left-4 z-10">
@@ -176,10 +181,10 @@ export function Performance() {
                           {/* Content */}
                           <div className="p-4 sm:p-6">
                             <h3 className="text-lg sm:text-xl font-black text-white mb-2 group-hover:text-white transition-colors break-keep">
-                              {item.title}
+                              {getPortfolioTitle(item, locale)}
                             </h3>
                             <p className="text-sm text-zinc-200 mb-4 leading-relaxed break-keep">
-                              {item.client_name}
+                              {getPortfolioClientName(item, locale)}
                             </p>
 
                             {/* Category Tags */}
@@ -210,7 +215,7 @@ export function Performance() {
             <div className="text-center mt-12">
               <Link href="/portfolio">
                 <Button className="px-6 py-3 rounded-none font-black">
-                  전체 포트폴리오 보기
+                  {t('performanceViewAll')}
                 </Button>
               </Link>
             </div>

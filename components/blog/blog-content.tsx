@@ -5,9 +5,10 @@ import type { BlogPost } from '@/lib/supabase'
 
 interface BlogContentProps {
   blogPost: BlogPost
+  /** 로케일별 본문. 없으면 blogPost.content 사용 */
+  content?: any[]
 }
 
-// BlockNote 에디터를 클라이언트 사이드에서만 로드
 const BlogContentClient = dynamic(
   () => import('./blog-content-client').then((mod) => ({ default: mod.BlogContentClient })),
   {
@@ -20,10 +21,10 @@ const BlogContentClient = dynamic(
   }
 )
 
-export function BlogContent({ blogPost }: BlogContentProps) {
-  if (!blogPost?.content || !Array.isArray(blogPost.content) || blogPost.content.length === 0) {
+export function BlogContent({ blogPost, content }: BlogContentProps) {
+  const blocks = content ?? (blogPost?.content && Array.isArray(blogPost.content) ? blogPost.content : [])
+  if (!blocks || !Array.isArray(blocks) || blocks.length === 0) {
     return <p className="text-muted-foreground">콘텐츠가 없습니다.</p>
   }
-
-  return <BlogContentClient blogPost={blogPost} />
+  return <BlogContentClient blogPost={blogPost} content={blocks} />
 }

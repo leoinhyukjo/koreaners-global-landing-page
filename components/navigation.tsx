@@ -10,8 +10,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 export function Navigation() {
+  const { locale, setLocale } = useLocale()
   const [mounted, setMounted] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -38,17 +41,16 @@ export function Navigation() {
     { href: '/blog', label: 'Blog' },
   ]
 
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
+
   // 하이드레이션 전에는 구조적 알맹이(링크, 버튼 등)를 절대 렌더링하지 않음
-  // 최소한의 높이만 가진 빈 박스로 레이아웃 시프트 방지
   if (!mounted) {
     return (
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/90 backdrop-blur-sm">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="text-xl sm:text-2xl font-black text-white">
-              KOREANERS GLOBAL
-            </div>
-            <div className="h-9 w-9"></div>
+            <div className="h-8 w-24 bg-zinc-800 rounded" />
+            <div className="h-9 w-16" />
           </div>
         </div>
       </nav>
@@ -65,17 +67,32 @@ export function Navigation() {
     >
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0">
-            <div className="text-xl sm:text-2xl font-black text-white">
-              KOREANERS GLOBAL
-            </div>
-            <div className="text-[10px] sm:text-xs text-zinc-300 mt-0.5">
-              당신의 글로벌 비즈니스 파트너
+          <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3">
+            <img src="/favicon.png" alt="KOREANERS GLOBAL" className="h-7 sm:h-8 w-auto object-contain" />
+            <div>
+              <div className="text-lg sm:text-xl font-black text-white leading-tight">KOREANERS GLOBAL</div>
+              <div className="text-[10px] sm:text-xs text-zinc-300 mt-0.5">{t('tagline')}</div>
             </div>
           </a>
           
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-1 rounded-md border border-zinc-600 bg-zinc-800/50 p-0.5">
+              <button
+                type="button"
+                onClick={() => setLocale('ko')}
+                className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${locale === 'ko' ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'}`}
+              >
+                KR
+              </button>
+              <button
+                type="button"
+                onClick={() => setLocale('ja')}
+                className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${locale === 'ja' ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'}`}
+              >
+                JP
+              </button>
+            </div>
             {menuItems.map((item) => (
               <a
                 key={item.href}
@@ -86,24 +103,34 @@ export function Navigation() {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
               </a>
             ))}
-            <a href="/contact" className="ml-2">
-              <Button 
-                size="default"
-                className="px-6 py-2.5 font-black"
-              >
-                문의하기
+            <a href="/contact" className="ml-1">
+              <Button size="default" className="px-6 py-2.5 font-black">
+                {t('contact')}
               </Button>
             </a>
           </div>
 
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
-            <a href="/contact" className="mr-1">
-              <Button 
-                size="sm"
-                className="text-xs px-3 py-1.5 h-auto font-black"
+            <div className="flex items-center gap-0.5 rounded border border-zinc-600 bg-zinc-800/50 p-0.5">
+              <button
+                type="button"
+                onClick={() => setLocale('ko')}
+                className={`rounded px-2 py-1 text-xs font-bold ${locale === 'ko' ? 'bg-white text-zinc-900' : 'text-zinc-300'}`}
               >
-                문의
+                KR
+              </button>
+              <button
+                type="button"
+                onClick={() => setLocale('ja')}
+                className={`rounded px-2 py-1 text-xs font-bold ${locale === 'ja' ? 'bg-white text-zinc-900' : 'text-zinc-300'}`}
+              >
+                JP
+              </button>
+            </div>
+            <a href="/contact" className="mr-1">
+              <Button size="sm" className="text-xs px-3 py-1.5 h-auto font-black">
+                {t('contactShort')}
               </Button>
             </a>
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -123,7 +150,7 @@ export function Navigation() {
               >
                 <SheetHeader className="border-b border-zinc-800 pb-4 mb-4 z-10 relative">
                   <SheetTitle className="text-left text-xl font-black text-white">
-                    메뉴
+                    {t('menu')}
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-2 mt-2 relative z-10">
@@ -156,7 +183,7 @@ export function Navigation() {
                           size="lg"
                           className="w-full font-black text-base py-4 px-6 rounded-none"
                         >
-                          문의하기
+                          {t('contact')}
                         </Button>
                       </a>
                     </div>

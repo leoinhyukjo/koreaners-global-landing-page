@@ -4,30 +4,16 @@ import { Card } from '@/components/ui/card'
 import { TrendingUp, Users, ShoppingBag } from 'lucide-react'
 import { FadeIn } from '@/components/ui/fade-in'
 import { Counter } from '@/components/ui/counter'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 export function MarketOpportunity() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const stats = [
-    {
-      icon: Users,
-      title: '방한 일본인',
-      value: '500만',
-      subtitle: '2025년 시대',
-      description: '일본 관광객 급증으로 K-브랜드 인지도 상승',
-    },
-    {
-      icon: ShoppingBag,
-      title: 'Qoo10 Japan',
-      value: '25%',
-      subtitle: 'K-뷰티 점유율',
-      description: '일본 이커머스 시장 K-뷰티 돌풍',
-    },
-    {
-      icon: TrendingUp,
-      title: '일본 2030',
-      value: '90%',
-      subtitle: 'SNS 기반 구매',
-      description: '소셜미디어가 구매 결정의 핵심 채널',
-    },
+    { icon: Users, titleKey: 'marketStat1Title' as const, subtitleKey: 'marketStat1Subtitle' as const, descKey: 'marketStat1Desc' as const },
+    { icon: ShoppingBag, titleKey: 'marketStat2Title' as const, subtitleKey: 'marketStat2Subtitle' as const, descKey: 'marketStat2Desc' as const },
+    { icon: TrendingUp, titleKey: 'marketStat3Title' as const, subtitleKey: 'marketStat3Subtitle' as const, descKey: 'marketStat3Desc' as const },
   ]
 
   return (
@@ -35,11 +21,11 @@ export function MarketOpportunity() {
       <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white inline-block">폭발적으로 성장하는</span>{' '}
-              <span className="text-white inline-block">일본 시장 기회</span>
+              <span className="text-white inline-block">{t('marketTitle1')}</span>{' '}
+              <span className="text-white inline-block">{t('marketTitle2')}</span>
             </h2>
             <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
-              지금이 일본 시장 진출의 최적기입니다
+              {t('marketSubtitle')}
             </p>
           </div>
 
@@ -58,7 +44,7 @@ export function MarketOpportunity() {
                   
                   <div className="mb-2">
                     <div className="text-xs text-zinc-300 mb-1 font-medium">
-                      {stat.title}
+                      {t(stat.titleKey)}
                     </div>
                     <div className="text-4xl font-black text-white mb-1">
                       {index === 0 ? <><Counter end={500} />만</> : 
@@ -66,12 +52,12 @@ export function MarketOpportunity() {
                        <><Counter end={90} />%</>}
                     </div>
                     <div className="text-base text-white font-bold">
-                      {stat.subtitle}
+                      {t(stat.subtitleKey)}
                     </div>
                   </div>
                   
                   <p className="text-zinc-200 text-sm leading-relaxed break-keep">
-                    {stat.description}
+                    {t(stat.descKey)}
                   </p>
                 </div>
               </Card>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { Navigation } from '@/components/navigation'
+import { SafeHydration } from '@/components/common/SafeHydration'
 import { Users, Instagram, Youtube, Music, Award, Target, X, Plus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,10 +19,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { CheckCircle2 } from 'lucide-react'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 const CREATORS_PER_PAGE = 12
 
 function CreatorContent() {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [allCreators, setAllCreators] = useState<Creator[]>([])
   const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
@@ -34,7 +39,6 @@ function CreatorContent() {
   const endIndex = startIndex + CREATORS_PER_PAGE
   const creators = allCreators.slice(startIndex, endIndex)
 
-  // 신청 폼 상태
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -77,11 +81,26 @@ function CreatorContent() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // 필수: 인스타그램 링크만 검증
+    if (!formData.name.trim()) {
+      toast({
+        title: t('creatorToastSubmitFail'),
+        description: t('creatorToastNameRequired'),
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!formData.email.trim()) {
+      toast({
+        title: t('creatorToastSubmitFail'),
+        description: t('creatorToastEmailRequired'),
+        variant: 'destructive',
+      })
+      return
+    }
     if (!formData.instagram_url.trim()) {
       toast({
-        title: '입력 오류',
-        description: '인스타그램 링크는 필수입니다.',
+        title: t('creatorToastSubmitFail'),
+        description: t('creatorToastInstagramRequired'),
         variant: 'destructive',
       })
       return
@@ -98,7 +117,7 @@ function CreatorContent() {
         name: formData.name.trim() || '',
         email: formData.email.trim() || '',
         phone: phoneValue,
-        message: `[크리에이터 신청]\n\n인스타그램: ${formData.instagram_url.trim()}\n유튜브: ${formData.youtube_url?.trim() || '없음'}\n틱톡: ${formData.tiktok_url?.trim() || '없음'}\nX(Twitter): ${formData.x_url?.trim() || '없음'}\n\n요청사항:\n${formData.message.trim() || '없음'}`,
+        message: `[${locale === 'ja' ? 'クリエイター申込' : '크리에이터 신청'}]\n\nInstagram: ${formData.instagram_url.trim()}\nYouTube: ${formData.youtube_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nTikTok: ${formData.tiktok_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nX(Twitter): ${formData.x_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\n\n${locale === 'ja' ? 'ご要望' : '요청사항'}:\n${formData.message.trim() || (locale === 'ja' ? 'なし' : '없음')}`,
         inquiry_type: 'creator_application',
         privacy_agreement: true,
         marketing_agreement: false,
@@ -130,8 +149,8 @@ function CreatorContent() {
     } catch (error: any) {
       console.error('Error submitting creator application:', error)
       toast({
-        title: '제출 실패',
-        description: '신청 중 오류가 발생했습니다. 다시 시도해주세요.',
+        title: t('creatorToastSubmitFail'),
+        description: t('creatorToastSubmitFailDesc'),
         variant: 'destructive',
       })
     } finally {
@@ -141,28 +160,26 @@ function CreatorContent() {
 
   return (
     <>
-      {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
-              <span className="text-white">105명의 전속 크리에이터</span>
+              <span className="text-white">{t('creatorHero1')}</span>
               <br />
-              <span className="text-white">검증된 전환 파워</span>
+              <span className="text-white">{t('creatorHero2')}</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty px-2">
-              일본 Z세대 67%의 구매 결정을 이끌어내는 실질적인 전환 엔진
+              {t('creatorHeroDesc')}
             </p>
           </div>
 
-          {/* Creator Cards Grid */}
           {loading ? (
             <div className="text-center py-20">
-              <p className="text-zinc-200">로딩 중...</p>
+              <p className="text-zinc-200">{t('loading')}</p>
             </div>
           ) : allCreators.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-zinc-200 text-lg">등록된 크리에이터가 없습니다.</p>
+              <p className="text-zinc-200 text-lg">{t('creatorEmpty')}</p>
             </div>
           ) : (
             <>
@@ -331,7 +348,7 @@ function CreatorContent() {
               {/* 하단 멘트 및 그라데이션 */}
               <div className="text-center py-12 mt-8 sm:mt-12">
                 <p className="text-zinc-500 text-sm sm:text-base italic">
-                  현재 수십 명의 크리에이터가 포트폴리오를 업데이트 중입니다.
+                  {t('creatorUpdating')}
                 </p>
                 <div className="mt-4 h-12 bg-gradient-to-b from-transparent to-zinc-900/80 pointer-events-none" aria-hidden />
               </div>
@@ -341,58 +358,57 @@ function CreatorContent() {
           {/* Creator Categories */}
           <div className="mb-20">
             <h2 className="text-3xl font-black text-center mb-12 text-white">
-              <span className="text-white">타깃별 최적화된 </span>
-              <span className="text-white">크리에이터 풀</span>
+              <span className="text-white">{t('creatorPoolTitle1')}</span>
+              <span className="text-white">{t('creatorPoolTitle2')}</span>
             </h2>
 
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="p-8 bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300">
-                <h3 className="text-2xl font-bold text-white mb-4">플랫폼별 전문성</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">{t('creatorPlatformExpertise')}</h3>
                 <ul className="space-y-3 text-zinc-200">
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">Instagram:</span> 비주얼 중심 뷰티/패션 카테고리 전문</span>
+                    <span><span className="font-medium text-white">Instagram:</span> {t('creatorPlatformIg')}</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">TikTok:</span> Z세대 타깃 숏폼 바이럴 전문가</span>
+                    <span><span className="font-medium text-white">TikTok:</span> {t('creatorPlatformTiktok')}</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">YouTube:</span> 롱폼 리뷰 및 언박싱 콘텐츠</span>
+                    <span><span className="font-medium text-white">YouTube:</span> {t('creatorPlatformYoutube')}</span>
                   </li>
                 </ul>
               </Card>
 
               <Card className="p-8 bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300">
-                <h3 className="text-2xl font-bold text-white mb-4">성별·연령별 세분화</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">{t('creatorDemographicTitle')}</h3>
                 <ul className="space-y-3 text-zinc-200">
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">10대 여성:</span> K-뷰티, K-패션 트렌드 리더</span>
+                    <span><span className="font-medium text-white">{t('creatorDemographicLabel10s')}:</span> {t('creatorDemographic10s')}</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">20대 여성:</span> 라이프스타일, 웰니스 인플루언서</span>
+                    <span><span className="font-medium text-white">{t('creatorDemographicLabel20s')}:</span> {t('creatorDemographic20s')}</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">30대 여성:</span> 프리미엄 뷰티, 육아 카테고리</span>
+                    <span><span className="font-medium text-white">{t('creatorDemographicLabel30s')}:</span> {t('creatorDemographic30s')}</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
-                    <span><span className="font-medium text-white">남성 크리에이터:</span> 테크, F&B, 라이프스타일</span>
+                    <span><span className="font-medium text-white">{t('creatorDemographicLabelMale')}:</span> {t('creatorDemographicMale')}</span>
                   </li>
                 </ul>
               </Card>
             </div>
           </div>
 
-          {/* Why Our Creators */}
           <div className="mb-20">
             <h2 className="text-3xl font-black text-center mb-12 text-white">
-              <span className="text-white">코리너스 크리에이터</span>
-              <span className="text-white">만의 차별점</span>
+              <span className="text-white">{t('creatorDifferentiatorTitle1')}</span>
+              <span className="text-white">{t('creatorDifferentiatorTitle2')}</span>
             </h2>
 
             <div className="space-y-6">
@@ -402,9 +418,9 @@ function CreatorContent() {
                     <Award className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-3">전속 계약으로 보장되는 품질</h3>
+                    <h3 className="text-xl font-bold text-white mb-3">{t('creatorQualityTitle')}</h3>
                     <p className="text-zinc-200 leading-relaxed">
-                      일회성 협업이 아닌 전속 계약으로 브랜드 이해도가 높고, 가이드라인 준수율이 높은 안정적인 콘텐츠 생산이 가능합니다. 노쇼(No-show) 리스크가 없으며, 즉각적인 대체 인력 투입이 가능합니다.
+                      {t('creatorQualityDesc')}
                     </p>
                   </div>
                 </div>
@@ -416,9 +432,9 @@ function CreatorContent() {
                     <Target className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-3">설명력 있는 콘텐츠 제작</h3>
+                    <h3 className="text-xl font-bold text-white mb-3">{t('creatorExplainTitle')}</h3>
                     <p className="text-zinc-200 leading-relaxed">
-                      단순히 예쁜 비주얼이 아닌, 일본 소비자가 궁금해하는 포인트를 정확히 짚어내는 '설명력 있는 콘텐츠'를 생산합니다. 이는 일본 Z세대의 구매 결정 요인 1위(29.5%)로, 인지에서 전환까지 직접 연결되는 핵심 요소입니다.
+                      {t('creatorExplainDesc')}
                     </p>
                   </div>
                 </div>
@@ -430,9 +446,9 @@ function CreatorContent() {
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-3">현지화된 콘텐츠 감각</h3>
+                    <h3 className="text-xl font-bold text-white mb-3">{t('creatorLocalTitle')}</h3>
                     <p className="text-zinc-200 leading-relaxed">
-                      일본 소비자가 느끼는 '위화감(違和感)'을 완벽히 제거한 콘텐츠를 제작합니다. 한국식 소구점을 그대로 적용하는 것이 아니라, 일본 특유의 신중한 구매 패턴과 SNS 문법을 완벽히 이해하고 반영합니다.
+                      {t('creatorLocalDesc')}
                     </p>
                   </div>
                 </div>
@@ -445,20 +461,20 @@ function CreatorContent() {
             <div className="container mx-auto max-w-7xl">
               <div className="mb-6 sm:mb-10">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4 break-keep">
-                  전속 크리에이터 합류 신청
+                  {t('creatorApplyTitle')}
                 </h1>
                 <p className="text-base sm:text-lg text-zinc-200 leading-relaxed mb-2 font-medium break-keep max-w-prose">
-                  <span className="inline-block">코리너스와 함께 일본 시장을 공략하는</span>{' '}
-                  <span className="inline-block">크리에이터가 되어보세요.</span>
+                  <span className="inline-block">{t('creatorApplyDesc1')}</span>{' '}
+                  <span className="inline-block">{t('creatorApplyDesc2')}</span>
                 </p>
               </div>
 
               <form onSubmit={handleFormSubmit} className="space-y-6">
-                {/* Name and Phone — 선택 */}
+                {/* Name and Phone */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="creator-name" className="block text-sm font-bold text-white mb-2">
-                      성함 <span className="text-zinc-400 font-normal">(선택)</span>
+                      {t('formName')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -467,13 +483,13 @@ function CreatorContent() {
                       value={formData.name}
                       onChange={handleFormChange}
                       className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="이름을 입력해주세요."
+                      placeholder={t('creatorPlaceholderName')}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="creator-phone" className="block text-sm font-bold text-white mb-2">
-                      연락처 <span className="text-zinc-400 font-normal">(선택)</span>
+                      {t('formPhone')}
                     </label>
                     <input
                       type="tel"
@@ -490,10 +506,10 @@ function CreatorContent() {
                   </div>
                 </div>
 
-                {/* Email — 선택 */}
+                {/* Email */}
                 <div>
                   <label htmlFor="creator-email" className="block text-sm font-bold text-white mb-2">
-                    이메일 <span className="text-zinc-400 font-normal">(선택)</span>
+                    {t('formEmail')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -510,7 +526,7 @@ function CreatorContent() {
                 <div className="grid md:grid-cols-4 gap-4">
                   <div>
                     <label htmlFor="creator-instagram" className="block text-sm font-bold text-white mb-2">
-                      인스타그램 링크 <span className="text-white">*</span>
+                      {t('creatorLabelInstagram')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="url"
@@ -525,7 +541,7 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-youtube" className="block text-sm font-bold text-white mb-2">
-                      유튜브 링크 <span className="text-zinc-400 font-normal">(선택)</span>
+                      {t('creatorLabelYoutube')}
                     </label>
                     <input
                       type="url"
@@ -540,7 +556,7 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-tiktok" className="block text-sm font-bold text-white mb-2">
-                      틱톡 링크 <span className="text-zinc-400 font-normal">(선택)</span>
+                      {t('creatorLabelTiktok')}
                     </label>
                     <input
                       type="url"
@@ -555,7 +571,7 @@ function CreatorContent() {
 
                   <div>
                     <label htmlFor="creator-x" className="block text-sm font-bold text-white mb-2">
-                      X 링크 <span className="text-zinc-400 font-normal">(선택)</span>
+                      {t('creatorLabelX')}
                     </label>
                     <input
                       type="url"
@@ -569,10 +585,10 @@ function CreatorContent() {
                   </div>
                 </div>
 
-                {/* Message — 선택 */}
+                {/* Message */}
                 <div>
                   <label htmlFor="creator-message" className="block text-sm font-bold text-white mb-2">
-                    메시지 <span className="text-zinc-400 font-normal">(선택)</span>
+                    {t('creatorMessage')}
                   </label>
                   <textarea
                     id="creator-message"
@@ -581,18 +597,17 @@ function CreatorContent() {
                     value={formData.message}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
-                    placeholder="협업 요청사항이나 자기소개를 적어주세요"
+                    placeholder={t('creatorPlaceholderMessage')}
                   />
                 </div>
 
-                {/* Submit Button */}
                 <div className="text-center pt-4">
                   <Button 
                     type="submit" 
                     disabled={submitting}
                     className="px-12 py-6 text-lg font-black rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {submitting ? '처리 중...' : '협업 신청하기'}
+                    {submitting ? t('formSubmitting') : t('creatorSubmitButton')}
                   </Button>
                 </div>
               </form>
@@ -607,17 +622,16 @@ function CreatorContent() {
                   <CheckCircle2 className="h-10 w-10 text-white" />
                 </div>
                 <DialogTitle className="text-2xl font-black text-white">
-                  신청 완료
+                  {t('dialogSuccessTitle')}
                 </DialogTitle>
                 <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
-                  신청이 완료되었습니다. 담당자가 1~2 영업일 이내로 연락 드립니다.
+                  {t('dialogSuccessDesc')}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter className="sm:justify-center">
                 <Button
                   onClick={() => {
                     setSuccessDialogOpen(false)
-                    // 폼 초기화
                     setFormData({
                       name: '',
                       phone: '',
@@ -631,7 +645,7 @@ function CreatorContent() {
                   }}
                   className="w-full sm:w-auto px-8 font-black rounded-none"
                 >
-                  확인
+                  {t('dialogConfirm')}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -643,33 +657,26 @@ function CreatorContent() {
   )
 }
 
+/** Suspense fallback: 로케일/번역 없이 정적 플레이스홀더만 렌더링하여 Hydration Mismatch 방지 */
+function CreatorFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center pt-24" aria-hidden="true">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="h-32 w-full max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+      </div>
+    </div>
+  )
+}
+
 export default function CreatorPage() {
   return (
     <main className="min-h-screen bg-zinc-900">
       <Navigation />
-      <Suspense
-        fallback={
-          <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
-            <div className="container mx-auto max-w-7xl">
-              <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
-                  <span className="text-white">105명의 전속 크리에이터</span>
-                  <br />
-                  <span className="text-white">검증된 전환 파워</span>
-                </h1>
-                <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty px-2">
-                  일본 Z세대 67%의 구매 결정을 이끌어내는 실질적인 전환 엔진
-                </p>
-              </div>
-              <div className="text-center py-20">
-                <p className="text-zinc-200">로딩 중...</p>
-              </div>
-            </div>
-          </section>
-        }
-      >
-        <CreatorContent />
-      </Suspense>
+      <SafeHydration fallback={<CreatorFallback />}>
+        <Suspense fallback={<CreatorFallback />}>
+          <CreatorContent />
+        </Suspense>
+      </SafeHydration>
     </main>
   )
 }

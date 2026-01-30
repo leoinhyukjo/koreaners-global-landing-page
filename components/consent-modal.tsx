@@ -9,6 +9,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { useLocale } from '@/contexts/locale-context'
+import { getTranslation } from '@/lib/translations'
 
 interface ConsentModalProps {
   open: boolean
@@ -17,6 +19,8 @@ interface ConsentModalProps {
 }
 
 export function ConsentModal({ open, onOpenChange, type }: ConsentModalProps) {
+  const { locale } = useLocale()
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const isPrivacy = type === 'privacy'
 
   return (
@@ -29,12 +33,10 @@ export function ConsentModal({ open, onOpenChange, type }: ConsentModalProps) {
       >
         <DialogHeader className="mb-4">
           <DialogTitle className="text-xl font-bold break-keep">
-            {isPrivacy ? '개인정보 수집 및 이용 동의' : '마케팅 활용 동의'}
+            {isPrivacy ? t('consentPrivacyTitle') : t('consentMarketingTitle')}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground break-keep mt-2">
-            {isPrivacy
-              ? '개인정보 수집 및 이용에 대한 상세 내용을 확인해주세요.'
-              : '마케팅 정보 수신에 대한 상세 내용을 확인해주세요.'}
+            {isPrivacy ? t('consentPrivacyDesc') : t('consentMarketingDesc')}
           </DialogDescription>
         </DialogHeader>
 
@@ -42,47 +44,46 @@ export function ConsentModal({ open, onOpenChange, type }: ConsentModalProps) {
           {isPrivacy ? (
             <>
               <div className="space-y-1.5">
-                <h3 className="font-semibold text-foreground break-keep">[수집 및 이용 목적]</h3>
+                <h3 className="font-semibold text-foreground break-keep">{t('consentPrivacyPurpose')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed break-keep">
-                  일본·대만 인플루언서 마케팅 캠페인 상담 및 제안
+                  {t('consentPrivacyPurposeText')}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <h3 className="font-semibold text-foreground break-keep">[수집 항목]</h3>
+                <h3 className="font-semibold text-foreground break-keep">{t('consentPrivacyItems')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed break-keep">
-                  성함, 회사명, 직급, 전화번호, 이메일, 문의내용
+                  {t('consentPrivacyItemsText')}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <h3 className="font-semibold text-foreground break-keep">[보유 및 이용 기간]</h3>
+                <h3 className="font-semibold text-foreground break-keep">{t('consentPrivacyPeriod')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed break-keep">
-                  문의 접수일로부터 <strong className="text-foreground">1년간</strong> 보관 후 파기합니다.
+                  {t('consentPrivacyPeriodText')}
                 </p>
               </div>
 
               <div className="space-y-1.5 rounded-lg border border-border bg-muted/30 p-4">
-                <h3 className="font-semibold text-foreground break-keep">[동의 거부 권리]</h3>
+                <h3 className="font-semibold text-foreground break-keep">{t('consentPrivacyRefusal')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed break-keep">
-                  귀하는 개인정보 수집 및 이용에 대해 동의를 거부할 권리가 있습니다. 단, 동의
-                  거부 시 상담 신청 및 서비스 제안이 제한될 수 있습니다.
+                  {t('consentPrivacyRefusalText')}
                 </p>
               </div>
             </>
           ) : (
             <>
               <div className="space-y-1.5">
-                <h3 className="font-semibold text-foreground break-keep">[활용 목적]</h3>
+                <h3 className="font-semibold text-foreground break-keep">{t('consentMarketingPurpose')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed break-keep">
-                  일본·대만 시장 최신 마케팅 트렌드 리포트 및 프로모션 안내
+                  {t('consentMarketingPurposeText')}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <h3 className="font-semibold text-foreground break-keep">[활용 항목]</h3>
+                <h3 className="font-semibold text-foreground break-keep">{t('consentMarketingItems')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed break-keep">
-                  성함, 전화번호, 회사명, 이메일 주소
+                  {t('consentMarketingItemsText')}
                 </p>
               </div>
             </>
@@ -91,7 +92,7 @@ export function ConsentModal({ open, onOpenChange, type }: ConsentModalProps) {
 
         <DialogFooter>
           <Button onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
-            확인
+            {t('consentAgree')}
           </Button>
         </DialogFooter>
       </DialogContent>
