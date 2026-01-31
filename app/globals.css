@@ -122,23 +122,94 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   body {
     @apply bg-zinc-900 text-white;
     word-break: keep-all;
+    overflow-wrap: break-word;
     font-family: 'Inter', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  }
+  main {
+    overflow-x: hidden;
+    max-width: 100%;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply break-keep text-white font-black;
     word-break: keep-all;
+    overflow-wrap: break-word;
     letter-spacing: -0.02em;
+    line-height: 1.2;
   }
   p {
     @apply break-keep text-zinc-200;
     word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.5;
   }
   span, div {
     word-break: keep-all;
+    overflow-wrap: break-word;
   }
+}
+
+/* 일본어·한국어 공통: 카드/섹션 내 텍스트 박스 오른쪽 패딩 유지 및 줄바꿈 */
+[lang="ja"] .break-words,
+[lang="ko"] .break-words,
+.break-words {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+/* 카드·섹션 컨테이너: 언어 전환 시 동일 여백 유지 */
+.section-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .section-padding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* 일본어·한국어 공통: 언어 전환 시 자간/행간 고정으로 레이아웃 시프트 방지 */
+[lang="ja"] main h1,
+[lang="ja"] main h2,
+[lang="ja"] main h3,
+[lang="ja"] main h4,
+[lang="ko"] main h1,
+[lang="ko"] main h2,
+[lang="ko"] main h3,
+[lang="ko"] main h4 {
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+[lang="ja"] main p,
+[lang="ko"] main p {
+  line-height: 1.5;
+}
+
+/* 일본어 모바일: 폰트 크기 미세 조정으로 넘침 방지 */
+@media (max-width: 768px) {
+  [lang="ja"] .text-base { font-size: 0.9375rem; }
+  [lang="ja"] .text-lg { font-size: 1.0625rem; }
+  [lang="ja"] .text-xl { font-size: 1.125rem; }
+  [lang="ja"] .text-2xl { font-size: 1.25rem; }
+  [lang="ja"] .text-3xl { font-size: 1.5rem; }
+}
+
+/* 일본어: 텍스트 넘침 방지로 우측 여백이 유지되도록(한국어와 동일한 체감 여백) */
+[lang="ja"] main p,
+[lang="ja"] main h1,
+[lang="ja"] main h2,
+[lang="ja"] main h3,
+[lang="ja"] main h4 {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 /* Blog Content Styles */

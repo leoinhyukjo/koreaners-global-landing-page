@@ -7,15 +7,15 @@ export function FinalCTA() {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
-    <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 text-balance leading-tight break-keep">
-            <span className="text-white inline-block">{t('finalCtaTitle1')}</span>{' '}
-            <span className="text-white inline-block">{t('finalCtaTitle2')}</span>
+    <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 w-full max-w-full">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 relative z-10 overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center w-full max-w-full min-w-0 block">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 text-balance leading-[1.2] tracking-tight break-keep break-words min-h-[2.4em] block">
+            <span className="text-white block">{t('finalCtaTitle1')}</span>
+            <span className="text-white block">{t('finalCtaTitle2')}</span>
           </h2>
-          
-          <p className="text-lg sm:text-xl text-zinc-200 mb-12 text-balance break-keep px-2 max-w-prose mx-auto">
+
+          <p className="text-base sm:text-lg md:text-xl text-zinc-200 mb-12 text-balance break-keep break-words px-2 max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
             {t('finalCtaSubtitle')}
           </p>
 
@@ -29,7 +29,7 @@ export function FinalCTA() {
               <div className="text-sm text-zinc-200">{t('finalCtaStat2')}</div>
             </div>
             <div>
-              <div className="text-4xl font-black text-white mb-2">30만</div>
+              <div className="text-4xl font-black text-white mb-2">{locale === 'ja' ? '30万' : '30만'}</div>
               <div className="text-sm text-zinc-200">{t('finalCtaStat3')}</div>
             </div>
             <div>

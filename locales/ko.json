@@ -289,5 +289,20 @@
   "serviceIntentKeyword": "구매 의사",
   "serviceBrandImage": "브랜드 이미지",
   "serviceLocalSentiment": "현지 정서",
-  "serviceJapanReaction": "일본 시장 반응"
+  "serviceJapanReaction": "일본 시장 반응",
+  "serviceReportRoasIntro": "ROAS 및 구매 전환율(CVR) 분석:",
+  "serviceReportRoasDesc": "전체 캠페인 예산 대비 창출된 매출과 주요 커머스 채널(큐텐, 아마존 등) 내에서의 실질적인 전환 효율을 분석합니다.",
+  "serviceCampaignRoas": "캠페인 ROAS",
+  "serviceRemarketingNote": "향후 6개월 재타겟팅 캠페인 활용 가능",
+  "serviceTop5Keywords": "Top 5 키워드",
+  "serviceKeywordBought": "구매함",
+  "serviceKeywordRepurchase": "재구매",
+  "serviceKeywordRecommend": "추천",
+  "serviceKeywordSatisfaction": "만족",
+  "serviceKeywordEffective": "효과적",
+  "serviceKeywordTrust": "신뢰감",
+  "serviceKeywordPremium": "프리미엄",
+  "serviceKeywordInnovative": "혁신적",
+  "serviceKeywordQuality": "품질",
+  "serviceKeywordTrendy": "트렌디"
 }

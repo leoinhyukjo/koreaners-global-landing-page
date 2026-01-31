@@ -67,14 +67,14 @@ export function Performance() {
   }, [emblaApi])
 
   return (
-    <section id="performance" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white">{t('performanceTitle1')}</span>
-              <span className="text-white">{t('performanceTitle2')}</span>
+    <section id="performance" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+          <div className="text-center mb-12 block">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight min-h-[2.4em] block">
+              <span className="text-white block">{t('performanceTitle1')}</span>
+              <span className="text-white block">{t('performanceTitle2')}</span>
             </h2>
-            <p className="text-lg text-zinc-200 mb-8 break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-200 mb-8 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
               {t('performanceSubtitle')}
             </p>
           </div>
@@ -183,7 +183,7 @@ export function Performance() {
                             <h3 className="text-lg sm:text-xl font-black text-white mb-2 group-hover:text-white transition-colors break-keep">
                               {getPortfolioTitle(item, locale)}
                             </h3>
-                            <p className="text-sm text-zinc-200 mb-4 leading-relaxed break-keep">
+                            <p className="text-sm text-zinc-200 mb-4 leading-[1.5] tracking-tight break-keep block">
                               {getPortfolioClientName(item, locale)}
                             </p>
 

@@ -36,6 +36,12 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     }
   }, [mounted])
 
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = locale === 'ja' ? 'ja' : 'ko'
+    }
+  }, [locale])
+
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next)
     try {

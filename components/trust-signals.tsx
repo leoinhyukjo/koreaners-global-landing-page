@@ -60,13 +60,13 @@ export function TrustSignals() {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
-    <section className="py-14 sm:py-20 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-14">
-          <h2 className="text-4xl md:text-5xl font-black mb-4 text-white break-keep">
+    <section className="py-14 sm:py-20 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+        <div className="text-center mb-12 sm:mb-14 block">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 text-white break-keep break-words leading-[1.2] tracking-tight block">
             TRUSTED BY
           </h2>
-          <p className="text-zinc-200 text-lg break-keep max-w-prose mx-auto">
+          <p className="text-zinc-200 text-lg break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
             {t('trustSubtitle')}
           </p>
         </div>
@@ -77,8 +77,8 @@ export function TrustSignals() {
           <MarqueeRow partners={PARTNERS_ROW3} direction="left" />
         </div>
 
-        <div className="mt-14 text-center">
-          <p className="text-sm text-zinc-200 break-keep">
+        <div className="mt-14 text-center block">
+          <p className="text-sm text-zinc-200 break-keep leading-[1.5] tracking-tight block">
             {t('trustExportVoucher')}
           </p>
         </div>

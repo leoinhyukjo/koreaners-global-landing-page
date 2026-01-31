@@ -122,7 +122,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
       url: siteUrl,
       logo: {
         '@type': 'ImageObject',
-        url: `${siteUrl}/logo.png`,
+        url: `${siteUrl}/images/logo.png`,
       },
     },
     mainEntityOfPage: {

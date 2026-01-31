@@ -18,14 +18,14 @@ export function SolutionRoadmap() {
   const steps = STEP_KEYS
 
   return (
-    <section id="solution" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white">{t('solutionTitle1')}</span>
-              <span className="text-white">{t('solutionTitle2')}</span>
+    <section id="solution" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+          <div className="text-center mb-12 block">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight min-h-[2.4em] block">
+              <span className="text-white block">{t('solutionTitle1')}</span>
+              <span className="text-white block">{t('solutionTitle2')}</span>
             </h2>
-            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
               {t('solutionSubtitle')}
             </p>
           </div>
@@ -50,11 +50,11 @@ export function SolutionRoadmap() {
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-black text-white mb-2 break-keep">
+                  <h3 className="text-xl font-black text-white mb-2 break-keep leading-[1.2] tracking-tight block">
                     {t(step.titleKey)}
                   </h3>
-                  
-                  <p className="text-white font-bold mb-4 break-keep text-sm">
+
+                  <p className="text-white font-bold mb-4 break-keep text-sm leading-[1.5] tracking-tight block">
                     {t(step.descKey)}
                   </p>
 

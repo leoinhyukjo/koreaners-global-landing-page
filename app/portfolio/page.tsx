@@ -93,7 +93,7 @@ export default function PortfolioPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-900">
+    <main className="min-h-screen bg-zinc-900 w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}

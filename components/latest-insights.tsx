@@ -100,7 +100,7 @@ export function LatestInsights() {
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
                   <time className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 break-keep" dateTime={latestPost.created_at}>
                     <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                    {new Date(latestPost.created_at).toLocaleDateString('ko-KR')}
+                    {new Date(latestPost.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                   </time>
                   <span className="text-sm text-primary flex items-center gap-2 group-hover:gap-3 transition-all break-keep">
                     {t('read')}

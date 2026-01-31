@@ -47,16 +47,16 @@ export default function ServicePage() {
   ]
 
   return (
-    <main className="min-h-screen bg-zinc-900">
+    <main className="min-h-screen bg-zinc-900 w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<ServiceSkeleton />}>
       
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative overflow-hidden">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative overflow-hidden w-full max-w-full">
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
-        <div className="container mx-auto max-w-7xl relative z-10">
+        <div className="container mx-auto max-w-7xl w-full max-w-full relative z-10 overflow-hidden">
           <div className="text-center space-y-4 sm:space-y-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight break-keep">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight break-keep break-words">
               <div className="flex flex-col items-center gap-2">
                 <span className="inline-block">{t('serviceHero1')}</span>
                 <span className="inline-block">
@@ -65,7 +65,7 @@ export default function ServicePage() {
                 </span>
               </div>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-zinc-200 max-w-prose mx-auto text-balance break-keep px-2">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-zinc-200 max-w-prose mx-auto text-balance break-keep break-words px-2">
               {t('serviceHeroDesc')}
             </p>
           </div>
@@ -73,13 +73,13 @@ export default function ServicePage() {
       </section>
 
       {/* Problem & Insight Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6">
-        <div className="container mx-auto max-w-7xl">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 w-full max-w-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 break-keep">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 break-keep break-words">
               {t('serviceProblemTitle')}
             </h2>
-            <p className="text-base sm:text-lg text-zinc-200 break-keep max-w-prose mx-auto px-2">
+            <p className="text-base sm:text-lg text-zinc-200 break-keep break-words max-w-prose mx-auto px-4 sm:px-6">
               {t('serviceProblemSubtitle')}
             </p>
           </div>
@@ -88,15 +88,15 @@ export default function ServicePage() {
             {painPoints.map((point, index) => (
               <Card 
                 key={index}
-                className="p-8 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-500 group"
+                className="p-6 sm:p-8 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-500 group min-w-0 overflow-hidden"
               >
-                <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-500">
+                <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-500 shrink-0">
                   <point.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 break-keep">
+                <h3 className="text-xl font-bold text-white mb-3 break-keep break-words pr-1">
                   {point.title}
                 </h3>
-                <p className="text-zinc-200 leading-relaxed break-keep">
+                <p className="text-zinc-200 leading-relaxed break-words pr-1 min-w-0">
                   {t(point.descKey)}
                 </p>
               </Card>
@@ -128,11 +128,11 @@ export default function ServicePage() {
                         <CheckCircle2 className="w-6 h-6 text-white" />
                       </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-white mb-2">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-lg font-bold text-white mb-2 break-words pr-1">
                         {feature.title}
                       </h4>
-                      <p className="text-zinc-200">
+                      <p className="text-zinc-200 break-words pr-1">
                         {feature.description}
                       </p>
                     </div>
@@ -141,28 +141,28 @@ export default function ServicePage() {
               </div>
             </div>
 
-            <div className="relative">
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50">
+            <div className="relative min-w-0">
+              <Card className="p-6 sm:p-8 bg-zinc-800 border-zinc-700/50 min-w-0 overflow-hidden">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <Users className="w-12 h-12 text-white" />
-                    <div>
+                    <Users className="w-12 h-12 text-white shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-4xl font-bold text-white">105</div>
-                      <div className="text-sm text-zinc-200">{t('serviceInfluencerStat1')}</div>
+                      <div className="text-sm text-zinc-200 break-words pr-1">{t('serviceInfluencerStat1')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Target className="w-12 h-12 text-white" />
-                    <div>
+                    <Target className="w-12 h-12 text-white shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-4xl font-bold text-white">0%</div>
-                      <div className="text-sm text-zinc-200">{t('serviceInfluencerStat2')}</div>
+                      <div className="text-sm text-zinc-200 break-words pr-1">{t('serviceInfluencerStat2')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <TrendingUp className="w-12 h-12 text-white" />
-                    <div>
+                    <TrendingUp className="w-12 h-12 text-white shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-4xl font-bold text-white">3</div>
-                      <div className="text-sm text-zinc-200">{t('serviceInfluencerStat3')}</div>
+                      <div className="text-sm text-zinc-200 break-words pr-1">{t('serviceInfluencerStat3')}</div>
                     </div>
                   </div>
                 </div>
@@ -176,28 +176,28 @@ export default function ServicePage() {
       <section className="py-20 px-4 sm:px-6">
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1">
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50">
+            <div className="order-2 md:order-1 min-w-0">
+              <Card className="p-6 sm:p-8 bg-zinc-800 border-zinc-700/50 min-w-0 overflow-hidden">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <Globe className="w-12 h-12 text-white" />
-                    <div>
+                    <Globe className="w-12 h-12 text-white shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-4xl font-bold text-white">5,000</div>
-                      <div className="text-sm text-zinc-200">{t('serviceSeedingStat1')}</div>
+                      <div className="text-sm text-zinc-200 break-words pr-1">{t('serviceSeedingStat1')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <MessageSquare className="w-12 h-12 text-white" />
-                    <div>
+                    <MessageSquare className="w-12 h-12 text-white shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-4xl font-bold text-white">—</div>
-                      <div className="text-sm text-zinc-200">{t('serviceSeedingStat2')}</div>
+                      <div className="text-sm text-zinc-200 break-words pr-1">{t('serviceSeedingStat2')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <CheckCircle2 className="w-12 h-12 text-white" />
-                    <div>
+                    <CheckCircle2 className="w-12 h-12 text-white shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-4xl font-bold text-white">—</div>
-                      <div className="text-sm text-zinc-200">{t('serviceSeedingStat3')}</div>
+                      <div className="text-sm text-zinc-200 break-words pr-1">{t('serviceSeedingStat3')}</div>
                     </div>
                   </div>
                 </div>
@@ -275,13 +275,13 @@ export default function ServicePage() {
                   {/* 분석 설명 */}
                   <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
                     <p className="text-xs text-foreground leading-relaxed">
-                      <span className="font-semibold text-primary">ROAS 및 구매 전환율(CVR) 분석:</span> 전체 캠페인 예산 대비 창출된 매출과 주요 커머스 채널(큐텐, 아마존 등) 내에서의 실질적인 전환 효율을 분석합니다.
+                      <span className="font-semibold text-primary">{t('serviceReportRoasIntro')}</span> {t('serviceReportRoasDesc')}
                     </p>
                   </div>
 
                   {/* ROAS Metric */}
                   <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-                    <div className="text-xs text-muted-foreground mb-1">캠페인 ROAS</div>
+                    <div className="text-xs text-muted-foreground mb-1">{t('serviceCampaignRoas')}</div>
                     <div className="flex items-end gap-2">
                       <div className="text-3xl font-bold text-primary">450%</div>
                       <div className="text-sm text-primary/70 mb-1">+150% ↑</div>
@@ -418,7 +418,7 @@ export default function ServicePage() {
                     <div className="mt-3 pt-3 border-t border-primary/20">
                       <div className="flex items-center gap-2 text-xs text-primary">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        <span>향후 6개월 재타겟팅 캠페인 활용 가능</span>
+                        <span>{t('serviceRemarketingNote')}</span>
                       </div>
                     </div>
                   </div>
@@ -443,34 +443,34 @@ export default function ServicePage() {
                   <div>
                     <div className="text-xs text-muted-foreground mb-4 flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      <span>{t('serviceTrustCommunity')}: 30万+</span>
+                      <span>{t('serviceTrustCommunity')}: {locale === 'ja' ? '30万+' : '30만+'}</span>
                     </div>
                     
                     <div className="mb-4">
                       <div className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
                         <span className="px-2 py-0.5 bg-primary/20 text-primary rounded text-[10px]">{t('serviceIntentKeyword')}</span>
-                        <span>Top 5 키워드</span>
+                        <span>{t('serviceTop5Keywords')}</span>
                       </div>
                       <div className="flex gap-2 flex-wrap">
-                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md shadow-[0_0_8px_rgba(0,255,255,0.3)]">구매함</span>
-                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">재구매</span>
-                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md">추천</span>
-                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">만족</span>
-                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md shadow-[0_0_8px_rgba(0,255,255,0.3)]">효과적</span>
+                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md shadow-[0_0_8px_rgba(0,255,255,0.3)]">{t('serviceKeywordBought')}</span>
+                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordRepurchase')}</span>
+                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordRecommend')}</span>
+                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordSatisfaction')}</span>
+                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md shadow-[0_0_8px_rgba(0,255,255,0.3)]">{t('serviceKeywordEffective')}</span>
                       </div>
                     </div>
 
                     <div className="mb-4">
                       <div className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
                         <span className="px-2 py-0.5 bg-primary/20 text-primary rounded text-[10px]">{t('serviceBrandImage')}</span>
-                        <span>Top 5 키워드</span>
+                        <span>{t('serviceTop5Keywords')}</span>
                       </div>
                       <div className="flex gap-2 flex-wrap">
-                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">신뢰감</span>
-                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md shadow-[0_0_8px_rgba(0,255,255,0.3)]">프리미엄</span>
-                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">혁신적</span>
-                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md">품질</span>
-                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">트렌디</span>
+                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordTrust')}</span>
+                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md shadow-[0_0_8px_rgba(0,255,255,0.3)]">{t('serviceKeywordPremium')}</span>
+                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordInnovative')}</span>
+                        <span className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordQuality')}</span>
+                        <span className="px-3 py-1.5 bg-primary/15 border border-primary/20 text-primary text-xs font-semibold rounded-md">{t('serviceKeywordTrendy')}</span>
                       </div>
                     </div>
 

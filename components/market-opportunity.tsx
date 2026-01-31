@@ -17,14 +17,14 @@ export function MarketOpportunity() {
   ]
 
   return (
-    <section id="market" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-balance break-keep">
-              <span className="text-white inline-block">{t('marketTitle1')}</span>{' '}
-              <span className="text-white inline-block">{t('marketTitle2')}</span>
+    <section id="market" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 w-full max-w-full overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+          <div className="text-center mb-12 block">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight min-h-[2.4em] block">
+              <span className="text-white block">{t('marketTitle1')}</span>
+              <span className="text-white block">{t('marketTitle2')}</span>
             </h2>
-            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto">
+            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
               {t('marketSubtitle')}
             </p>
           </div>
@@ -47,7 +47,7 @@ export function MarketOpportunity() {
                       {t(stat.titleKey)}
                     </div>
                     <div className="text-4xl font-black text-white mb-1">
-                      {index === 0 ? <><Counter end={500} />만</> : 
+                      {index === 0 ? <><Counter end={500} />{locale === 'ja' ? '万' : '만'}</> : 
                        index === 1 ? <><Counter end={25} />%</> : 
                        <><Counter end={90} />%</>}
                     </div>
@@ -56,7 +56,7 @@ export function MarketOpportunity() {
                     </div>
                   </div>
                   
-                  <p className="text-zinc-200 text-sm leading-relaxed break-keep">
+                  <p className="text-zinc-200 text-sm leading-[1.5] tracking-tight break-keep block">
                     {t(stat.descKey)}
                   </p>
                 </div>

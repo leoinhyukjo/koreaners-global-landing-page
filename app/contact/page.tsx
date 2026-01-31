@@ -252,16 +252,16 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<ContactSkeleton />}>
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
-        <div className="container mx-auto max-w-7xl">
-          <div className="mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 break-keep">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 w-full max-w-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
+          <div className="mb-8 sm:mb-12 min-w-0">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 break-keep break-words">
               {t('footerCtaTitle')}
             </h1>
-            <p className="text-base sm:text-lg text-foreground leading-relaxed mb-2 font-medium break-keep max-w-prose">
+            <p className="text-sm sm:text-base md:text-lg text-foreground leading-relaxed mb-2 font-medium break-keep break-words max-w-prose">
               <span className="inline-block">{t('footerCtaDesc1')}</span>{' '}
               <span className="inline-block">{t('footerCtaDesc2')}</span>{' '}
               <span className="inline-block">{t('footerCtaDesc3')}</span>

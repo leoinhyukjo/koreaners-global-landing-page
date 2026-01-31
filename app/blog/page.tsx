@@ -88,14 +88,14 @@ function BlogContent() {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
-        <div className="container mx-auto max-w-7xl">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 w-full max-w-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-balance break-words leading-tight tracking-tight">
               <span className="text-white">{t('blogHeroTitle')}</span>
               <span className="text-white">{t('blogHeroTitle2')}</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty leading-relaxed tracking-normal px-2">
+            <p className="text-sm sm:text-base md:text-lg text-zinc-200 max-w-3xl mx-auto text-pretty break-words leading-relaxed tracking-normal px-2">
               {t('blogHeroDesc')}
             </p>
           </div>
@@ -161,13 +161,13 @@ function BlogContent() {
                         </div>
                       </div>
 
-                      {/* Content */}
-                      <div className="p-4 sm:p-6 flex-1 flex flex-col">
-                        <h2 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors leading-tight tracking-tight">
+                      {/* Content: KR/JP 동일 여백 유지, 줄바꿈으로 넘침 방지 */}
+                      <div className="p-4 sm:p-6 flex-1 flex flex-col min-w-0 overflow-hidden">
+                        <h2 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors leading-tight tracking-tight break-words pr-1">
                           {getBlogTitle(post, locale)}
                         </h2>
                         {(getBlogSummary(post, locale) ?? post.summary) && (
-                          <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed line-clamp-3 tracking-normal">
+                          <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed line-clamp-3 tracking-normal break-words pr-1 min-w-0">
                             {getBlogSummary(post, locale) ?? post.summary}
                           </p>
                         )}
@@ -175,7 +175,7 @@ function BlogContent() {
                         <div className="mt-auto pt-3 sm:pt-4 border-t border-zinc-700/50 flex items-center justify-between">
                           <time className="text-xs text-zinc-300 flex items-center gap-1" dateTime={post.created_at}>
                             <Calendar className="h-3 w-3" />
-                            {new Date(post.created_at).toLocaleDateString('ko-KR')}
+                            {new Date(post.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                           </time>
                           <span className="text-xs text-white flex items-center gap-1 group-hover:gap-2 transition-all">
                             {t('read')}
@@ -281,7 +281,7 @@ const BlogSkeleton = () => (
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-zinc-900">
+    <main className="min-h-screen bg-zinc-900 w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<BlogSkeleton />}>
         <Suspense fallback={<BlogSkeleton />}>

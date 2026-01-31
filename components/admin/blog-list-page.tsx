@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/table'
 import { supabase } from '@/lib/supabase/client'
 import type { BlogPost } from '@/lib/supabase'
+import { resolveThumbnailSrc } from '@/lib/thumbnail'
 
 export function BlogListPage() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
@@ -77,6 +78,18 @@ export function BlogListPage() {
     }
   }
 
+  const STORAGE_BUCKET = 'website-assets'
+
+  /** 썸네일 표시용 URL: Supabase 전체 URL이면 그대로, 스토리지 경로면 getPublicUrl 사용 */
+  function getThumbnailDisplaySrc(post: BlogPost): string {
+    const raw = post.thumbnail_url?.trim()
+    if (!raw) return ''
+    if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+    const path = raw.replace(/^\/+/, '').replace(/^public\//, '')
+    const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path)
+    return data?.publicUrl ?? resolveThumbnailSrc(raw)
+  }
+
   return (
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
@@ -100,13 +113,14 @@ export function BlogListPage() {
         </Card>
       ) : (
         <>
+          {/* 데스크톱: 크리에이터 관리와 동일한 테이블 스타일 + 썸네일 컬럼 */}
           <div className="hidden md:block">
             <Card className="rounded-lg border shadow-sm overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>썸네일</TableHead>
                     <TableHead>제목</TableHead>
-                    <TableHead>슬러그</TableHead>
                     <TableHead>카테고리</TableHead>
                     <TableHead>상태</TableHead>
                     <TableHead>생성일</TableHead>
@@ -114,97 +128,133 @@ export function BlogListPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {blogPosts.map((post) => (
-                    <TableRow key={post.id}>
-                      <TableCell className="font-medium">{post.title}</TableCell>
-                      <TableCell>
-                        <code className="rounded bg-muted px-2 py-1 text-xs">{post.slug}</code>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{post.category}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        {post.published ? (
-                          <Badge variant="default">발행됨</Badge>
-                        ) : (
-                          <Badge variant="outline">임시저장</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(post.created_at).toLocaleDateString('ko-KR')}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleEdit(post)}
-                            className="h-9 w-9"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(post.id)}
-                            className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {blogPosts.map((post) => {
+                    const thumbSrc = getThumbnailDisplaySrc(post)
+                    return (
+                      <TableRow key={post.id}>
+                        <TableCell>
+                          {thumbSrc ? (
+                            <>
+                              <img
+                                src={thumbSrc}
+                                alt=""
+                                className="h-12 w-16 object-cover rounded border border-border bg-muted"
+                                onError={(e) => {
+                                  const t = e.currentTarget
+                                  t.onerror = null
+                                  t.style.display = 'none'
+                                  const fallback = t.nextElementSibling as HTMLElement
+                                  if (fallback) {
+                                    fallback.classList.remove('hidden')
+                                    fallback.classList.add('text-sm', 'text-muted-foreground')
+                                  }
+                                }}
+                              />
+                              <span className="hidden text-sm text-muted-foreground" aria-hidden>없음</span>
+                            </>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">없음</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="font-medium max-w-[280px]">
+                          <span className="truncate block" title={post.title}>{post.title}</span>
+                          <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground mt-0.5 block truncate">
+                            {post.slug}
+                          </code>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">{post.category}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          {post.published ? (
+                            <Badge variant="default">발행됨</Badge>
+                          ) : (
+                            <Badge variant="outline">임시저장</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(post.created_at).toLocaleDateString('ko-KR')}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(post)}
+                              className="h-9 w-9"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(post.id)}
+                              className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             </Card>
           </div>
 
+          {/* 모바일: 크리에이터 관리와 동일한 카드 스타일(썸네일 + 제목/날짜/상태 + 편집/삭제) */}
           <div className="space-y-4 md:hidden">
-            {blogPosts.map((post) => (
-              <Card
-                key={post.id}
-                className="rounded-lg border shadow-sm overflow-hidden border-border transition-colors hover:border-primary/30"
-              >
-                <div className="p-6">
-                  <h3 className="font-semibold leading-snug line-clamp-2">{post.title}</h3>
-                  <p className="mt-1 truncate text-xs text-muted-foreground">{post.slug}</p>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {post.category}
-                    </Badge>
-                    {post.published ? (
-                      <Badge variant="default" className="text-xs">발행됨</Badge>
+            {blogPosts.map((post) => {
+              const thumbSrc = getThumbnailDisplaySrc(post)
+              return (
+                <Card key={post.id} className="rounded-lg border shadow-sm p-6">
+                  <div className="flex items-center gap-4">
+                    {thumbSrc ? (
+                      <img
+                        src={thumbSrc}
+                        alt=""
+                        className="h-12 w-16 shrink-0 object-cover rounded border border-border bg-muted"
+                        onError={(e) => {
+                          const t = e.currentTarget
+                          t.onerror = null
+                          t.style.display = 'none'
+                        }}
+                      />
                     ) : (
-                      <Badge variant="outline" className="text-xs">임시저장</Badge>
+                      <div className="h-12 w-16 shrink-0 rounded border border-border bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                        없음
+                      </div>
                     )}
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(post.created_at).toLocaleDateString('ko-KR')}
-                    </span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold truncate" title={post.title}>{post.title}</h3>
+                      <p className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString('ko-KR')}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        <Badge variant="secondary" className="text-xs">{post.category}</Badge>
+                        {post.published ? (
+                          <Badge variant="default" className="text-xs">발행됨</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">임시저장</Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(post)} className="h-9 w-9">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(post.id)}
+                        className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="mt-4 flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(post)}
-                      className="min-h-[44px] flex-1 gap-2 touch-manipulation"
-                    >
-                      <Edit className="h-4 w-4 shrink-0" />
-                      수정
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDelete(post.id)}
-                      className="min-h-[44px] flex-1 gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive touch-manipulation"
-                    >
-                      <Trash2 className="h-4 w-4 shrink-0" />
-                      삭제
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              )
+            })}
           </div>
         </>
       )}

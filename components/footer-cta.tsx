@@ -253,14 +253,14 @@ export function FooterCTA() {
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
       <div className="container mx-auto max-w-7xl">
-        <div className="mb-8 sm:mb-12">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep">
+        <div className="mb-8 sm:mb-12 block">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep leading-[1.2] tracking-tight block min-h-[1.2em]">
             {t('footerCtaTitle')}
           </h1>
-          <p className="text-base sm:text-lg text-zinc-200 leading-relaxed mb-2 font-medium break-keep max-w-prose">
-            <span className="inline-block">{t('footerCtaDesc1')}</span>{' '}
-            <span className="inline-block">{t('footerCtaDesc2')}</span>{' '}
-            <span className="inline-block">{t('footerCtaDesc3')}</span>
+          <p className="text-base sm:text-lg text-zinc-200 leading-[1.5] tracking-tight mb-2 font-medium break-keep max-w-prose block min-h-[1.5em]">
+            <span>{t('footerCtaDesc1')}</span>{' '}
+            <span>{t('footerCtaDesc2')}</span>{' '}
+            <span>{t('footerCtaDesc3')}</span>
           </p>
         </div>
 
