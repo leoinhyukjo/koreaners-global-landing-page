@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useLocale } from '@/contexts/locale-context'
-import { getTranslation } from '@/lib/translations'
+import { getTranslation, type TranslationKey } from '@/lib/translations'
 
 function getScrollbarWidth(): number {
   if (typeof window === 'undefined') return 0
@@ -63,12 +63,15 @@ export function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const menuItems = [
+  type NavItem =
+    | { href: string; label: string; labelKey?: never }
+    | { href: string; labelKey: TranslationKey; label?: never }
+  const menuItems: NavItem[] = [
     { href: '/service', label: 'Service' },
     { href: '/creator', label: 'Creator' },
     { href: '/portfolio', label: 'Portfolio' },
     { href: '/blog', label: 'Blog' },
-    { href: '/contact', labelKey: 'contact' as const },
+    { href: '/contact', labelKey: 'contact' },
   ]
 
   const effectiveLocale = mounted ? locale : 'ko'
@@ -180,7 +183,7 @@ export function Navigation() {
                       }}
                     >
                       <span className="text-white transition-colors duration-200 font-bold break-words min-w-0">
-                        {'labelKey' in item ? t(item.labelKey) : item.label}
+                        {'labelKey' in item && item.labelKey ? t(item.labelKey) : item.label}
                       </span>
                       <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
                     </a>
