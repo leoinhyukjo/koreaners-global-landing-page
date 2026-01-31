@@ -68,11 +68,10 @@ export function Performance() {
 
   return (
     <section id="performance" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
           <div className="text-center mb-12 block">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight min-h-[2.4em] block">
-              <span className="text-white block">{t('performanceTitle1')}</span>
-              <span className="text-white block">{t('performanceTitle2')}</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight block">
+              <span className="text-white">{t('performanceTitle1')}{t('performanceTitle2')}</span>
             </h2>
             <p className="text-lg text-zinc-200 mb-8 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
               {t('performanceSubtitle')}
@@ -97,7 +96,7 @@ export function Performance() {
                   size="icon"
                   onClick={scrollPrev}
                   disabled={prevBtnDisabled}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
+                  className="absolute left-4 sm:left-6 lg:left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                   aria-label={t('performancePrevSlide')}
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -107,7 +106,7 @@ export function Performance() {
                   size="icon"
                   onClick={scrollNext}
                   disabled={nextBtnDisabled}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
+                  className="absolute right-4 sm:right-6 lg:right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                   aria-label={t('performanceNextSlide')}
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -115,7 +114,7 @@ export function Performance() {
               </div>
 
               {/* Carousel Container */}
-              <div className="overflow-hidden px-0 lg:px-12" ref={emblaRef}>
+              <div className="overflow-hidden px-0 lg:pl-36 lg:pr-36" ref={emblaRef}>
                 <div className="flex gap-4">
                   {portfolios.map(item => (
                     <div key={item.id} className="flex-[0_0_100%] md:flex-[0_0_calc(50%-8px)] lg:flex-[0_0_calc(33.333%-11px)] min-w-0">

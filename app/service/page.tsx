@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -52,7 +52,7 @@ export default function ServicePage() {
       <SafeHydration fallback={<ServiceSkeleton />}>
       
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative overflow-hidden w-full max-w-full">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden w-full max-w-full">
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
         <div className="container mx-auto max-w-7xl w-full max-w-full relative z-10 overflow-hidden">
           <div className="text-center space-y-4 sm:space-y-6">
@@ -73,13 +73,13 @@ export default function ServicePage() {
       </section>
 
       {/* Problem & Insight Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 w-full max-w-full overflow-hidden">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
         <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 break-keep break-words">
               {t('serviceProblemTitle')}
             </h2>
-            <p className="text-base sm:text-lg text-zinc-200 break-keep break-words max-w-prose mx-auto px-4 sm:px-6">
+            <p className="text-base sm:text-lg text-zinc-200 break-keep break-words max-w-prose mx-auto px-4 sm:px-6 lg:px-24">
               {t('serviceProblemSubtitle')}
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function ServicePage() {
       </section>
 
       {/* Service 01: Influencer Marketing */}
-      <section className="py-20 px-4 sm:px-6 bg-zinc-800/30">
+      <section className="py-20 px-4 sm:px-6 lg:px-24 bg-zinc-800/30">
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -173,7 +173,7 @@ export default function ServicePage() {
       </section>
 
       {/* Service 02: Seeding */}
-      <section className="py-20 px-4 sm:px-6">
+      <section className="py-20 px-4 sm:px-6 lg:px-24">
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 min-w-0">
@@ -240,7 +240,7 @@ export default function ServicePage() {
       </section>
 
       {/* Data & Reporting Section */}
-      <section className="py-20 px-4 sm:px-6 relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800/30 to-zinc-900">
+      <section className="py-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800/30 to-zinc-900">
         
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center mb-16">

@@ -8,7 +8,7 @@ export function FinalCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
     <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 w-full max-w-full">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 relative z-10 overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 relative z-10 overflow-hidden">
         <div className="max-w-4xl mx-auto text-center w-full max-w-full min-w-0 block">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 text-balance leading-[1.2] tracking-tight break-keep break-words min-h-[2.4em] block">
             <span className="text-white block">{t('finalCtaTitle1')}</span>

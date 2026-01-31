@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { MainContent } from '@/components/main-content'
 
 export const metadata: Metadata = {

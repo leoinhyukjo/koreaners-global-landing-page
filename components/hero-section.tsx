@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 
-export function HeroSection() {
+export default function HeroSection() {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [isVisible, setIsVisible] = useState(false)
@@ -39,7 +39,7 @@ export function HeroSection() {
       />
 
       {/* 3. 텍스트·CTA (배경 위에 고정 배치) */}
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 relative z-10 overflow-hidden flex-1 flex flex-col items-center justify-center">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 relative z-10 overflow-hidden flex-1 flex flex-col items-center justify-center">
         <div className="max-w-5xl mx-auto text-center w-full max-w-full min-w-0">
           {/* BEYOND AGENCY: 행간/자간 고정으로 언어 전환 시 레이아웃 시프트 방지 */}
           <div className="relative pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[4.5rem] sm:min-h-[5rem] block">

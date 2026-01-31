@@ -21,7 +21,7 @@ interface BlogPostViewProps {
 
 const BlogDetailSkeleton = () => (
   <main className="min-h-screen relative overflow-hidden bg-zinc-900" aria-hidden="true">
-    <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
+    <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
       <div className="container mx-auto max-w-7xl">
         <div className="h-10 w-48 bg-zinc-800/50 rounded animate-pulse mb-8" />
         <div className="aspect-video bg-zinc-800/50 rounded animate-pulse mb-6" />
@@ -42,7 +42,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
   return (
     <SafeHydration fallback={<BlogDetailSkeleton />}>
     <main className="min-h-screen relative overflow-hidden bg-zinc-900">
-      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
+      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 relative z-10">
         <div className="container mx-auto max-w-7xl">
           <header className="mb-8 sm:mb-12">
             <Link href="/blog">

@@ -1,6 +1,6 @@
 'use client'
 
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { useState, useEffect } from 'react'
@@ -12,8 +12,8 @@ import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-conte
 import { getTranslation } from '@/lib/translations'
 
 const PortfolioSkeleton = () => (
-  <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 min-h-screen" aria-hidden="true">
-    <div className="container mx-auto max-w-7xl">
+<section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
+  <div className="container mx-auto max-w-7xl">
       <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
         <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
         <div className="h-5 max-w-3xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
@@ -97,8 +97,8 @@ export default function PortfolioPage() {
       <Navigation />
       <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
-        <div className="container mx-auto max-w-7xl">
+<section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
+      <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
               <span className="text-white">{t('portfolioPageHero1')}</span>

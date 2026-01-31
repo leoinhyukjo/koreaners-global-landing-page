@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { BlogPost } from '@/lib/supabase'
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { BlogPostView } from '@/components/blog/blog-post-view'
 import { resolveThumbnailSrc, toAbsoluteUrl } from '@/lib/thumbnail'
 

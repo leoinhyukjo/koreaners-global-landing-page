@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { SafeHydration } from '@/components/common/SafeHydration'
 import { MarketingCTA } from '@/components/common/marketing-cta'
 import { Card } from '@/components/ui/card'
@@ -35,7 +35,7 @@ const PortfolioContentClient = dynamic(
 )
 
 const PortfolioDetailSkeleton = () => (
-  <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 min-h-screen" aria-hidden="true">
+  <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="container mx-auto max-w-7xl">
       <div className="h-10 w-48 bg-zinc-800/50 rounded animate-pulse mb-8" />
       <div className="aspect-video bg-zinc-800/50 rounded animate-pulse mb-6" />
@@ -101,7 +101,7 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
+          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 text-center">
             <p className="text-zinc-200">{t('loading')}</p>
           </div>
         </SafeHydration>
@@ -114,7 +114,7 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
+          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 text-center">
             <p className="text-zinc-200 mb-6">{t('portfolioNotFound')}</p>
             <Link href="/portfolio">
               <Button variant="ghost" className="min-h-[44px] text-white hover:bg-zinc-800 border-0">
@@ -139,7 +139,7 @@ export default function PortfolioDetailPage() {
     <main className="min-h-screen relative overflow-hidden bg-zinc-900">
       <Navigation />
       <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 relative z-10">
+      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 relative z-10">
         <div className="container mx-auto max-w-7xl">
           <header className="mb-8 sm:mb-12">
             <Link href="/portfolio">

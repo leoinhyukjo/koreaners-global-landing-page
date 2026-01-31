@@ -3,7 +3,7 @@
 // 블로그 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
 export const dynamic = 'force-dynamic'
 
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -88,7 +88,7 @@ function BlogContent() {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 w-full max-w-full overflow-hidden">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
         <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-balance break-words leading-tight tracking-tight">
@@ -266,7 +266,7 @@ function BlogContent() {
 }
 
 const BlogSkeleton = () => (
-  <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 min-h-screen" aria-hidden="true">
+  <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="container mx-auto max-w-7xl">
       <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
         <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />

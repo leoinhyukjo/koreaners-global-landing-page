@@ -14,7 +14,7 @@ export function Footer() {
 
   return (
     <footer className="py-8 border-t border-zinc-700/50 bg-zinc-900 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
         <div className="flex flex-col items-start gap-4">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <Logo variant="footer" />

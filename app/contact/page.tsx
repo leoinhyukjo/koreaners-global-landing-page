@@ -2,7 +2,7 @@
 
 import React from "react"
 
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { SafeHydration } from '@/components/common/SafeHydration'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -255,8 +255,8 @@ export default function ContactPage() {
     <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<ContactSkeleton />}>
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 w-full max-w-full overflow-hidden">
-        <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
+<section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
           <div className="mb-8 sm:mb-12 min-w-0">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 break-keep break-words">
               {t('footerCtaTitle')}

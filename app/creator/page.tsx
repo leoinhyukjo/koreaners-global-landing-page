@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import { Navigation } from '@/components/navigation'
+import Navigation from '@/components/navigation'
 import { SafeHydration } from '@/components/common/SafeHydration'
 import { Users, Instagram, Youtube, Music, Award, Target, X, Plus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -160,7 +160,7 @@ function CreatorContent() {
 
   return (
     <>
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 w-full max-w-full overflow-hidden">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
         <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
           <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-balance break-words leading-tight">
@@ -222,7 +222,7 @@ function CreatorContent() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-3 md:gap-4 mb-12 sm:mb-20 min-w-0">
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 mb-12 sm:mb-20 min-w-0">
                 {creators.map((creator) => {
                   const instagramHandle = creator.instagram_url
                     ? '@' + creator.instagram_url.replace(/\/$/, '').split('/').pop()
@@ -233,50 +233,49 @@ function CreatorContent() {
                       key={creator.id}
                       className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300 min-w-0"
                     >
-                      {/* Creator Avatar */}
+                      {/* Creator Avatar: 3열 시 비율 유지·축소 */}
                       <div className="aspect-[3/4] min-h-0 bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
-                        {/* 프로필 이미지 */}
                         {creator.profile_image_url ? (
                           <img
                             src={creator.profile_image_url}
                             alt={creator.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover object-center"
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <Users className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 text-primary/30" />
+                            <Users className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 text-primary/30" />
                           </div>
                         )}
                       </div>
 
-                      {/* Creator Info: 2열일 때 패딩·폰트 모바일 최적화 */}
-                      <div className="p-3 sm:p-3 md:p-4 min-w-0">
-                        <div className="mb-1.5 sm:mb-2 flex items-baseline justify-between gap-1 min-w-0">
-                          <span className="text-sm sm:text-sm md:text-base font-bold text-white truncate min-w-0" title={creator.name}>
+                      {/* Creator Info: 3열 모바일 text-xs·overflow-hidden 고정 */}
+                      <div className="p-2 md:p-4 min-w-0 overflow-hidden">
+                        <div className="mb-1 md:mb-2 flex items-baseline justify-between gap-0.5 min-w-0">
+                          <span className="text-[10px] sm:text-xs md:text-base font-bold text-white truncate min-w-0 flex-1" title={creator.name}>
                             {creator.name}
                           </span>
                           {instagramHandle && (
-                            <span className="text-[10px] sm:text-xs text-zinc-400 truncate max-w-[50%] text-right shrink-0" title={instagramHandle}>
+                            <span className="text-[10px] sm:text-xs text-zinc-400 truncate max-w-[45%] text-right shrink-0" title={instagramHandle}>
                               {instagramHandle}
                             </span>
                           )}
                         </div>
 
-                        {/* SNS 링크 */}
-                        <div className="flex gap-1.5 sm:gap-2 flex-wrap">
+                        {/* SNS 링크: 3열 시 아이콘·간격 축소 */}
+                        <div className="flex gap-1 sm:gap-1.5 md:gap-2 flex-wrap overflow-hidden">
                           {creator.instagram_url ? (
                             <a
                               href={creator.instagram_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1.5 sm:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                              className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                               aria-label="Instagram"
                             >
-                              <Instagram className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                             </a>
                           ) : (
-                            <div className="p-1.5 sm:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                              <Instagram className="w-3 h-3 sm:w-4 sm:h-4 text-zinc-400" />
+                            <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
+                              <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
                             </div>
                           )}
 
@@ -285,14 +284,14 @@ function CreatorContent() {
                               href={creator.youtube_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1.5 sm:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                              className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                               aria-label="YouTube"
                             >
-                              <Youtube className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                             </a>
                           ) : (
-                            <div className="p-1.5 sm:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                              <Youtube className="w-3 h-3 sm:w-4 sm:h-4 text-zinc-400" />
+                            <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
+                              <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
                             </div>
                           )}
 
@@ -301,14 +300,14 @@ function CreatorContent() {
                               href={creator.tiktok_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1.5 sm:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                              className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                               aria-label="TikTok"
                             >
-                              <Music className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                             </a>
                           ) : (
-                            <div className="p-1.5 sm:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                              <Music className="w-3 h-3 sm:w-4 sm:h-4 text-zinc-400" />
+                            <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
+                              <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
                             </div>
                           )}
 
@@ -317,14 +316,14 @@ function CreatorContent() {
                               href={creator.x_url || creator.twitter_url || undefined}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1.5 sm:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                              className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                               aria-label="X (Twitter)"
                             >
-                              <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                             </a>
                           ) : (
-                            <div className="p-1.5 sm:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                              <X className="w-3 h-3 sm:w-4 sm:h-4 text-zinc-400" />
+                            <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
+                              <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
                             </div>
                           )}
                         </div>
@@ -339,9 +338,9 @@ function CreatorContent() {
                     className="overflow-hidden bg-zinc-800/40 border border-dashed border-zinc-600/60 opacity-60 pointer-events-none min-w-0"
                   >
                     <div className="aspect-[3/4] bg-zinc-800/50 relative flex items-center justify-center min-h-0">
-                      <Plus className="w-8 h-8 sm:w-10 sm:h-10 text-zinc-500" />
+                      <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-zinc-500" />
                     </div>
-                    <div className="p-3 sm:p-3 h-[76px] sm:h-[80px] md:h-[88px]" />
+                    <div className="p-2 md:p-4 h-[64px] sm:h-[72px] md:h-[88px]" />
                   </Card>
                 ))}
               </div>
@@ -457,7 +456,7 @@ function CreatorContent() {
           </div>
 
           {/* Creator Application Form */}
-          <section className="py-10 sm:py-14 px-4 sm:px-6 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 mb-20 w-full max-w-full overflow-hidden">
+          <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 mb-20 w-full max-w-full overflow-hidden">
             <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
               <div className="mb-6 sm:mb-10">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4 break-keep">
@@ -661,7 +660,7 @@ function CreatorContent() {
 function CreatorFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center pt-24" aria-hidden="true">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
         <div className="h-32 w-full max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
       </div>
     </div>

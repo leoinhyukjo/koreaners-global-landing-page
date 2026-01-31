@@ -61,7 +61,7 @@ export function TrustSignals() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
     <section className="py-14 sm:py-20 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 overflow-hidden">
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
         <div className="text-center mb-12 sm:mb-14 block">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 text-white break-keep break-words leading-[1.2] tracking-tight block">
             TRUSTED BY
@@ -70,13 +70,18 @@ export function TrustSignals() {
             {t('trustSubtitle')}
           </p>
         </div>
+      </div>
 
+      {/* 마키만 전체 너비(패딩 없음)로 표시 */}
+      <div className="w-screen relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
         <div className="space-y-2 sm:space-y-3">
           <MarqueeRow partners={PARTNERS_ROW1} direction="left" />
           <MarqueeRow partners={PARTNERS_ROW2} direction="right" />
           <MarqueeRow partners={PARTNERS_ROW3} direction="left" />
         </div>
+      </div>
 
+      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
         <div className="mt-14 text-center block">
           <p className="text-sm text-zinc-200 break-keep leading-[1.5] tracking-tight block">
             {t('trustExportVoucher')}
