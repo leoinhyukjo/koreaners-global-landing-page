@@ -13,7 +13,7 @@ export function MarketingCTA() {
       className="mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-none border border-zinc-700/50 bg-gradient-to-b from-zinc-800/90 to-zinc-900"
       aria-label={t('marketingCtaButton')}
     >
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
+      <div className="container mx-auto max-w-7xl">
         <div className="max-w-2xl mx-auto text-center space-y-5 sm:space-y-6">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight break-keep">
           {t('marketingCtaTitle')}

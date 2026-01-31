@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Fixed header and body use same width so header/content padding aligns */
+html {
+  scrollbar-gutter: stable;
+}
+
 :root {
   /* B&W Professional Theme - Enhanced Brightness */
   --background: oklch(0.18 0 0); /* Zinc-900 - brighter base */

@@ -54,7 +54,7 @@ export default function ServicePage() {
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden w-full max-w-full">
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
-        <div className="container mx-auto max-w-7xl w-full max-w-full relative z-10 overflow-hidden">
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center space-y-4 sm:space-y-6">
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight break-keep break-words">
               <div className="flex flex-col items-center gap-2">
@@ -74,7 +74,7 @@ export default function ServicePage() {
 
       {/* Problem & Insight Section */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
-        <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 break-keep break-words">
               {t('serviceProblemTitle')}

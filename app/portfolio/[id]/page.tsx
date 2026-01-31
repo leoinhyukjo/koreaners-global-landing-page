@@ -101,8 +101,10 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 text-center">
-            <p className="text-zinc-200">{t('loading')}</p>
+          <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
+            <div className="container mx-auto max-w-7xl text-center">
+              <p className="text-zinc-200">{t('loading')}</p>
+            </div>
           </div>
         </SafeHydration>
       </main>
@@ -114,14 +116,16 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="container mx-auto max-w-7xl pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 text-center">
-            <p className="text-zinc-200 mb-6">{t('portfolioNotFound')}</p>
-            <Link href="/portfolio">
-              <Button variant="ghost" className="min-h-[44px] text-white hover:bg-zinc-800 border-0">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                {t('backToList')}
-              </Button>
-            </Link>
+          <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
+            <div className="container mx-auto max-w-7xl text-center">
+              <p className="text-zinc-200 mb-6">{t('portfolioNotFound')}</p>
+              <Link href="/portfolio">
+                <Button variant="ghost" className="min-h-[44px] text-white hover:bg-zinc-800 border-0">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  {t('backToList')}
+                </Button>
+              </Link>
+            </div>
           </div>
         </SafeHydration>
       </main>

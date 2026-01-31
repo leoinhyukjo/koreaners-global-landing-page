@@ -38,20 +38,21 @@ export default function HeroSection() {
         }}
       />
 
-      {/* 3. 텍스트·CTA (배경 위에 고정 배치) */}
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 relative z-10 overflow-hidden flex-1 flex flex-col items-center justify-center">
+      {/* 3. 텍스트·CTA (배경 위에 고정 배치) — 전역 패딩 2단 구조 */}
+      <div className="w-full max-w-full px-4 sm:px-6 lg:px-24 relative z-10 overflow-hidden flex-1 flex flex-col items-center justify-center">
+        <div className="container mx-auto max-w-7xl flex-1 flex flex-col items-center justify-center">
         <div className="max-w-5xl mx-auto text-center w-full max-w-full min-w-0">
           {/* BEYOND AGENCY: 행간/자간 고정으로 언어 전환 시 레이아웃 시프트 방지 */}
           <div className="relative pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[4.5rem] sm:min-h-[5rem] block">
             <h1 
-              className={`relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-2 text-balance break-keep break-words transition-all duration-1000 leading-[1.2] tracking-tight ${
+              className={`relative text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-2 text-balance break-keep break-words transition-all duration-1000 leading-[1.2] tracking-tight ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
             >
               <span className="text-white block">BEYOND</span>
             </h1>
             <h2 
-              className={`relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-8 sm:mb-10 text-balance break-keep break-words transition-all duration-1000 delay-200 leading-[1.2] tracking-tight ${
+              className={`relative text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-8 sm:mb-10 text-balance break-keep break-words transition-all duration-1000 delay-200 leading-[1.2] tracking-tight ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
             >
@@ -87,6 +88,7 @@ export default function HeroSection() {
               </Button>
             </a>
           </div>
+        </div>
         </div>
       </div>
     </section>

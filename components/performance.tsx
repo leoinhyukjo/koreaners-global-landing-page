@@ -67,8 +67,8 @@ export function Performance() {
   }, [emblaApi])
 
   return (
-    <section id="performance" className="py-12 sm:py-16 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
+    <section id="performance" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
+      <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12 block">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight block">
               <span className="text-white">{t('performanceTitle1')}{t('performanceTitle2')}</span>

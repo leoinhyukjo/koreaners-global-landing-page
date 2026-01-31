@@ -256,7 +256,7 @@ export default function ContactPage() {
       <Navigation />
       <SafeHydration fallback={<ContactSkeleton />}>
 <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
+      <div className="container mx-auto max-w-7xl">
           <div className="mb-8 sm:mb-12 min-w-0">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 break-keep break-words">
               {t('footerCtaTitle')}

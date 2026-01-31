@@ -14,8 +14,8 @@ import { WelcomePopup } from '@/components/welcome-popup'
 /** 히어로+첫 섹션 헤더와 동일한 레이아웃 틀을 유지해 하이드레이션 시 레이아웃 시프트 방지 */
 const MainSkeleton = () => (
   <div className="min-h-screen w-full max-w-full overflow-hidden" aria-hidden="true">
-    <div className="relative min-h-screen flex items-center justify-center pt-20 pb-12">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24">
+    <div className="relative min-h-screen flex items-center justify-center pt-20 pb-12 px-4 sm:px-6 lg:px-24">
+      <div className="container mx-auto max-w-7xl">
         <div className="max-w-5xl mx-auto text-center w-full">
           <div className="pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[4.5rem] sm:min-h-[5rem] block">
             <div className="h-12 sm:h-14 md:h-16 bg-zinc-800/60 rounded w-3/4 mx-auto mb-2 block" />
@@ -31,8 +31,8 @@ const MainSkeleton = () => (
         </div>
       </div>
     </div>
-    <div className="py-12 sm:py-16 border-t border-zinc-800/50">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
+    <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 border-t border-zinc-800/50">
+      <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12 block">
           <div className="h-8 sm:h-10 bg-zinc-800/50 rounded w-2/3 mx-auto mb-4 block" />
           <div className="h-5 bg-zinc-800/40 rounded w-full max-w-md mx-auto block" />

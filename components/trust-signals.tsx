@@ -60,8 +60,8 @@ export function TrustSignals() {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
-    <section className="py-14 sm:py-20 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full">
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
+    <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full">
+      <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12 sm:mb-14 block">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 text-white break-keep break-words leading-[1.2] tracking-tight block">
             TRUSTED BY
@@ -81,11 +81,13 @@ export function TrustSignals() {
         </div>
       </div>
 
-      <div className="container mx-auto max-w-7xl w-full max-w-full px-4 sm:px-6 lg:px-24 overflow-hidden">
+      <div className="px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl">
         <div className="mt-14 text-center block">
           <p className="text-sm text-zinc-200 break-keep leading-[1.5] tracking-tight block">
             {t('trustExportVoucher')}
           </p>
+        </div>
         </div>
       </div>
     </section>

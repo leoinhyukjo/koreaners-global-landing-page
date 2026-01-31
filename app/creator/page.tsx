@@ -161,7 +161,7 @@ function CreatorContent() {
   return (
     <>
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
-        <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-balance break-words leading-tight">
               <span className="text-white">{t('creatorHero1')}</span>
@@ -457,7 +457,7 @@ function CreatorContent() {
 
           {/* Creator Application Form */}
           <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 mb-20 w-full max-w-full overflow-hidden">
-            <div className="container mx-auto max-w-7xl w-full max-w-full overflow-hidden">
+            <div className="container mx-auto max-w-7xl">
               <div className="mb-6 sm:mb-10">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4 break-keep">
                   {t('creatorApplyTitle')}
@@ -659,8 +659,8 @@ function CreatorContent() {
 /** Suspense fallback: 로케일/번역 없이 정적 플레이스홀더만 렌더링하여 Hydration Mismatch 방지 */
 function CreatorFallback() {
   return (
-    <div className="min-h-screen flex items-center justify-center pt-24" aria-hidden="true">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
+    <div className="min-h-screen flex items-center justify-center pt-24 px-4 sm:px-6 lg:px-24" aria-hidden="true">
+      <div className="container mx-auto max-w-7xl">
         <div className="h-32 w-full max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
       </div>
     </div>
