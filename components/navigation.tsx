@@ -133,7 +133,7 @@ export default function Navigation() {
             </a>
           </div>
 
-          {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 */}
+          {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 — 하이드레이션 가드로 Sheet는 클라이언트 마운트 후에만 렌더 */}
           <div className="flex md:hidden items-center gap-2 flex-shrink-0 min-w-0">
             {/* 언어 토글: 화면 크기와 관계없이 항상 헤더 우측(햄버거 옆)에 노출 */}
             <div className="flex items-center gap-0.5 rounded border border-zinc-600 bg-zinc-800/50 p-0.5 flex-shrink-0">
@@ -152,59 +152,69 @@ export default function Navigation() {
                 JP
               </button>
             </div>
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 min-w-[2.25rem] hover:bg-zinc-800 border-0 flex-shrink-0"
-                  aria-label="메뉴 열기"
+            {mounted && (
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 min-w-[2.25rem] hover:bg-zinc-800 border-0 flex-shrink-0"
+                    aria-label="메뉴 열기"
+                  >
+                    <Menu className="h-5 w-5 text-white" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent 
+                  side="right" 
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-black border-l border-zinc-800 z-50 rounded-none overflow-y-auto"
                 >
-                  <Menu className="h-5 w-5 text-white" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent 
-                side="right" 
-                className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-black border-l border-zinc-800 z-50 rounded-none overflow-y-auto"
+                  <SheetHeader className="border-b border-zinc-800 pb-4 mb-4 z-10 relative">
+                    <SheetTitle className="text-left text-xl font-black text-white break-words">
+                      {t('menu')}
+                    </SheetTitle>
+                  </SheetHeader>
+                  <nav className="flex flex-col gap-0 relative z-10">
+                    {menuItems.map((item, index) => (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="group flex items-center justify-between text-white hover:text-white hover:bg-zinc-900 active:bg-zinc-800 transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-zinc-800 break-words"
+                        style={{
+                          animation: `fadeInSlide 0.3s ease-out ${index * 60}ms both`,
+                        }}
+                      >
+                        <span className="text-white transition-colors duration-200 font-bold break-words min-w-0">
+                          {'labelKey' in item && item.labelKey ? t(item.labelKey) : item.label}
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
+                      </a>
+                    ))}
+                  </nav>
+                  
+                  <style jsx>{`
+                    @keyframes fadeInSlide {
+                      from {
+                        opacity: 0;
+                        transform: translateX(1rem);
+                      }
+                      to {
+                        opacity: 1;
+                        transform: translateX(0);
+                      }
+                    }
+                  `}</style>
+                </SheetContent>
+              </Sheet>
+            )}
+            {!mounted && (
+              <span
+                className="inline-flex h-9 w-9 min-w-[2.25rem] items-center justify-center flex-shrink-0 invisible"
+                aria-hidden
               >
-                <SheetHeader className="border-b border-zinc-800 pb-4 mb-4 z-10 relative">
-                  <SheetTitle className="text-left text-xl font-black text-white break-words">
-                    {t('menu')}
-                  </SheetTitle>
-                </SheetHeader>
-                <nav className="flex flex-col gap-0 relative z-10">
-                  {menuItems.map((item, index) => (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group flex items-center justify-between text-white hover:text-white hover:bg-zinc-900 active:bg-zinc-800 transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-zinc-800 break-words"
-                      style={{
-                        animation: `fadeInSlide 0.3s ease-out ${index * 60}ms both`,
-                      }}
-                    >
-                      <span className="text-white transition-colors duration-200 font-bold break-words min-w-0">
-                        {'labelKey' in item && item.labelKey ? t(item.labelKey) : item.label}
-                      </span>
-                      <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
-                    </a>
-                  ))}
-                </nav>
-                
-                <style jsx>{`
-                  @keyframes fadeInSlide {
-                    from {
-                      opacity: 0;
-                      transform: translateX(1rem);
-                    }
-                    to {
-                      opacity: 1;
-                      transform: translateX(0);
-                    }
-                  }
-                `}</style>
-              </SheetContent>
-            </Sheet>
+                <Menu className="h-5 w-5 text-white" />
+              </span>
+            )}
           </div>
         </div>
         </div>

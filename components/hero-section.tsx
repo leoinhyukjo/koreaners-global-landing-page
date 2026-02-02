@@ -2,18 +2,19 @@
 
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+
+const fadeUp = {
+  initial: { y: 20, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { duration: 0.8, ease: 'easeOut' as const },
+}
 
 export default function HeroSection() {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
 
   return (
     <section className="relative min-h-screen h-full flex items-center justify-center pt-20 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-800 w-full max-w-full overflow-hidden">
@@ -38,43 +39,46 @@ export default function HeroSection() {
         }}
       />
 
-      {/* 3. 텍스트·CTA (배경 위에 고정 배치) — 전역 패딩 2단 구조 */}
+      {/* 3. 텍스트·CTA (배경 위에 고정 배치) — 전역 패딩 2단 구조, min-h로 레이아웃 시프트 방지 */}
       <div className="w-full max-w-full px-4 sm:px-6 lg:px-24 relative z-10 overflow-hidden flex-1 flex flex-col items-center justify-center">
         <div className="container mx-auto max-w-7xl flex-1 flex flex-col items-center justify-center">
         <div className="max-w-5xl mx-auto text-center w-full max-w-full min-w-0">
-          {/* BEYOND AGENCY: 행간/자간 고정으로 언어 전환 시 레이아웃 시프트 방지 */}
+          {/* BEYOND AGENCY: 아래→위 페이드인, 시차 적용 */}
           <div className="relative pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[4.5rem] sm:min-h-[5rem] block">
-            <h1 
-              className={`relative text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-2 text-balance break-keep break-words transition-all duration-1000 leading-[1.2] tracking-tight ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+            <motion.h1
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0 }}
+              className="relative text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-2 text-balance break-keep break-words leading-[1.2] tracking-tight"
             >
               <span className="text-white block">BEYOND</span>
-            </h1>
-            <h2 
-              className={`relative text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-8 sm:mb-10 text-balance break-keep break-words transition-all duration-1000 delay-200 leading-[1.2] tracking-tight ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+            </motion.h1>
+            <motion.h2
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.15 }}
+              className="relative text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black mb-8 sm:mb-10 text-balance break-keep break-words leading-[1.2] tracking-tight"
             >
               <span className="text-white block">AGENCY</span>
-            </h2>
+            </motion.h2>
           </div>
 
           {/* 브랜드 타이틀: block + min-h로 언어 전환 시 높이 고정 */}
-          <div className={`relative pt-12 sm:pt-14 md:py-10 sm:py-12 pb-10 sm:pb-12 min-h-[1.2em] block transition-all duration-1000 delay-300 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
-            <h2 
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.3 }}
+            className="relative pt-12 sm:pt-14 md:py-10 sm:py-12 pb-10 sm:pb-12 min-h-[1.2em] block"
+          >
+            <h2
               className="relative text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance break-words leading-[1.2] text-white px-1 block"
             >
               {t('heroBrandName')}
             </h2>
-          </div>
-          
-          <div 
-            className={`flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 transition-all duration-1000 delay-500 w-full max-w-full ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          </motion.div>
+
+          {/* CTA 버튼 */}
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 w-full max-w-full min-h-[4rem] sm:min-h-[3.5rem]"
           >
             <a href="/contact" className="w-full sm:w-auto max-w-full min-w-0">
               <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 w-full sm:w-auto font-black break-words min-w-0 max-w-full">
@@ -87,7 +91,7 @@ export default function HeroSection() {
                 {t('heroCtaViewCases')}
               </Button>
             </a>
-          </div>
+          </motion.div>
         </div>
         </div>
       </div>
