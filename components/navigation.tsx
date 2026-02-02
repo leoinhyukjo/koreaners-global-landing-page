@@ -87,7 +87,7 @@ export default function Navigation() {
       }`}
       style={{ width: '100%' }}
     >
-      <div className="w-full max-w-full px-4 sm:px-6 lg:px-24">
+      <div className="w-full max-w-full px-6 md:px-12 lg:px-24">
         <div className="container mx-auto max-w-7xl py-3 sm:py-4">
         <div className="flex items-center justify-between min-w-0">
           <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">

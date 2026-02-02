@@ -217,21 +217,40 @@ html {
   max-width: 100%;
 }
 
-/* Blog Content Styles */
+/* Blog Content Styles - 요약/본문 패딩 일치: BlockNote 기본 padding-inline 제거 */
 .blog-content-wrapper .bn-container {
   background: transparent !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .blog-content-wrapper .bn-editor {
   background: transparent !important;
+  padding-inline: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
+/* prose 래퍼 가로 마진 제거 → 요약/본문 시각적 패딩 일치 */
+.blog-content-wrapper .prose {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 본문 반응형 폰트: 모바일 text-base, 데스크탑 lg:text-lg */
 .blog-content-wrapper .bn-editor p {
-  font-size: 1.125rem !important;
+  font-size: 1rem !important;
   line-height: 1.75 !important;
   color: rgb(229 231 235) !important;
   margin-bottom: 1.5rem !important;
   word-break: keep-all !important;
+}
+@media (min-width: 1024px) {
+  .blog-content-wrapper .bn-editor p {
+    font-size: 1.125rem !important;
+  }
 }
 
 .blog-content-wrapper .bn-editor h1,
@@ -377,6 +396,27 @@ html {
 
 .blog-content-wrapper .bn-editor table tbody tr:hover {
   background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 본문 내 이미지 반응형: 모바일 100% 중앙, 데스크탑 max-w 중앙 정렬, 비율 유지 */
+.blog-content-wrapper .bn-editor img,
+.blog-content-wrapper .bn-editor [data-content-type="image"] img {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+@media (min-width: 1024px) {
+  .blog-content-wrapper .bn-editor img,
+  .blog-content-wrapper .bn-editor [data-content-type="image"] img {
+    max-width: 56rem !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
 /* 모바일 반응형 - 패딩 조정 */

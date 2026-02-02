@@ -35,7 +35,7 @@ const PortfolioContentClient = dynamic(
 )
 
 const PortfolioDetailSkeleton = () => (
-  <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
+  <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="container mx-auto max-w-7xl">
       <div className="h-10 w-48 bg-zinc-800/50 rounded animate-pulse mb-8" />
       <div className="aspect-video bg-zinc-800/50 rounded animate-pulse mb-6" />
@@ -116,7 +116,7 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-zinc-900">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
+          <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24">
             <div className="container mx-auto max-w-7xl text-center">
               <p className="text-zinc-200 mb-6">{t('portfolioNotFound')}</p>
               <Link href="/portfolio">
@@ -143,7 +143,7 @@ export default function PortfolioDetailPage() {
     <main className="min-h-screen relative overflow-hidden bg-zinc-900">
       <Navigation />
       <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 relative z-10">
+      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 relative z-10">
         <div className="container mx-auto max-w-7xl">
           <header className="mb-8 sm:mb-12">
             <Link href="/portfolio">
@@ -153,26 +153,28 @@ export default function PortfolioDetailPage() {
               </Button>
             </Link>
 
-            <div className="space-y-4 sm:space-y-6">
-              <div className="aspect-video rounded-none overflow-hidden border border-zinc-700/50 relative bg-zinc-800">
-                {portfolio.thumbnail_url ? (
-                  <img
-                    src={portfolio.thumbnail_url}
-                    alt={displayTitle}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
-                    <div className="text-center px-4">
-                      <div className="text-4xl mb-2">📁</div>
-                      <p className="text-sm text-zinc-400">{t('performanceNoImage')}</p>
+            <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
+              <div className="w-full max-w-none lg:max-w-4xl mx-auto">
+                <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-zinc-700/50 relative bg-zinc-800 w-full">
+                  {portfolio.thumbnail_url ? (
+                    <img
+                      src={portfolio.thumbnail_url}
+                      alt={displayTitle}
+                      className="w-full h-full object-cover mx-auto block"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
+                      <div className="text-center px-4">
+                        <div className="text-4xl mb-2">📁</div>
+                        <p className="text-sm text-zinc-400">{t('performanceNoImage')}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* 타이틀 섹션: 제목 + 제작 날짜만 */}
-              <div>
+              <div className="w-full">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight break-keep text-white">
                   {displayTitle}
                 </h1>
@@ -188,9 +190,9 @@ export default function PortfolioDetailPage() {
           <div className="border-t border-zinc-700/50 mt-8 sm:mt-10 mb-8 sm:mb-10" />
 
           {/* 본문 - 블로그와 동일한 박스 + prose */}
-          <div className="border border-zinc-700/50 bg-zinc-800 p-4 sm:p-6 md:p-8 lg:p-10 rounded-none blog-content-wrapper">
+          <div className="border border-zinc-700/50 bg-zinc-800 px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper">
             {hasContent ? (
-              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-200 leading-relaxed">
+              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-200 leading-relaxed text-base lg:text-lg blog-content-prose">
                 <PortfolioContentClient portfolio={portfolio} content={contentToShow} />
               </div>
             ) : (
