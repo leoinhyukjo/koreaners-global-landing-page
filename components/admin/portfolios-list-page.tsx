@@ -132,7 +132,7 @@ export function PortfoliosListPage() {
                             className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                             onClick={() => handleDelete(portfolio.id)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-white" />
                           </Button>
                         </div>
                       </TableCell>

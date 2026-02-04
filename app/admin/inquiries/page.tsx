@@ -232,7 +232,7 @@ export default function InquiriesPage() {
                             className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                             onClick={() => handleDelete(inquiry.id)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-white" />
                           </Button>
                         </div>
                       </TableCell>
@@ -305,7 +305,7 @@ export default function InquiriesPage() {
                       onClick={() => handleDelete(inquiry.id)}
                       className="min-h-[44px] flex-1 gap-2 text-white border-white/50 hover:bg-white/10 hover:text-white touch-manipulation"
                     >
-                      <Trash2 className="h-4 w-4 shrink-0" />
+                      <Trash2 className="h-4 w-4 shrink-0 text-white" />
                       삭제
                     </Button>
                   </div>

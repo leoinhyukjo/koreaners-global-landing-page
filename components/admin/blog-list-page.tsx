@@ -195,7 +195,7 @@ export function BlogListPage() {
                               onClick={() => handleDelete(post.id)}
                               className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4 text-white" />
                             </Button>
                           </div>
                         </TableCell>
@@ -256,7 +256,7 @@ export function BlogListPage() {
                         onClick={() => handleDelete(post.id)}
                         className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 text-white" />
                       </Button>
                     </div>
                   </div>
