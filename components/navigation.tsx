@@ -80,7 +80,7 @@ export default function Navigation() {
   return (
     <nav
       ref={navRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
+      className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
           ? 'bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-700/50'
           : 'bg-zinc-900/90 backdrop-blur-sm'
@@ -93,7 +93,7 @@ export default function Navigation() {
           <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">
             <Logo variant="header" />
             <div className="min-w-0">
-              <div className="text-lg sm:text-xl font-black text-white leading-tight truncate">KOREANERS GLOBAL</div>
+              <div className="text-lg sm:text-xl font-black text-white leading-tight truncate">KOREANERS</div>
               <div className="text-[10px] sm:text-xs text-zinc-300 mt-0.5 break-words">{t('tagline')}</div>
             </div>
           </a>

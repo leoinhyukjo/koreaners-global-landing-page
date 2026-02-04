@@ -27,16 +27,14 @@ export async function POST(request: NextRequest) {
   // properties 변수를 함수 스코프 상단에 선언하여 catch 블록에서도 접근 가능하도록 함
   let properties: Record<string, any> | null = null
 
-  try {
-    // 환경 변수 확인 및 로깅
-    console.log('[Notion API] 환경 변수 확인 중...')
-    console.log('[Notion API] NOTION_TOKEN 존재 여부:', !!process.env.NOTION_TOKEN)
-    console.log('[Notion API] NOTION_TOKEN 길이:', process.env.NOTION_TOKEN?.length || 0)
-    console.log('[Notion API] NOTION_DATABASE_ID 존재 여부:', !!process.env.NOTION_DATABASE_ID)
-    console.log('[Notion API] NOTION_DATABASE_ID:', process.env.NOTION_DATABASE_ID || '없음')
+  const MAX_LEN = { name: 200, email: 254, phone: 30, message: 5000, company: 200, position: 100 } as const
+  const clamp = (s: string, max: number) => s.slice(0, max)
 
+  try {
     if (!process.env.NOTION_TOKEN) {
-      console.error('[Notion API] NOTION_TOKEN이 설정되지 않았습니다.')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Notion API] NOTION_TOKEN이 설정되지 않았습니다.')
+      }
       return NextResponse.json(
         { error: 'Notion 토큰이 설정되지 않았습니다.' },
         { status: 500 }
@@ -44,26 +42,16 @@ export async function POST(request: NextRequest) {
     }
 
     if (!process.env.NOTION_DATABASE_ID) {
-      console.error('[Notion API] NOTION_DATABASE_ID가 설정되지 않았습니다.')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Notion API] NOTION_DATABASE_ID가 설정되지 않았습니다.')
+      }
       return NextResponse.json(
         { error: 'Notion 데이터베이스 ID가 설정되지 않았습니다.' },
         { status: 500 }
       )
     }
 
-    // 요청 본문 파싱
     const body = await request.json()
-    console.log('[Notion API] 받은 요청 데이터:', {
-      name: body.name,
-      company: body.company,
-      position: body.position,
-      email: body.email,
-      phone: body.phone,
-      message: body.message?.substring(0, 50) + '...',
-      privacy_agreement: body.privacy_agreement,
-      marketing_agreement: body.marketing_agreement,
-    })
-
     const {
       name,
       company,
@@ -75,7 +63,7 @@ export async function POST(request: NextRequest) {
       marketing_agreement,
     } = body
 
-    // 필수 필드 검증 (name, email, message만 필수 / phone, company, position은 선택)
+    // 필수 필드 검증
     if (!name || typeof name !== 'string' || !name.trim()) {
       return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
     }
@@ -89,14 +77,20 @@ export async function POST(request: NextRequest) {
     const trim = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
     const has = (v: unknown) => trim(v).length > 0
 
-    // Notion 데이터베이스에 페이지 생성
-    // ⚠️ 속성 이름은 Notion DB와 정확히 일치해야 합니다. 선택 필드는 값이 있을 때만 포함합니다.
+    // 길이 제한 적용 (DoS·과도한 payload 방지)
+    const safeName = clamp(trim(name), MAX_LEN.name)
+    const safeMessage = clamp(trim(message), MAX_LEN.message)
+    const safeEmail = clamp(trim(email), MAX_LEN.email)
+    const safeCompany = has(company) ? clamp(trim(company), MAX_LEN.company) : ''
+    const safePosition = has(position) ? clamp(trim(position), MAX_LEN.position) : ''
+    const safePhone = has(phone) ? clamp(trim(phone), MAX_LEN.phone) : ''
+
     properties = {
       Name: {
-        title: [{ text: { content: trim(name) } }],
+        title: [{ text: { content: safeName } }],
       },
       Message: {
-        rich_text: [{ text: { content: trim(message) } }],
+        rich_text: [{ text: { content: safeMessage } }],
       },
       'Privacy Agreement': {
         checkbox: Boolean(privacy_agreement),
@@ -106,34 +100,24 @@ export async function POST(request: NextRequest) {
       },
     }
 
-    // Email: 값이 있을 때만 포함 (Notion email 타입은 빈 값 시 validation_error 발생 가능)
-    if (has(email)) {
-      (properties as Record<string, unknown>)['Email'] = { email: trim(email) }
+    if (has(safeEmail)) {
+      (properties as Record<string, unknown>)['Email'] = { email: safeEmail }
     }
-
-    // 선택 필드: 값이 있을 때만 포함 (빈 문자열/undefined 전송 시 에러 방지)
-    if (has(company)) {
+    if (has(safeCompany)) {
       (properties as Record<string, unknown>)['Company'] = {
-        rich_text: [{ text: { content: trim(company) } }],
+        rich_text: [{ text: { content: safeCompany } }],
       }
     }
-    if (has(position)) {
+    if (has(safePosition)) {
       (properties as Record<string, unknown>)['Position'] = {
-        rich_text: [{ text: { content: trim(position) } }],
+        rich_text: [{ text: { content: safePosition } }],
       }
     }
-    if (has(phone)) {
+    if (has(safePhone)) {
       (properties as Record<string, unknown>)['Phone'] = {
-        rich_text: [{ text: { content: trim(phone) } }],
+        rich_text: [{ text: { content: safePhone } }],
       }
     }
-
-    console.log('[Notion API] Notion API 호출 시작...')
-    console.log('[Notion API] Database ID:', process.env.NOTION_DATABASE_ID)
-    console.log('[Notion API] ====== 전송할 Properties (상세) ======')
-    console.log('[Notion API] Properties JSON:', JSON.stringify(properties, null, 2))
-    console.log('[Notion API] 속성 이름 목록:', Object.keys(properties))
-    console.log('[Notion API] ======================================')
 
     const response = await notion.pages.create({
       parent: {
@@ -142,34 +126,20 @@ export async function POST(request: NextRequest) {
       properties,
     })
 
-    console.log('[Notion API] ✅ 문의 데이터가 성공적으로 저장되었습니다!')
-    console.log('[Notion API] Page ID:', response.id)
-    console.log('[Notion API] Response:', JSON.stringify(response, null, 2))
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Notion API] 문의 저장 성공, pageId:', response.id)
+    }
 
     return NextResponse.json(
       { success: true, pageId: response.id },
       { status: 200 }
     )
   } catch (error: any) {
-    console.error('[Notion API] ❌ 에러 발생!')
-    console.error('[Notion API] 에러 타입:', typeof error)
-    console.error('[Notion API] 에러 객체:', error)
-    console.error('[Notion API] 에러 메시지:', error?.message)
-    console.error('[Notion API] 에러 코드:', error?.code)
-    console.error('[Notion API] 에러 스택:', error?.stack)
-    
-    // Notion API 에러 상세 정보
-    if (error?.body) {
-      console.error('[Notion API] 에러 본문:', JSON.stringify(error.body, null, 2))
-    }
-    
-    if (error?.response) {
-      console.error('[Notion API] 에러 응답:', JSON.stringify(error.response, null, 2))
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Notion API] 에러:', error?.code ?? '', error?.message ?? '')
     }
 
-    // Notion API 에러 처리
     if (error.code === 'object_not_found') {
-      console.error('[Notion API] 데이터베이스를 찾을 수 없습니다. Database ID를 확인하세요.')
       return NextResponse.json(
         { 
           error: 'Notion 데이터베이스를 찾을 수 없습니다. 데이터베이스 ID를 확인해주세요.',
@@ -180,7 +150,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (error.code === 'unauthorized') {
-      console.error('[Notion API] 인증 실패. Integration Token을 확인하세요.')
       return NextResponse.json(
         { 
           error: 'Notion 인증에 실패했습니다. 토큰을 확인해주세요.',
@@ -193,12 +162,8 @@ export async function POST(request: NextRequest) {
     if (error.code === 'validation_error') {
       const path = error?.body?.path ?? 'unknown'
       const bodyMessage = error?.body?.message ?? error?.message ?? ''
-      console.error('[Notion API] ❌ validation_error — 필드 경로:', path, '| 메시지:', bodyMessage)
-      if (error?.body) {
-        console.error('[Notion API] 에러 본문:', JSON.stringify(error.body, null, 2))
-      }
-      if (properties) {
-        console.error('[Notion API] 전송했던 Properties 키:', Object.keys(properties))
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Notion API] validation_error:', path, bodyMessage)
       }
       return NextResponse.json(
         {

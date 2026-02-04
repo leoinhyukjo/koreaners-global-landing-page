@@ -9,7 +9,6 @@ import { Performance } from '@/components/performance'
 import { TrustSignals } from '@/components/trust-signals'
 import { FinalCTA } from '@/components/final-cta'
 import { FooterCTA } from '@/components/footer-cta'
-import { WelcomePopup } from '@/components/welcome-popup'
 
 /** 히어로+첫 섹션 헤더와 동일한 레이아웃 틀을 유지해 하이드레이션 시 레이아웃 시프트 방지 */
 const MainSkeleton = () => (
@@ -56,7 +55,6 @@ export function MainContent() {
       <FinalCTA />
       <TrustSignals />
       <FooterCTA />
-      <WelcomePopup />
     </SafeHydration>
   )
 }

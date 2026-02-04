@@ -3,9 +3,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Fixed header and body use same width so header/content padding aligns */
-html {
-  scrollbar-gutter: stable;
+/* 팝업 열릴 때 강제로 생기는 스크롤바 제거 현상 무시 (배경 밀림 방지) */
+body[style*="overflow: hidden"] {
+  padding-right: 0 !important;
+}
+
+/* 푸터 잘림 방지 */
+footer {
+  width: 100%;
+  position: relative;
 }
 
 :root {

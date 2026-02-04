@@ -133,36 +133,20 @@ export default function ContactPage() {
         marketing_agreement: formData.marketingConsent,
       }
 
-      console.log('[Contact Form] Submitting data:', {
-        ...insertData,
-        message: insertData.message.substring(0, 50) + '...', // 로그에서 메시지 일부만 표시
-      })
-
       const { data, error } = await supabase.from('inquiries').insert(insertData)
 
       if (error) {
-        // 상세 에러 로깅
-        console.error('[Contact Form] Error details:', JSON.stringify(error, null, 2))
-        console.error('[Contact Form] Error code:', error.code)
-        console.error('[Contact Form] Error message:', error.message)
-        console.error('[Contact Form] Error details:', error.details)
-        console.error('[Contact Form] Error hint:', error.hint)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[Contact Form] Error code:', error.code, 'message:', error.message)
+        }
         throw error
       }
-
-      console.log('[Contact Form] Success:', data)
 
       // 성공 Dialog 표시
       setSuccessDialogOpen(true)
 
       // Notion에 데이터 저장 (비동기, 실패해도 사용자 경험에 영향 없음)
       try {
-        console.log('[Contact Form] Notion API 호출 시작...')
-        console.log('[Contact Form] 전송할 데이터:', {
-          ...insertData,
-          message: insertData.message.substring(0, 50) + '...',
-        })
-
         const notionResponse = await fetch('/api/notion', {
           method: 'POST',
           headers: {
@@ -171,39 +155,19 @@ export default function ContactPage() {
           body: JSON.stringify(insertData),
         })
 
-        console.log('[Contact Form] Notion API 응답 상태:', notionResponse.status)
-        console.log('[Contact Form] Notion API 응답 OK:', notionResponse.ok)
-
-        if (!notionResponse.ok) {
-          const errorData = await notionResponse.json()
-          console.error('[Contact Form] ❌ Notion 저장 실패!')
-          console.error('[Contact Form] 에러 상태 코드:', notionResponse.status)
-          console.error('[Contact Form] 에러 데이터:', JSON.stringify(errorData, null, 2))
-          if (errorData?.validationError) {
-            console.error('[Contact Form] validation_error — 필드 경로:', errorData.validationError.path, '| 메시지:', errorData.validationError.message)
-          }
-          if (errorData?.sentPropertyKeys) {
-            console.error('[Contact Form] 전송했던 속성 키:', errorData.sentPropertyKeys)
-          }
-          // Notion 저장 실패는 로그만 남기고 사용자에게는 알리지 않음
-        } else {
-          const successData = await notionResponse.json()
-          console.log('[Contact Form] ✅ Notion 저장 성공!')
-          console.log('[Contact Form] 성공 데이터:', JSON.stringify(successData, null, 2))
+        if (!notionResponse.ok && process.env.NODE_ENV === 'development') {
+          const errorData = await notionResponse.json().catch(() => ({}))
+          console.error('[Contact Form] Notion 저장 실패:', notionResponse.status, errorData?.error ?? '')
         }
       } catch (notionError: any) {
-        console.error('[Contact Form] ❌ Notion 저장 중 예외 발생!')
-        console.error('[Contact Form] 에러 타입:', typeof notionError)
-        console.error('[Contact Form] 에러 객체:', notionError)
-        console.error('[Contact Form] 에러 메시지:', notionError?.message)
-        console.error('[Contact Form] 에러 스택:', notionError?.stack)
-        // Notion 저장 실패는 로그만 남기고 사용자에게는 알리지 않음
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[Contact Form] Notion 요청 예외:', notionError?.message ?? '')
+        }
       }
     } catch (error: any) {
-      // 상세 에러 로깅
-      console.error('[Contact Form] Catch block error:', JSON.stringify(error, null, 2))
-      console.error('[Contact Form] Error type:', typeof error)
-      console.error('[Contact Form] Error keys:', Object.keys(error || {}))
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Contact Form] Submit error:', error?.message ?? '')
+      }
       
       // 에러 메시지 구성
       let errorMessage = t('toastErrorDefault')

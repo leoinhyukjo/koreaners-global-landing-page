@@ -1,7 +1,7 @@
 const { Client } = require('@notionhq/client');
 
-const notion = new Client({ auth: 'ntn_KG4805029126F9rIlH6xvK49btbh27qNPn1NGWlwdhs8HJ' });
-const databaseId = '2f601ca3-e480-8067-94b5-ec5b85167f35';
+const notion = new Client({ auth: process.env.NOTION_TOKEN || process.env.NOTION_API_KEY });
+const databaseId = process.env.NOTION_DATABASE_ID || process.env.NOTION_CREATORS_DATABASE_ID;
 
 async function fetchCreators() {
   try {

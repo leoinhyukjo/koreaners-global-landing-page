@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       publishedTime: blogPost.created_at,
       modifiedTime: blogPost.updated_at,
-      authors: ['KOREANERS GLOBAL'],
+      authors: ['KOREANERS'],
       images: [
         {
           url: ogImage,
@@ -113,12 +113,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
     dateModified: blogPost.updated_at,
     author: {
       '@type': 'Organization',
-      name: 'KOREANERS GLOBAL',
+      name: 'KOREANERS',
       url: siteUrl,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'KOREANERS GLOBAL',
+      name: 'KOREANERS',
       url: siteUrl,
       logo: {
         '@type': 'ImageObject',

@@ -1,6 +1,6 @@
 const { Client } = require('@notionhq/client');
 
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
+const notion = new Client({ auth: process.env.NOTION_TOKEN || process.env.NOTION_API_KEY });
 // 하이픈 추가된 형식으로 변환
 const databaseId = '2f601ca3-e480-8067-94b5-ec5b85167f35';
 

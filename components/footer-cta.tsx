@@ -134,24 +134,14 @@ export function FooterCTA() {
         marketing_agreement: formData.marketingConsent,
       }
 
-      console.log('[Footer CTA] Submitting data:', {
-        ...insertData,
-        message: insertData.message.substring(0, 50) + '...', // 로그에서 메시지 일부만 표시
-      })
-
       const { data, error } = await supabase.from('inquiries').insert(insertData)
 
       if (error) {
-        // 상세 에러 로깅
-        console.error('[Footer CTA] Error details:', JSON.stringify(error, null, 2))
-        console.error('[Footer CTA] Error code:', error.code)
-        console.error('[Footer CTA] Error message:', error.message)
-        console.error('[Footer CTA] Error details:', error.details)
-        console.error('[Footer CTA] Error hint:', error.hint)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[Footer CTA] Error code:', error.code, 'message:', error.message)
+        }
         throw error
       }
-
-      console.log('[Footer CTA] Success:', data)
 
       // 성공 Dialog 표시
       setSuccessDialogOpen(true)
@@ -163,12 +153,6 @@ export function FooterCTA() {
 
       // Notion에 데이터 저장 (비동기, 실패해도 사용자 경험에 영향 없음)
       try {
-        console.log('[Footer CTA] Notion API 호출 시작...')
-        console.log('[Footer CTA] 전송할 데이터:', {
-          ...insertData,
-          message: insertData.message.substring(0, 50) + '...',
-        })
-
         const notionResponse = await fetch('/api/notion', {
           method: 'POST',
           headers: {
@@ -177,33 +161,19 @@ export function FooterCTA() {
           body: JSON.stringify(insertData),
         })
 
-        console.log('[Footer CTA] Notion API 응답 상태:', notionResponse.status)
-        console.log('[Footer CTA] Notion API 응답 OK:', notionResponse.ok)
-
-        if (!notionResponse.ok) {
-          const errorData = await notionResponse.json()
-          console.error('[Footer CTA] ❌ Notion 저장 실패!')
-          console.error('[Footer CTA] 에러 상태 코드:', notionResponse.status)
-          console.error('[Footer CTA] 에러 데이터:', JSON.stringify(errorData, null, 2))
-          // Notion 저장 실패는 로그만 남기고 사용자에게는 알리지 않음
-        } else {
-          const successData = await notionResponse.json()
-          console.log('[Footer CTA] ✅ Notion 저장 성공!')
-          console.log('[Footer CTA] 성공 데이터:', JSON.stringify(successData, null, 2))
+        if (!notionResponse.ok && process.env.NODE_ENV === 'development') {
+          const errorData = await notionResponse.json().catch(() => ({}))
+          console.error('[Footer CTA] Notion 저장 실패:', notionResponse.status, errorData?.error ?? '')
         }
       } catch (notionError: any) {
-        console.error('[Footer CTA] ❌ Notion 저장 중 예외 발생!')
-        console.error('[Footer CTA] 에러 타입:', typeof notionError)
-        console.error('[Footer CTA] 에러 객체:', notionError)
-        console.error('[Footer CTA] 에러 메시지:', notionError?.message)
-        console.error('[Footer CTA] 에러 스택:', notionError?.stack)
-        // Notion 저장 실패는 로그만 남기고 사용자에게는 알리지 않음
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[Footer CTA] Notion 요청 예외:', notionError?.message ?? '')
+        }
       }
     } catch (error: any) {
-      // 상세 에러 로깅
-      console.error('[Footer CTA] Catch block error:', JSON.stringify(error, null, 2))
-      console.error('[Footer CTA] Error type:', typeof error)
-      console.error('[Footer CTA] Error keys:', Object.keys(error || {}))
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Footer CTA] Submit error:', error?.message ?? '')
+      }
       
       let errorMessage = t('toastErrorDefault')
       
@@ -251,8 +221,8 @@ export function FooterCTA() {
   }
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50">
-      <div className="container mx-auto max-w-7xl">
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 w-full min-w-0 box-border">
+      <div className="container mx-auto max-w-7xl w-full min-w-0 box-border">
         <div className="mb-8 sm:mb-12 block">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep leading-[1.2] tracking-tight block min-h-[1.2em]">
             {t('footerCtaTitle')}
@@ -264,7 +234,7 @@ export function FooterCTA() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 w-full min-w-0 box-border">
           {/* Name and Company */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>

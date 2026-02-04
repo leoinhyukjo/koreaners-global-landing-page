@@ -18,7 +18,7 @@ export function Logo({ variant }: { variant: 'header' | 'footer' }) {
     return (
       <img
         src={FALLBACK_SRC}
-        alt="KOREANERS GLOBAL"
+        alt="KOREANERS"
         className={isHeader ? 'h-7 sm:h-8 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}
       />
     )
@@ -27,7 +27,7 @@ export function Logo({ variant }: { variant: 'header' | 'footer' }) {
   return (
     <Image
       src={LOGO_SRC}
-      alt="KOREANERS GLOBAL"
+      alt="KOREANERS"
       width={isHeader ? 140 : 160}
       height={32}
       className={isHeader ? 'h-7 sm:h-8 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}

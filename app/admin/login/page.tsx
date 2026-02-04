@@ -25,18 +25,14 @@ export default function AdminLoginPage() {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('❌ Supabase 환경 변수가 설정되지 않았습니다.')
-      console.error('NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl || '❌ 없음')
-      console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', supabaseAnonKey ? '✅ 설정됨' : '❌ 없음')
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[Admin] Supabase 환경 변수 누락')
+      }
       toast({
         title: '환경 변수 오류',
         description: 'Supabase 연결 설정이 올바르지 않습니다. .env.local 파일을 확인해주세요.',
         variant: 'destructive',
       })
-    } else {
-      console.log('✅ Supabase 환경 변수 확인됨')
-      console.log('NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl.substring(0, 30) + '...')
     }
   }, [toast])
 
@@ -49,7 +45,9 @@ export default function AdminLoginPage() {
           router.push('/admin')
         }
       } catch (error) {
-        console.error('세션 확인 중 오류:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[Admin] 세션 확인 오류:', error instanceof Error ? error.message : '')
+        }
       }
     }
     checkAuth()
@@ -64,10 +62,6 @@ export default function AdminLoginPage() {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('❌ 로그인 시도 실패: Supabase 환경 변수가 없습니다.')
-      console.error('NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl || 'undefined')
-      console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', supabaseAnonKey ? '설정됨' : 'undefined')
-      
       const errorMsg = 'Supabase 연결 설정이 올바르지 않습니다. .env.local 파일에 NEXT_PUBLIC_SUPABASE_URL과 NEXT_PUBLIC_SUPABASE_ANON_KEY를 설정해주세요.'
       
       alert('환경 변수 오류\n\n' + errorMsg)
@@ -81,27 +75,12 @@ export default function AdminLoginPage() {
     }
 
     try {
-      console.log('🔐 로그인 시도 중...', { email })
       const { data, error } = await signIn(email, password)
 
-      // 성공 정보 콘솔 출력
-      if (data) {
-        console.log('✅ 성공 정보:', data)
-      }
-
-      // 에러 정보 콘솔 출력
       if (error) {
-        console.error('❌ 에러 정보:', error)
-      }
-
-      // 에러가 있는 경우: 로그인 실패 처리
-      if (error) {
-        console.error('❌ 로그인 실패:', {
-          message: error.message,
-          status: error.status,
-          error: error,
-        })
-        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[Admin] 로그인 실패:', error.message ?? '')
+        }
         const errorMsg = error.message || '이메일 또는 비밀번호가 올바르지 않습니다.'
         
         // alert로 즉시 알림

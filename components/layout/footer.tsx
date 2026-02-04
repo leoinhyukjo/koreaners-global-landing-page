@@ -13,14 +13,17 @@ export function Footer() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <footer className="py-8 border-t border-zinc-700/50 bg-zinc-900 w-full max-w-full overflow-hidden">
-      <div className="w-full max-w-full px-6 md:px-12 lg:px-24 overflow-hidden">
+    <footer className="py-8 border-t border-zinc-700/50 bg-zinc-900 w-full max-w-full overflow-visible">
+      <div className="w-full max-w-full px-6 md:px-12 lg:px-24 overflow-visible">
         <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col items-start gap-4">
+        <div className="flex flex-col items-start gap-4 leading-relaxed">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <Logo variant="footer" />
-            <span className="text-2xl font-black text-white">KOREANERS GLOBAL</span>
+            <span className="text-2xl font-black text-white">KOREANERS</span>
           </Link>
+          <div className="text-xs sm:text-sm text-zinc-200 font-semibold break-keep">
+            {t('companyName')}
+          </div>
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-zinc-300 break-keep">
             <span className="break-keep">{t('ceo')}: {t('ceoName')}</span>
             <span className="text-zinc-600">|</span>

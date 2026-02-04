@@ -21,8 +21,8 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: '코리너스 글로벌 | KOREANERS GLOBAL',
-  description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
+  title: '코리너스 | KOREANERS',
+  description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스',
   generator: 'v0.app',
   icons: {
     icon: '/favicon.png',
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   openGraph: {
-    title: '코리너스 글로벌 | KOREANERS GLOBAL',
-    description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스 글로벌',
+    title: '코리너스 | KOREANERS',
+    description: '일본 진출 및 현지 마케팅의 확실한 해답, 코리너스',
     url: baseUrl,
   },
 }

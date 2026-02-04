@@ -1,5 +1,5 @@
 /**
- * KR/JP UI 번역. JSON 파일 기반. 영어(Service, Creator, Portfolio, Blog, KOREANERS GLOBAL 등)는 번역하지 않고 원문 유지.
+ * KR/JP UI 번역. JSON 파일 기반. 영어(Service, Creator, Portfolio, Blog, KOREANERS 등)는 번역하지 않고 원문 유지.
  */
 import ko from '@/locales/ko.json'
 import jp from '@/locales/jp.json'

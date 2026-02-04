@@ -6,7 +6,7 @@
 
 1. [Notion Integrations](https://www.notion.so/my-integrations) 페이지에 접속
 2. "New integration" 버튼 클릭
-3. Integration 이름 입력 (예: "Koreaners Global Landing Page")
+3. Integration 이름 입력 (예: "Koreaners Landing Page")
 4. Workspace 선택
 5. "Submit" 클릭하여 Integration 생성
 6. 생성된 Integration의 **Internal Integration Token** 복사
