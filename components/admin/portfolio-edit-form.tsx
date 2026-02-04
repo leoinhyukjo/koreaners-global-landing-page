@@ -44,8 +44,6 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
   const { toast } = useToast()
   const [title, setTitle] = useState('')
   const [clientName, setClientName] = useState('')
-  const [titleJp, setTitleJp] = useState('')
-  const [clientNameJp, setClientNameJp] = useState('')
   const [thumbnailUrl, setThumbnailUrl] = useState('')
   const [category, setCategory] = useState<string>('')
   const [link, setLink] = useState('')
@@ -54,10 +52,7 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
   const [loading, setLoading] = useState(!!portfolioId)
   const [editorContent, setEditorContent] = useState<any[]>([])
   const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
-  const [editorContentJp, setEditorContentJp] = useState<any[]>([])
-  const [initialEditorContentJp, setInitialEditorContentJp] = useState<any[] | undefined>(undefined)
   const editorRef = useRef<BlockNoteEditor | null>(null)
-  const editorRefJp = useRef<BlockNoteEditor | null>(null)
 
   useEffect(() => {
     if (portfolioId) {
@@ -79,8 +74,6 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
       if (data) {
         setTitle(data.title || '')
         setClientName(data.client_name || '')
-        setTitleJp(data.title_jp ?? '')
-        setClientNameJp(data.client_name_jp ?? '')
         setThumbnailUrl(data.thumbnail_url || '')
         setCategory(data.category?.[0] || '')
         setLink(data.link || '')
@@ -88,11 +81,6 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
           setInitialEditorContent(data.content)
         } else {
           setInitialEditorContent(undefined)
-        }
-        if (data.content_jp && Array.isArray(data.content_jp) && data.content_jp.length > 0) {
-          setInitialEditorContentJp(data.content_jp)
-        } else {
-          setInitialEditorContentJp(undefined)
         }
       }
     } catch (err: any) {
@@ -164,17 +152,13 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
     try {
       setSaving(true)
       const content = editorRef.current?.document ?? editorContent
-      const contentJp = editorRefJp.current?.document ?? editorContentJp
       const portfolioData = {
         title: title.trim(),
         client_name: clientName.trim(),
-        title_jp: titleJp.trim() || null,
-        client_name_jp: clientNameJp.trim() || null,
         thumbnail_url: thumbnailUrl.trim() || null,
         category: [category],
         link: link.trim() || null,
         content: content ?? [],
-        content_jp: Array.isArray(contentJp) && contentJp.length > 0 ? contentJp : null,
       }
 
       if (portfolioId) {
@@ -269,27 +253,6 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
                   className="mt-1 w-full"
                 />
               </div>
-              <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2 pt-4">[일본어]</h3>
-              <div className="space-y-2">
-                <Label htmlFor="title_jp">제목 (JP)</Label>
-                <Input
-                  id="title_jp"
-                  value={titleJp}
-                  onChange={(e) => setTitleJp(e.target.value)}
-                  placeholder="タイトル（日本語）"
-                  className="mt-1 w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="client_jp">클라이언트명 (JP)</Label>
-                <Input
-                  id="client_jp"
-                  value={clientNameJp}
-                  onChange={(e) => setClientNameJp(e.target.value)}
-                  placeholder="クライアント名（日本語）"
-                  className="mt-1 w-full"
-                />
-              </div>
               <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2 pt-4">공통</h3>
               <div className="space-y-2">
                 <Label htmlFor="category">카테고리 *</Label>
@@ -357,15 +320,6 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
                 onContentChange={setEditorContent}
                 uploadFile={uploadImage}
                 onEditorReady={(editor) => { editorRef.current = editor }}
-              />
-            </div>
-            <div className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
-              <Label>[일본어] 본문 내용 (JP)</Label>
-              <PortfolioEditorWrapper
-                initialContent={initialEditorContentJp}
-                onContentChange={setEditorContentJp}
-                uploadFile={uploadImage}
-                onEditorReady={(editor) => { editorRefJp.current = editor }}
               />
             </div>
           </div>
