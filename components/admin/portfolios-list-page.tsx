@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -17,6 +18,7 @@ import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 
 export function PortfoliosListPage() {
+  const router = useRouter()
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -61,8 +63,8 @@ export function PortfoliosListPage() {
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">포트폴리오 관리</h1>
-          <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+          <h1 className="text-2xl font-bold sm:text-3xl text-white">포트폴리오 관리</h1>
+          <p className="mt-1 text-sm text-zinc-300 sm:text-base">
             포트폴리오를 추가, 수정, 삭제할 수 있습니다
           </p>
         </div>
@@ -98,9 +100,13 @@ export function PortfoliosListPage() {
                 </TableHeader>
                 <TableBody>
                   {portfolios.map((portfolio) => (
-                    <TableRow key={portfolio.id}>
-                      <TableCell className="font-medium">{portfolio.title}</TableCell>
-                      <TableCell>{portfolio.client_name}</TableCell>
+                    <TableRow
+                      key={portfolio.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => router.push(`/admin/portfolios/${portfolio.id}`)}
+                    >
+                      <TableCell className="font-medium text-foreground">{portfolio.title}</TableCell>
+                      <TableCell className="text-foreground">{portfolio.client_name}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           {portfolio.category?.map((cat) => (
@@ -110,12 +116,12 @@ export function PortfoliosListPage() {
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-foreground">
                         {new Date(portfolio.created_at).toLocaleDateString('ko-KR')}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon" asChild>
+                          <Button variant="ghost" size="icon" asChild className="h-9 w-9 text-foreground hover:bg-white/10">
                             <Link href={`/admin/portfolios/${portfolio.id}`}>
                               <Edit className="h-4 w-4" />
                             </Link>
@@ -123,8 +129,8 @@ export function PortfoliosListPage() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                             onClick={() => handleDelete(portfolio.id)}
-                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -139,18 +145,22 @@ export function PortfoliosListPage() {
 
           <div className="space-y-4 md:hidden">
             {portfolios.map((portfolio) => (
-              <Card key={portfolio.id} className="rounded-lg border shadow-sm p-6">
-                <h3 className="font-semibold">{portfolio.title}</h3>
+              <Card
+                key={portfolio.id}
+                className="rounded-lg border shadow-sm p-6 cursor-pointer hover:bg-muted/30"
+                onClick={() => router.push(`/admin/portfolios/${portfolio.id}`)}
+              >
+                <h3 className="font-semibold text-foreground">{portfolio.title}</h3>
                 <p className="text-sm text-muted-foreground">{portfolio.client_name}</p>
-                <div className="mt-4 flex justify-end gap-2">
+                <div className="mt-4 flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                   <Button variant="outline" size="sm" asChild>
                     <Link href={`/admin/portfolios/${portfolio.id}`}>수정</Link>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDelete(portfolio.id)}
-                    className="text-destructive"
+                    onClick={(e) => { e.stopPropagation(); handleDelete(portfolio.id) }}
+                    className="text-white border-white/50 hover:bg-white/10 hover:text-white"
                   >
                     삭제
                   </Button>

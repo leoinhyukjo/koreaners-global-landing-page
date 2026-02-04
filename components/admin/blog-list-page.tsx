@@ -94,8 +94,8 @@ export function BlogListPage() {
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">글로벌 마케팅 인사이트 관리</h1>
-          <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+          <h1 className="text-2xl font-bold sm:text-3xl text-white">글로벌 마케팅 인사이트 관리</h1>
+          <p className="mt-1 text-sm text-zinc-300 sm:text-base">
             글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식 채널을 관리합니다
           </p>
         </div>
@@ -131,7 +131,11 @@ export function BlogListPage() {
                   {blogPosts.map((post) => {
                     const thumbSrc = getThumbnailDisplaySrc(post)
                     return (
-                      <TableRow key={post.id}>
+                      <TableRow
+                        key={post.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => handleEdit(post)}
+                      >
                         <TableCell>
                           {thumbSrc ? (
                             <>
@@ -156,7 +160,7 @@ export function BlogListPage() {
                             <span className="text-sm text-muted-foreground">없음</span>
                           )}
                         </TableCell>
-                        <TableCell className="font-medium max-w-[280px]">
+                        <TableCell className="font-medium max-w-[280px] text-foreground">
                           <span className="truncate block" title={post.title}>{post.title}</span>
                           <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground mt-0.5 block truncate">
                             {post.slug}
@@ -172,16 +176,16 @@ export function BlogListPage() {
                             <Badge variant="outline">임시저장</Badge>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-foreground">
                           {new Date(post.created_at).toLocaleDateString('ko-KR')}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                           <div className="flex justify-end gap-2">
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => handleEdit(post)}
-                              className="h-9 w-9"
+                              className="h-9 w-9 text-foreground hover:bg-white/10"
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
@@ -189,7 +193,7 @@ export function BlogListPage() {
                               variant="ghost"
                               size="icon"
                               onClick={() => handleDelete(post.id)}
-                              className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -208,7 +212,11 @@ export function BlogListPage() {
             {blogPosts.map((post) => {
               const thumbSrc = getThumbnailDisplaySrc(post)
               return (
-                <Card key={post.id} className="rounded-lg border shadow-sm p-6">
+                <Card
+                  key={post.id}
+                  className="rounded-lg border shadow-sm p-6 cursor-pointer hover:bg-muted/30"
+                  onClick={() => handleEdit(post)}
+                >
                   <div className="flex items-center gap-4">
                     {thumbSrc ? (
                       <img
@@ -227,7 +235,7 @@ export function BlogListPage() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold truncate" title={post.title}>{post.title}</h3>
+                      <h3 className="font-semibold truncate text-foreground" title={post.title}>{post.title}</h3>
                       <p className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString('ko-KR')}</p>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
                         <Badge variant="secondary" className="text-xs">{post.category}</Badge>
@@ -238,15 +246,15 @@ export function BlogListPage() {
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2 shrink-0">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(post)} className="h-9 w-9">
+                    <div className="flex gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(post)} className="h-9 w-9 text-foreground hover:bg-white/10">
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(post.id)}
-                        className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

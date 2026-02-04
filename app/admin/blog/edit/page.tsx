@@ -542,7 +542,7 @@ function BlogEditForm() {
     <div className="min-h-screen bg-background">
       {/* 헤더 */}
       <div className="sticky top-0 z-10 border-b border-border bg-card">
-        <div className="w-full max-w-[1400px] mx-auto px-4 py-3 sm:px-6 sm:py-4">
+        <div className="w-full max-w-[95%] mx-auto px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-center gap-2">
               <Button
@@ -592,7 +592,7 @@ function BlogEditForm() {
       </div>
 
       {/* 메인 컨텐츠: 와이드 레이아웃 — 사이드바 280px + 에디터 1fr */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 py-4 sm:px-6 sm:py-6">
+      <div className="w-full max-w-[95%] mx-auto px-4 py-4 sm:px-6 sm:py-6">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] lg:gap-6">
           {/* 왼쪽: 메타/SEO 사이드바 */}
           <aside className="space-y-4 rounded-lg border border-border bg-card p-4 shadow-sm lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">

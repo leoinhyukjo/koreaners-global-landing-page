@@ -23,7 +23,7 @@ import { getTranslation } from '@/lib/translations'
 
 const ContactSkeleton = () => (
   <div className="min-h-[60vh] flex items-center justify-center pt-24" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto rounded animate-pulse bg-muted/50" />
+    <div className="h-32 w-full max-w-2xl mx-auto rounded-xl animate-pulse bg-slate-200/60" />
   </div>
 )
 
@@ -216,28 +216,28 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-slate-50 w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<ContactSkeleton />}>
-<section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl">
-          <div className="mb-8 sm:mb-12 min-w-0">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 break-keep break-words">
-              {t('footerCtaTitle')}
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg text-foreground leading-relaxed mb-2 font-medium break-keep break-words max-w-prose">
-              <span className="inline-block">{t('footerCtaDesc1')}</span>{' '}
-              <span className="inline-block">{t('footerCtaDesc2')}</span>{' '}
-              <span className="inline-block">{t('footerCtaDesc3')}</span>
-            </p>
-          </div>
+        <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
+          <div className="container mx-auto max-w-7xl">
+            <div className="mb-8 sm:mb-12 min-w-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-4 sm:mb-6 break-keep break-words">
+                {t('footerCtaTitle')}
+              </h1>
+              <p className="text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed mb-2 font-medium break-keep break-words max-w-prose">
+                <span className="inline-block">{t('footerCtaDesc1')}</span>{' '}
+                <span className="inline-block">{t('footerCtaDesc2')}</span>{' '}
+                <span className="inline-block">{t('footerCtaDesc3')}</span>
+              </p>
+            </div>
 
-          <div className="bg-card/30 backdrop-blur-sm border-2 border-border rounded-3xl p-6 sm:p-8 md:p-12">
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8 md:p-12">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name and Company */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2 break-keep">
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2 break-keep">
                     {t('formName')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -247,13 +247,13 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3.5 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all"
                     placeholder={t('formPlaceholderName')}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-foreground mb-2 break-keep">
+                  <label htmlFor="company" className="block text-sm font-medium text-slate-700 mb-2 break-keep">
                     {t('formCompany')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -263,7 +263,7 @@ export default function ContactPage() {
                     required
                     value={formData.company}
                     onChange={handleChange}
-                    className="w-full px-4 py-3.5 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all"
                     placeholder={t('formPlaceholderCompany')}
                   />
                 </div>
@@ -271,7 +271,7 @@ export default function ContactPage() {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="position" className="block text-sm font-medium text-foreground mb-2 break-keep">
+                  <label htmlFor="position" className="block text-sm font-medium text-slate-700 mb-2 break-keep">
                     {t('formPosition')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -281,13 +281,13 @@ export default function ContactPage() {
                     required
                     value={formData.position}
                     onChange={handleChange}
-                    className="w-full px-4 py-3.5 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all"
                     placeholder={t('formPlaceholderPosition')}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2 break-keep">
+                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2 break-keep">
                     {t('formEmail')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -297,14 +297,14 @@ export default function ContactPage() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3.5 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all"
                     placeholder="example@domain.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2 break-keep">
+                <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2 break-keep">
                   {t('formPhone')} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -317,16 +317,16 @@ export default function ContactPage() {
                     const value = e.target.value.replace(/[^0-9]/g, '')
                     setFormData({ ...formData, phone: value })
                   }}
-                  className="w-full px-4 py-3.5 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all"
                   placeholder={t('formPlaceholderPhone')}
                 />
-                <p className="mt-1.5 text-xs text-muted-foreground">
+                <p className="mt-1.5 text-xs text-slate-500">
                   {t('formPhoneHint')}
                 </p>
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2 break-keep">
+                <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2 break-keep">
                   {t('formMessage')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -336,7 +336,7 @@ export default function ContactPage() {
                   rows={6}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all resize-none"
                   placeholder={t('formPlaceholderMessage')}
                 />
               </div>
@@ -349,20 +349,20 @@ export default function ContactPage() {
                     name="privacyConsent"
                     checked={formData.privacyConsent}
                     onChange={handleChange}
-                    className="w-5 h-5 rounded border-2 border-border bg-background/50 checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shrink-0"
+                    className="w-5 h-5 rounded border-2 border-slate-400 bg-white checked:bg-slate-700 checked:border-slate-700 focus:ring-2 focus:ring-slate-500 focus:ring-offset-0 transition-all cursor-pointer shrink-0"
                   />
                   <label
                     htmlFor="privacyConsent"
                     className="flex-1 cursor-pointer group"
                   >
-                    <span className="text-sm text-foreground group-hover:text-primary transition-colors">
+                    <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.preventDefault()
                           setPrivacyModalOpen(true)
                         }}
-                        className="text-primary underline hover:no-underline focus:outline-none"
+                        className="text-slate-700 underline hover:no-underline hover:text-slate-900 focus:outline-none"
                       >
                         {t('formPrivacyLabel')}
                       </button>{' '}
@@ -378,20 +378,20 @@ export default function ContactPage() {
                     name="marketingConsent"
                     checked={formData.marketingConsent}
                     onChange={handleChange}
-                    className="w-5 h-5 rounded border-2 border-border bg-background/50 checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shrink-0"
+                    className="w-5 h-5 rounded border-2 border-slate-400 bg-white checked:bg-slate-700 checked:border-slate-700 focus:ring-2 focus:ring-slate-500 focus:ring-offset-0 transition-all cursor-pointer shrink-0"
                   />
                   <label
                     htmlFor="marketingConsent"
                     className="flex-1 cursor-pointer group"
                   >
-                    <span className="text-sm text-foreground group-hover:text-primary transition-colors">
+                    <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.preventDefault()
                           setMarketingModalOpen(true)
                         }}
-                        className="text-primary underline hover:no-underline focus:outline-none"
+                        className="text-slate-700 underline hover:no-underline hover:text-slate-900 focus:outline-none"
                       >
                         {t('formMarketingLabel')}
                       </button>
@@ -412,17 +412,17 @@ export default function ContactPage() {
                 type="marketing"
               />
 
-              {/* Success Dialog */}
+              {/* Success Dialog — 밝은 톤 유지 */}
               <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="sm:max-w-md bg-white border-slate-200 text-slate-900">
                   <DialogHeader className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                      <CheckCircle2 className="h-10 w-10 text-primary" />
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                      <CheckCircle2 className="h-10 w-10 text-slate-700" />
                     </div>
-                    <DialogTitle className="text-2xl font-bold">
+                    <DialogTitle className="text-2xl font-bold text-slate-900">
                       {t('dialogSuccessTitle')}
                     </DialogTitle>
-                    <DialogDescription className="pt-4 text-base leading-relaxed">
+                    <DialogDescription className="pt-4 text-base leading-relaxed text-slate-600">
                       {t('dialogSuccessDesc')}
                     </DialogDescription>
                   </DialogHeader>
@@ -441,7 +441,7 @@ export default function ContactPage() {
                           marketingConsent: false,
                         })
                       }}
-                      className="w-full sm:w-auto bg-primary text-primary-foreground hover:opacity-90 px-8"
+                      className="w-full sm:w-auto bg-slate-900 text-white hover:bg-slate-800 hover:shadow-md transition-all duration-200 rounded-none px-8 py-6 text-base font-bold border-2 border-slate-900"
                     >
                       {t('dialogConfirm')}
                     </Button>
@@ -450,18 +450,18 @@ export default function ContactPage() {
               </Dialog>
 
               <div className="pt-6">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={submitting}
-                  className="w-full bg-primary text-primary-foreground hover:opacity-90 py-6 text-lg font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(217,255,0,0.4)] hover:shadow-[0_0_30px_rgba(217,255,0,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-slate-900 text-white hover:bg-slate-800 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] py-6 text-lg font-bold rounded-none transition-all duration-200 border-2 border-slate-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {submitting ? t('formSubmitting') : t('formSubmit')}
                 </Button>
               </div>
             </form>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </SafeHydration>
     </main>
   )

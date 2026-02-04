@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Client } from '@notionhq/client'
 
+// 허용 Origin (도메인 변경 시 여기 추가)
+const ALLOWED_ORIGINS = [
+  'https://koreaners.co',
+  'https://www.koreaners.co',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+]
+const getCorsHeaders = (request: NextRequest) => {
+  const origin = request.headers.get('origin') ?? ''
+  const allowed =
+    ALLOWED_ORIGINS.includes(origin) ||
+    (origin.startsWith('https://') && origin.endsWith('.vercel.app'))
+  const allowOrigin = allowed ? origin : ALLOWED_ORIGINS[0]
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+  }
+}
+
 // Notion 클라이언트 초기화
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -23,7 +44,17 @@ const notion = new Client({
  * - Privacy Agreement (checkbox): 개인정보 동의
  * - Marketing Agreement (checkbox): 마케팅 동의
  */
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, { status: 204, headers: getCorsHeaders(request) })
+}
+
 export async function POST(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request)
+  const withCors = (res: NextResponse) => {
+    Object.entries(corsHeaders).forEach(([k, v]) => res.headers.set(k, v))
+    return res
+  }
+
   // properties 변수를 함수 스코프 상단에 선언하여 catch 블록에서도 접근 가능하도록 함
   let properties: Record<string, any> | null = null
 
@@ -35,20 +66,20 @@ export async function POST(request: NextRequest) {
       if (process.env.NODE_ENV === 'development') {
         console.error('[Notion API] NOTION_TOKEN이 설정되지 않았습니다.')
       }
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { error: 'Notion 토큰이 설정되지 않았습니다.' },
         { status: 500 }
-      )
+      ))
     }
 
     if (!process.env.NOTION_DATABASE_ID) {
       if (process.env.NODE_ENV === 'development') {
         console.error('[Notion API] NOTION_DATABASE_ID가 설정되지 않았습니다.')
       }
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { error: 'Notion 데이터베이스 ID가 설정되지 않았습니다.' },
         { status: 500 }
-      )
+      ))
     }
 
     const body = await request.json()
@@ -65,13 +96,13 @@ export async function POST(request: NextRequest) {
 
     // 필수 필드 검증
     if (!name || typeof name !== 'string' || !name.trim()) {
-      return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
+      return withCors(NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 }))
     }
     if (!email || typeof email !== 'string' || !email.trim()) {
-      return NextResponse.json({ error: '이메일을 입력해주세요.' }, { status: 400 })
+      return withCors(NextResponse.json({ error: '이메일을 입력해주세요.' }, { status: 400 }))
     }
     if (!message || typeof message !== 'string' || !message.trim()) {
-      return NextResponse.json({ error: '문의내용을 입력해주세요.' }, { status: 400 })
+      return withCors(NextResponse.json({ error: '문의내용을 입력해주세요.' }, { status: 400 }))
     }
 
     const trim = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
@@ -130,42 +161,49 @@ export async function POST(request: NextRequest) {
       console.log('[Notion API] 문의 저장 성공, pageId:', response.id)
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: true, pageId: response.id },
       { status: 200 }
-    )
+    ))
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[Notion API] 에러:', error?.code ?? '', error?.message ?? '')
-    }
+    // Notion API 에러 상세 로깅 (원인 파악용)
+    const notionErrorBody = error?.body ?? null
+    const notionErrorResponse = error?.response ?? null
+    console.error('[Notion API] Notion API Error Response:', {
+      code: error?.code,
+      message: error?.message,
+      body: notionErrorBody,
+      response: notionErrorResponse,
+      status: notionErrorResponse?.status,
+    })
 
     if (error.code === 'object_not_found') {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { 
           error: 'Notion 데이터베이스를 찾을 수 없습니다. 데이터베이스 ID를 확인해주세요.',
           details: error.message,
+          _debug: process.env.NODE_ENV === 'development' ? { body: error?.body } : undefined,
         },
         { status: 404 }
-      )
+      ))
     }
 
     if (error.code === 'unauthorized') {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { 
           error: 'Notion 인증에 실패했습니다. 토큰을 확인해주세요.',
           details: error.message,
+          _debug: process.env.NODE_ENV === 'development' ? { body: error?.body } : undefined,
         },
         { status: 401 }
-      )
+      ))
     }
 
     if (error.code === 'validation_error') {
       const path = error?.body?.path ?? 'unknown'
       const bodyMessage = error?.body?.message ?? error?.message ?? ''
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[Notion API] validation_error:', path, bodyMessage)
-      }
-      return NextResponse.json(
+      console.error('[Notion API] validation_error:', path, bodyMessage, 'body:', error?.body)
+      return withCors(NextResponse.json(
         {
           error: 'Notion 데이터베이스 속성 검증에 실패했습니다.',
           validationError: { path, message: bodyMessage },
@@ -173,16 +211,16 @@ export async function POST(request: NextRequest) {
           sentPropertyKeys: properties ? Object.keys(properties) : null,
         },
         { status: 400 }
-      )
+      ))
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { 
         error: error.message || 'Notion 데이터 저장 중 오류가 발생했습니다.',
         code: error.code,
-        details: error.body || error.response,
+        details: error.body ?? error.response ?? undefined,
       },
       { status: 500 }
-    )
+    ))
   }
 }

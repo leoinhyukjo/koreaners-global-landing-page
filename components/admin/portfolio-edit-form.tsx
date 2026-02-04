@@ -199,7 +199,7 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
   return (
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-10 border-b border-border bg-card shadow-sm">
-        <div className="w-full max-w-[1400px] mx-auto px-4 py-3 sm:px-6 sm:py-4">
+        <div className="w-full max-w-[95%] mx-auto px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <Button
@@ -228,7 +228,7 @@ export function PortfolioEditForm({ portfolioId }: PortfolioEditFormProps) {
         </div>
       </div>
 
-      <div className="w-full max-w-[1400px] mx-auto px-4 py-4 sm:px-6 sm:py-6">
+      <div className="w-full max-w-[95%] mx-auto px-4 py-4 sm:px-6 sm:py-6">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] lg:gap-6">
           <aside className="space-y-4 rounded-lg border border-border bg-card p-4 shadow-sm lg:sticky lg:top-20 lg:self-start">
               <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">[한국어]</h3>

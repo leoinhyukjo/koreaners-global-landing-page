@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "test:notion": "node scripts/test-notion-connection.js"
   },
   "dependencies": {
     "@blocknote/mantine": "^0.46.1",

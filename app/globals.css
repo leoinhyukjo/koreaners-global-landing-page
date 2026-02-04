@@ -376,7 +376,7 @@ footer {
   text-decoration: none !important;
 }
 
-/* 표 스타일 */
+/* 표 스타일 — 상세 페이지: 고정 레이아웃, 제목행 가시성, 셀 줄바꿈 */
 .blog-content-wrapper .bn-editor table {
   width: 100% !important;
   table-layout: fixed !important;
@@ -387,26 +387,28 @@ footer {
 }
 
 .blog-content-wrapper .bn-editor table thead {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background-color: #333 !important;
 }
 
 .blog-content-wrapper .bn-editor table th {
-  background: rgba(249, 250, 251, 0.9) !important; /* bg-gray-50 느낌 */
-  color: rgb(15 23 42) !important; /* slate-900 계열 */
+  background-color: #333 !important;
+  color: #fff !important;
   font-weight: 600 !important;
   padding: 0.75rem !important;
   text-align: left !important;
-  border: 1px solid #e5e7eb !important; /* gray-200 */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   word-break: break-all !important;
   overflow-wrap: break-word !important;
+  white-space: normal !important;
 }
 
 .blog-content-wrapper .bn-editor table td {
   padding: 0.75rem !important;
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: rgb(229 231 235) !important;
   word-break: break-all !important;
   overflow-wrap: break-word !important;
+  white-space: normal !important;
 }
 
 .blog-content-wrapper .bn-editor table tbody tr:hover {
@@ -475,7 +477,7 @@ footer {
   color: black !important;
 }
 
-/* 에디터 내 표 스타일 - 레이아웃 고정 & 가독성 강화 */
+/* 에디터 내 표 스타일 — 고정 레이아웃, 제목행 가시성(#333/#fff), 셀 줄바꿈 */
 .editor-light-theme .bn-editor table {
   width: 100% !important;
   table-layout: fixed !important;
@@ -485,14 +487,16 @@ footer {
 
 .editor-light-theme .bn-editor th,
 .editor-light-theme .bn-editor td {
-  border: 1px solid #e5e7eb !important; /* gray-200 */
+  border: 1px solid #e5e7eb !important;
   padding: 0.75rem !important;
   word-break: break-all !important;
   overflow-wrap: break-word !important;
+  white-space: normal !important;
 }
 
 .editor-light-theme .bn-editor th {
-  background: #f9fafb !important; /* bg-gray-50 */
+  background-color: #333 !important;
+  color: #fff !important;
   font-weight: 600 !important;
   text-align: left !important;
 }
@@ -509,15 +513,21 @@ footer {
   border-color: var(--border) !important;
 }
 
-/* 어드민: 테이블/박스 내부 여백 통일 */
+/* 어드민: 테이블/박스 내부 여백 통일 + 다크 톤에서 텍스트·아이콘 화이트/밝은 그레이 가시성 */
 .admin-content [data-slot="table-head"] {
   padding: 1rem 1.5rem;
+  color: var(--foreground);
+  font-weight: 600;
 }
 .admin-content [data-slot="table-cell"] {
   padding: 1rem 1.5rem;
+  color: var(--foreground);
 }
 .admin-content [data-slot="table-row"] {
   min-height: 3.5rem;
+}
+.admin-content .text-muted-foreground {
+  color: oklch(0.75 0 0) !important; /* 밝은 그레이로 통일 — 그레이아웃 느낌 제거 */
 }
 
 /* Trusted By: infinite marquee */

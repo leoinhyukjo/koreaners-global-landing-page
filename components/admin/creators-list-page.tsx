@@ -191,8 +191,8 @@ export function CreatorsListPage() {
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">크리에이터 관리</h1>
-          <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+          <h1 className="text-2xl font-bold sm:text-3xl text-white">크리에이터 관리</h1>
+          <p className="mt-1 text-sm text-zinc-300 sm:text-base">
             크리에이터를 추가, 수정, 삭제할 수 있습니다
           </p>
         </div>
@@ -224,8 +224,12 @@ export function CreatorsListPage() {
                 </TableHeader>
                 <TableBody>
                   {creators.map((creator) => (
-                    <TableRow key={creator.id}>
-                      <TableCell className="font-medium">{creator.name}</TableCell>
+                    <TableRow
+                      key={creator.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleEdit(creator)}
+                    >
+                      <TableCell className="font-medium text-foreground">{creator.name}</TableCell>
                       <TableCell>
                         {creator.profile_image_url ? (
                           <img
@@ -239,21 +243,21 @@ export function CreatorsListPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          {creator.instagram_url && <Instagram className="h-4 w-4 text-muted-foreground" />}
-                          {creator.youtube_url && <Youtube className="h-4 w-4 text-muted-foreground" />}
-                          {creator.tiktok_url && <Music className="h-4 w-4 text-muted-foreground" />}
-                          {(creator.x_url || creator.twitter_url) && <X className="h-4 w-4 text-muted-foreground" />}
+                          {creator.instagram_url && <Instagram className="h-4 w-4 text-foreground" />}
+                          {creator.youtube_url && <Youtube className="h-4 w-4 text-foreground" />}
+                          {creator.tiktok_url && <Music className="h-4 w-4 text-foreground" />}
+                          {(creator.x_url || creator.twitter_url) && <X className="h-4 w-4 text-foreground" />}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-foreground">
                         {new Date(creator.created_at).toLocaleDateString('ko-KR')}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9"
+                            className="h-9 w-9 text-foreground hover:bg-white/10"
                             onClick={() => handleEdit(creator)}
                           >
                             <Edit className="h-4 w-4" />
@@ -261,7 +265,7 @@ export function CreatorsListPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
                             onClick={() => handleDelete(creator.id)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -277,20 +281,24 @@ export function CreatorsListPage() {
 
           <div className="space-y-4 md:hidden">
             {creators.map((creator) => (
-              <Card key={creator.id} className="rounded-lg border shadow-sm p-6">
+              <Card
+                key={creator.id}
+                className="rounded-lg border shadow-sm p-6 cursor-pointer hover:bg-muted/30"
+                onClick={() => handleEdit(creator)}
+              >
                 <div className="flex items-center gap-4">
                   {creator.profile_image_url && (
                     <img src={creator.profile_image_url} alt="" className="h-12 w-12 rounded-full object-cover" />
                   )}
                   <div className="flex-1">
-                    <h3 className="font-semibold">{creator.name}</h3>
+                    <h3 className="font-semibold text-foreground">{creator.name}</h3>
                     <p className="text-xs text-muted-foreground">{new Date(creator.created_at).toLocaleDateString()}</p>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(creator)}>
+                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(creator)} className="text-foreground hover:bg-white/10">
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(creator.id)} className="text-destructive">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(creator.id)} className="text-white hover:bg-white/10 hover:text-white">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -302,7 +310,7 @@ export function CreatorsListPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90%] max-w-[90vw] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingCreator ? '크리에이터 수정' : '새 크리에이터'}</DialogTitle>
           </DialogHeader>

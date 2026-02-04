@@ -414,17 +414,17 @@ export function FooterCTA() {
             type="marketing"
           />
 
-          {/* Success Dialog */}
+          {/* Success Dialog — 밝은 카드 톤, 둥근 모서리·그림자 통일 */}
           <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-            <DialogContent className="sm:max-w-md bg-zinc-800 border-zinc-700/50 rounded-none">
+            <DialogContent className="sm:max-w-md bg-white border border-zinc-200 rounded-2xl shadow-xl text-foreground">
               <DialogHeader className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
-                  <CheckCircle2 className="h-10 w-10 text-white" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <CheckCircle2 className="h-10 w-10 text-primary" />
                 </div>
-                <DialogTitle className="text-2xl font-black text-white">
+                <DialogTitle className="text-2xl font-bold text-foreground">
                   {t('dialogSuccessTitle')}
                 </DialogTitle>
-                <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
+                <DialogDescription className="pt-4 text-base leading-relaxed text-muted-foreground">
                   {t('dialogSuccessDesc')}
                 </DialogDescription>
               </DialogHeader>
@@ -443,7 +443,7 @@ export function FooterCTA() {
                       marketingConsent: false,
                     })
                   }}
-                  className="w-full sm:w-auto px-8 font-black rounded-none"
+                  className="w-full sm:w-auto px-8 font-semibold rounded-xl bg-primary text-primary-foreground hover:opacity-90"
                 >
                   {t('dialogConfirm')}
                 </Button>
