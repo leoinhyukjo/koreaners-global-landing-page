@@ -133,6 +133,10 @@ footer {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* 전역 90% 축소: 16px → 15px, rem 단위 일괄 적용 */
+    font-size: 15px;
+  }
   html, body {
     overflow-x: hidden;
     max-width: 100vw;
@@ -375,6 +379,7 @@ footer {
 /* 표 스타일 */
 .blog-content-wrapper .bn-editor table {
   width: 100% !important;
+  table-layout: fixed !important;
   border-collapse: collapse !important;
   margin: 1.5rem 0 !important;
   overflow-x: auto !important;
@@ -386,18 +391,22 @@ footer {
 }
 
 .blog-content-wrapper .bn-editor table th {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: rgb(255 255 255) !important;
+  background: rgba(249, 250, 251, 0.9) !important; /* bg-gray-50 느낌 */
+  color: rgb(15 23 42) !important; /* slate-900 계열 */
   font-weight: 600 !important;
   padding: 0.75rem !important;
   text-align: left !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid #e5e7eb !important; /* gray-200 */
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
 }
 
 .blog-content-wrapper .bn-editor table td {
   padding: 0.75rem !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid #e5e7eb !important;
   color: rgb(229 231 235) !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
 }
 
 .blog-content-wrapper .bn-editor table tbody tr:hover {
@@ -464,6 +473,28 @@ footer {
 .editor-light-theme .bn-editor strong,
 .editor-light-theme .bn-editor em {
   color: black !important;
+}
+
+/* 에디터 내 표 스타일 - 레이아웃 고정 & 가독성 강화 */
+.editor-light-theme .bn-editor table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  margin: 1.5rem 0 !important;
+}
+
+.editor-light-theme .bn-editor th,
+.editor-light-theme .bn-editor td {
+  border: 1px solid #e5e7eb !important; /* gray-200 */
+  padding: 0.75rem !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+.editor-light-theme .bn-editor th {
+  background: #f9fafb !important; /* bg-gray-50 */
+  font-weight: 600 !important;
+  text-align: left !important;
 }
 
 /* 에디터 포커스 시 테두리 */

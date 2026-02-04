@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={notoSansJP.variable}>
+    <html lang="ko" className={`${notoSansJP.variable} text-[15px]`}>
       <body className={`${geist.className} flex min-h-screen flex-col font-sans antialiased bg-zinc-900`}>
         <LocaleProvider>
           {children}

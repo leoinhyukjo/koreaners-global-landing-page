@@ -542,19 +542,19 @@ function BlogEditForm() {
     <div className="min-h-screen bg-background">
       {/* 헤더 */}
       <div className="sticky top-0 z-10 border-b border-border bg-card">
-        <div className="container mx-auto max-w-7xl px-4 py-4 sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-center gap-3">
+        <div className="w-full max-w-[1400px] mx-auto px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-2">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 shrink-0 touch-manipulation"
+                className="h-9 w-9 shrink-0 touch-manipulation"
                 onClick={() => router.push('/admin/blog')}
                 aria-label="목록으로"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-4 w-4" />
               </Button>
-              <h1 className="truncate text-xl font-bold sm:text-2xl">
+              <h1 className="truncate text-lg font-bold sm:text-xl">
                 {postId ? '포스트 수정' : '새 포스트 작성'}
               </h1>
             </div>
@@ -568,9 +568,9 @@ function BlogEditForm() {
                   handleSubmit(false)
                 }}
                 disabled={saving || uploading}
-                className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
+                className="min-h-[40px] w-full touch-manipulation sm:w-auto sm:min-h-0 text-sm"
               >
-                <Save className="h-4 w-4 shrink-0 sm:mr-2" />
+                <Save className="h-3.5 w-3.5 shrink-0 sm:mr-2" />
                 {saving ? '처리 중...' : '임시저장'}
               </Button>
               <Button
@@ -581,9 +581,9 @@ function BlogEditForm() {
                   handleSubmit(true)
                 }}
                 disabled={saving || uploading}
-                className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
+                className="min-h-[40px] w-full touch-manipulation sm:w-auto sm:min-h-0 text-sm"
               >
-                <Send className="h-4 w-4 shrink-0 sm:mr-2" />
+                <Send className="h-3.5 w-3.5 shrink-0 sm:mr-2" />
                 {saving ? '처리 중...' : '발행하기'}
               </Button>
             </div>
@@ -591,11 +591,11 @@ function BlogEditForm() {
         </div>
       </div>
 
-      {/* 메인 컨텐츠 */}
-      <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
-          {/* 왼쪽: 메타 정보 */}
-          <div className="space-y-6 lg:col-span-1">
+      {/* 메인 컨텐츠: 와이드 레이아웃 — 사이드바 280px + 에디터 1fr */}
+      <div className="w-full max-w-[1400px] mx-auto px-4 py-4 sm:px-6 sm:py-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] lg:gap-6">
+          {/* 왼쪽: 메타/SEO 사이드바 */}
+          <aside className="space-y-4 rounded-lg border border-border bg-card p-4 shadow-sm lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="title">제목 *</Label>
@@ -775,12 +775,11 @@ function BlogEditForm() {
                 />
               </div>
             </div>
-          </div>
+          </aside>
 
-          {/* 오른쪽: 에디터 */}
-          <div className="lg:col-span-2">
-            <div className="space-y-4">
-              <Label>본문 내용 *</Label>
+          {/* 오른쪽: 에디터 (와이드) */}
+          <div className="min-w-0 space-y-4">
+            <Label className="text-sm">본문 내용 *</Label>
               {loading ? (
                 <div className="border border-border rounded-lg overflow-hidden bg-card min-h-[600px] flex items-center justify-center">
                   <p className="text-muted-foreground">로딩 중...</p>
