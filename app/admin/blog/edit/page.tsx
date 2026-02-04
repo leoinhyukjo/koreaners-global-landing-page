@@ -823,7 +823,6 @@ function BlogEditForm() {
           </div>
         </div>
       </div>
-    </div>
   )
 }
 
