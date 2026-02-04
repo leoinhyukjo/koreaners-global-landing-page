@@ -117,27 +117,27 @@ export function Performance() {
                 </Button>
               </div>
 
-              {/* Navigation Buttons - Mobile/Tablet */}
-              <div className="flex lg:hidden justify-between items-center mt-4 mb-2 px-2">
+              {/* Navigation Buttons - Mobile/Tablet (overlay, keeps peek UI) */}
+              <div className="lg:hidden pointer-events-none">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={scrollPrev}
                   disabled={prevBtnDisabled}
-                  className="w-9 h-9 bg-zinc-900/80 border border-zinc-700/60 hover:bg-white hover:text-black hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.8)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="pointer-events-auto w-10 h-10 bg-black/40 backdrop-blur-md border border-zinc-700/70 hover:bg-black/70 hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.9)] disabled:opacity-40 disabled:cursor-not-allowed absolute top-1/2 -translate-y-1/2 left-2 sm:left-4 z-20"
                   aria-label={t('performancePrevSlide')}
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className="h-4 w-4 text-white" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={scrollNext}
                   disabled={nextBtnDisabled}
-                  className="w-9 h-9 bg-zinc-900/80 border border-zinc-700/60 hover:bg-white hover:text-black hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.8)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="pointer-events-auto w-10 h-10 bg-black/40 backdrop-blur-md border border-zinc-700/70 hover:bg-black/70 hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.9)] disabled:opacity-40 disabled:cursor-not-allowed absolute top-1/2 -translate-y-1/2 right-2 sm:right-4 z-20"
                   aria-label={t('performanceNextSlide')}
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-4 w-4 text-white" />
                 </Button>
               </div>
 
