@@ -17,7 +17,7 @@ export default function HeroSection() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <section className="relative min-h-screen h-full flex items-center justify-center pt-20 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-800 w-full max-w-full overflow-hidden">
+    <section className="relative min-h-screen h-full flex items-center justify-center pt-24 sm:pt-28 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-800 w-full max-w-full overflow-hidden">
       {/* 1. 배경 그리드: 섹션 전체 높이에 끊김 없이 반복 */}
       <div
         className="absolute inset-0 min-h-full z-0 bg-repeat"

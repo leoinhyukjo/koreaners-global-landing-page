@@ -19,7 +19,7 @@ export function Logo({ variant }: { variant: 'header' | 'footer' }) {
       <img
         src={FALLBACK_SRC}
         alt="KOREANERS"
-        className={isHeader ? 'h-7 sm:h-8 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}
+        className={isHeader ? 'h-8 sm:h-10 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}
       />
     )
   }
@@ -28,9 +28,9 @@ export function Logo({ variant }: { variant: 'header' | 'footer' }) {
     <Image
       src={LOGO_SRC}
       alt="KOREANERS"
-      width={isHeader ? 140 : 160}
-      height={32}
-      className={isHeader ? 'h-7 sm:h-8 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}
+      width={isHeader ? 160 : 160}
+      height={40}
+      className={isHeader ? 'h-8 sm:h-10 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}
       priority={isHeader}
       unoptimized
       onError={() => setFailed(true)}

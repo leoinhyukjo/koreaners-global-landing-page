@@ -13,7 +13,7 @@ import { FooterCTA } from '@/components/footer-cta'
 /** 히어로+첫 섹션 헤더와 동일한 레이아웃 틀을 유지해 하이드레이션 시 레이아웃 시프트 방지 */
 const MainSkeleton = () => (
   <div className="min-h-screen w-full max-w-full overflow-hidden" aria-hidden="true">
-    <div className="relative min-h-screen flex items-center justify-center pt-20 pb-12 px-4 sm:px-6 lg:px-24">
+    <div className="relative min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-12 px-4 sm:px-6 lg:px-24">
       <div className="container mx-auto max-w-7xl">
         <div className="max-w-5xl mx-auto text-center w-full">
           <div className="pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[4.5rem] sm:min-h-[5rem] block">

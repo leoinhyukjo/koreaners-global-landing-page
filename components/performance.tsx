@@ -28,6 +28,8 @@ export function Performance() {
 
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
 
   const scrollPrev = () => emblaApi?.scrollPrev()
   const scrollNext = () => emblaApi?.scrollNext()
@@ -60,8 +62,10 @@ export function Performance() {
     const onSelect = () => {
       setPrevBtnDisabled(!emblaApi.canScrollPrev())
       setNextBtnDisabled(!emblaApi.canScrollNext())
+      setSelectedIndex(emblaApi.selectedScrollSnap())
     }
 
+    setScrollSnaps(emblaApi.scrollSnapList())
     emblaApi.on('select', onSelect)
     onSelect()
   }, [emblaApi])
@@ -89,7 +93,7 @@ export function Performance() {
             </div>
           ) : (
             <div className="relative">
-              {/* Navigation Buttons - Desktop Only */}
+              {/* Navigation Buttons - Desktop */}
               <div className="hidden lg:block">
                 <Button
                   variant="outline"
@@ -113,11 +117,38 @@ export function Performance() {
                 </Button>
               </div>
 
+              {/* Navigation Buttons - Mobile/Tablet */}
+              <div className="flex lg:hidden justify-between items-center mt-4 mb-2 px-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={scrollPrev}
+                  disabled={prevBtnDisabled}
+                  className="w-9 h-9 bg-zinc-900/80 border border-zinc-700/60 hover:bg-white hover:text-black hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.8)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  aria-label={t('performancePrevSlide')}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={scrollNext}
+                  disabled={nextBtnDisabled}
+                  className="w-9 h-9 bg-zinc-900/80 border border-zinc-700/60 hover:bg-white hover:text-black hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.8)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  aria-label={t('performanceNextSlide')}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+
               {/* Carousel Container */}
-              <div className="overflow-hidden px-0 lg:pl-36 lg:pr-36" ref={emblaRef}>
+              <div className="overflow-hidden px-1 sm:px-2 lg:pl-36 lg:pr-36" ref={emblaRef}>
                 <div className="flex gap-4">
                   {portfolios.map(item => (
-                    <div key={item.id} className="flex-[0_0_100%] md:flex-[0_0_calc(50%-8px)] lg:flex-[0_0_calc(33.333%-11px)] min-w-0">
+                    <div
+                      key={item.id}
+                      className="flex-[0_0_88%] sm:flex-[0_0_80%] md:flex-[0_0_calc(50%-8px)] lg:flex-[0_0_calc(33.333%-11px)] min-w-0"
+                    >
                       <Link href={`/portfolio/${item.id}`}>
                         <Card 
                           className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer h-full rounded-none"
@@ -206,6 +237,26 @@ export function Performance() {
                   ))}
                 </div>
               </div>
+
+              {/* Pagination Dots */}
+              {scrollSnaps.length > 1 && (
+                <div className="flex justify-center gap-2 mt-6">
+                  {scrollSnaps.map((_, index) => {
+                    const isActive = index === selectedIndex
+                    return (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => emblaApi && emblaApi.scrollTo(index)}
+                        className={`h-2 rounded-full border border-zinc-600 transition-all duration-200 ${
+                          isActive ? 'w-5 bg-white' : 'w-2 bg-zinc-700/70'
+                        }`}
+                        aria-label={`${index + 1} / ${scrollSnaps.length}`}
+                      />
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )}
 

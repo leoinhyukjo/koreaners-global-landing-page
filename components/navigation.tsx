@@ -82,19 +82,19 @@ export default function Navigation() {
       ref={navRef}
       className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
-          ? 'bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-700/50'
-          : 'bg-zinc-900/90 backdrop-blur-sm'
+          ? 'bg-zinc-950/95 backdrop-blur-md border-b border-zinc-700/60 shadow-[0_18px_60px_rgba(0,0,0,0.9)]'
+          : 'bg-zinc-900/85 backdrop-blur-sm border-b border-transparent'
       }`}
       style={{ width: '100%' }}
     >
       <div className="w-full max-w-full px-6 md:px-12 lg:px-24">
-        <div className="container mx-auto max-w-7xl py-3 sm:py-4">
-        <div className="flex items-center justify-between min-w-0">
+        <div className="container mx-auto max-w-7xl h-16 sm:h-20 flex items-center">
+        <div className="flex items-center justify-between min-w-0 w-full">
           <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">
             <Logo variant="header" />
             <div className="min-w-0">
-              <div className="text-lg sm:text-xl font-black text-white leading-tight truncate">KOREANERS</div>
-              <div className="text-[10px] sm:text-xs text-zinc-300 mt-0.5 break-words">{t('tagline')}</div>
+              <div className="text-xl sm:text-2xl font-black text-white leading-tight truncate">KOREANERS</div>
+              <div className="text-[11px] sm:text-sm text-zinc-300 mt-0.5 break-words">{t('tagline')}</div>
             </div>
           </a>
           
