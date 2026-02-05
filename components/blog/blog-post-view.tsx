@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -35,6 +36,13 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const displayTitle = getBlogTitle(blogPost, locale)
+
+  // Force scroll to top on mount (detail page fix for mobile bottom-start bug)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }, [])
   const displaySummary = getBlogSummary(blogPost, locale)
   const contentToShow = getBlogContent(blogPost, locale)
   const hasContent = contentToShow && Array.isArray(contentToShow) && contentToShow.length > 0

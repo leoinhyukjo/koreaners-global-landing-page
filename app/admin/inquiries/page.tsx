@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
-import { Eye, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -217,15 +217,7 @@ export default function InquiriesPage() {
                         </p>
                       </TableCell>
                       <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 text-foreground hover:bg-white/10"
-                            onClick={() => handleView(inquiry)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                        <div className="flex justify-end">
                           <Button
                             variant="ghost"
                             size="icon"
@@ -289,21 +281,12 @@ export default function InquiriesPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleView(inquiry)}
-                      className="min-h-[44px] flex-1 gap-2 touch-manipulation"
-                    >
-                      <Eye className="h-4 w-4 shrink-0" />
-                      상세보기
-                    </Button>
+                  <div className="mt-4 flex justify-end" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleDelete(inquiry.id)}
-                      className="min-h-[44px] flex-1 gap-2 text-white border-white/50 hover:bg-white/10 hover:text-white touch-manipulation"
+                      className="min-h-[44px] gap-2 text-white border-white/50 hover:bg-white/10 hover:text-white touch-manipulation"
                     >
                       <Trash2 className="h-4 w-4 shrink-0 text-white" />
                       삭제
@@ -316,14 +299,14 @@ export default function InquiriesPage() {
         </>
       )}
 
-      {/* 상세보기 다이얼로그 — 화면의 80~90% 너비로 가독성 확보 */}
+      {/* 상세보기 다이얼로그 — max-w-2xl, 중앙 배치, 가독성 향상 */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
           className={[
             'overflow-y-auto',
             'h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4',
             'inset-0 top-0 left-0 translate-x-0 translate-y-0',
-            'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-[90%] md:max-w-[90vw] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl md:border md:p-6',
+            'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl md:border md:p-6',
           ].join(' ')}
         >
           <DialogHeader>
@@ -342,36 +325,36 @@ export default function InquiriesPage() {
           </DialogHeader>
 
           {selectedInquiry && (
-            <div className="space-y-4 py-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
+            <div className="space-y-0 py-4">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-1 py-4">
                   <p className="text-sm font-medium text-muted-foreground">이름</p>
-                  <p className="text-base font-medium">{selectedInquiry.name}</p>
+                  <p className="text-base font-medium break-words">{selectedInquiry.name}</p>
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1 py-4">
                   <p className="text-sm font-medium text-muted-foreground">회사명</p>
-                  <p className="text-base font-medium">{selectedInquiry.company}</p>
+                  <p className="text-base font-medium break-words">{selectedInquiry.company}</p>
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1 py-4">
                   <p className="text-sm font-medium text-muted-foreground">직급</p>
-                  <p className="text-base font-medium">{selectedInquiry.position}</p>
+                  <p className="text-base font-medium break-words">{selectedInquiry.position}</p>
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1 py-4">
                   <p className="text-sm font-medium text-muted-foreground">전화번호</p>
-                  <p className="text-base font-medium">{selectedInquiry.phone}</p>
+                  <p className="text-base font-medium break-words">{selectedInquiry.phone}</p>
                 </div>
               </div>
 
-              <div className="space-y-1.5 border-t pt-4">
+              <div className="space-y-2 border-t border-border pt-6">
                 <p className="text-sm font-medium text-muted-foreground">문의내용</p>
-                <div className="rounded-lg border border-border bg-muted/30 p-4">
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                <div className="rounded-lg border border-border bg-muted/30 p-4 max-w-full">
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed break-words">
                     {selectedInquiry.message}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 border-t pt-4">
+              <div className="flex flex-wrap gap-2 border-t border-border pt-6">
                 <Badge
                   variant={
                     selectedInquiry.privacy_agreement ||

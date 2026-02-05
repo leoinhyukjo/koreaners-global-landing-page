@@ -174,7 +174,7 @@ export default function Navigation() {
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-0 relative z-10">
-                    {menuItems.map((item, index) => (
+                    {menuItems.filter((m) => m.href !== '/contact').map((item, index) => (
                       <a
                         key={item.href}
                         href={item.href}
@@ -190,6 +190,17 @@ export default function Navigation() {
                         <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
                       </a>
                     ))}
+                    {/* 문의하기: 데스크탑 버튼과 동일한 Solid CTA 스타일, 하단 격리 */}
+                    <a
+                      href="/contact"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="mt-6 flex w-full items-center justify-center rounded-lg bg-white py-4 px-5 font-black text-black transition-all duration-200 hover:bg-zinc-200 active:bg-zinc-300 active:scale-[0.98]"
+                      style={{
+                        animation: `fadeInSlide 0.3s ease-out ${menuItems.filter((m) => m.href !== '/contact').length * 60}ms both`,
+                      }}
+                    >
+                      {t('contact')}
+                    </a>
                   </nav>
                   
                   <style jsx>{`

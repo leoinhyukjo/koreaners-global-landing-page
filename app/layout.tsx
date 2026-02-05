@@ -6,6 +6,7 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { Footer } from '@/components/layout/footer'
 import { LocaleProvider } from '@/contexts/locale-context'
+import { ScrollToTop } from '@/components/common/ScrollToTop'
 
 const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -45,6 +46,7 @@ export default function RootLayout({
     <html lang="ko" className={`${notoSansJP.variable} text-[15px]`}>
       <body className={`${geist.className} flex min-h-screen flex-col font-sans antialiased bg-zinc-900`}>
         <LocaleProvider>
+          <ScrollToTop />
           {children}
           <Footer />
         </LocaleProvider>

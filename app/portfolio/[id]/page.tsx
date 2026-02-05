@@ -62,6 +62,22 @@ export default function PortfolioDetailPage() {
     fetchOtherPortfolios()
   }, [id])
 
+  // Force scroll to top on mount & when id changes (detail page fix for mobile bottom-start bug)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }, [id])
+
+  // Also scroll when loading finishes (handles layout shift after client fetch)
+  useEffect(() => {
+    if (!loading) {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }
+  }, [loading])
+
   async function fetchPortfolio() {
     try {
       setLoading(true)
