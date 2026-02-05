@@ -29,8 +29,8 @@ export function MarketingCTA() {
         <div className="pt-2">
           <Link href="/contact">
             <Button
-              size="lg"
-              className="min-h-[48px] px-8 sm:px-10 text-base sm:text-lg font-bold rounded-none bg-white text-black hover:bg-zinc-100 transition-all duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+              size="default"
+              className="px-6 py-2.5 font-black rounded-none transition-colors duration-300"
             >
               {t('marketingCtaButton')}
             </Button>

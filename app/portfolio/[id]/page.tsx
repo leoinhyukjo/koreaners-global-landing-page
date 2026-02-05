@@ -252,7 +252,10 @@ export default function PortfolioDetailPage() {
               </div>
               <div className="mt-6 text-center">
                 <Link href="/portfolio">
-                  <Button variant="outline" className="text-white border-zinc-600 hover:bg-zinc-800 hover:text-white rounded-none">
+                  <Button
+                    size="default"
+                    className="px-6 py-2.5 font-black rounded-none transition-colors duration-300"
+                  >
                     {t('portfolioViewAll')}
                   </Button>
                 </Link>
