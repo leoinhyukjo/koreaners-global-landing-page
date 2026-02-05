@@ -26,11 +26,10 @@ export function MarketingCTA() {
             {t('marketingCtaP2')}
           </p>
         </div>
-        <div className="pt-2">
-          <Link href="/contact">
+        <div className="pt-2 text-center">
+          <Link href="/contact" className="inline-block">
             <Button
-              size="default"
-              className="px-6 py-2.5 font-black rounded-none transition-colors duration-300"
+              className="px-12 py-6 text-lg font-black rounded-none transition-colors duration-300"
             >
               {t('marketingCtaButton')}
             </Button>

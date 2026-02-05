@@ -251,10 +251,9 @@ export default function PortfolioDetailPage() {
                 ))}
               </div>
               <div className="mt-6 text-center">
-                <Link href="/portfolio">
+                <Link href="/portfolio" className="inline-block">
                   <Button
-                    size="default"
-                    className="px-6 py-2.5 font-black rounded-none transition-colors duration-300"
+                    className="px-12 py-6 text-lg font-black rounded-none transition-colors duration-300"
                   >
                     {t('portfolioViewAll')}
                   </Button>
