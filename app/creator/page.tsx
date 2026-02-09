@@ -62,7 +62,7 @@ function CreatorContent() {
       const { data, error } = await supabase
         .from('creators')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: true })
 
       if (error) throw error
       setAllCreators(data || [])
@@ -183,46 +183,7 @@ function CreatorContent() {
             </div>
           ) : (
             <>
-              {/* Pagination - 타깃별 최적화된 크리에이터 풀 섹션 상단 */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mb-12">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                    // 현재 페이지 주변 2페이지씩만 표시
-                    if (
-                      page === 1 ||
-                      page === totalPages ||
-                      (page >= currentPage - 2 && page <= currentPage + 2)
-                    ) {
-                      return (
-                        <Button
-                          key={page}
-                          variant={page === currentPage ? 'default' : 'outline'}
-                          onClick={() => router.push(`/creator?page=${page}`)}
-                          className={`rounded-none min-w-[44px] ${
-                            page === currentPage
-                              ? 'bg-white text-black hover:bg-white'
-                              : 'border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white'
-                          }`}
-                        >
-                          {page}
-                        </Button>
-                      )
-                    } else if (
-                      page === currentPage - 3 ||
-                      page === currentPage + 3
-                    ) {
-                      return (
-                        <span key={page} className="px-2 text-zinc-400">
-                          ...
-                        </span>
-                      )
-                    }
-                    return null
-                  })}
-                </div>
-              )}
-
-              <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 mb-12 sm:mb-20 min-w-0">
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 mb-8 min-w-0">
                 {creators.map((creator) => {
                   const instagramHandle = creator.instagram_url
                     ? '@' + creator.instagram_url.replace(/\/$/, '').split('/').pop()
@@ -251,14 +212,9 @@ function CreatorContent() {
                       {/* Creator Info: 3열 모바일 text-xs·overflow-hidden 고정 */}
                       <div className="p-2 md:p-4 min-w-0 overflow-hidden">
                         <div className="mb-1 md:mb-2 flex items-baseline justify-between gap-0.5 min-w-0">
-                          <span className="text-[10px] sm:text-xs md:text-base font-bold text-white truncate min-w-0 flex-1" title={creator.name}>
-                            {creator.name}
+                          <span className="text-[10px] sm:text-xs md:text-base font-bold text-white truncate min-w-0 flex-1" title={instagramHandle || creator.name}>
+                            {instagramHandle || creator.name}
                           </span>
-                          {instagramHandle && (
-                            <span className="text-[10px] sm:text-xs text-zinc-400 truncate max-w-[45%] text-right shrink-0" title={instagramHandle}>
-                              {instagramHandle}
-                            </span>
-                          )}
                         </div>
 
                         {/* SNS 링크: 3열 시 아이콘·간격 축소 */}
@@ -331,8 +287,8 @@ function CreatorContent() {
                     </Card>
                   )
                 })}
-                {/* 업데이트 중 플레이스홀더 카드 2개 */}
-                {[1, 2].map((i) => (
+                {/* 업데이트 중 플레이스홀더 카드 2개 - 마지막 페이지에만 노출 */}
+                {currentPage === totalPages && [1, 2].map((i) => (
                   <Card
                     key={`placeholder-${i}`}
                     className="overflow-hidden bg-zinc-800/40 border border-dashed border-zinc-600/60 opacity-60 pointer-events-none min-w-0"
@@ -344,13 +300,54 @@ function CreatorContent() {
                   </Card>
                 ))}
               </div>
-              {/* 하단 멘트 및 그라데이션 */}
-              <div className="text-center py-12 mt-8 sm:mt-12">
-                <p className="text-zinc-500 text-sm sm:text-base italic">
-                  {t('creatorUpdating')}
-                </p>
-                <div className="mt-4 h-12 bg-gradient-to-b from-transparent to-zinc-900/80 pointer-events-none" aria-hidden />
-              </div>
+
+              {/* Pagination - 크리에이터 카드 바로 밑으로 이동 */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mb-12 sm:mb-20">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // 현재 페이지 주변 2페이지씩만 표시
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 2 && page <= currentPage + 2)
+                    ) {
+                      return (
+                        <Button
+                          key={page}
+                          variant={page === currentPage ? 'default' : 'outline'}
+                          onClick={() => router.push(`/creator?page=${page}`)}
+                          className={`rounded-none min-w-[44px] ${
+                            page === currentPage
+                              ? 'bg-white text-black hover:bg-white'
+                              : 'border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white'
+                          }`}
+                        >
+                          {page}
+                        </Button>
+                      )
+                    } else if (
+                      page === currentPage - 3 ||
+                      page === currentPage + 3
+                    ) {
+                      return (
+                        <span key={page} className="px-2 text-zinc-400">
+                          ...
+                        </span>
+                      )
+                    }
+                    return null
+                  })}
+                </div>
+              )}
+              {/* 하단 멘트 및 그라데이션 - 마지막 페이지에만 노출 */}
+              {currentPage === totalPages && (
+                <div className="text-center py-12 mt-8 sm:mt-12">
+                  <p className="text-zinc-500 text-sm sm:text-base italic">
+                    {t('creatorUpdating')}
+                  </p>
+                  <div className="mt-4 h-12 bg-gradient-to-b from-transparent to-zinc-900/80 pointer-events-none" aria-hidden />
+                </div>
+              )}
             </>
           )}
 
