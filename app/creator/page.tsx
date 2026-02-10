@@ -529,8 +529,11 @@ function CreatorContent() {
                           setFormData({ ...formData, phone: value })
                         }}
                         className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder="010-0000-0000"
+                        placeholder="01000000000"
                       />
+                      <p className="mt-1.5 text-xs text-zinc-400">
+                        {locale === 'ja' ? 'ハイフン(-)なしで入力してください' : '- 없이 숫자만 입력해주세요'}
+                      </p>
                     </div>
                   </div>
 
