@@ -3,7 +3,7 @@
 import { ReactNode, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, FolderOpen, Users, FileText, MessageSquare, LogOut, Menu } from 'lucide-react'
+import { LayoutDashboard, FolderOpen, Users, FileText, MessageSquare, LogOut, Menu, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from '@/lib/admin-auth'
 import { useToast } from '@/hooks/use-toast'
@@ -51,6 +51,7 @@ export function AdminLayoutClient({ children }: { children: ReactNode }) {
     { href: '/admin/creators', label: '크리에이터 관리', icon: Users },
     { href: '/admin/blog', label: '블로그 관리', icon: FileText },
     { href: '/admin/inquiries', label: '문의 내역', icon: MessageSquare },
+    { href: '/admin/creator-applications', label: '합류 신청', icon: Sparkles },
   ]
 
   const isLoginPage = pathname === '/admin/login'

@@ -5,7 +5,7 @@ import { Geist, Geist_Mono, Noto_Sans_JP } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
-import { Footer } from '@/components/layout/footer'
+import { FooterWrapper } from '@/components/layout/footer-wrapper'
 import { LocaleProvider } from '@/contexts/locale-context'
 import { ScrollToTop } from '@/components/common/ScrollToTop'
 import ClarityProvider from './ClarityProvider'
@@ -51,7 +51,7 @@ export default function RootLayout({
           <ClarityProvider />
           <ScrollToTop />
           {children}
-          <Footer />
+          <FooterWrapper />
         </LocaleProvider>
         <Toaster />
         <Analytics />
