@@ -123,7 +123,7 @@ export default function CreatorApplicationsPage() {
                 <TableHead className="text-zinc-300">이메일</TableHead>
                 <TableHead className="text-zinc-300">전화번호</TableHead>
                 <TableHead className="text-zinc-300">트랙</TableHead>
-                <TableHead className="text-zinc-300 w-20"></TableHead>
+                <TableHead className="text-zinc-300">작업</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
