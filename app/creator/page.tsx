@@ -21,6 +21,7 @@ import {
 import { CheckCircle2 } from 'lucide-react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { CreatorTrackSection } from '@/components/creator-track-section'
 
 const CREATORS_PER_PAGE = 12
 
@@ -32,7 +33,7 @@ function CreatorContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { toast } = useToast()
-  
+
   const currentPage = parseInt(searchParams.get('page') || '1', 10)
   const totalPages = Math.ceil(allCreators.length / CREATORS_PER_PAGE)
   const startIndex = (currentPage - 1) * CREATORS_PER_PAGE
@@ -48,9 +49,11 @@ function CreatorContent() {
     tiktok_url: '',
     x_url: '',
     message: '',
+    track_type: 'exclusive' as 'exclusive' | 'partner',
   })
   const [submitting, setSubmitting] = useState(false)
   const [successDialogOpen, setSuccessDialogOpen] = useState(false)
+  const [applyModalOpen, setApplyModalOpen] = useState(false)
 
   useEffect(() => {
     fetchCreators()
@@ -113,11 +116,15 @@ function CreatorContent() {
       const phoneValue = formData.phone.trim() ? cleanPhone : ''
 
       // Supabase inquiries 테이블에 저장 (type: 'creator_application') — 선택 항목은 빈 문자열 또는 없음으로 전송
+      const trackTypeLabel = formData.track_type === 'exclusive'
+        ? (locale === 'ja' ? '専属クリエイター' : '전속 크리에이터')
+        : (locale === 'ja' ? 'パートナー' : '파트너')
+
       const insertData = {
         name: formData.name.trim() || '',
         email: formData.email.trim() || '',
         phone: phoneValue,
-        message: `[${locale === 'ja' ? 'クリエイター申込' : '크리에이터 신청'}]\n\nInstagram: ${formData.instagram_url.trim()}\nYouTube: ${formData.youtube_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nTikTok: ${formData.tiktok_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nX(Twitter): ${formData.x_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\n\n${locale === 'ja' ? 'ご要望' : '요청사항'}:\n${formData.message.trim() || (locale === 'ja' ? 'なし' : '없음')}`,
+        message: `[${locale === 'ja' ? 'クリエイター申込' : '크리에이터 신청'}] - ${trackTypeLabel}\n\nInstagram: ${formData.instagram_url.trim()}\nYouTube: ${formData.youtube_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nTikTok: ${formData.tiktok_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nX(Twitter): ${formData.x_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\n\n${locale === 'ja' ? 'ご要望' : '요청사항'}:\n${formData.message.trim() || (locale === 'ja' ? 'なし' : '없음')}`,
         inquiry_type: 'creator_application',
         privacy_agreement: true,
         marketing_agreement: false,
@@ -145,6 +152,7 @@ function CreatorContent() {
         tiktok_url: '',
         x_url: '',
         message: '',
+        track_type: 'exclusive',
       })
     } catch (error: any) {
       console.error('Error submitting creator application:', error)
@@ -156,6 +164,11 @@ function CreatorContent() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleSelectTrack = (trackType: 'exclusive' | 'partner') => {
+    setFormData({ ...formData, track_type: trackType })
+    setApplyModalOpen(true)
   }
 
   return (
@@ -172,6 +185,12 @@ function CreatorContent() {
               {t('creatorHeroDesc')}
             </p>
           </div>
+
+          {/* Creator Cards Section - Top of Page */}
+          <div className="mb-20 sm:mb-28">
+            <h2 className="text-3xl sm:text-4xl font-black text-center mb-12 text-white">
+              {t('creatorPoolTitle1')}<span className="text-white">{t('creatorPoolTitle2')}</span>
+            </h2>
 
           {loading ? (
             <div className="text-center py-20">
@@ -350,12 +369,12 @@ function CreatorContent() {
               )}
             </>
           )}
+          </div>
 
           {/* Creator Categories */}
           <div className="mb-20">
             <h2 className="text-3xl font-black text-center mb-12 text-white">
-              <span className="text-white">{t('creatorPoolTitle1')}</span>
-              <span className="text-white">{t('creatorPoolTitle2')}</span>
+              {t('creatorCategoriesTitle')}
             </h2>
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -452,163 +471,185 @@ function CreatorContent() {
             </div>
           </div>
 
-          {/* Creator Application Form */}
-          <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 mb-20 w-full max-w-full overflow-hidden">
-            <div className="container mx-auto max-w-7xl">
-              <div className="mb-6 sm:mb-10">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4 break-keep">
-                  {t('creatorApplyTitle')}
-                </h1>
-                <p className="text-base sm:text-lg text-zinc-200 leading-relaxed mb-2 font-medium break-keep max-w-prose">
-                  <span className="inline-block">{t('creatorApplyDesc1')}</span>{' '}
-                  <span className="inline-block">{t('creatorApplyDesc2')}</span>
-                </p>
+          {/* Creator Track Selection Section - Bottom */}
+          <CreatorTrackSection onSelectTrack={handleSelectTrack} />
+
+          {/* Creator Application Form Modal */}
+          <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-zinc-900 border-zinc-700/50 rounded-none p-0">
+              <div className="p-8 sm:p-10">
+                <DialogHeader className="mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="px-4 py-2 bg-white/10 rounded-full text-sm font-bold text-white">
+                      {formData.track_type === 'exclusive'
+                        ? (locale === 'ja' ? '専属クリエイター' : '전속 크리에이터')
+                        : (locale === 'ja' ? 'パートナー' : '파트너')}
+                    </div>
+                  </div>
+                  <DialogTitle className="text-3xl font-black text-white text-left">
+                    {formData.track_type === 'exclusive'
+                      ? (locale === 'ja' ? '専属クリエイター合流申し込み' : '전속 크리에이터 합류 신청')
+                      : (locale === 'ja' ? 'パートナー合流申し込み' : '파트너 합류 신청')}
+                  </DialogTitle>
+                  <DialogDescription className="pt-4 text-base text-zinc-200 text-left">
+                    <span className="inline-block">{t('creatorApplyDesc1')}</span>{' '}
+                    <span className="inline-block">{t('creatorApplyDesc2')}</span>
+                  </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleFormSubmit} className="space-y-6">
+                  {/* Name and Phone */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="creator-name" className="block text-sm font-bold text-white mb-2">
+                        {t('formName')} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="creator-name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        placeholder={t('creatorPlaceholderName')}
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="creator-phone" className="block text-sm font-bold text-white mb-2">
+                        {t('formPhone')}
+                      </label>
+                      <input
+                        type="tel"
+                        id="creator-phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '')
+                          setFormData({ ...formData, phone: value })
+                        }}
+                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        placeholder="010-0000-0000"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label htmlFor="creator-email" className="block text-sm font-bold text-white mb-2">
+                      {t('formEmail')} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="creator-email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleFormChange}
+                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                      placeholder="example@email.com"
+                    />
+                  </div>
+
+                  {/* SNS Links */}
+                  <div className="grid md:grid-cols-4 gap-4">
+                    <div>
+                      <label htmlFor="creator-instagram" className="block text-sm font-bold text-white mb-2">
+                        {t('creatorLabelInstagram')} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="url"
+                        id="creator-instagram"
+                        name="instagram_url"
+                        value={formData.instagram_url}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        placeholder="https://instagram.com/..."
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="creator-youtube" className="block text-sm font-bold text-white mb-2">
+                        {t('creatorLabelYoutube')}
+                      </label>
+                      <input
+                        type="url"
+                        id="creator-youtube"
+                        name="youtube_url"
+                        value={formData.youtube_url}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        placeholder="https://youtube.com/..."
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="creator-tiktok" className="block text-sm font-bold text-white mb-2">
+                        {t('creatorLabelTiktok')}
+                      </label>
+                      <input
+                        type="url"
+                        id="creator-tiktok"
+                        name="tiktok_url"
+                        value={formData.tiktok_url}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        placeholder="https://tiktok.com/..."
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="creator-x" className="block text-sm font-bold text-white mb-2">
+                        {t('creatorLabelX')}
+                      </label>
+                      <input
+                        type="url"
+                        id="creator-x"
+                        name="x_url"
+                        value={formData.x_url}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        placeholder="https://x.com/..."
+                      />
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label htmlFor="creator-message" className="block text-sm font-bold text-white mb-2">
+                      {t('creatorMessage')}
+                    </label>
+                    <textarea
+                      id="creator-message"
+                      name="message"
+                      rows={4}
+                      value={formData.message}
+                      onChange={handleFormChange}
+                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
+                      placeholder={t('creatorPlaceholderMessage')}
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setApplyModalOpen(false)}
+                      className="flex-1 border-zinc-700/50 text-white hover:bg-zinc-800 rounded-none"
+                    >
+                      {t('dialogCancel') || '취소'}
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={submitting}
+                      className="flex-1 bg-white text-black hover:bg-zinc-200 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {submitting ? t('formSubmitting') : t('creatorSubmitButton')}
+                    </Button>
+                  </div>
+                </form>
               </div>
-
-              <form onSubmit={handleFormSubmit} className="space-y-6">
-                {/* Name and Phone */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="creator-name" className="block text-sm font-bold text-white mb-2">
-                      {t('formName')} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="creator-name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder={t('creatorPlaceholderName')}
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="creator-phone" className="block text-sm font-bold text-white mb-2">
-                      {t('formPhone')}
-                    </label>
-                    <input
-                      type="tel"
-                      id="creator-phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '')
-                        setFormData({ ...formData, phone: value })
-                      }}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="010-0000-0000"
-                    />
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label htmlFor="creator-email" className="block text-sm font-bold text-white mb-2">
-                    {t('formEmail')} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="creator-email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                    placeholder="example@email.com"
-                  />
-                </div>
-
-                {/* SNS Links — 인스타그램만 필수 */}
-                <div className="grid md:grid-cols-4 gap-4">
-                  <div>
-                    <label htmlFor="creator-instagram" className="block text-sm font-bold text-white mb-2">
-                      {t('creatorLabelInstagram')} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="url"
-                      id="creator-instagram"
-                      name="instagram_url"
-                      value={formData.instagram_url}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="https://instagram.com/..."
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="creator-youtube" className="block text-sm font-bold text-white mb-2">
-                      {t('creatorLabelYoutube')}
-                    </label>
-                    <input
-                      type="url"
-                      id="creator-youtube"
-                      name="youtube_url"
-                      value={formData.youtube_url}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="https://youtube.com/..."
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="creator-tiktok" className="block text-sm font-bold text-white mb-2">
-                      {t('creatorLabelTiktok')}
-                    </label>
-                    <input
-                      type="url"
-                      id="creator-tiktok"
-                      name="tiktok_url"
-                      value={formData.tiktok_url}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="https://tiktok.com/..."
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="creator-x" className="block text-sm font-bold text-white mb-2">
-                      {t('creatorLabelX')}
-                    </label>
-                    <input
-                      type="url"
-                      id="creator-x"
-                      name="x_url"
-                      value={formData.x_url}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="https://x.com/..."
-                    />
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label htmlFor="creator-message" className="block text-sm font-bold text-white mb-2">
-                    {t('creatorMessage')}
-                  </label>
-                  <textarea
-                    id="creator-message"
-                    name="message"
-                    rows={6}
-                    value={formData.message}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
-                    placeholder={t('creatorPlaceholderMessage')}
-                  />
-                </div>
-
-                <div className="text-center pt-4">
-                  <Button 
-                    type="submit" 
-                    disabled={submitting}
-                    className="px-12 py-6 text-lg font-black rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {submitting ? t('formSubmitting') : t('creatorSubmitButton')}
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </section>
+            </DialogContent>
+          </Dialog>
 
           {/* Success Dialog */}
           <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
@@ -628,6 +669,7 @@ function CreatorContent() {
                 <Button
                   onClick={() => {
                     setSuccessDialogOpen(false)
+                    setApplyModalOpen(false)
                     setFormData({
                       name: '',
                       phone: '',
@@ -637,6 +679,7 @@ function CreatorContent() {
                       tiktok_url: '',
                       x_url: '',
                       message: '',
+                      track_type: 'exclusive',
                     })
                   }}
                   className="w-full sm:w-auto px-8 font-black rounded-none"
