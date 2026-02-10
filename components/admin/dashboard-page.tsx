@@ -165,39 +165,8 @@ export function DashboardPage() {
         <p className="mt-1 text-sm text-muted-foreground sm:text-base">관리자 패널에 오신 것을 환영합니다</p>
       </div>
 
-      <div>
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">문의 요약</h2>
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
-          {inquiryStatCards.map((stat) => {
-            const Icon = stat.icon
-            return (
-              <Link key={stat.title} href={stat.href}>
-                <Card className="rounded-lg border shadow-sm cursor-pointer transition-all hover:border-primary/50 group">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                    <Icon className={`h-5 w-5 shrink-0 ${stat.color} transition-transform group-hover:scale-110`} />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold sm:text-3xl">
-                      {loading ? (
-                        <span className="inline-block h-8 w-10 animate-pulse rounded bg-muted" aria-hidden />
-                      ) : (
-                        stat.value
-                      )}
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">문의 내역에서 확인</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            )
-          })}
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">콘텐츠 현황</h2>
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
-        {statCards.map((stat) => {
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+        {[...inquiryStatCards, ...statCards].map((stat) => {
           const Icon = stat.icon
           return (
             <Link key={stat.title} href={stat.href}>
@@ -207,14 +176,18 @@ export function DashboardPage() {
                   <Icon className={`h-5 w-5 shrink-0 ${stat.color} transition-transform group-hover:scale-110`} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold sm:text-3xl">{loading ? '...' : stat.value}</div>
-                  <p className="mt-1 text-xs text-muted-foreground">총 {stat.title} 수</p>
+                  <div className="text-2xl font-bold sm:text-3xl">
+                    {loading ? (
+                      <span className="inline-block h-8 w-10 animate-pulse rounded bg-muted" aria-hidden />
+                    ) : (
+                      stat.value
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </Link>
           )
         })}
-        </div>
       </div>
 
       <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
