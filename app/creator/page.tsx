@@ -662,10 +662,12 @@ function CreatorContent() {
                   <CheckCircle2 className="h-10 w-10 text-white" />
                 </div>
                 <DialogTitle className="text-2xl font-black text-white">
-                  {t('dialogSuccessTitle')}
+                  {locale === 'ja' ? '合流申し込み完了！' : '합류 신청이 완료되었습니다!'}
                 </DialogTitle>
                 <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
-                  {t('dialogSuccessDesc')}
+                  {locale === 'ja'
+                    ? '申し込みを受け付けました。内容を確認後、担当者より1〜2営業日以内にご連絡いたします。ありがとうございます！'
+                    : '신청이 정상적으로 접수되었습니다. 내용 확인 후 담당자가 1~2 영업일 내로 연락드리겠습니다. 감사합니다!'}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter className="sm:justify-center">
