@@ -19,7 +19,7 @@ export function CreatorTrackSection({ onSelectTrack }: CreatorTrackSectionProps)
       <div className="text-center space-y-4 sm:space-y-6 mb-16 sm:mb-20">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white break-words">
           {locale === 'ja'
-            ? 'クリエイターの2つのパス'
+            ? '2つの合流ジャーニー'
             : '두 가지 합류 여정'}
         </h2>
         <p className="text-sm sm:text-base md:text-lg text-zinc-300 max-w-3xl mx-auto break-words px-2">
