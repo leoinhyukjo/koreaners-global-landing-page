@@ -122,14 +122,13 @@ export default function CreatorApplicationsPage() {
                 <TableHead className="text-zinc-300">이름</TableHead>
                 <TableHead className="text-zinc-300">이메일</TableHead>
                 <TableHead className="text-zinc-300">트랙</TableHead>
-                <TableHead className="text-zinc-300">언어</TableHead>
                 <TableHead className="text-zinc-300">작업</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {applications.length === 0 ? (
                 <TableRow className="border-zinc-700">
-                  <TableCell colSpan={6} className="text-center py-8 text-zinc-400">
+                  <TableCell colSpan={5} className="text-center py-8 text-zinc-400">
                     신청 내역이 없습니다.
                   </TableCell>
                 </TableRow>
@@ -150,9 +149,6 @@ export default function CreatorApplicationsPage() {
                       <Badge className={`${trackTypeColor(app.track_type)} text-white border-0`}>
                         {trackTypeLabel(app.track_type)}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="text-zinc-300 text-sm uppercase">
-                      {app.locale}
                     </TableCell>
                     <TableCell className="space-x-2">
                       <Button
