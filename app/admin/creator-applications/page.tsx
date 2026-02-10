@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
-import { Trash2, ExternalLink } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -82,7 +82,7 @@ export default function CreatorApplicationsPage() {
         .eq('id', id)
 
       if (error) throw error
-      alert('신청 내역이 삭제되었습니다.')
+      setDialogOpen(false)
       fetchApplications()
     } catch (error: any) {
       console.error('Error deleting application:', error)
@@ -98,175 +98,239 @@ export default function CreatorApplicationsPage() {
     return type === 'exclusive' ? 'bg-blue-500' : 'bg-purple-500'
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-zinc-400">로딩 중...</p>
-      </div>
-    )
-  }
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">크리에이터 합류 신청</h1>
-        <p className="text-zinc-400">전체 {applications.length}건</p>
+    <div className="space-y-6 sm:space-y-8">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold sm:text-3xl text-white">크리에이터 합류 신청</h1>
+        <p className="mt-1 text-sm text-zinc-300 sm:text-base">전체 {applications.length}건</p>
       </div>
 
-      <Card className="bg-zinc-800 border-zinc-700">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-zinc-700 hover:bg-transparent">
-                <TableHead className="text-zinc-300">신청일</TableHead>
-                <TableHead className="text-zinc-300">이름</TableHead>
-                <TableHead className="text-zinc-300">이메일</TableHead>
-                <TableHead className="text-zinc-300">전화번호</TableHead>
-                <TableHead className="text-zinc-300">트랙</TableHead>
-                <TableHead className="text-zinc-300">작업</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {applications.length === 0 ? (
-                <TableRow className="border-zinc-700">
-                  <TableCell colSpan={6} className="text-center py-8 text-zinc-400">
-                    신청 내역이 없습니다.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                applications.map((app) => (
-                  <TableRow key={app.id} className="border-zinc-700 hover:bg-zinc-700/50">
-                    <TableCell className="text-zinc-200">
-                      {new Date(app.created_at).toLocaleDateString('ko-KR', {
+      {loading ? (
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">로딩 중...</Card>
+      ) : applications.length === 0 ? (
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
+          신청 내역이 없습니다.
+        </Card>
+      ) : (
+        <>
+          {/* 데스크탑: 테이블 */}
+          <div className="hidden md:block">
+            <Card className="rounded-lg border shadow-sm overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>신청일</TableHead>
+                    <TableHead>이름</TableHead>
+                    <TableHead>이메일</TableHead>
+                    <TableHead>전화번호</TableHead>
+                    <TableHead>트랙</TableHead>
+                    <TableHead className="text-right">작업</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {applications.map((app) => (
+                    <TableRow
+                      key={app.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleView(app)}
+                    >
+                      <TableCell className="text-foreground">
+                        {new Date(app.created_at).toLocaleString('ko-KR', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </TableCell>
+                      <TableCell className="font-medium text-foreground">{app.name}</TableCell>
+                      <TableCell className="text-foreground">{app.email}</TableCell>
+                      <TableCell className="text-foreground">{app.phone || '-'}</TableCell>
+                      <TableCell>
+                        <Badge className={`${trackTypeColor(app.track_type)} text-white border-0`}>
+                          {trackTypeLabel(app.track_type)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-end">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
+                            onClick={() => handleDelete(app.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-white" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </div>
+
+          {/* 모바일: 카드 리스트 */}
+          <div className="space-y-4 md:hidden">
+            {applications.map((app) => (
+              <Card
+                key={app.id}
+                className="rounded-lg border shadow-sm overflow-hidden border-border transition-colors hover:border-primary/30 cursor-pointer"
+                onClick={() => handleView(app)}
+              >
+                <div className="p-6">
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold leading-snug text-foreground">{app.name}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{app.email}</p>
+                    </div>
+                    <Badge className={`${trackTypeColor(app.track_type)} text-white border-0 shrink-0`}>
+                      {trackTypeLabel(app.track_type)}
+                    </Badge>
+                  </div>
+                  <div className="space-y-1.5 text-sm">
+                    {app.phone && (
+                      <p className="text-muted-foreground">
+                        <span className="font-medium text-foreground">전화:</span> {app.phone}
+                      </p>
+                    )}
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">신청일:</span>{' '}
+                      {new Date(app.created_at).toLocaleString('ko-KR', {
+                        year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
-                    </TableCell>
-                    <TableCell className="text-zinc-200 font-medium">{app.name}</TableCell>
-                    <TableCell className="text-zinc-300 text-sm">{app.email}</TableCell>
-                    <TableCell className="text-zinc-300 text-sm">{app.phone || '-'}</TableCell>
-                    <TableCell>
-                      <Badge className={`${trackTypeColor(app.track_type)} text-white border-0`}>
-                        {trackTypeLabel(app.track_type)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="space-x-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleView(app)}
-                        className="text-blue-400 hover:text-blue-300 hover:bg-zinc-700"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDelete(app.id)}
-                        className="text-red-400 hover:text-red-300 hover:bg-zinc-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+                    </p>
+                  </div>
+                  <div className="mt-4 flex justify-end" onClick={(e) => e.stopPropagation()}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(app.id)}
+                      className="min-h-[44px] gap-2 text-white border-white/50 hover:bg-white/10 hover:text-white touch-manipulation"
+                    >
+                      <Trash2 className="h-4 w-4 shrink-0 text-white" />
+                      삭제
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      )}
 
+      {/* 상세보기 다이얼로그 */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-zinc-800 border-zinc-700 max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent
+          className={[
+            'overflow-y-auto',
+            'h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4',
+            'inset-0 top-0 left-0 translate-x-0 translate-y-0',
+            'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl md:border md:p-6',
+          ].join(' ')}
+        >
           <DialogHeader>
-            <DialogTitle className="text-white">{selectedApp?.name} - {trackTypeLabel(selectedApp?.track_type || 'exclusive')}</DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              {new Date(selectedApp?.created_at || '').toLocaleDateString('ko-KR')}
-            </DialogDescription>
+            <DialogTitle>합류 신청 상세 내역</DialogTitle>
+            {selectedApp && (
+              <DialogDescription>
+                {new Date(selectedApp.created_at).toLocaleString('ko-KR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </DialogDescription>
+            )}
           </DialogHeader>
 
           {selectedApp && (
-            <div className="space-y-4 text-zinc-200">
-              <div>
-                <label className="text-sm font-semibold text-zinc-300">이메일</label>
-                <p className="text-zinc-100">{selectedApp.email}</p>
+            <div className="space-y-0 py-4">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-1 py-4">
+                  <p className="text-sm font-medium text-muted-foreground">이름</p>
+                  <p className="text-base font-medium break-words">{selectedApp.name}</p>
+                </div>
+                <div className="space-y-1 py-4">
+                  <p className="text-sm font-medium text-muted-foreground">트랙</p>
+                  <Badge className={`${trackTypeColor(selectedApp.track_type)} text-white border-0`}>
+                    {trackTypeLabel(selectedApp.track_type)}
+                  </Badge>
+                </div>
+                <div className="space-y-1 py-4">
+                  <p className="text-sm font-medium text-muted-foreground">이메일</p>
+                  <p className="text-base font-medium break-words">{selectedApp.email}</p>
+                </div>
+                {selectedApp.phone && (
+                  <div className="space-y-1 py-4">
+                    <p className="text-sm font-medium text-muted-foreground">전화번호</p>
+                    <p className="text-base font-medium break-words">{selectedApp.phone}</p>
+                  </div>
+                )}
               </div>
 
-              {selectedApp.phone && (
-                <div>
-                  <label className="text-sm font-semibold text-zinc-300">전화번호</label>
-                  <p className="text-zinc-100">{selectedApp.phone}</p>
+              <div className="space-y-3 border-t border-border pt-6">
+                <p className="text-sm font-medium text-muted-foreground">SNS 링크</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground w-20 shrink-0">Instagram</span>
+                    <a href={selectedApp.instagram_url} target="_blank" rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline break-all">
+                      {selectedApp.instagram_url}
+                    </a>
+                  </div>
+                  {selectedApp.youtube_url && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground w-20 shrink-0">YouTube</span>
+                      <a href={selectedApp.youtube_url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline break-all">
+                        {selectedApp.youtube_url}
+                      </a>
+                    </div>
+                  )}
+                  {selectedApp.tiktok_url && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground w-20 shrink-0">TikTok</span>
+                      <a href={selectedApp.tiktok_url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline break-all">
+                        {selectedApp.tiktok_url}
+                      </a>
+                    </div>
+                  )}
+                  {selectedApp.x_url && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground w-20 shrink-0">X</span>
+                      <a href={selectedApp.x_url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline break-all">
+                        {selectedApp.x_url}
+                      </a>
+                    </div>
+                  )}
                 </div>
-              )}
-
-              <div>
-                <label className="text-sm font-semibold text-zinc-300">Instagram</label>
-                <a
-                  href={selectedApp.instagram_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 break-all"
-                >
-                  {selectedApp.instagram_url}
-                </a>
               </div>
-
-              {selectedApp.youtube_url && (
-                <div>
-                  <label className="text-sm font-semibold text-zinc-300">YouTube</label>
-                  <a
-                    href={selectedApp.youtube_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 break-all"
-                  >
-                    {selectedApp.youtube_url}
-                  </a>
-                </div>
-              )}
-
-              {selectedApp.tiktok_url && (
-                <div>
-                  <label className="text-sm font-semibold text-zinc-300">TikTok</label>
-                  <a
-                    href={selectedApp.tiktok_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 break-all"
-                  >
-                    {selectedApp.tiktok_url}
-                  </a>
-                </div>
-              )}
-
-              {selectedApp.x_url && (
-                <div>
-                  <label className="text-sm font-semibold text-zinc-300">X (Twitter)</label>
-                  <a
-                    href={selectedApp.x_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 break-all"
-                  >
-                    {selectedApp.x_url}
-                  </a>
-                </div>
-              )}
 
               {selectedApp.message && (
-                <div>
-                  <label className="text-sm font-semibold text-zinc-300">추가 메시지</label>
-                  <p className="text-zinc-100 whitespace-pre-wrap">{selectedApp.message}</p>
+                <div className="space-y-2 border-t border-border pt-6">
+                  <p className="text-sm font-medium text-muted-foreground">추가 메시지</p>
+                  <div className="rounded-lg border border-border bg-muted/30 p-4">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed break-words">
+                      {selectedApp.message}
+                    </p>
+                  </div>
                 </div>
               )}
 
-              <div className="pt-4 border-t border-zinc-700">
+              <div className="flex justify-end gap-2 pt-6 border-t border-border">
+                <Button variant="outline" onClick={() => setDialogOpen(false)} className="sm:w-auto">
+                  닫기
+                </Button>
                 <Button
-                  onClick={() => handleDelete(selectedApp.id)}
                   variant="destructive"
-                  className="w-full"
+                  onClick={() => handleDelete(selectedApp.id)}
                 >
                   삭제
                 </Button>
