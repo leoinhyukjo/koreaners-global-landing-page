@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase/client'
 import type { Portfolio, BlogPost, Creator } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { FolderOpen, FileText, Users, ArrowRight, Calendar, MessageSquare, Mail, Inbox } from 'lucide-react'
+import { FolderOpen, FileText, Users, ArrowRight, Calendar, MessageSquare, Mail, Inbox, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 export function DashboardPage() {
@@ -19,6 +19,10 @@ export function DashboardPage() {
     unread: 0,
     today: 0,
     total: 0,
+  })
+  const [creatorAppStats, setCreatorAppStats] = useState({
+    total: 0,
+    today: 0,
   })
   const [recentPortfolios, setRecentPortfolios] = useState<Portfolio[]>([])
   const [recentBlogPosts, setRecentBlogPosts] = useState<BlogPost[]>([])
@@ -40,7 +44,7 @@ export function DashboardPage() {
       const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
       const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000)
 
-      const [portfoliosResult, blogPostsResult, creatorsResult, inquiryTotalResult, inquiryUnreadResult, inquiryTodayResult] =
+      const [portfoliosResult, blogPostsResult, creatorsResult, inquiryTotalResult, inquiryUnreadResult, inquiryTodayResult, creatorAppTotalResult, creatorAppTodayResult] =
         await Promise.all([
           supabase.from('portfolios').select('*', { count: 'exact', head: true }),
           supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
@@ -49,6 +53,12 @@ export function DashboardPage() {
           supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('is_read', false),
           supabase
             .from('inquiries')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', startOfToday.toISOString())
+            .lt('created_at', endOfToday.toISOString()),
+          supabase.from('creator_applications').select('*', { count: 'exact', head: true }),
+          supabase
+            .from('creator_applications')
             .select('*', { count: 'exact', head: true })
             .gte('created_at', startOfToday.toISOString())
             .lt('created_at', endOfToday.toISOString()),
@@ -63,6 +73,10 @@ export function DashboardPage() {
         total: inquiryTotalResult.count ?? 0,
         unread: inquiryUnreadResult.error ? 0 : (inquiryUnreadResult.count ?? 0),
         today: inquiryTodayResult.count ?? 0,
+      })
+      setCreatorAppStats({
+        total: creatorAppTotalResult.count ?? 0,
+        today: creatorAppTodayResult.count ?? 0,
       })
 
       const { data: portfolios } = await supabase
@@ -90,6 +104,8 @@ export function DashboardPage() {
     { title: '포트폴리오', value: stats.portfolios, icon: FolderOpen, href: '/admin/portfolios', color: 'text-blue-500' },
     { title: '블로그 포스트', value: stats.blogPosts, icon: FileText, href: '/admin/blog', color: 'text-green-500' },
     { title: '크리에이터', value: stats.creators, icon: Users, href: '/admin/creators', color: 'text-purple-500' },
+    { title: '합류 신청 (오늘)', value: creatorAppStats.today, icon: Sparkles, href: '/admin/creator-applications', color: 'text-cyan-500' },
+    { title: '합류 신청 (전체)', value: creatorAppStats.total, icon: Sparkles, href: '/admin/creator-applications', color: 'text-pink-500' },
   ]
 
   if (!isMounted) {

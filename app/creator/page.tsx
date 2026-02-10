@@ -115,23 +115,22 @@ function CreatorContent() {
       const cleanPhone = formData.phone.replace(/[^0-9]/g, '')
       const phoneValue = formData.phone.trim() ? cleanPhone : ''
 
-      // Supabase inquiries 테이블에 저장 (type: 'creator_application') — 선택 항목은 빈 문자열 또는 없음으로 전송
-      const trackTypeLabel = formData.track_type === 'exclusive'
-        ? (locale === 'ja' ? '専属クリエイター' : '전속 크리에이터')
-        : (locale === 'ja' ? 'パートナー' : '파트너')
-
+      // Supabase creator_applications 테이블에 저장
       const insertData = {
-        name: formData.name.trim() || '',
-        email: formData.email.trim() || '',
-        phone: phoneValue,
-        message: `[${locale === 'ja' ? 'クリエイター申込' : '크리에이터 신청'}] - ${trackTypeLabel}\n\nInstagram: ${formData.instagram_url.trim()}\nYouTube: ${formData.youtube_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nTikTok: ${formData.tiktok_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\nX(Twitter): ${formData.x_url?.trim() || (locale === 'ja' ? 'なし' : '없음')}\n\n${locale === 'ja' ? 'ご要望' : '요청사항'}:\n${formData.message.trim() || (locale === 'ja' ? 'なし' : '없음')}`,
-        inquiry_type: 'creator_application',
-        privacy_agreement: true,
-        marketing_agreement: false,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: phoneValue || null,
+        instagram_url: formData.instagram_url.trim(),
+        youtube_url: formData.youtube_url?.trim() || null,
+        tiktok_url: formData.tiktok_url?.trim() || null,
+        x_url: formData.x_url?.trim() || null,
+        message: formData.message.trim() || null,
+        track_type: formData.track_type,
+        locale: locale,
       }
 
       const { error: insertError } = await supabase
-        .from('inquiries')
+        .from('creator_applications')
         .insert([insertData])
 
       if (insertError) {
