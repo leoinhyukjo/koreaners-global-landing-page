@@ -374,7 +374,8 @@ function CreatorContent() {
           {/* Creator Categories */}
           <div className="mb-20">
             <h2 className="text-3xl font-black text-center mb-12 text-white">
-              {t('creatorCategoriesTitle')}
+              <span className="text-white">{t('creatorPoolTitle1')}</span>
+              <span className="text-white">{t('creatorPoolTitle2')}</span>
             </h2>
 
             <div className="grid md:grid-cols-2 gap-6">
