@@ -112,12 +112,22 @@ export function CreatorTrackSection({ onSelectTrack }: CreatorTrackSectionProps)
                     ? '最適な方：ブランドと長期的にコラボしたい、複数ジャンルを扱いたい'
                     : '추천 대상: 브랜드와 장기 협업, 다양한 분야 시도 희망'}
                 </p>
-                <Button
-                  onClick={() => onSelectTrack('exclusive')}
-                  className="w-full px-8 py-3 text-base font-black bg-white text-black hover:bg-zinc-200 rounded-none transition-all"
-                >
-                  {locale === 'ja' ? '合流申し込む' : '합류 신청하기'}
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <a
+                    href="https://www.notion.so/30401ca3e4808157a8e4c3a8d065819f"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full px-8 py-3 text-base font-semibold text-center border border-zinc-500 text-zinc-200 hover:border-white hover:text-white rounded-none transition-all"
+                  >
+                    {locale === 'ja' ? '専属クリエイター詳細案内' : '전속 크리에이터 상세 안내'}
+                  </a>
+                  <Button
+                    onClick={() => onSelectTrack('exclusive')}
+                    className="w-full px-8 py-3 text-base font-black bg-white text-black hover:bg-zinc-200 rounded-none transition-all"
+                  >
+                    {locale === 'ja' ? '合流申し込む' : '합류 신청하기'}
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
@@ -204,12 +214,22 @@ export function CreatorTrackSection({ onSelectTrack }: CreatorTrackSectionProps)
                     ? '最適な方：複数ブランドを試したい、案件ベースの協業希望'
                     : '추천 대상: 다양한 브랜드 경험, 프로젝트 기반 협업 희망'}
                 </p>
-                <Button
-                  onClick={() => onSelectTrack('partner')}
-                  className="w-full px-8 py-3 text-base font-black bg-white text-black hover:bg-zinc-200 rounded-none transition-all"
-                >
-                  {locale === 'ja' ? '合流申し込む' : '합류 신청하기'}
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <a
+                    href="https://www.notion.so/30401ca3e4808126816cfcd28a43c9ae"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full px-8 py-3 text-base font-semibold text-center border border-zinc-500 text-zinc-200 hover:border-white hover:text-white rounded-none transition-all"
+                  >
+                    {locale === 'ja' ? 'パートナー詳細案内' : '파트너 상세 안내'}
+                  </a>
+                  <Button
+                    onClick={() => onSelectTrack('partner')}
+                    className="w-full px-8 py-3 text-base font-black bg-white text-black hover:bg-zinc-200 rounded-none transition-all"
+                  >
+                    {locale === 'ja' ? '合流申し込む' : '합류 신청하기'}
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
