@@ -114,7 +114,7 @@ export function CreatorTrackSection({ onSelectTrack }: CreatorTrackSectionProps)
                 </p>
                 <div className="flex flex-col gap-3">
                   <a
-                    href="https://www.notion.so/30401ca3e4808157a8e4c3a8d065819f"
+                    href="https://descriptive-wallflower-afd.notion.site/30401ca3e4808157a8e4c3a8d065819f"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full px-8 py-3 text-base font-semibold text-center border border-zinc-500 text-zinc-200 hover:border-white hover:text-white rounded-none transition-all"
@@ -216,7 +216,7 @@ export function CreatorTrackSection({ onSelectTrack }: CreatorTrackSectionProps)
                 </p>
                 <div className="flex flex-col gap-3">
                   <a
-                    href="https://www.notion.so/30401ca3e4808126816cfcd28a43c9ae"
+                    href="https://descriptive-wallflower-afd.notion.site/30401ca3e4808126816cfcd28a43c9ae?pvs=74"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full px-8 py-3 text-base font-semibold text-center border border-zinc-500 text-zinc-200 hover:border-white hover:text-white rounded-none transition-all"
