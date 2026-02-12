@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Client } from '@notionhq/client'
+import { verifyCsrfToken } from '@/lib/csrf'
+import { checkRateLimit, getClientIp, addRateLimitHeaders } from '@/lib/rate-limit'
 
 // 허용 Origin (도메인 변경 시 여기 추가)
 const ALLOWED_ORIGINS = [
@@ -17,7 +19,7 @@ const getCorsHeaders = (request: NextRequest) => {
   return {
     'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, X-CSRF-Token',
     'Access-Control-Max-Age': '86400',
   }
 }
@@ -53,6 +55,36 @@ export async function POST(request: NextRequest) {
   const withCors = (res: NextResponse) => {
     Object.entries(corsHeaders).forEach(([k, v]) => res.headers.set(k, v))
     return res
+  }
+
+  // Rate Limiting 체크 (분당 5회 제한)
+  const clientIp = getClientIp(request)
+  const rateLimitResult = checkRateLimit(clientIp, {
+    windowMs: 60 * 1000, // 1분
+    maxRequests: 5, // 분당 5회
+  })
+
+  if (!rateLimitResult.success) {
+    const response = withCors(NextResponse.json(
+      {
+        error: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+        retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+      },
+      { status: 429 }
+    ))
+    return addRateLimitHeaders(response, rateLimitResult)
+  }
+
+  // CSRF 토큰 검증 (프로덕션 환경에서만)
+  if (process.env.NODE_ENV === 'production') {
+    const isValidCsrf = await verifyCsrfToken(request)
+    if (!isValidCsrf) {
+      const response = withCors(NextResponse.json(
+        { error: 'CSRF 검증 실패. 페이지를 새로고침 후 다시 시도해주세요.' },
+        { status: 403 }
+      ))
+      return addRateLimitHeaders(response, rateLimitResult)
+    }
   }
 
   // properties 변수를 함수 스코프 상단에 선언하여 catch 블록에서도 접근 가능하도록 함
@@ -161,10 +193,11 @@ export async function POST(request: NextRequest) {
       console.log('[Notion API] 문의 저장 성공, pageId:', response.id)
     }
 
-    return withCors(NextResponse.json(
+    const successResponse = withCors(NextResponse.json(
       { success: true, pageId: response.id },
       { status: 200 }
     ))
+    return addRateLimitHeaders(successResponse, rateLimitResult)
   } catch (error: any) {
     // Notion API 에러 상세 로깅 (원인 파악용)
     const notionErrorBody = error?.body ?? null
@@ -177,12 +210,15 @@ export async function POST(request: NextRequest) {
       status: notionErrorResponse?.status,
     })
 
+    const isProduction = process.env.NODE_ENV === 'production'
+
     if (error.code === 'object_not_found') {
       return withCors(NextResponse.json(
-        { 
-          error: 'Notion 데이터베이스를 찾을 수 없습니다. 데이터베이스 ID를 확인해주세요.',
-          details: error.message,
-          _debug: process.env.NODE_ENV === 'development' ? { body: error?.body } : undefined,
+        {
+          error: isProduction
+            ? '요청하신 리소스를 찾을 수 없습니다.'
+            : 'Notion 데이터베이스를 찾을 수 없습니다. 데이터베이스 ID를 확인해주세요.',
+          ...(isProduction ? {} : { details: error.message, _debug: { body: error?.body } }),
         },
         { status: 404 }
       ))
@@ -190,10 +226,11 @@ export async function POST(request: NextRequest) {
 
     if (error.code === 'unauthorized') {
       return withCors(NextResponse.json(
-        { 
-          error: 'Notion 인증에 실패했습니다. 토큰을 확인해주세요.',
-          details: error.message,
-          _debug: process.env.NODE_ENV === 'development' ? { body: error?.body } : undefined,
+        {
+          error: isProduction
+            ? '인증에 실패했습니다.'
+            : 'Notion 인증에 실패했습니다. 토큰을 확인해주세요.',
+          ...(isProduction ? {} : { details: error.message, _debug: { body: error?.body } }),
         },
         { status: 401 }
       ))
@@ -205,20 +242,25 @@ export async function POST(request: NextRequest) {
       console.error('[Notion API] validation_error:', path, bodyMessage, 'body:', error?.body)
       return withCors(NextResponse.json(
         {
-          error: 'Notion 데이터베이스 속성 검증에 실패했습니다.',
-          validationError: { path, message: bodyMessage },
-          body: error?.body ?? null,
-          sentPropertyKeys: properties ? Object.keys(properties) : null,
+          error: isProduction
+            ? '입력 데이터 검증에 실패했습니다.'
+            : 'Notion 데이터베이스 속성 검증에 실패했습니다.',
+          ...(isProduction ? {} : {
+            validationError: { path, message: bodyMessage },
+            body: error?.body ?? null,
+            sentPropertyKeys: properties ? Object.keys(properties) : null,
+          }),
         },
         { status: 400 }
       ))
     }
 
     return withCors(NextResponse.json(
-      { 
-        error: error.message || 'Notion 데이터 저장 중 오류가 발생했습니다.',
-        code: error.code,
-        details: error.body ?? error.response ?? undefined,
+      {
+        error: isProduction
+          ? '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+          : error.message || 'Notion 데이터 저장 중 오류가 발생했습니다.',
+        ...(isProduction ? {} : { code: error.code, details: error.body ?? error.response ?? undefined }),
       },
       { status: 500 }
     ))

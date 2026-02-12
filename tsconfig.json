@@ -17,6 +17,12 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    // 추가 타입 안전성 강화
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
         "name": "next"

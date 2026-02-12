@@ -26,6 +26,7 @@ import { useToast } from '@/hooks/use-toast'
 import { X } from 'lucide-react'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
 import type { BlockNoteEditor } from '@blocknote/core'
+import { blogPostSchema } from '@/lib/validation/blog-schema'
 
 const STORAGE_BUCKET = 'website-assets'
 
@@ -111,9 +112,29 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
   async function uploadImage(file: File): Promise<string> {
     try {
       setUploading(true)
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `blog/${fileName}`
+
+      // 1. 파일 타입 검증 (MIME type)
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error('지원하지 않는 파일 형식입니다. (JPEG, PNG, WebP, GIF만 허용)')
+      }
+
+      // 2. 파일 크기 검증 (5MB)
+      const maxSize = 5 * 1024 * 1024 // 5MB
+      if (file.size > maxSize) {
+        throw new Error('파일 크기는 5MB를 초과할 수 없습니다.')
+      }
+
+      // 3. 파일 확장자 검증
+      const fileExt = file.name.split('.').pop()?.toLowerCase()
+      const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif']
+      if (!fileExt || !allowedExts.includes(fileExt)) {
+        throw new Error('유효하지 않은 파일 확장자입니다.')
+      }
+
+      // 4. 파일명 안전 처리 (경로 조작 방지)
+      const fileName = `${Date.now()}-${crypto.randomUUID()}.${fileExt}`
+      const filePath = `blog/${fileName}` // 경로 하드코딩
 
       console.log('1. 파일 업로드 시도:', fileName)
       console.log('[BlogDialog] 이미지 업로드 시작:', { fileName, filePath, fileSize: file.size })
@@ -186,56 +207,34 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       return
     }
 
-    // 필수 필드 검증
-    if (!title || !title.trim()) {
-      toast({
-        title: '필수 항목 누락',
-        description: '제목을 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!slug || !slug.trim()) {
-      toast({
-        title: '필수 항목 누락',
-        description: '슬러그를 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    // 슬러그 형식 검증 (영문, 숫자, 하이픈만 허용)
-    if (!/^[a-z0-9-]+$/.test(slug)) {
-      toast({
-        title: '슬러그 형식 오류',
-        description: '슬러그는 영문 소문자, 숫자, 하이픈(-)만 사용 가능합니다.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!category) {
-      toast({
-        title: '필수 항목 누락',
-        description: '카테고리를 선택해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    // 카테고리 값 검증
-    if (!CATEGORIES.includes(category as typeof CATEGORIES[number])) {
-      toast({
-        title: '유효하지 않은 카테고리',
-        description: '업계 동향, 최신 트렌드, 전문가 인사이트, 마케팅 뉴스 중 하나를 선택해주세요.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    // 본문 내용 검증
+    // 본문 내용 가져오기
     const content = editorRef.current?.document || editorContent
+    const contentString = JSON.stringify(content || [])
+
+    // Zod 스키마 검증
+    const validationResult = blogPostSchema.safeParse({
+      title: title?.trim() || '',
+      slug: slug?.trim() || '',
+      category,
+      summary: summary?.trim() || undefined,
+      metaTitle: metaTitle?.trim() || undefined,
+      metaDescription: metaDescription?.trim() || undefined,
+      thumbnailUrl: thumbnailUrl || undefined,
+      content: contentString,
+      published: publish,
+    })
+
+    if (!validationResult.success) {
+      const firstError = validationResult.error.errors[0]
+      toast({
+        title: '입력 오류',
+        description: firstError.message,
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // 본문 내용 검증 (배열 형식 확인)
     if (!content || !Array.isArray(content) || content.length === 0) {
       toast({
         title: '필수 항목 누락',

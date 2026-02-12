@@ -162,23 +162,35 @@ export function Performance() {
                                 className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
                                 loading="lazy"
                                 onError={(e) => {
-                                  // 이미지 로드 실패 시 플레이스홀더로 대체
+                                  // 이미지 로드 실패 시 플레이스홀더로 대체 (XSS 방어: innerHTML 제거)
                                   const target = e.target as HTMLImageElement
                                   target.style.display = 'none'
                                   const parent = target.parentElement
                                   if (parent) {
-                                    parent.innerHTML = `
-                                      <div class="absolute inset-0 flex items-center justify-center">
-                                        <div class="text-6xl font-black text-zinc-800 uppercase">
-                                          ${item.category && item.category.length > 0 ? item.category[0].charAt(0) : 'E'}
-                                        </div>
-                                      </div>
-                                      <div class="absolute top-4 left-4">
-                                        <span class="px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none">
-                                          ${item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
-                                        </span>
-                                      </div>
-                                    `
+                                    // 안전한 DOM 조작 방식으로 변경
+                                    const categoryInitial = item.category?.[0]?.charAt(0) || 'E'
+                                    const categoryName = item.category?.[0] || 'ETC'
+
+                                    // 중앙 대문자 컨테이너
+                                    const centerContainer = document.createElement('div')
+                                    centerContainer.className = 'absolute inset-0 flex items-center justify-center'
+                                    const initialText = document.createElement('div')
+                                    initialText.className = 'text-6xl font-black text-zinc-800 uppercase'
+                                    initialText.textContent = categoryInitial
+                                    centerContainer.appendChild(initialText)
+
+                                    // 좌상단 배지 컨테이너
+                                    const badgeContainer = document.createElement('div')
+                                    badgeContainer.className = 'absolute top-4 left-4'
+                                    const badge = document.createElement('span')
+                                    badge.className = 'px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none'
+                                    badge.textContent = categoryName
+                                    badgeContainer.appendChild(badge)
+
+                                    // 기존 내용 제거 후 새 요소 추가
+                                    parent.innerHTML = ''
+                                    parent.appendChild(centerContainer)
+                                    parent.appendChild(badgeContainer)
                                   }
                                 }}
                               />

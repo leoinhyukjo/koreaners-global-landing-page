@@ -8,6 +8,7 @@ import type { BlogPost } from '@/lib/supabase'
 import Navigation from '@/components/navigation'
 import { BlogPostView } from '@/components/blog/blog-post-view'
 import { resolveThumbnailSrc, toAbsoluteUrl } from '@/lib/thumbnail'
+import { safeJsonLdStringify } from '@/lib/json-ld'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -137,7 +138,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(jsonLd) }}
       />
       <Navigation />
       <BlogPostView blogPost={blogPost} thumbnailSrc={thumbnailSrc} />

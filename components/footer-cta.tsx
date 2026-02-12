@@ -10,6 +10,7 @@ import { toast as sonnerToast } from 'sonner'
 import { ConsentModal } from '@/components/consent-modal'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { postWithCsrf } from '@/lib/api-client'
 import {
   Dialog,
   DialogContent,
@@ -152,19 +153,9 @@ export function FooterCTA() {
       })
 
       // Notion에 데이터 저장 (비동기, 실패해도 사용자 경험에 영향 없음)
+      // CSRF 토큰 자동 포함
       try {
-        const notionResponse = await fetch('/api/notion', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(insertData),
-        })
-
-        if (!notionResponse.ok && process.env.NODE_ENV === 'development') {
-          const errorData = await notionResponse.json().catch(() => ({}))
-          console.error('[Footer CTA] Notion 저장 실패:', notionResponse.status, errorData?.error ?? '')
-        }
+        await postWithCsrf('/api/notion', insertData)
       } catch (notionError: any) {
         if (process.env.NODE_ENV === 'development') {
           console.error('[Footer CTA] Notion 요청 예외:', notionError?.message ?? '')
@@ -262,6 +253,7 @@ export function FooterCTA() {
                 id="footer-company"
                 name="company"
                 required
+                autoComplete="organization"
                 value={formData.company}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
@@ -280,6 +272,7 @@ export function FooterCTA() {
                 id="footer-position"
                 name="position"
                 required
+                autoComplete="organization-title"
                 value={formData.position}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
@@ -296,6 +289,7 @@ export function FooterCTA() {
                 id="footer-email"
                 name="email"
                 required
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
@@ -313,6 +307,7 @@ export function FooterCTA() {
               id="footer-phone"
               name="phone"
               required
+              autoComplete="tel"
               value={formData.phone}
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9]/g, '')
