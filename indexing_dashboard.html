@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>koreaners.co SEO 인덱싱 대시보드</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            color: #51cf66;
+            margin-top: 5px;
+        }
+
+        .stat-change.negative {
+            color: #ff6b6b;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-indexed {
+            background: #d3f9d8;
+            color: #2b8a3e;
+        }
+
+        .status-pending {
+            background: #fff3bf;
+            color: #f08c00;
+        }
+
+        .status-error {
+            background: #ffe3e3;
+            color: #c92a2a;
+        }
+
+        .priority-critical {
+            color: #c92a2a;
+            font-weight: bold;
+        }
+
+        .priority-high {
+            color: #f08c00;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #fab005;
+        }
+
+        .priority-low {
+            color: #51cf66;
+        }
+
+        .action-list {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .action-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .action-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #5568d3;
+        }
+
+        .last-update {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 koreaners.co SEO 인덱싱 대시보드</h1>
+            <p class="subtitle">Google Search Console 인덱싱 현황 및 진행 상황</p>
+            <button class="refresh-btn" onclick="refreshData()">🔄 데이터 새로고침</button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">총 페이지 수</div>
+                <div class="stat-value" id="totalPages">0</div>
+                <div class="stat-change">+0 (이번 주)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">인덱싱 완료</div>
+                <div class="stat-value" id="indexedPages">0</div>
+                <div class="stat-change" id="indexedChange">+0 (이번 주)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">대기 중</div>
+                <div class="stat-value" id="pendingPages">0</div>
+                <div class="stat-change">-0 (이번 주)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">인덱싱 진행률</div>
+                <div class="stat-value" id="indexingRate">0%</div>
+                <div class="stat-change" id="rateChange">+0% (이번 주)</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <div class="chart-title">📈 일별 인덱싱 추이</div>
+                <canvas id="dailyTrendChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">🎯 우선순위별 완료율</div>
+                <canvas id="priorityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-card">
+                <div class="chart-title">📊 카테고리별 분포</div>
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">✅ 상태별 현황</div>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- URL Table -->
+        <div class="table-container">
+            <div class="chart-title">📋 URL 인덱싱 상세 현황</div>
+            <table id="urlTable">
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>페이지 제목</th>
+                        <th>우선순위</th>
+                        <th>카테고리</th>
+                        <th>상태</th>
+                        <th>예상 일자</th>
+                    </tr>
+                </thead>
+                <tbody id="urlTableBody">
+                    <!-- 동적으로 생성 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Action Items -->
+        <div class="action-list">
+            <div class="chart-title">✅ 다음 액션 아이템</div>
+            <div class="action-item">
+                <input type="checkbox" id="action1">
+                <label for="action1">robots.txt 배포 확인</label>
+            </div>
+            <div class="action-item">
+                <input type="checkbox" id="action2">
+                <label for="action2">sitemap.xml 생성 및 제출</label>
+            </div>
+            <div class="action-item">
+                <input type="checkbox" id="action3">
+                <label for="action3">Critical 우선순위 URL 색인 요청 (일 10개)</label>
+            </div>
+            <div class="action-item">
+                <input type="checkbox" id="action4">
+                <label for="action4">페이지별 메타 태그 최적화</label>
+            </div>
+            <div class="action-item">
+                <input type="checkbox" id="action5">
+                <label for="action5">JSON-LD 구조화된 데이터 추가</label>
+            </div>
+            <div class="action-item">
+                <input type="checkbox" id="action6">
+                <label for="action6">주간 인덱싱 리포트 검토</label>
+            </div>
+        </div>
+
+        <div class="last-update" id="lastUpdate">
+            마지막 업데이트: 2026-02-11 10:00:00
+        </div>
+    </div>
+
+    <script>
+        // 샘플 데이터 (실제 환경에서는 API에서 가져옴)
+        const sampleData = {
+            totalPages: 50,
+            indexedPages: 3,
+            pendingPages: 47,
+            indexingRate: 6,
+            weeklyChange: {
+                indexed: 3,
+                rate: 6
+            },
+            dailyTrend: {
+                labels: ['2/5', '2/6', '2/7', '2/8', '2/9', '2/10', '2/11'],
+                data: [0, 0, 1, 1, 2, 2, 3]
+            },
+            priorityData: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                total: [3, 1, 1, 0],
+                completed: [0, 0, 0, 0]
+            },
+            categoryData: {
+                labels: ['메인', '주요 서비스', '서비스', '포트폴리오', '블로그'],
+                data: [1, 2, 2, 30, 15]
+            },
+            statusData: {
+                labels: ['인덱싱 완료', '대기 중', '오류'],
+                data: [3, 47, 0]
+            },
+            urls: [
+                { url: 'https://www.koreaners.co/', title: '코리너스 홈', priority: 'Critical', category: '메인', status: '확인 필요', date: '2026-02-11' },
+                { url: 'https://www.koreaners.co/portfolio', title: '포트폴리오', priority: 'Critical', category: '주요 서비스', status: '확인 필요', date: '2026-02-11' },
+                { url: 'https://www.koreaners.co/blog', title: '블로그', priority: 'Critical', category: '주요 서비스', status: '확인 필요', date: '2026-02-11' },
+                { url: 'https://www.koreaners.co/creator', title: '크리에이터 합류', priority: 'High', category: '서비스', status: '확인 필요', date: '2026-02-18' },
+                { url: 'https://www.koreaners.co/inquiry', title: '문의하기', priority: 'Medium', category: '서비스', status: '확인 필요', date: '2026-02-25' },
+            ]
+        };
+
+        // Stats 업데이트
+        function updateStats(data) {
+            document.getElementById('totalPages').textContent = data.totalPages;
+            document.getElementById('indexedPages').textContent = data.indexedPages;
+            document.getElementById('pendingPages').textContent = data.pendingPages;
+            document.getElementById('indexingRate').textContent = data.indexingRate + '%';
+            document.getElementById('indexedChange').textContent = `+${data.weeklyChange.indexed} (이번 주)`;
+            document.getElementById('rateChange').textContent = `+${data.weeklyChange.rate}% (이번 주)`;
+        }
+
+        // 일별 추이 차트
+        function createDailyTrendChart(data) {
+            const ctx = document.getElementById('dailyTrendChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: '인덱싱된 페이지 수',
+                        data: data.data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 우선순위 차트
+        function createPriorityChart(data) {
+            const ctx = document.getElementById('priorityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: '전체',
+                            data: data.total,
+                            backgroundColor: '#e9ecef'
+                        },
+                        {
+                            label: '완료',
+                            data: data.completed,
+                            backgroundColor: '#51cf66'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 카테고리 차트
+        function createCategoryChart(data) {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#4facfe',
+                            '#43e97b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // 상태 차트
+        function createStatusChart(data) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: [
+                            '#51cf66',
+                            '#fcc419',
+                            '#ff6b6b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // URL 테이블 생성
+        function createUrlTable(urls) {
+            const tbody = document.getElementById('urlTableBody');
+            tbody.innerHTML = '';
+
+            urls.forEach(url => {
+                const row = document.createElement('tr');
+
+                const priorityClass = `priority-${url.priority.toLowerCase()}`;
+                const statusClass = url.status === '인덱싱 완료' ? 'status-indexed' :
+                                   url.status === '오류' ? 'status-error' : 'status-pending';
+
+                row.innerHTML = `
+                    <td><a href="${url.url}" target="_blank" style="color: #667eea; text-decoration: none;">${url.url}</a></td>
+                    <td>${url.title}</td>
+                    <td class="${priorityClass}">${url.priority}</td>
+                    <td>${url.category}</td>
+                    <td><span class="status-badge ${statusClass}">${url.status}</span></td>
+                    <td>${url.date}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 데이터 새로고침
+        function refreshData() {
+            // 실제 환경에서는 API 호출
+            console.log('데이터 새로고침...');
+
+            // 마지막 업데이트 시간 갱신
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent =
+                `마지막 업데이트: ${now.toLocaleString('ko-KR')}`;
+        }
+
+        // 초기화
+        function init() {
+            updateStats(sampleData);
+            createDailyTrendChart(sampleData.dailyTrend);
+            createPriorityChart(sampleData.priorityData);
+            createCategoryChart(sampleData.categoryData);
+            createStatusChart(sampleData.statusData);
+            createUrlTable(sampleData.urls);
+
+            // 체크박스 상태 저장
+            document.querySelectorAll('.action-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(this.id, this.checked);
+                });
+
+                // 저장된 상태 복원
+                const saved = localStorage.getItem(checkbox.id);
+                if (saved !== null) {
+                    checkbox.checked = saved === 'true';
+                }
+            });
+        }
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

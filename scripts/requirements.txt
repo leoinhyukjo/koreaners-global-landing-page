@@ -1,0 +1,15 @@
+# Google API 클라이언트
+google-auth==2.27.0
+google-auth-oauthlib==1.2.0
+google-auth-httplib2==0.2.0
+google-api-python-client==2.115.0
+
+# Excel 지원
+openpyxl==3.1.2
+
+# Supabase (선택적)
+supabase==2.3.0
+
+# 유틸리티
+requests==2.31.0
+python-dotenv==1.0.0

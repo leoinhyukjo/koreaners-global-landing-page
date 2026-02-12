@@ -1,0 +1,23 @@
+{
+  "base_url": "https://www.koreaners.co",
+  "google_cloud": {
+    "project_id": "YOUR_PROJECT_ID",
+    "credentials_file": "credentials.json"
+  },
+  "indexing": {
+    "daily_limit": 200,
+    "batch_size": 10,
+    "retry_on_error": true,
+    "delay_between_requests": 1
+  },
+  "monitoring": {
+    "check_interval_hours": 24,
+    "alert_on_errors": true,
+    "email_notifications": false,
+    "email_recipients": []
+  },
+  "supabase": {
+    "url": "${NEXT_PUBLIC_SUPABASE_URL}",
+    "key": "${NEXT_PUBLIC_SUPABASE_ANON_KEY}"
+  }
+}
