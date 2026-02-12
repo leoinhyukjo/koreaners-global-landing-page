@@ -9,19 +9,14 @@ import { z } from 'zod'
 // XSS 패턴 감지 정규식
 const XSS_PATTERN = /<script|javascript:|onerror=|onload=|eval\(|expression\(/i
 
-// 커스텀 XSS 검증 함수
-const noXss = (fieldName: string) =>
-  z.string().refine(
-    (val) => !XSS_PATTERN.test(val),
-    {
-      message: `${fieldName}에 허용되지 않는 패턴이 감지되었습니다.`,
-    }
-  )
-
 export const blogPostSchema = z.object({
-  title: noXss('제목')
+  title: z.string()
     .min(1, '제목을 입력해주세요')
-    .max(200, '제목은 200자를 초과할 수 없습니다'),
+    .max(200, '제목은 200자를 초과할 수 없습니다')
+    .refine(
+      (val) => !XSS_PATTERN.test(val),
+      '제목에 허용되지 않는 패턴이 감지되었습니다.'
+    ),
 
   slug: z.string()
     .min(3, '슬러그는 최소 3자 이상이어야 합니다')
@@ -38,16 +33,28 @@ export const blogPostSchema = z.object({
     }
   ),
 
-  summary: noXss('요약')
+  summary: z.string()
     .max(300, '요약은 300자를 초과할 수 없습니다')
+    .refine(
+      (val) => !XSS_PATTERN.test(val),
+      '요약에 허용되지 않는 패턴이 감지되었습니다.'
+    )
     .optional(),
 
-  metaTitle: noXss('Meta Title')
+  metaTitle: z.string()
     .max(60, 'Meta Title은 60자를 초과할 수 없습니다 (SEO 최적화)')
+    .refine(
+      (val) => !XSS_PATTERN.test(val),
+      'Meta Title에 허용되지 않는 패턴이 감지되었습니다.'
+    )
     .optional(),
 
-  metaDescription: noXss('Meta Description')
+  metaDescription: z.string()
     .max(160, 'Meta Description은 160자를 초과할 수 없습니다 (SEO 최적화)')
+    .refine(
+      (val) => !XSS_PATTERN.test(val),
+      'Meta Description에 허용되지 않는 패턴이 감지되었습니다.'
+    )
     .optional(),
 
   thumbnailUrl: z.string()

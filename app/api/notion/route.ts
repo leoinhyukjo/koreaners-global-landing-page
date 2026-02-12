@@ -15,13 +15,13 @@ const getCorsHeaders = (request: NextRequest) => {
   const allowed =
     ALLOWED_ORIGINS.includes(origin) ||
     (origin.startsWith('https://') && origin.endsWith('.vercel.app'))
-  const allowOrigin = allowed ? origin : ALLOWED_ORIGINS[0]
+  const allowOrigin = allowed ? origin : (ALLOWED_ORIGINS[0] ?? 'https://koreaners.co')
   return {
     'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, X-CSRF-Token',
     'Access-Control-Max-Age': '86400',
-  }
+  } as const
 }
 
 // Notion 클라이언트 초기화

@@ -79,7 +79,7 @@ export default function PortfolioPage() {
   // 카테고리 표시용 함수
   function getCategoryDisplay(category: string[] | null): string {
     if (!category || category.length === 0) return 'etc'
-    return category[0]
+    return category[0] ?? 'etc'
   }
 
   // 카테고리 첫 글자 가져오기

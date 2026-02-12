@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { supabase } from '@/lib/supabase/client'
-import type { BlogPost } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { ArrowLeft, X, Save, Send } from 'lucide-react'
 import type { BlockNoteEditor } from '@blocknote/core'
