@@ -91,25 +91,6 @@ export default function CareersPage() {
     },
   ]
 
-  const stats = [
-    {
-      value: locale === 'ja' ? '3.1億円+' : '3억엔+',
-      labelKey: 'careersStatsRevenue' as const,
-    },
-    {
-      value: locale === 'ja' ? '500万+' : '500만+',
-      labelKey: 'careersStatsReach' as const,
-    },
-    {
-      value: '60+',
-      labelKey: 'careersStatsProjects' as const,
-    },
-    {
-      value: '150%',
-      labelKey: 'careersStatsGrowth' as const,
-    },
-  ]
-
   const strengthItems = [
     { icon: Globe, titleKey: 'careersStrength1Title' as const, descKey: 'careersStrength1Desc' as const },
     { icon: Building2, titleKey: 'careersStrength2Title' as const, descKey: 'careersStrength2Desc' as const },
@@ -210,24 +191,6 @@ export default function CareersPage() {
                     ))}
                   </ul>
                 </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Stats Row */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-              {stats.map((stat, index) => (
-                <div key={index} className={`text-center ${index < stats.length - 1 ? 'md:border-r md:border-zinc-700/50' : ''}`}>
-                  <div className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-base sm:text-lg text-zinc-300 break-keep">
-                    {t(stat.labelKey)}
-                  </div>
-                </div>
               ))}
             </div>
           </div>
