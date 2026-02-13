@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/logo'
 import { Menu, ChevronRight } from 'lucide-react'
@@ -21,6 +22,7 @@ function getScrollbarWidth(): number {
 
 export default function Navigation() {
   const { locale, setLocale } = useLocale()
+  const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -71,6 +73,7 @@ export default function Navigation() {
     { href: '/creator', label: 'Creator' },
     { href: '/portfolio', label: 'Portfolio' },
     { href: '/blog', label: 'Blog' },
+    { href: '/careers', label: 'Careers' },
     { href: '/contact', labelKey: 'contact' },
   ]
 
@@ -116,16 +119,23 @@ export default function Navigation() {
                 JP
               </button>
             </div>
-            {menuItems.filter((m) => m.href !== '/contact').map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="relative text-zinc-200 hover:text-white transition-all duration-200 py-2 font-bold text-sm group whitespace-nowrap"
-              >
-                {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full" />
-              </a>
-            ))}
+            {menuItems.filter((m) => m.href !== '/contact').map((item) => {
+              const isActive = pathname === item.href
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className={`relative py-2 font-bold text-sm group whitespace-nowrap transition-all duration-200 ${
+                    isActive ? 'text-white' : 'text-zinc-200 hover:text-white'
+                  }`}
+                >
+                  {item.label}
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-200 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`} />
+                </a>
+              )
+            })}
             <a href="/contact" className="ml-1">
               <Button size="default" className="px-6 py-2.5 font-black whitespace-nowrap">
                 {t('contact')}
@@ -179,7 +189,9 @@ export default function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="group flex items-center justify-between text-white hover:text-white hover:bg-zinc-900 active:bg-zinc-800 transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-zinc-800 break-words"
+                        className={`group flex items-center justify-between hover:bg-zinc-900 active:bg-zinc-800 transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-zinc-800 break-words ${
+                          pathname === item.href ? 'text-white border-l-2 border-l-white bg-zinc-900' : 'text-white'
+                        }`}
                         style={{
                           animation: `fadeInSlide 0.3s ease-out ${index * 60}ms both`,
                         }}
