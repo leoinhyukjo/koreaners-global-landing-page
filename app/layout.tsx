@@ -31,6 +31,9 @@ export const metadata: Metadata = {
   },
   description: '코리너스는 일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 운영하는 전문 에이전시입니다. 30만 커뮤니티, 100+ 미디어 네트워크 보유.',
   keywords: ['코리너스', 'KOREANERS', '일본 마케팅', '일본 인플루언서', '크로스보더 마케팅', '일본 진출', '인플루언서 마케팅', '일본 시딩', 'K-뷰티 일본', '일본 현지화', 'Japanese influencer marketing', 'cross-border marketing'],
+  verification: {
+    other: { 'naver-site-verification': '223270d36646f19566b9451e5f6775ac2996dbf2' },
+  },
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
