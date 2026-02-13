@@ -118,7 +118,7 @@ export default function CareersPage() {
       <SafeHydration fallback={<CareersSkeleton />}>
 
         {/* Hero Section */}
-        <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden w-full max-w-full">
+        <section className="pt-24 sm:pt-32 pb-4 sm:pb-6 px-4 sm:px-6 lg:px-24 relative overflow-hidden w-full max-w-full">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,_rgba(255,255,255,0.04)_0%,_transparent_70%)]" />
           <div className="container mx-auto max-w-7xl relative z-10">
             <div className="text-center space-y-4 sm:space-y-6">
@@ -132,7 +132,7 @@ export default function CareersPage() {
               <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto break-keep">
                 {t('careersHeroTitle')}
               </p>
-              <div className="pt-8">
+              <div className="pt-2">
                 <ChevronDown className="w-6 h-6 text-zinc-500 mx-auto motion-safe:animate-bounce" />
               </div>
             </div>
@@ -140,10 +140,10 @@ export default function CareersPage() {
         </section>
 
         {/* About Section */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full">
+        <section className="pt-4 sm:pt-6 pb-8 sm:pb-14 px-4 sm:px-6 lg:px-24 w-full max-w-full">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-12 sm:mb-16">
-              <p className="text-xs tracking-widest text-zinc-500 uppercase mb-4">About Us</p>
+              <p className="text-sm tracking-widest text-zinc-500 uppercase mb-4">About Us</p>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-8 break-keep">
                 {t('careersAboutTitle')}
               </h2>
@@ -179,17 +179,16 @@ export default function CareersPage() {
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
                     {t(area.titleKey)}
                   </h3>
-                  <p className="text-base sm:text-lg text-zinc-200 leading-relaxed break-words mb-4">
+                  <p className="text-base sm:text-lg text-zinc-300 leading-relaxed break-words mb-5">
                     {t(area.descKey)}
                   </p>
-                  <ul className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
                     {area.subKeys.map((subKey, subIdx) => (
-                      <li key={subIdx} className="flex items-start gap-2 text-sm sm:text-base text-zinc-400 leading-relaxed">
-                        <span className="text-zinc-600 mt-1 shrink-0">—</span>
-                        <span className="break-words">{t(subKey)}</span>
-                      </li>
+                      <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-zinc-600 text-sm text-zinc-300 font-medium">
+                        {t(subKey)}
+                      </span>
                     ))}
-                  </ul>
+                  </div>
                 </Card>
               ))}
             </div>
