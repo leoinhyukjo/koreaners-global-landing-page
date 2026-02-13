@@ -346,7 +346,7 @@ export default function CareersPage() {
             {!loading && !error && jobs.length > 0 && (
               <div className="space-y-6 max-w-7xl mx-auto">
                 {jobs.map((job) => {
-                  const isClosed = job.status === '채용완료'
+                  const isClosed = job.status === '채용마감'
                   return (
                     <Card
                       key={job.id}

@@ -24,7 +24,7 @@ export async function GET() {
           },
           {
             property: '채용현황',
-            select: { equals: '채용완료' },
+            select: { equals: '채용마감' },
           },
         ],
       },

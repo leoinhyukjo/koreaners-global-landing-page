@@ -16,12 +16,28 @@ export function CreatorTrackSection({ onSelectTrack }: CreatorTrackSectionProps)
 
   return (
     <div className="mb-20">
+      {/* Recruitment Intro */}
+      <div className="text-center mb-12 sm:mb-16">
+        <p className="text-sm tracking-widest text-zinc-500 uppercase mb-4">Join Us</p>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 break-words">
+          {locale === 'ja'
+            ? 'コリアナースと共に成長するクリエイターを募集しています'
+            : '코리너스와 함께 성장할 크리에이터를 모집합니다'}
+        </h2>
+        <p className="text-base sm:text-lg text-zinc-400 max-w-3xl mx-auto break-words px-2">
+          {locale === 'ja'
+            ? 'K-ブランドと日本市場をつなぐクリエイターとして、あなたの影響力をさらに拡大してみませんか？'
+            : 'K-브랜드와 일본 시장을 잇는 크리에이터로서, 당신의 영향력을 더 넓혀보세요.'}
+        </p>
+      </div>
+
+      {/* Track Selection */}
       <div className="text-center space-y-4 sm:space-y-6 mb-16 sm:mb-20">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white break-words">
+        <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white break-words">
           {locale === 'ja'
             ? '2つの合流ジャーニー'
             : '두 가지 합류 여정'}
-        </h2>
+        </h3>
         <p className="text-sm sm:text-base md:text-lg text-zinc-300 max-w-3xl mx-auto break-words px-2">
           {locale === 'ja'
             ? 'あなたのキャリアと目標に合わせて、最適なパスを選択してください'
