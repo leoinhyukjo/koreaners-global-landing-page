@@ -20,7 +20,9 @@ import {
   Building2,
   Award,
   BarChart3,
-  Mail,
+  Target,
+  TrendingUp,
+  Network,
 } from 'lucide-react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
@@ -31,6 +33,8 @@ interface JobPosting {
   status: string
   startDate: string | null
   note: string
+  jdUrl: string | null
+  applyUrl: string | null
 }
 
 const CareersSkeleton = () => (
@@ -71,16 +75,19 @@ export default function CareersPage() {
       icon: Users,
       titleKey: 'careersBiz1Title' as const,
       descKey: 'careersBiz1Desc' as const,
+      subKeys: ['careersBiz1Sub1' as const, 'careersBiz1Sub2' as const],
     },
     {
       icon: Tv,
       titleKey: 'careersBiz2Title' as const,
       descKey: 'careersBiz2Desc' as const,
+      subKeys: ['careersBiz2Sub1' as const, 'careersBiz2Sub2' as const, 'careersBiz2Sub3' as const],
     },
     {
       icon: BookOpen,
       titleKey: 'careersBiz3Title' as const,
       descKey: 'careersBiz3Desc' as const,
+      subKeys: ['careersBiz3Sub1' as const, 'careersBiz3Sub2' as const],
     },
   ]
 
@@ -104,10 +111,16 @@ export default function CareersPage() {
   ]
 
   const strengthItems = [
-    { icon: Globe, key: 'careersStrength1' as const },
-    { icon: Building2, key: 'careersStrength2' as const },
-    { icon: Award, key: 'careersStrength3' as const },
-    { icon: BarChart3, key: 'careersStrength4' as const },
+    { icon: Globe, titleKey: 'careersStrength1Title' as const, descKey: 'careersStrength1Desc' as const },
+    { icon: Building2, titleKey: 'careersStrength2Title' as const, descKey: 'careersStrength2Desc' as const },
+    { icon: Award, titleKey: 'careersStrength3Title' as const, descKey: 'careersStrength3Desc' as const },
+    { icon: BarChart3, titleKey: 'careersStrength4Title' as const, descKey: 'careersStrength4Desc' as const },
+  ]
+
+  const visionItems = [
+    { titleKey: 'careersVision1Title' as const, descKey: 'careersVision1Desc' as const },
+    { titleKey: 'careersVision2Title' as const, descKey: 'careersVision2Desc' as const },
+    { titleKey: 'careersVision3Title' as const, descKey: 'careersVision3Desc' as const },
   ]
 
   const cultureValues = [
@@ -185,9 +198,17 @@ export default function CareersPage() {
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
                     {t(area.titleKey)}
                   </h3>
-                  <p className="text-base sm:text-lg text-zinc-200 leading-relaxed break-words">
+                  <p className="text-base sm:text-lg text-zinc-200 leading-relaxed break-words mb-4">
                     {t(area.descKey)}
                   </p>
+                  <ul className="space-y-2">
+                    {area.subKeys.map((subKey, subIdx) => (
+                      <li key={subIdx} className="flex items-start gap-2 text-sm sm:text-base text-zinc-400 leading-relaxed">
+                        <span className="text-zinc-600 mt-1 shrink-0">—</span>
+                        <span className="break-words">{t(subKey)}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </Card>
               ))}
             </div>
@@ -223,16 +244,56 @@ export default function CareersPage() {
               {strengthItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-4 p-5 sm:p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300"
+                  className="flex items-start gap-4 p-5 sm:p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300"
                 >
                   <div className="w-12 h-12 bg-white/10 flex items-center justify-center shrink-0">
                     <item.icon className="w-6 h-6 text-white" />
                   </div>
-                  <p className="text-base sm:text-lg text-zinc-200 leading-relaxed break-keep">
-                    {t(item.key)}
-                  </p>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 break-keep">
+                      {t(item.titleKey)}
+                    </h3>
+                    <p className="text-sm sm:text-base text-zinc-400 leading-relaxed break-words">
+                      {t(item.descKey)}
+                    </p>
+                  </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Vision Section */}
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full">
+          <div className="container mx-auto max-w-7xl">
+            <p className="text-xs tracking-widest text-zinc-500 uppercase text-center mb-4">Vision</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white text-center mb-6 break-keep">
+              {t('careersVisionTitle')}
+            </h2>
+            <p className="text-lg sm:text-xl text-zinc-400 text-center max-w-3xl mx-auto mb-12 break-keep">
+              {t('careersVisionDesc')}
+            </p>
+            <div className="grid md:grid-cols-3 gap-6">
+              {visionItems.map((item, index) => {
+                const icons = [Target, TrendingUp, Network]
+                const Icon = icons[index]
+                return (
+                  <Card
+                    key={index}
+                    className="p-6 sm:p-8 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300 group text-center"
+                  >
+                    <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
+                      <Icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-300" />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
+                      {t(item.titleKey)}
+                    </h3>
+                    <p className="text-base sm:text-lg text-zinc-400 leading-relaxed break-words">
+                      {t(item.descKey)}
+                    </p>
+                  </Card>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -349,8 +410,15 @@ export default function CareersPage() {
                           </p>
                         )}
                       </div>
-                      <div className="shrink-0">
-                        <a href="mailto:leo@koreaners.com">
+                      <div className="flex items-center gap-3 shrink-0">
+                        {job.jdUrl && (
+                          <a href={job.jdUrl} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border-zinc-600 text-white hover:bg-zinc-700 hover:text-white">
+                              {t('careersDetail')}
+                            </Button>
+                          </a>
+                        )}
+                        <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer">
                           <Button size="lg" className="w-full sm:w-auto px-8 font-black">
                             {t('careersApply')}
                           </Button>
@@ -364,13 +432,16 @@ export default function CareersPage() {
 
             {/* Fallback CTA */}
             <div className="text-center mt-12 pt-8 border-t border-zinc-800">
-              <p className="text-zinc-400 text-lg mb-3">{t('careersNoPositionQuestion')}</p>
+              <p className="text-white text-lg font-semibold mb-2">{t('careersNoPositionQuestion')}</p>
+              <p className="text-zinc-400 text-base mb-4">{t('careersNoPositionDesc')}</p>
               <a
-                href="mailto:leo@koreaners.com"
-                className="inline-flex items-center gap-2 text-white hover:text-zinc-300 transition-colors duration-200 font-semibold text-lg"
+                href="https://descriptive-wallflower-afd.notion.site/30601ca3e480805196f0dda3f1b0778c?pvs=105"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Mail className="w-5 h-5" />
-                {t('careersNoPositionCta')}
+                <Button size="lg" className="px-8 font-black">
+                  {t('careersNoPositionCta')}
+                </Button>
               </a>
             </div>
           </div>

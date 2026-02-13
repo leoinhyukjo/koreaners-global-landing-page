@@ -39,6 +39,11 @@ export async function GET() {
         props['비고']?.rich_text?.[0]?.plain_text ??
         props['Note']?.rich_text?.[0]?.plain_text ??
         ''
+      const applyUrl: string | null = props['지원 링크']?.url ?? null
+      const rawJdUrl: string | null = props['JD']?.url ?? null
+      const jdUrl = rawJdUrl
+        ? rawJdUrl.replace('https://www.notion.so/', 'https://descriptive-wallflower-afd.notion.site/').split('?')[0]
+        : null
 
       return {
         id: page.id,
@@ -46,12 +51,14 @@ export async function GET() {
         status,
         startDate,
         note,
+        jdUrl,
+        applyUrl,
       }
     })
 
     return NextResponse.json(jobs, {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET',
       },
