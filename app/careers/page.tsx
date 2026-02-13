@@ -23,6 +23,7 @@ import {
   Target,
   TrendingUp,
   Network,
+  ArrowUpRight,
 } from 'lucide-react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
@@ -110,6 +111,7 @@ export default function CareersPage() {
     { titleKey: 'careersCulture3Title' as const, descKey: 'careersCulture3Desc' as const, icon: Zap },
     { titleKey: 'careersCulture4Title' as const, descKey: 'careersCulture4Desc' as const, icon: Handshake },
     { titleKey: 'careersCulture5Title' as const, descKey: 'careersCulture5Desc' as const, icon: Rocket },
+    { titleKey: 'careersCulture6Title' as const, descKey: 'careersCulture6Desc' as const, icon: ArrowUpRight },
   ]
 
   return (
