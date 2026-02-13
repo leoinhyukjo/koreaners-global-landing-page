@@ -62,6 +62,14 @@ export async function GET() {
       }
     })
 
+    // 채용중 먼저, 채용마감은 아래로. 각 그룹 내 채용개시일 최신순
+    jobs.sort((a, b) => {
+      const aOpen = a.status === '채용중' ? 0 : 1
+      const bOpen = b.status === '채용중' ? 0 : 1
+      if (aOpen !== bOpen) return aOpen - bOpen
+      return (b.startDate ?? '').localeCompare(a.startDate ?? '')
+    })
+
     return NextResponse.json(jobs, {
       headers: {
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
