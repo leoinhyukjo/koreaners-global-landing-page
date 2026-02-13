@@ -17,10 +17,16 @@ export async function GET() {
     const response = await notion.dataSources.query({
       data_source_id: process.env.NOTION_CAREERS_DATASOURCE_ID!,
       filter: {
-        property: '채용현황',
-        select: {
-          equals: '채용중',
-        },
+        or: [
+          {
+            property: '채용현황',
+            select: { equals: '채용중' },
+          },
+          {
+            property: '채용현황',
+            select: { equals: '채용완료' },
+          },
+        ],
       },
     })
 

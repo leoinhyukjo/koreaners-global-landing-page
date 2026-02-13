@@ -345,50 +345,63 @@ export default function CareersPage() {
             {/* Job Cards */}
             {!loading && !error && jobs.length > 0 && (
               <div className="space-y-6 max-w-7xl mx-auto">
-                {jobs.map((job) => (
-                  <Card
-                    key={job.id}
-                    className="p-6 sm:p-8 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300 min-w-0 overflow-hidden"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-3 mb-2 flex-wrap">
-                          <h3 className="text-xl sm:text-2xl font-bold text-white break-keep">
-                            {job.title}
-                          </h3>
-                          <span className="inline-flex items-center px-3 py-1 text-xs font-bold bg-white text-black rounded-none shrink-0">
-                            {t('careersHiring')}
-                          </span>
-                        </div>
-                        {job.startDate && (
-                          <div className="flex items-center gap-2 text-sm text-zinc-400 mb-1">
-                            <Calendar className="w-4 h-4 shrink-0" />
-                            <span>{job.startDate}</span>
+                {jobs.map((job) => {
+                  const isClosed = job.status === '채용완료'
+                  return (
+                    <Card
+                      key={job.id}
+                      className={`p-6 sm:p-8 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
+                            <h3 className="text-xl sm:text-2xl font-bold text-white break-keep">
+                              {job.title}
+                            </h3>
+                            <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-none shrink-0 ${
+                              isClosed
+                                ? 'bg-zinc-600 text-zinc-300'
+                                : 'bg-white text-black'
+                            }`}>
+                              {isClosed ? t('careersClosed') : t('careersHiring')}
+                            </span>
                           </div>
-                        )}
-                        {job.note && (
-                          <p className="text-base text-zinc-300 mt-2 break-words">
-                            {job.note}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        {job.jdUrl && (
-                          <a href={job.jdUrl} target="_blank" rel="noopener noreferrer">
-                            <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border-zinc-600 text-white hover:bg-zinc-700 hover:text-white">
-                              {t('careersDetail')}
+                          {job.startDate && (
+                            <div className="flex items-center gap-2 text-sm text-zinc-400 mb-1">
+                              <Calendar className="w-4 h-4 shrink-0" />
+                              <span>{job.startDate}</span>
+                            </div>
+                          )}
+                          {job.note && (
+                            <p className="text-base text-zinc-300 mt-2 break-words">
+                              {job.note}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          {job.jdUrl && (
+                            <a href={job.jdUrl} target="_blank" rel="noopener noreferrer">
+                              <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border-zinc-600 text-white hover:bg-zinc-700 hover:text-white">
+                                {t('careersDetail')}
+                              </Button>
+                            </a>
+                          )}
+                          {isClosed ? (
+                            <Button size="lg" className="w-full sm:w-auto px-8 font-black opacity-50 cursor-not-allowed" disabled>
+                              {t('careersClosed')}
                             </Button>
-                          </a>
-                        )}
-                        <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer">
-                          <Button size="lg" className="w-full sm:w-auto px-8 font-black">
-                            {t('careersApply')}
-                          </Button>
-                        </a>
+                          ) : (
+                            <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer">
+                              <Button size="lg" className="w-full sm:w-auto px-8 font-black">
+                                {t('careersApply')}
+                              </Button>
+                            </a>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  )
+                })}
               </div>
             )}
 
