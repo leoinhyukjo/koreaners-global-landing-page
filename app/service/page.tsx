@@ -91,7 +91,7 @@ export default function ServicePage() {
                 className="p-6 sm:p-8 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-500 group min-w-0 overflow-hidden"
               >
                 <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-500 shrink-0">
-                  <point.icon className="w-8 h-8 text-white" />
+                  <point.icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-500" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3 break-keep break-words pr-1">
                   {point.title}

@@ -99,9 +99,9 @@ export default function CareersPage() {
   ]
 
   const visionItems = [
-    { titleKey: 'careersVision1Title' as const, descKey: 'careersVision1Desc' as const },
-    { titleKey: 'careersVision2Title' as const, descKey: 'careersVision2Desc' as const },
     { titleKey: 'careersVision3Title' as const, descKey: 'careersVision3Desc' as const },
+    { titleKey: 'careersVision2Title' as const, descKey: 'careersVision2Desc' as const },
+    { titleKey: 'careersVision1Title' as const, descKey: 'careersVision1Desc' as const },
   ]
 
   const cultureValues = [
@@ -237,7 +237,7 @@ export default function CareersPage() {
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               {visionItems.map((item, index) => {
-                const icons = [Target, TrendingUp, Network]
+                const icons = [Network, TrendingUp, Target]
                 const Icon = icons[index]
                 return (
                   <Card
@@ -378,26 +378,28 @@ export default function CareersPage() {
                             </p>
                           )}
                         </div>
-                        <div className="flex items-center gap-3 shrink-0">
-                          {job.jdUrl && (
-                            <a href={job.jdUrl} target="_blank" rel="noopener noreferrer">
-                              <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border-zinc-600 text-white hover:bg-zinc-700 hover:text-white">
-                                {t('careersDetail')}
-                              </Button>
-                            </a>
-                          )}
-                          {isClosed ? (
+                        {isClosed ? (
+                          <div className="w-full sm:w-auto shrink-0">
                             <Button size="lg" className="w-full sm:w-auto px-8 font-black opacity-50 cursor-not-allowed" disabled>
                               {t('careersClosed')}
                             </Button>
-                          ) : (
-                            <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer">
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 shrink-0 w-full sm:w-auto">
+                            {job.jdUrl && (
+                              <a href={job.jdUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border-zinc-600 text-white hover:bg-zinc-700 hover:text-white">
+                                  {t('careersDetail')}
+                                </Button>
+                              </a>
+                            )}
+                            <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
                               <Button size="lg" className="w-full sm:w-auto px-8 font-black">
                                 {t('careersApply')}
                               </Button>
                             </a>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   )
