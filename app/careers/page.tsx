@@ -208,10 +208,10 @@ export default function CareersPage() {
               {strengthItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 p-5 sm:p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300"
+                  className="flex items-start gap-4 p-5 sm:p-6 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300 group"
                 >
-                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center shrink-0">
-                    <item.icon className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
+                    <item.icon className="w-6 h-6 text-white group-hover:text-black transition-colors duration-300" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg sm:text-xl font-bold text-white mb-1 break-keep">
@@ -275,7 +275,7 @@ export default function CareersPage() {
                 return (
                   <div
                     key={index}
-                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300 ${
+                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-zinc-800 border-2 border-zinc-700/50 hover:border-white hover:-translate-y-2 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-all duration-300 group ${
                       !isEven ? 'sm:flex-row-reverse' : ''
                     }`}
                   >
@@ -284,8 +284,8 @@ export default function CareersPage() {
                       <span className="text-4xl sm:text-5xl font-black text-zinc-600 select-none leading-none">
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <div className="w-14 h-14 bg-white/10 flex items-center justify-center">
-                        <val.icon className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all duration-300">
+                        <val.icon className="w-7 h-7 text-white group-hover:text-black transition-colors duration-300" />
                       </div>
                     </div>
                     {/* Content */}
