@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const metaTitle = blogPost.meta_title || blogPost.title
   const metaDescription = blogPost.meta_description || blogPost.summary || `${blogPost.title} - ${blogPost.category}`
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://koreaners-global.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
   const ogImage = toAbsoluteUrl(siteUrl, resolveThumbnailSrc(blogPost.thumbnail_url))
 
   return {
@@ -96,7 +96,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://koreaners-global.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
   
   // 카테고리에 따라 스키마 타입 결정
   const isNews = blogPost.category === '마케팅 뉴스' || blogPost.category === '업계 동향'

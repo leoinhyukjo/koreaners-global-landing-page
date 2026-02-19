@@ -14,14 +14,12 @@ const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], variable: '--font-noto-sans-jp', display: 'swap' })
 
-// 환경 변수
+// 환경 변수 — 프로덕션 도메인을 폴백으로 사용 (VERCEL_URL 폴백 시 canonical이 깨짐)
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL
   ? process.env.NEXT_PUBLIC_APP_URL.startsWith('http')
     ? process.env.NEXT_PUBLIC_APP_URL
     : `https://${process.env.NEXT_PUBLIC_APP_URL}`
-  : process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000'
+  : 'https://www.koreaners.co'
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
