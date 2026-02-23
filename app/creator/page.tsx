@@ -12,6 +12,7 @@ import {
   Target,
   X,
   Plus,
+  ArrowDown,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -216,6 +217,17 @@ function CreatorContent() {
             <p className="text-sm sm:text-base md:text-lg text-zinc-200 max-w-3xl mx-auto text-pretty break-words px-2">
               {t("creatorHeroDesc")}
             </p>
+            <Button
+              onClick={() => {
+                document
+                  .getElementById("join-us")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="group mt-10 px-14 py-5 text-xl font-black bg-white text-black hover:bg-zinc-100 hover:text-black rounded-none shadow-[0_0_24px_rgba(255,255,255,0.35)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] hover:scale-105 transition-all duration-300 animate-pulse-subtle"
+            >
+              {locale === "ja" ? "合流する" : "합류하기"}
+              <ArrowDown className="ml-2 w-6 h-6 animate-bounce-slow" />
+            </Button>
           </div>
 
           {/* Creator Cards Section - Top of Page */}

@@ -91,6 +91,8 @@ footer {
   /* Include Noto Sans JP for Japanese text; Geist for Latin */
   --font-sans: 'Geist', var(--font-noto-sans-jp, 'Noto Sans JP'), 'Geist Fallback', sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --animate-pulse-subtle: pulse-subtle 2.5s ease-in-out infinite;
+  --animate-bounce-slow: bounce-slow 1.8s ease-in-out infinite;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -528,6 +530,17 @@ footer {
 }
 .admin-content .text-muted-foreground {
   color: oklch(0.75 0 0) !important; /* 밝은 그레이로 통일 — 그레이아웃 느낌 제거 */
+}
+
+/* CTA button: subtle glow pulse */
+@keyframes pulse-subtle {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.25); }
+  50% { box-shadow: 0 0 35px rgba(255,255,255,0.5); }
+}
+/* CTA arrow: slow bounce */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
 }
 
 /* Trusted By: infinite marquee */
