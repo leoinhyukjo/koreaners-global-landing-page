@@ -29,7 +29,7 @@ export function CreatorTrackSection({
     getTranslation(locale, key);
 
   return (
-    <div id="join-us" className="mb-20">
+    <div id="join-us" className="mb-20 scroll-mt-24">
       {/* Recruitment Intro */}
       <div className="text-center mb-12 sm:mb-16">
         <p className="text-sm tracking-widest text-zinc-500 uppercase mb-4">
