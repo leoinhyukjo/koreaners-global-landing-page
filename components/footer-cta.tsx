@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import React from "react"
+import React from "react";
 
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
-import { useToast } from '@/hooks/use-toast'
-import { toast as sonnerToast } from 'sonner'
-import { ConsentModal } from '@/components/consent-modal'
-import { useLocale } from '@/contexts/locale-context'
-import { getTranslation } from '@/lib/translations'
-import { postWithCsrf } from '@/lib/api-client'
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
+import { ConsentModal } from "@/components/consent-modal";
+import { useLocale } from "@/contexts/locale-context";
+import { getTranslation } from "@/lib/translations";
+import { postWithCsrf } from "@/lib/api-client";
 import {
   Dialog,
   DialogContent,
@@ -18,109 +18,110 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { CheckCircle2 } from 'lucide-react'
+} from "@/components/ui/dialog";
+import { CheckCircle2 } from "lucide-react";
 
 export function FooterCTA() {
-  const { locale } = useLocale()
-  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
-  const { toast } = useToast()
+  const { locale } = useLocale();
+  const t = (key: Parameters<typeof getTranslation>[1]) =>
+    getTranslation(locale, key);
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: '',
-    company: '',
-    position: '',
-    email: '',
-    phone: '',
-    message: '',
+    name: "",
+    company: "",
+    position: "",
+    email: "",
+    phone: "",
+    message: "",
     privacyConsent: false,
-    marketingConsent: false
-  })
-  const [submitting, setSubmitting] = useState(false)
-  const [privacyModalOpen, setPrivacyModalOpen] = useState(false)
-  const [marketingModalOpen, setMarketingModalOpen] = useState(false)
-  const [successDialogOpen, setSuccessDialogOpen] = useState(false)
+    marketingConsent: false,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
+  const [marketingModalOpen, setMarketingModalOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!formData.privacyConsent) {
       toast({
-        title: t('toastRequiredConsent'),
-        description: t('toastRequiredConsentDesc'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastRequiredConsent"),
+        description: t("toastRequiredConsentDesc"),
+        variant: "destructive",
+      });
+      return;
     }
 
     if (!formData.name?.trim()) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastNameRequired'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastNameRequired"),
+        variant: "destructive",
+      });
+      return;
     }
     if (!formData.company?.trim()) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastCompanyRequired'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastCompanyRequired"),
+        variant: "destructive",
+      });
+      return;
     }
     if (!formData.position?.trim()) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastPositionRequired'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastPositionRequired"),
+        variant: "destructive",
+      });
+      return;
     }
     if (!formData.email || !formData.email.trim()) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastEmailRequired'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastEmailRequired"),
+        variant: "destructive",
+      });
+      return;
     }
-    if (!formData.email.includes('@')) {
+    if (!formData.email.includes("@")) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastEmailInvalid'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastEmailInvalid"),
+        variant: "destructive",
+      });
+      return;
     }
 
-    const cleanPhone = formData.phone.replace(/[^0-9]/g, '')
+    const cleanPhone = formData.phone.replace(/[^0-9]/g, "");
     if (!cleanPhone || cleanPhone.length === 0) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastPhoneRequired'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastPhoneRequired"),
+        variant: "destructive",
+      });
+      return;
     }
     if (cleanPhone.length < 10 || cleanPhone.length > 11) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastPhoneInvalid'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastPhoneInvalid"),
+        variant: "destructive",
+      });
+      return;
     }
     if (!formData.message?.trim()) {
       toast({
-        title: t('toastInputError'),
-        description: t('toastMessageRequired'),
-        variant: 'destructive',
-      })
-      return
+        title: t("toastInputError"),
+        description: t("toastMessageRequired"),
+        variant: "destructive",
+      });
+      return;
     }
 
     try {
-      setSubmitting(true)
+      setSubmitting(true);
 
       // DB에 저장할 데이터 준비
       // 필드명은 DB 스키마와 정확히 일치해야 합니다.
@@ -133,104 +134,127 @@ export function FooterCTA() {
         message: formData.message.trim(),
         privacy_agreement: formData.privacyConsent,
         marketing_agreement: formData.marketingConsent,
-      }
+      };
 
-      const { data, error } = await supabase.from('inquiries').insert(insertData)
+      const { data, error } = await supabase
+        .from("inquiries")
+        .insert(insertData);
 
       if (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[Footer CTA] Error code:', error.code, 'message:', error.message)
+        if (process.env.NODE_ENV === "development") {
+          console.error(
+            "[Footer CTA] Error code:",
+            error.code,
+            "message:",
+            error.message,
+          );
         }
-        throw error
+        throw error;
+      }
+
+      // Meta Pixel Lead 이벤트
+      if (typeof window.fbq === "function") {
+        window.fbq("track", "Lead");
       }
 
       // 성공 Dialog 표시
-      setSuccessDialogOpen(true)
-      
-      sonnerToast.success(t('toastSuccessTitle'), {
-        description: t('toastSuccessDesc'),
+      setSuccessDialogOpen(true);
+
+      sonnerToast.success(t("toastSuccessTitle"), {
+        description: t("toastSuccessDesc"),
         duration: 5000,
-      })
+      });
 
       // Notion에 데이터 저장 (비동기, 실패해도 사용자 경험에 영향 없음)
       // CSRF 토큰 자동 포함
       try {
-        await postWithCsrf('/api/notion', insertData)
+        await postWithCsrf("/api/notion", insertData);
       } catch (notionError: any) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[Footer CTA] Notion 요청 예외:', notionError?.message ?? '')
+        if (process.env.NODE_ENV === "development") {
+          console.error(
+            "[Footer CTA] Notion 요청 예외:",
+            notionError?.message ?? "",
+          );
         }
       }
     } catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[Footer CTA] Submit error:', error?.message ?? '')
+      if (process.env.NODE_ENV === "development") {
+        console.error("[Footer CTA] Submit error:", error?.message ?? "");
       }
-      
-      let errorMessage = t('toastErrorDefault')
-      
+
+      let errorMessage = t("toastErrorDefault");
+
       if (error) {
         if (error.message) {
-          errorMessage = error.message
+          errorMessage = error.message;
         }
-        
+
         // Supabase 에러의 경우 details와 hint 추가
         if (error.details) {
-          errorMessage += `\n\n상세: ${error.details}`
+          errorMessage += `\n\n상세: ${error.details}`;
         }
         if (error.hint) {
-          errorMessage += `\n\n힌트: ${error.hint}`
+          errorMessage += `\n\n힌트: ${error.hint}`;
         }
         if (error.code) {
-          errorMessage += `\n\n에러 코드: ${error.code}`
+          errorMessage += `\n\n에러 코드: ${error.code}`;
         }
       }
 
       toast({
-        title: t('toastErrorTitle'),
+        title: t("toastErrorTitle"),
         description: errorMessage,
-        variant: 'destructive',
-      })
+        variant: "destructive",
+      });
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
       setFormData({
         ...formData,
-        [name]: checked
-      })
+        [name]: checked,
+      });
     } else {
       setFormData({
         ...formData,
-        [name]: value
-      })
+        [name]: value,
+      });
     }
-  }
+  };
 
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 w-full min-w-0 box-border">
       <div className="container mx-auto max-w-7xl w-full min-w-0 box-border">
         <div className="mb-8 sm:mb-12 block">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 break-keep leading-[1.2] tracking-tight block min-h-[1.2em]">
-            {t('footerCtaTitle')}
+            {t("footerCtaTitle")}
           </h1>
           <p className="text-base sm:text-lg text-zinc-200 leading-[1.5] tracking-tight mb-2 font-medium break-keep max-w-prose block min-h-[1.5em]">
-            <span>{t('footerCtaDesc1')}</span>{' '}
-            <span>{t('footerCtaDesc2')}</span>{' '}
-            <span>{t('footerCtaDesc3')}</span>
+            <span>{t("footerCtaDesc1")}</span>{" "}
+            <span>{t("footerCtaDesc2")}</span>{" "}
+            <span>{t("footerCtaDesc3")}</span>
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 w-full min-w-0 box-border">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6 w-full min-w-0 box-border"
+        >
           {/* Name and Company */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="footer-name" className="block text-sm font-bold text-white mb-2">
-                {t('formName')} <span className="text-red-500">*</span>
+              <label
+                htmlFor="footer-name"
+                className="block text-sm font-bold text-white mb-2"
+              >
+                {t("formName")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -240,13 +264,16 @@ export function FooterCTA() {
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                placeholder={t('formPlaceholderName')}
+                placeholder={t("formPlaceholderName")}
               />
             </div>
 
             <div>
-              <label htmlFor="footer-company" className="block text-sm font-bold text-white mb-2">
-                {t('formCompany')} <span className="text-red-500">*</span>
+              <label
+                htmlFor="footer-company"
+                className="block text-sm font-bold text-white mb-2"
+              >
+                {t("formCompany")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -257,15 +284,18 @@ export function FooterCTA() {
                 value={formData.company}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                placeholder={t('formPlaceholderCompany')}
+                placeholder={t("formPlaceholderCompany")}
               />
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="footer-position" className="block text-sm font-bold text-white mb-2">
-                {t('formPosition')} <span className="text-red-500">*</span>
+              <label
+                htmlFor="footer-position"
+                className="block text-sm font-bold text-white mb-2"
+              >
+                {t("formPosition")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -276,13 +306,16 @@ export function FooterCTA() {
                 value={formData.position}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                placeholder={t('formPlaceholderPosition')}
+                placeholder={t("formPlaceholderPosition")}
               />
             </div>
 
             <div>
-              <label htmlFor="footer-email" className="block text-sm font-bold text-white mb-2">
-                {t('formEmail')} <span className="text-red-500">*</span>
+              <label
+                htmlFor="footer-email"
+                className="block text-sm font-bold text-white mb-2"
+              >
+                {t("formEmail")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -299,8 +332,11 @@ export function FooterCTA() {
           </div>
 
           <div>
-            <label htmlFor="footer-phone" className="block text-sm font-bold text-white mb-2">
-              {t('formPhone')} <span className="text-red-500">*</span>
+            <label
+              htmlFor="footer-phone"
+              className="block text-sm font-bold text-white mb-2"
+            >
+              {t("formPhone")} <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
@@ -310,20 +346,21 @@ export function FooterCTA() {
               autoComplete="tel"
               value={formData.phone}
               onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, '')
-                setFormData({ ...formData, phone: value })
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                setFormData({ ...formData, phone: value });
               }}
               className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-              placeholder={t('formPlaceholderPhone')}
+              placeholder={t("formPlaceholderPhone")}
             />
-            <p className="mt-1.5 text-xs text-zinc-300">
-              {t('formPhoneHint')}
-            </p>
+            <p className="mt-1.5 text-xs text-zinc-300">{t("formPhoneHint")}</p>
           </div>
 
           <div>
-            <label htmlFor="footer-message" className="block text-sm font-bold text-white mb-2">
-              {t('formMessage')} <span className="text-red-500">*</span>
+            <label
+              htmlFor="footer-message"
+              className="block text-sm font-bold text-white mb-2"
+            >
+              {t("formMessage")} <span className="text-red-500">*</span>
             </label>
             <textarea
               id="footer-message"
@@ -333,7 +370,7 @@ export function FooterCTA() {
               value={formData.message}
               onChange={handleChange}
               className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
-              placeholder={t('formPlaceholderMessage')}
+              placeholder={t("formPlaceholderMessage")}
             />
           </div>
 
@@ -356,13 +393,13 @@ export function FooterCTA() {
                   <button
                     type="button"
                     onClick={(e) => {
-                      e.preventDefault()
-                      setPrivacyModalOpen(true)
+                      e.preventDefault();
+                      setPrivacyModalOpen(true);
                     }}
                     className="text-white underline hover:no-underline focus:outline-none"
                   >
-                    {t('formPrivacyLabel')}
-                  </button>{' '}
+                    {t("formPrivacyLabel")}
+                  </button>{" "}
                   <span className="text-red-500">*</span>
                 </span>
               </label>
@@ -385,12 +422,12 @@ export function FooterCTA() {
                   <button
                     type="button"
                     onClick={(e) => {
-                      e.preventDefault()
-                      setMarketingModalOpen(true)
+                      e.preventDefault();
+                      setMarketingModalOpen(true);
                     }}
                     className="text-white underline hover:no-underline focus:outline-none"
                   >
-                    {t('formMarketingLabel')}
+                    {t("formMarketingLabel")}
                   </button>
                 </span>
               </label>
@@ -417,46 +454,46 @@ export function FooterCTA() {
                   <CheckCircle2 className="h-10 w-10 text-white" />
                 </div>
                 <DialogTitle className="text-2xl font-black text-white">
-                  {t('dialogSuccessTitle')}
+                  {t("dialogSuccessTitle")}
                 </DialogTitle>
                 <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
-                  {t('dialogSuccessDesc')}
+                  {t("dialogSuccessDesc")}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter className="sm:justify-center">
                 <Button
                   onClick={() => {
-                    setSuccessDialogOpen(false)
+                    setSuccessDialogOpen(false);
                     setFormData({
-                      name: '',
-                      company: '',
-                      position: '',
-                      email: '',
-                      phone: '',
-                      message: '',
+                      name: "",
+                      company: "",
+                      position: "",
+                      email: "",
+                      phone: "",
+                      message: "",
                       privacyConsent: false,
                       marketingConsent: false,
-                    })
+                    });
                   }}
                   className="w-full sm:w-auto px-8 font-black rounded-none bg-white text-black hover:bg-zinc-200 hover:text-black"
                 >
-                  {t('dialogConfirm')}
+                  {t("dialogConfirm")}
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
           <div className="text-center pt-4">
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={submitting}
               className="px-12 py-6 text-lg font-black rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? t('formSubmitting') : t('formSubmit')}
+              {submitting ? t("formSubmitting") : t("formSubmit")}
             </Button>
           </div>
         </form>
       </div>
     </section>
-  )
+  );
 }
