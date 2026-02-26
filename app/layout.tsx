@@ -9,7 +9,6 @@ import { FooterWrapper } from "@/components/layout/footer-wrapper";
 import { LocaleProvider } from "@/contexts/locale-context";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import ClarityProvider from "./ClarityProvider";
-import { MetaPixelPageView } from "@/components/meta-pixel-pageview";
 
 const geist = Geist({ subsets: ["latin"] });
 const geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -138,7 +137,6 @@ export default function RootLayout({
         <LocaleProvider>
           <ClarityProvider />
           <ScrollToTop />
-          <MetaPixelPageView />
           {children}
           <FooterWrapper />
         </LocaleProvider>
@@ -175,6 +173,7 @@ export default function RootLayout({
                 s.parentNode.insertBefore(t,s)}(window,document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
                 fbq('init', '${process.env.NEXT_PUBLIC_FB_PIXEL_ID}');
+                fbq('track', 'PageView');
               `}
             </Script>
             <noscript>
