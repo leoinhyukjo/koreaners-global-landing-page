@@ -1,31 +1,29 @@
 'use client'
 
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, Suspense } from 'react'
-
-function MetaPixelPageViewInner() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const isFirstRender = useRef(true)
-
-  useEffect(() => {
-    // 초기 로드는 layout.tsx 인라인 스크립트가 처리
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    if (typeof window.fbq === 'function') {
-      window.fbq('track', 'PageView')
-    }
-  }, [pathname, searchParams])
-
-  return null
-}
+import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 
 export function MetaPixelPageView() {
-  return (
-    <Suspense fallback={null}>
-      <MetaPixelPageViewInner />
-    </Suspense>
-  )
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', 'PageView')
+      return
+    }
+    // afterInteractive 스크립트보다 useEffect가 먼저 실행될 수 있음
+    let attempts = 0
+    const interval = setInterval(() => {
+      attempts++
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'PageView')
+        clearInterval(interval)
+      } else if (attempts > 50) {
+        clearInterval(interval)
+      }
+    }, 100)
+    return () => clearInterval(interval)
+  }, [pathname])
+
+  return null
 }
