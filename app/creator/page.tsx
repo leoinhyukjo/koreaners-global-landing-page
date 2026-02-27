@@ -151,6 +151,11 @@ function CreatorContent() {
         throw insertError;
       }
 
+      // Meta Pixel CompleteRegistration 이벤트
+      if (typeof window !== "undefined" && typeof window.fbq === "function") {
+        window.fbq("track", "CompleteRegistration");
+      }
+
       // Notion에도 비동기 저장 (실패해도 유저 경험 영향 없음)
       fetch("/api/creator-application", {
         method: "POST",
