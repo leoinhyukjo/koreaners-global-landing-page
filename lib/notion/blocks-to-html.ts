@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import crypto from "crypto";
+import { createHash } from "crypto";
 
 // ─── Rich Text ───────────────────────────────────────────────
 
@@ -64,21 +64,29 @@ function escapeAttr(str: string): string {
 const BUCKET = "website-assets";
 const IMAGE_PREFIX = "blog-images";
 
-async function downloadBuffer(url: string): Promise<Buffer> {
+async function downloadBuffer(
+  url: string,
+): Promise<{ buf: Buffer; contentType: string }> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download image: ${res.status}`);
-  return Buffer.from(await res.arrayBuffer());
+  const buf = Buffer.from(await res.arrayBuffer());
+  const contentType = res.headers.get("content-type") ?? "";
+  return { buf, contentType };
 }
 
 function hashBuffer(buf: Buffer): string {
-  return crypto.createHash("sha256").update(buf).digest("hex");
+  return createHash("sha256").update(buf).digest("hex");
 }
 
 function guessExtension(url: string, contentType?: string): string {
   // Try from URL path first
-  const pathname = new URL(url).pathname;
-  const match = pathname.match(/\.(\w+)$/);
-  if (match) return match[1].toLowerCase();
+  try {
+    const pathname = new URL(url).pathname;
+    const match = pathname.match(/\.(\w+)$/);
+    if (match) return match[1].toLowerCase();
+  } catch {
+    // Invalid URL — fall through to content-type
+  }
 
   // Fallback to content-type mapping
   const map: Record<string, string> = {
@@ -93,36 +101,32 @@ function guessExtension(url: string, contentType?: string): string {
   return "png"; // safe default
 }
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Upload image buffer to Supabase Storage with hash-based deduplication.
- * Returns the public URL.
+ * Uses upsert so same-hash files are overwritten (idempotent).
  */
 async function uploadToSupabase(
+  supabase: Awaited<ReturnType<typeof createClient>>,
   buf: Buffer,
   originalUrl: string,
+  contentType: string,
 ): Promise<string> {
-  const supabase = await createClient();
   const hash = hashBuffer(buf);
-  const ext = guessExtension(originalUrl);
+  const ext = guessExtension(originalUrl, contentType);
   const path = `${IMAGE_PREFIX}/${hash}.${ext}`;
 
-  // Check if already exists (hash-based dedup)
-  const { data: existing } = await supabase.storage
-    .from(BUCKET)
-    .list(IMAGE_PREFIX, {
-      search: `${hash}.${ext}`,
-      limit: 1,
-    });
-
-  if (existing && existing.length > 0) {
-    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
-    return urlData.publicUrl;
-  }
-
-  // Upload
   const { error } = await supabase.storage.from(BUCKET).upload(path, buf, {
     contentType: `image/${ext === "jpg" ? "jpeg" : ext}`,
-    upsert: false,
+    upsert: true,
   });
 
   if (error) throw error;
@@ -133,16 +137,20 @@ async function uploadToSupabase(
 
 /**
  * Resolve a Notion image block to a permanent URL.
- * - External images: use as-is
+ * - External images: use as-is (with protocol validation)
  * - Notion-hosted (type "file"): download → upload to Supabase → return permanent URL
  */
-async function resolveImageUrl(imageBlock: {
-  type: "file" | "external";
-  file?: { url: string };
-  external?: { url: string };
-}): Promise<string> {
+async function resolveImageUrl(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  imageBlock: {
+    type: "file" | "external";
+    file?: { url: string };
+    external?: { url: string };
+  },
+): Promise<string> {
   if (imageBlock.type === "external") {
-    return imageBlock.external?.url ?? "";
+    const url = imageBlock.external?.url ?? "";
+    return isSafeUrl(url) ? url : "";
   }
 
   // Notion temporary URL → upload to Supabase
@@ -150,8 +158,8 @@ async function resolveImageUrl(imageBlock: {
   if (!tempUrl) return "";
 
   try {
-    const buf = await downloadBuffer(tempUrl);
-    return await uploadToSupabase(buf, tempUrl);
+    const { buf, contentType } = await downloadBuffer(tempUrl);
+    return await uploadToSupabase(supabase, buf, tempUrl, contentType);
   } catch (err) {
     console.warn(
       "[blocks-to-html] Image upload failed, falling back to original URL:",
@@ -165,7 +173,10 @@ async function resolveImageUrl(imageBlock: {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-async function blockToHtml(block: any): Promise<string> {
+async function blockToHtml(
+  block: any,
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<string> {
   const type: string = block.type;
   const data = block[type];
 
@@ -202,7 +213,7 @@ async function blockToHtml(block: any): Promise<string> {
       return "<hr>";
 
     case "image": {
-      const url = await resolveImageUrl(data);
+      const url = await resolveImageUrl(supabase, data);
       const captionHtml = richTextToHtml(data?.caption);
       const captionPlain = (data?.caption ?? [])
         .map((rt: RichText) => rt.plain_text)
@@ -250,6 +261,7 @@ async function blockToHtml(block: any): Promise<string> {
 export async function blocksToHtml(blocks: any[]): Promise<string> {
   if (!blocks || blocks.length === 0) return "";
 
+  const supabase = await createClient();
   const htmlParts: string[] = [];
   let i = 0;
 
@@ -266,7 +278,7 @@ export async function blocksToHtml(blocks: any[]): Promise<string> {
     if (type === "bulleted_list_item") {
       const items: string[] = [];
       while (i < blocks.length && blocks[i]?.type === "bulleted_list_item") {
-        items.push(await blockToHtml(blocks[i]));
+        items.push(await blockToHtml(blocks[i], supabase));
         i++;
       }
       htmlParts.push(`<ul>${items.join("")}</ul>`);
@@ -277,7 +289,7 @@ export async function blocksToHtml(blocks: any[]): Promise<string> {
     if (type === "numbered_list_item") {
       const items: string[] = [];
       while (i < blocks.length && blocks[i]?.type === "numbered_list_item") {
-        items.push(await blockToHtml(blocks[i]));
+        items.push(await blockToHtml(blocks[i], supabase));
         i++;
       }
       htmlParts.push(`<ol>${items.join("")}</ol>`);
@@ -322,7 +334,7 @@ export async function blocksToHtml(blocks: any[]): Promise<string> {
     }
 
     // Default: single block conversion
-    const html = await blockToHtml(block);
+    const html = await blockToHtml(block, supabase);
     if (html) htmlParts.push(html);
     i++;
   }
