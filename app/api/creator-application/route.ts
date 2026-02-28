@@ -164,8 +164,8 @@ export async function POST(request: NextRequest) {
       console.log("[Creator API] Notion 저장 성공, pageId:", response.id);
     }
 
-    // Slack 알림 (fire-and-forget)
-    sendSlackCreatorApplication({
+    // Slack 알림 (응답 전 완료 보장)
+    await sendSlackCreatorApplication({
       name: safeName,
       email: safeEmail,
       phone: safePhone || undefined,

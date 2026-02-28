@@ -41,7 +41,7 @@ async function sendSlackWebhook(
   }
 }
 
-export function sendSlackInquiry(data: InquiryData): void {
+export async function sendSlackInquiry(data: InquiryData): Promise<void> {
   const webhookUrl = process.env.SLACK_WEBHOOK_INQUIRIES;
   if (!webhookUrl) return;
 
@@ -71,12 +71,12 @@ export function sendSlackInquiry(data: InquiryData): void {
     },
   ];
 
-  sendSlackWebhook(webhookUrl, blocks);
+  await sendSlackWebhook(webhookUrl, blocks);
 }
 
-export function sendSlackCreatorApplication(
+export async function sendSlackCreatorApplication(
   data: CreatorApplicationData,
-): void {
+): Promise<void> {
   const webhookUrl = process.env.SLACK_WEBHOOK_CREATORS;
   if (!webhookUrl) return;
 
@@ -125,5 +125,5 @@ export function sendSlackCreatorApplication(
     });
   }
 
-  sendSlackWebhook(webhookUrl, blocks);
+  await sendSlackWebhook(webhookUrl, blocks);
 }

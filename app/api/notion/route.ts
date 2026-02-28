@@ -231,8 +231,8 @@ export async function POST(request: NextRequest) {
       console.log("[Notion API] 문의 저장 성공, pageId:", response.id);
     }
 
-    // Slack 알림 (fire-and-forget)
-    sendSlackInquiry({
+    // Slack 알림 (응답 전 완료 보장)
+    await sendSlackInquiry({
       name: safeName,
       email: safeEmail,
       company: safeCompany || undefined,
