@@ -14,11 +14,10 @@ import { getTranslation } from "@/lib/translations";
 import {
   getBlogTitle,
   getBlogContent,
-  getBlogFaqs,
 } from "@/lib/localized-content";
 import type { BlogPost } from "@/lib/supabase";
 import { BlogContent } from "./blog-content";
-import { BlogFAQSection } from "./blog-faq-section";
+
 
 interface BlogPostViewProps {
   blogPost: BlogPost;
@@ -132,7 +131,6 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                 )}
               </div>
             </div>
-            <BlogFAQSection faqs={getBlogFaqs(blogPost, locale)} />
             <MarketingCTA />
           </div>
         </article>
