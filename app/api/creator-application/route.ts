@@ -5,6 +5,7 @@ import {
   getClientIp,
   addRateLimitHeaders,
 } from "@/lib/rate-limit";
+import { sendSlackCreatorApplication } from "@/lib/slack";
 
 const ALLOWED_ORIGINS = [
   "https://koreaners.co",
@@ -162,6 +163,20 @@ export async function POST(request: NextRequest) {
     if (process.env.NODE_ENV === "development") {
       console.log("[Creator API] Notion 저장 성공, pageId:", response.id);
     }
+
+    // Slack 알림 (fire-and-forget)
+    sendSlackCreatorApplication({
+      name: safeName,
+      email: safeEmail,
+      phone: safePhone || undefined,
+      instagram_url: safeInstagram,
+      youtube_url: safeYoutube || undefined,
+      tiktok_url: safeTiktok || undefined,
+      x_url: safeX || undefined,
+      message: safeMessage || undefined,
+      track_type: safeTrackType,
+      locale: safeLocale,
+    });
 
     return addRateLimitHeaders(
       withCors(
