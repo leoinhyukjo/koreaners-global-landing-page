@@ -1,230 +1,88 @@
 'use client'
 
-import { ReactNode, useState, useEffect } from 'react'
-import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, FolderOpen, Users, FileText, MessageSquare, LogOut, Menu, Sparkles } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { signOut } from '@/lib/admin-auth'
-import { useToast } from '@/hooks/use-toast'
-import { Button } from '@/components/ui/button'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { RealtimeNotification } from '@/components/admin/realtime-notification'
+import { supabase } from '@/lib/supabase/client'
+import { LayoutDashboard, FileText, LogOut, ExternalLink } from 'lucide-react'
+import Link from 'next/link'
 
-export function AdminLayoutClient({ children }: { children: ReactNode }) {
+const navItems = [
+  { label: '대시보드', href: '/admin', icon: LayoutDashboard },
+  { label: '블로그', href: '/admin/blog', icon: FileText },
+]
+
+export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { toast } = useToast()
-  const [isMounted, setIsMounted] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  async function handleLogout() {
-    const { error } = await signOut()
-    if (error) {
-      toast({
-        title: '오류',
-        description: '로그아웃 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      })
-    } else {
-      toast({
-        title: '로그아웃',
-        description: '로그아웃되었습니다.',
-      })
-      router.push('/admin/login')
-      router.refresh()
-    }
+  if (pathname === '/admin/login') {
+    return <>{children}</>
   }
 
-  const navItems = [
-    { href: '/admin', label: '대시보드', icon: LayoutDashboard },
-    { href: '/admin/portfolios', label: '포트폴리오 관리', icon: FolderOpen },
-    { href: '/admin/creators', label: '크리에이터 관리', icon: Users },
-    { href: '/admin/blog', label: '블로그 관리', icon: FileText },
-    { href: '/admin/inquiries', label: '문의 내역', icon: MessageSquare },
-    { href: '/admin/creator-applications', label: '합류 신청', icon: Sparkles },
-  ]
-
-  const isLoginPage = pathname === '/admin/login'
-
-  function NavLinks({ onItemClick }: { onItemClick?: () => void }) {
-    return (
-      <>
-        {navItems.map((item) => {
-          const Icon = item.icon
-          const isActive =
-            item.href === '/admin'
-              ? pathname === '/admin'
-              : pathname === item.href || pathname.startsWith(item.href + '/')
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onItemClick}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-              )}
-            >
-              <Icon className="h-5 w-5 shrink-0" />
-              {item.label}
-            </Link>
-          )
-        })}
-      </>
-    )
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/admin/login')
   }
 
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen bg-zinc-900">
-        {isLoginPage ? (
-          children
-        ) : (
-          <main className="min-h-screen">
-            <div
-              className={cn(
-                'admin-content container mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10',
-                pathname?.startsWith('/admin/portfolios/') || pathname?.startsWith('/admin/blog/edit')
-                  ? 'max-w-[95%] w-full'
-                  : 'max-w-6xl'
-              )}
-            >
-              {children}
-            </div>
-          </main>
-        )}
-      </div>
-    )
+  const isActive = (href: string) => {
+    if (href === '/admin') return pathname === '/admin'
+    return pathname.startsWith(href)
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900">
-      {!isLoginPage && (
-        <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 border-r border-zinc-700/50 bg-zinc-800 md:block">
-          <div className="flex h-full flex-col">
-            <div className="border-b border-zinc-700/50 px-6 py-5 flex items-center justify-between">
-              <Link href="/admin" className="text-xl font-bold text-white">
-                관리자 패널
-              </Link>
-              <Link href="/admin/inquiries">
-                <RealtimeNotification />
-              </Link>
-            </div>
-            <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-              <NavLinks />
-            </nav>
-            <div className="space-y-2 border-t border-zinc-700/50 p-4">
-              <Link
-                href="/"
-                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              >
-                랜딩페이지로
-              </Link>
-              <Button
-                variant="ghost"
-                onClick={handleLogout}
-                className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
-              >
-                <LogOut className="h-5 w-5 shrink-0" />
-                로그아웃
-              </Button>
-            </div>
-          </div>
-        </aside>
-      )}
-
-      {!isLoginPage && (
-        <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-zinc-700/50 bg-zinc-800 px-4 md:hidden">
-          <Link href="/admin" className="text-lg font-bold text-white">
-            관리자 패널
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/inquiries">
-              <RealtimeNotification />
+    <div className="min-h-screen bg-neutral-950">
+      {/* Top bar */}
+      <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-sm">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+          {/* Left: Logo + Nav */}
+          <div className="flex items-center gap-6">
+            <Link href="/admin" className="text-sm font-semibold tracking-tight text-neutral-50">
+              KOREANERS
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10 shrink-0"
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="메뉴 열기"
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-          </div>
-        </header>
-      )}
-
-      {!isLoginPage && (
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetContent
-            side="left"
-            className="w-72 border-r border-zinc-700/50 bg-zinc-800 p-0 sm:max-w-[288px]"
-          >
-            <SheetHeader className="border-b border-zinc-700/50 px-6 py-5 text-left">
-              <SheetTitle className="text-xl font-bold text-white">
-                관리자 패널
-              </SheetTitle>
-            </SheetHeader>
-            <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-              <NavLinks onItemClick={() => setMobileMenuOpen(false)} />
+            <nav className="flex items-center gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon
+                const active = isActive(item.href)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors ${
+                      active
+                        ? 'bg-neutral-800 text-neutral-50'
+                        : 'text-neutral-400 hover:text-neutral-50 hover:bg-neutral-800/50'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                )
+              })}
             </nav>
-            <div className="mt-auto space-y-2 border-t border-zinc-700/50 p-4">
-              <Link
-                href="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              >
-                랜딩페이지로
-              </Link>
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  handleLogout()
-                }}
-                className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
-              >
-                <LogOut className="h-5 w-5 shrink-0" />
-                로그아웃
-              </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
-      )}
-
-      <main
-        className={cn(
-          'min-h-screen',
-          !isLoginPage && 'pt-14 md:ml-64 md:pt-0'
-        )}
-      >
-        {isLoginPage ? (
-          children
-        ) : (
-          <div
-            className={cn(
-              'admin-content container mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10',
-              pathname?.startsWith('/admin/portfolios/') || pathname?.startsWith('/admin/blog/edit')
-                ? 'max-w-[95%] w-full'
-                : 'max-w-6xl'
-            )}
-          >
-            {children}
           </div>
-        )}
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              target="_blank"
+              className="flex items-center gap-1 rounded-md px-2 py-1.5 text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+            >
+              <ExternalLink className="h-3 w-3" />
+              <span className="hidden sm:inline">사이트</span>
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-1 rounded-md px-2 py-1.5 text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+            >
+              <LogOut className="h-3 w-3" />
+              <span className="hidden sm:inline">로그아웃</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        {children}
       </main>
     </div>
   )
