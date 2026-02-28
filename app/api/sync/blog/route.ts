@@ -255,13 +255,20 @@ export async function POST(request: NextRequest) {
     console.log("[sync/blog] Starting blog sync...");
 
     // 1. Fetch all pages from Notion DB
-    const pages = await fetchAllPages();
-    console.log(`[sync/blog] Found ${pages.length} pages in Notion DB`);
+    const allPages = await fetchAllPages();
+    console.log(`[sync/blog] Found ${allPages.length} pages in Notion DB`);
 
-    // 2. Create Supabase admin client (service role, bypasses RLS)
+    // 2. Filter: only sync pages with status "발행" or "리뷰" (skip drafts)
+    const pages = allPages.filter((page) => {
+      const status = getSelect(page.properties, "상태");
+      return status === "발행" || status === "리뷰";
+    });
+    console.log(`[sync/blog] ${pages.length} pages to sync (발행/리뷰 only)`);
+
+    // 3. Create Supabase admin client (service role, bypasses RLS)
     const supabase = createAdminClient();
 
-    // 3. Process each page
+    // 4. Process each page
     for (const page of pages) {
       const pageTitle = getTitle(page.properties, "이름") || page.id;
 
