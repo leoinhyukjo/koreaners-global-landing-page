@@ -1,61 +1,72 @@
 // 블로그 상세 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import type { BlogPost } from '@/lib/supabase'
-import Navigation from '@/components/navigation'
-import { BlogPostView } from '@/components/blog/blog-post-view'
-import { resolveThumbnailSrc, toAbsoluteUrl } from '@/lib/thumbnail'
-import { safeJsonLdStringify } from '@/lib/json-ld'
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import type { BlogPost } from "@/lib/supabase";
+import Navigation from "@/components/navigation";
+import { BlogPostView } from "@/components/blog/blog-post-view";
+import { resolveThumbnailSrc, toAbsoluteUrl } from "@/lib/thumbnail";
+import { safeJsonLdStringify } from "@/lib/json-ld";
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const supabase = await createClient()
-    
+    const supabase = await createClient();
+
     const { data, error: supabaseError } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('slug', slug)
-      .eq('published', true)
-      .single()
+      .from("blog_posts")
+      .select("*")
+      .eq("slug", slug)
+      .eq("published", true)
+      .single();
 
     if (supabaseError) {
-      console.error('[Blog Detail] 에러: ' + (supabaseError.message || '알 수 없는 에러'))
-      return null
+      console.error(
+        "[Blog Detail] 에러: " + (supabaseError.message || "알 수 없는 에러"),
+      );
+      return null;
     }
 
     if (!data || !data.published) {
-      return null
+      return null;
     }
 
-    return data
+    return data;
   } catch (err: any) {
-    console.error('[Blog Detail] 에러: ' + (err?.message || '알 수 없는 에러'))
-    return null
+    console.error("[Blog Detail] 에러: " + (err?.message || "알 수 없는 에러"));
+    return null;
   }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
-  const blogPost = await getBlogPost(slug)
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const blogPost = await getBlogPost(slug);
 
   if (!blogPost) {
     return {
-      title: '블로그 포스트를 찾을 수 없습니다',
-      description: '요청하신 블로그 포스트를 찾을 수 없습니다.',
-    }
+      title: "블로그 포스트를 찾을 수 없습니다",
+      description: "요청하신 블로그 포스트를 찾을 수 없습니다.",
+    };
   }
 
-  const metaTitle = blogPost.meta_title || blogPost.title
-  const metaDescription = blogPost.meta_description || blogPost.summary || `${blogPost.title} - ${blogPost.category}`
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
-  const ogImage = toAbsoluteUrl(siteUrl, resolveThumbnailSrc(blogPost.thumbnail_url))
+  const metaTitle = blogPost.meta_title || blogPost.title;
+  const metaDescription =
+    blogPost.meta_description ||
+    blogPost.summary ||
+    `${blogPost.title} - ${blogPost.category}`;
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.koreaners.co";
+  const ogImage = toAbsoluteUrl(
+    siteUrl,
+    resolveThumbnailSrc(blogPost.thumbnail_url),
+  );
 
   return {
     title: metaTitle,
@@ -63,10 +74,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      type: 'article',
+      type: "article",
       publishedTime: blogPost.created_at,
       modifiedTime: blogPost.updated_at,
-      authors: ['KOREANERS'],
+      authors: ["KOREANERS"],
       images: [
         {
           url: ogImage,
@@ -77,7 +88,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: metaTitle,
       description: metaDescription,
       images: [ogImage],
@@ -85,54 +96,83 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: `${siteUrl}/blog/${slug}`,
     },
-  }
+  };
 }
 
 export default async function BlogDetailPage({ params }: PageProps) {
-  const { slug } = await params
-  const blogPost = await getBlogPost(slug)
+  const { slug } = await params;
+  const blogPost = await getBlogPost(slug);
 
   if (!blogPost) {
-    notFound()
+    notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
-  
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.koreaners.co";
+
   // 카테고리에 따라 스키마 타입 결정
-  const isNews = blogPost.category === '마케팅 뉴스' || blogPost.category === '업계 동향'
-  const schemaType = isNews ? 'NewsArticle' : 'BlogPosting'
-  const thumbnailSrc = resolveThumbnailSrc(blogPost.thumbnail_url)
-  const thumbnailAbsolute = toAbsoluteUrl(siteUrl, thumbnailSrc)
-  
+  const isNews =
+    blogPost.category === "마케팅 뉴스" || blogPost.category === "업계 동향";
+  const schemaType = isNews ? "NewsArticle" : "BlogPosting";
+  const thumbnailSrc = resolveThumbnailSrc(blogPost.thumbnail_url);
+  const thumbnailAbsolute = toAbsoluteUrl(siteUrl, thumbnailSrc);
+
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': schemaType,
+    "@context": "https://schema.org",
+    "@type": schemaType,
     headline: blogPost.meta_title || blogPost.title,
-    description: blogPost.meta_description || blogPost.summary || blogPost.title,
+    description:
+      blogPost.meta_description || blogPost.summary || blogPost.title,
     image: [thumbnailAbsolute],
     datePublished: blogPost.created_at,
     dateModified: blogPost.updated_at,
-    author: {
-      '@type': 'Organization',
-      name: 'KOREANERS',
-      url: siteUrl,
-    },
+    author: [
+      {
+        "@type": "Organization",
+        name: "KOREANERS",
+        url: siteUrl,
+      },
+      {
+        "@type": "Organization",
+        name: "코리너스",
+        url: siteUrl,
+      },
+    ],
     publisher: {
-      '@type': 'Organization',
-      name: 'KOREANERS',
+      "@type": "Organization",
+      name: "KOREANERS",
       url: siteUrl,
       logo: {
-        '@type': 'ImageObject',
+        "@type": "ImageObject",
         url: `${siteUrl}/images/logo.png`,
       },
     },
     mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `${siteUrl}/blog/${slug}`,
+      "@type": "WebPage",
+      "@id": `${siteUrl}/blog/${slug}`,
     },
     articleSection: blogPost.category,
     keywords: blogPost.category,
-  }
+  };
+
+  // FAQ Schema (faqs가 있을 때만)
+  const faqJsonLd =
+    blogPost.faqs && Array.isArray(blogPost.faqs) && blogPost.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: blogPost.faqs
+            .filter((f: any) => f.question?.trim() && f.answer?.trim())
+            .map((faq: any) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.answer,
+              },
+            })),
+        }
+      : null;
 
   return (
     <>
@@ -140,8 +180,16 @@ export default async function BlogDetailPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(jsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLdStringify(faqJsonLd),
+          }}
+        />
+      )}
       <Navigation />
       <BlogPostView blogPost={blogPost} thumbnailSrc={thumbnailSrc} />
     </>
-  )
+  );
 }
