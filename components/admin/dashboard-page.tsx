@@ -2,44 +2,27 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
-import { FileText, Globe, FilePen } from 'lucide-react'
-import Link from 'next/link'
-
-interface BlogStats {
-  total: number
-  published: number
-  draft: number
-}
-
-interface RecentPost {
-  id: string
-  title: string
-  slug: string
-  category: string
-  published: boolean
-  created_at: string
-}
+import { FileText, Globe, FilePen, RefreshCw, Users } from 'lucide-react'
 
 export function DashboardPage() {
-  const [stats, setStats] = useState<BlogStats>({ total: 0, published: 0, draft: 0 })
-  const [recentPosts, setRecentPosts] = useState<RecentPost[]>([])
+  const [stats, setStats] = useState({ total: 0, published: 0, draft: 0 })
   const [loading, setLoading] = useState(true)
+  const [blogSyncing, setBlogSyncing] = useState(false)
+  const [creatorSyncing, setCreatorSyncing] = useState(false)
+  const [syncResult, setSyncResult] = useState<{ message: string; success: boolean } | null>(null)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [allRes, publishedRes, recentRes] = await Promise.all([
+        const [allRes, publishedRes] = await Promise.all([
           supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
           supabase.from('blog_posts').select('id', { count: 'exact', head: true }).eq('published', true),
-          supabase.from('blog_posts').select('id, title, slug, category, published, created_at').order('created_at', { ascending: false }).limit(5),
         ])
-
         setStats({
           total: allRes.count || 0,
           published: publishedRes.count || 0,
           draft: (allRes.count || 0) - (publishedRes.count || 0),
         })
-        setRecentPosts(recentRes.data || [])
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
       } finally {
@@ -48,6 +31,29 @@ export function DashboardPage() {
     }
     fetchData()
   }, [])
+
+  const handleSync = async (type: 'blog' | 'creator') => {
+    const setSyncing = type === 'blog' ? setBlogSyncing : setCreatorSyncing
+    setSyncing(true)
+    setSyncResult(null)
+    try {
+      const res = await fetch(`/api/sync/${type === 'blog' ? 'blog' : 'creators'}`, { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        const label = type === 'blog' ? '블로그' : '크리에이터'
+        const parts = [`${data.synced}건 동기화`]
+        if (data.deleted) parts.push(`${data.deleted}건 제거`)
+        if (data.errors?.length) parts.push(`${data.errors.length}건 오류`)
+        setSyncResult({ message: `${label}: ${parts.join(', ')}`, success: !data.errors?.length })
+      } else {
+        setSyncResult({ message: data.error || '동기화 실패', success: false })
+      }
+    } catch {
+      setSyncResult({ message: '네트워크 오류', success: false })
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -58,7 +64,7 @@ export function DashboardPage() {
             <div key={i} className="h-24 animate-pulse rounded-lg bg-neutral-800" />
           ))}
         </div>
-        <div className="h-64 animate-pulse rounded-lg bg-neutral-800" />
+        <div className="h-32 animate-pulse rounded-lg bg-neutral-800" />
       </div>
     )
   }
@@ -71,21 +77,16 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-lg font-semibold text-neutral-50">대시보드</h1>
-        <p className="mt-1 text-sm text-neutral-400">블로그 현황 요약</p>
+        <p className="mt-1 text-sm text-neutral-400">사이트 현황 요약</p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
-            <div
-              key={card.label}
-              className="rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition-colors hover:border-neutral-700"
-            >
+            <div key={card.label} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition-colors hover:border-neutral-700">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-400">{card.label}</span>
                 <Icon className={`h-4 w-4 ${card.color}`} />
@@ -96,45 +97,35 @@ export function DashboardPage() {
         })}
       </div>
 
-      {/* Recent Posts */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-neutral-50">최근 포스트</h2>
-          <Link
-            href="/admin/blog"
-            className="text-xs text-neutral-400 transition-colors hover:text-neutral-50"
+        <h2 className="mb-4 text-sm font-medium text-neutral-50">Notion 동기화</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={() => handleSync('blog')}
+            disabled={blogSyncing}
+            className="flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-50 transition-colors hover:border-neutral-700 hover:bg-neutral-800 disabled:opacity-50"
           >
-            모두 보기 →
-          </Link>
+            <RefreshCw className={`h-4 w-4 ${blogSyncing ? 'animate-spin' : ''}`} />
+            {blogSyncing ? '동기화 중...' : '블로그 동기화'}
+          </button>
+          <button
+            onClick={() => handleSync('creator')}
+            disabled={creatorSyncing}
+            className="flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-50 transition-colors hover:border-neutral-700 hover:bg-neutral-800 disabled:opacity-50"
+          >
+            <Users className={`h-4 w-4 ${creatorSyncing ? 'animate-spin' : ''}`} />
+            {creatorSyncing ? '동기화 중...' : '크리에이터 동기화'}
+          </button>
         </div>
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900 divide-y divide-neutral-800">
-          {recentPosts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-neutral-500">
-              <FileText className="mb-2 h-8 w-8" />
-              <p className="text-sm">아직 포스트가 없습니다</p>
-            </div>
-          ) : (
-            recentPosts.map((post) => (
-              <div key={post.id} className="flex items-center justify-between px-4 py-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm text-neutral-50">{post.title}</p>
-                  <p className="mt-0.5 text-xs text-neutral-500">
-                    {post.category} · {new Date(post.created_at).toLocaleDateString('ko-KR')}
-                  </p>
-                </div>
-                <span
-                  className={`ml-3 shrink-0 rounded-full px-2 py-0.5 text-xs ${
-                    post.published
-                      ? 'bg-green-400/10 text-green-400'
-                      : 'bg-yellow-400/10 text-yellow-400'
-                  }`}
-                >
-                  {post.published ? '발행' : '임시저장'}
-                </span>
-              </div>
-            ))
-          )}
-        </div>
+        {syncResult && (
+          <div className={`mt-3 rounded-lg border px-4 py-2.5 text-sm ${
+            syncResult.success
+              ? 'border-green-500/30 bg-green-500/10 text-green-400'
+              : 'border-red-500/30 bg-red-500/10 text-red-400'
+          }`}>
+            {syncResult.message}
+          </div>
+        )}
       </div>
     </div>
   )
