@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { Plus, Edit, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { useEffect, useState } from "react";
+import { ExternalLink, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -12,101 +12,155 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { supabase } from '@/lib/supabase/client'
-import type { BlogPost } from '@/lib/supabase'
-import { resolveThumbnailSrc } from '@/lib/thumbnail'
+} from "@/components/ui/table";
+import { supabase } from "@/lib/supabase/client";
+import type { BlogPost } from "@/lib/supabase";
+import { resolveThumbnailSrc } from "@/lib/thumbnail";
 
 export function BlogListPage() {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
-  const [loading, setLoading] = useState(true)
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchBlogPosts()
-  }, [])
+    fetchBlogPosts();
+  }, []);
 
   async function fetchBlogPosts() {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const { data, error: supabaseError } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false })
+        .from("blog_posts")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (supabaseError) {
-        console.error('[Admin Blog] 에러: ' + (supabaseError?.message || '알 수 없는 에러'))
-        throw supabaseError
+        console.error(
+          "[Admin Blog] 에러: " + (supabaseError?.message || "알 수 없는 에러"),
+        );
+        throw supabaseError;
       }
 
-      const posts = Array.isArray(data) ? data : []
-      setBlogPosts(posts)
+      const posts = Array.isArray(data) ? data : [];
+      setBlogPosts(posts);
     } catch (err: any) {
-      const errorMessage = err?.message || '알 수 없는 에러'
-      console.error('[Admin Blog] 에러: ' + errorMessage)
-      alert('블로그 포스트를 불러오는데 실패했습니다: ' + errorMessage)
+      const errorMessage = err?.message || "알 수 없는 에러";
+      console.error("[Admin Blog] 에러: " + errorMessage);
+      alert("블로그 포스트를 불러오는데 실패했습니다: " + errorMessage);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  function handleCreate() {
-    window.location.href = '/admin/blog/edit'
-  }
-
-  function handleEdit(post: BlogPost) {
-    window.location.href = `/admin/blog/edit?id=${post.id}`
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm('정말 삭제하시겠습니까?')) return
+  async function handleSync() {
+    setSyncing(true);
+    setSyncResult(null);
 
     try {
-      const { error: supabaseError } = await supabase.from('blog_posts').delete().eq('id', id)
+      const res = await fetch("/api/sync/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
 
-      if (supabaseError) {
-        console.error('[Admin Blog] 삭제 에러: ' + (supabaseError?.message || '알 수 없는 에러'))
-        throw supabaseError
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSyncResult(`동기화 실패: ${data.error || res.statusText}`);
+        return;
       }
 
-      alert('블로그 포스트가 삭제되었습니다.')
-      fetchBlogPosts()
+      const errorCount = data.errors?.length ?? 0;
+      if (errorCount > 0) {
+        setSyncResult(
+          `${data.synced}개 동기화 완료, ${errorCount}개 오류 발생`,
+        );
+      } else {
+        setSyncResult(`${data.synced}개 포스트가 동기화되었습니다.`);
+      }
+
+      // 동기화 성공 후 목록 새로고침
+      await fetchBlogPosts();
     } catch (err: any) {
-      const errorMessage = err?.message || '알 수 없는 에러'
-      console.error('[Admin Blog] 삭제 에러: ' + errorMessage)
-      alert('삭제에 실패했습니다: ' + errorMessage)
+      setSyncResult(`동기화 중 오류: ${err?.message || "알 수 없는 에러"}`);
+    } finally {
+      setSyncing(false);
     }
   }
 
-  const STORAGE_BUCKET = 'website-assets'
+  const STORAGE_BUCKET = "website-assets";
 
   /** 썸네일 표시용 URL: Supabase 전체 URL이면 그대로, 스토리지 경로면 getPublicUrl 사용 */
   function getThumbnailDisplaySrc(post: BlogPost): string {
-    const raw = post.thumbnail_url?.trim()
-    if (!raw) return ''
-    if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
-    const path = raw.replace(/^\/+/, '').replace(/^public\//, '')
-    const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path)
-    return data?.publicUrl ?? resolveThumbnailSrc(raw)
+    const raw = post.thumbnail_url?.trim();
+    if (!raw) return "";
+    if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+    const path = raw.replace(/^\/+/, "").replace(/^public\//, "");
+    const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+    return data?.publicUrl ?? resolveThumbnailSrc(raw);
   }
 
   return (
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl text-white">글로벌 마케팅 인사이트 관리</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl text-white">
+            글로벌 마케팅 인사이트 관리
+          </h1>
           <p className="mt-1 text-sm text-zinc-300 sm:text-base">
-            글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식 채널을 관리합니다
+            글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식
+            채널을 관리합니다
           </p>
         </div>
-        <Button onClick={handleCreate} className="h-11 shrink-0 px-5 sm:h-10">
-          <Plus className="h-4 w-4 shrink-0 sm:mr-2" />
-          <span className="sm:inline">새 포스트 작성</span>
-        </Button>
+        <div className="flex gap-2 shrink-0">
+          <Button
+            onClick={handleSync}
+            disabled={syncing}
+            variant="outline"
+            className="h-11 px-5 sm:h-10"
+          >
+            <RefreshCw
+              className={`h-4 w-4 shrink-0 sm:mr-2 ${syncing ? "animate-spin" : ""}`}
+            />
+            <span className="sm:inline">
+              {syncing ? "동기화 중..." : "Notion 동기화"}
+            </span>
+          </Button>
+          <Button
+            asChild
+            variant="secondary"
+            className="h-11 shrink-0 px-5 sm:h-10"
+          >
+            <a
+              href="https://www.notion.so/2f501ca3e4808082aae4f046911ccf9b"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink className="h-4 w-4 shrink-0 sm:mr-2" />
+              <span className="sm:inline">Notion에서 편집</span>
+            </a>
+          </Button>
+        </div>
       </div>
 
+      {syncResult && (
+        <div
+          className={`rounded-lg border px-4 py-3 text-sm ${
+            syncResult.includes("실패") || syncResult.includes("오류")
+              ? "border-red-500/50 bg-red-500/10 text-red-300"
+              : "border-green-500/50 bg-green-500/10 text-green-300"
+          }`}
+        >
+          {syncResult}
+        </div>
+      )}
+
       {loading ? (
-        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">로딩 중...</Card>
+        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
+          로딩 중...
+        </Card>
       ) : blogPosts.length === 0 ? (
         <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
           작성된 인사이트가 없습니다.
@@ -124,17 +178,16 @@ export function BlogListPage() {
                     <TableHead>카테고리</TableHead>
                     <TableHead>상태</TableHead>
                     <TableHead>생성일</TableHead>
-                    <TableHead className="text-right">작업</TableHead>
+                    <TableHead className="text-right">보기</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {blogPosts.map((post) => {
-                    const thumbSrc = getThumbnailDisplaySrc(post)
+                    const thumbSrc = getThumbnailDisplaySrc(post);
                     return (
                       <TableRow
                         key={post.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => handleEdit(post)}
+                        className="hover:bg-muted/50"
                       >
                         <TableCell>
                           {thumbSrc ? (
@@ -144,24 +197,37 @@ export function BlogListPage() {
                                 alt=""
                                 className="h-12 w-16 object-cover rounded border border-border bg-muted"
                                 onError={(e) => {
-                                  const t = e.currentTarget
-                                  t.onerror = null
-                                  t.style.display = 'none'
-                                  const fallback = t.nextElementSibling as HTMLElement
+                                  const t = e.currentTarget;
+                                  t.onerror = null;
+                                  t.style.display = "none";
+                                  const fallback =
+                                    t.nextElementSibling as HTMLElement;
                                   if (fallback) {
-                                    fallback.classList.remove('hidden')
-                                    fallback.classList.add('text-sm', 'text-muted-foreground')
+                                    fallback.classList.remove("hidden");
+                                    fallback.classList.add(
+                                      "text-sm",
+                                      "text-muted-foreground",
+                                    );
                                   }
                                 }}
                               />
-                              <span className="hidden text-sm text-muted-foreground" aria-hidden>없음</span>
+                              <span
+                                className="hidden text-sm text-muted-foreground"
+                                aria-hidden
+                              >
+                                없음
+                              </span>
                             </>
                           ) : (
-                            <span className="text-sm text-muted-foreground">없음</span>
+                            <span className="text-sm text-muted-foreground">
+                              없음
+                            </span>
                           )}
                         </TableCell>
                         <TableCell className="font-medium max-w-[280px] text-foreground">
-                          <span className="truncate block" title={post.title}>{post.title}</span>
+                          <span className="truncate block" title={post.title}>
+                            {post.title}
+                          </span>
                           <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground mt-0.5 block truncate">
                             {post.slug}
                           </code>
@@ -177,30 +243,28 @@ export function BlogListPage() {
                           )}
                         </TableCell>
                         <TableCell className="text-foreground">
-                          {new Date(post.created_at).toLocaleDateString('ko-KR')}
+                          {new Date(post.created_at).toLocaleDateString(
+                            "ko-KR",
+                          )}
                         </TableCell>
-                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(post)}
-                              className="h-9 w-9 text-foreground hover:bg-white/10"
+                        <TableCell className="text-right">
+                          <Button
+                            asChild
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 text-foreground hover:bg-white/10"
+                          >
+                            <a
+                              href={`/blog/${post.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(post.id)}
-                              className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
-                            >
-                              <Trash2 className="h-4 w-4 text-white" />
-                            </Button>
-                          </div>
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
                         </TableCell>
                       </TableRow>
-                    )
+                    );
                   })}
                 </TableBody>
               </Table>
@@ -210,12 +274,11 @@ export function BlogListPage() {
           {/* 모바일: 크리에이터 관리와 동일한 카드 스타일(썸네일 + 제목/날짜/상태 + 편집/삭제) */}
           <div className="space-y-4 md:hidden">
             {blogPosts.map((post) => {
-              const thumbSrc = getThumbnailDisplaySrc(post)
+              const thumbSrc = getThumbnailDisplaySrc(post);
               return (
                 <Card
                   key={post.id}
-                  className="rounded-lg border shadow-sm p-6 cursor-pointer hover:bg-muted/30"
-                  onClick={() => handleEdit(post)}
+                  className="rounded-lg border shadow-sm p-6 hover:bg-muted/30"
                 >
                   <div className="flex items-center gap-4">
                     {thumbSrc ? (
@@ -224,9 +287,9 @@ export function BlogListPage() {
                         alt=""
                         className="h-12 w-16 shrink-0 object-cover rounded border border-border bg-muted"
                         onError={(e) => {
-                          const t = e.currentTarget
-                          t.onerror = null
-                          t.style.display = 'none'
+                          const t = e.currentTarget;
+                          t.onerror = null;
+                          t.style.display = "none";
                         }}
                       />
                     ) : (
@@ -235,37 +298,51 @@ export function BlogListPage() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold truncate text-foreground" title={post.title}>{post.title}</h3>
-                      <p className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString('ko-KR')}</p>
+                      <h3
+                        className="font-semibold truncate text-foreground"
+                        title={post.title}
+                      >
+                        {post.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(post.created_at).toLocaleDateString("ko-KR")}
+                      </p>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                        <Badge variant="secondary" className="text-xs">{post.category}</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {post.category}
+                        </Badge>
                         {post.published ? (
-                          <Badge variant="default" className="text-xs">발행됨</Badge>
+                          <Badge variant="default" className="text-xs">
+                            발행됨
+                          </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-xs">임시저장</Badge>
+                          <Badge variant="outline" className="text-xs">
+                            임시저장
+                          </Badge>
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(post)} className="h-9 w-9 text-foreground hover:bg-white/10">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(post.id)}
-                        className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 shrink-0 text-foreground hover:bg-white/10"
+                    >
+                      <a
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        <Trash2 className="h-4 w-4 text-white" />
-                      </Button>
-                    </div>
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </Button>
                   </div>
                 </Card>
-              )
+              );
             })}
           </div>
         </>
       )}
     </div>
-  )
+  );
 }

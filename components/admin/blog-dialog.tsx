@@ -1,38 +1,41 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useRef, type ChangeEvent } from 'react'
-import dynamic from 'next/dynamic'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect, useRef, type ChangeEvent } from "react";
+import dynamic from "next/dynamic";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { supabase } from '@/lib/supabase/client'
-import type { BlogPost } from '@/lib/supabase'
-import { useToast } from '@/hooks/use-toast'
-import { X } from 'lucide-react'
-import { resolveThumbnailSrc } from '@/lib/thumbnail'
-import type { BlockNoteEditor } from '@blocknote/core'
-import { blogPostSchema } from '@/lib/validation/blog-schema'
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/lib/supabase/client";
+import type { BlogPost } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { X } from "lucide-react";
+import { resolveThumbnailSrc } from "@/lib/thumbnail";
+import type { BlockNoteEditor } from "@blocknote/core";
+import { blogPostSchema } from "@/lib/validation/blog-schema";
 
-const STORAGE_BUCKET = 'website-assets'
+const STORAGE_BUCKET = "website-assets";
 
 // BlockNote 에디터를 클라이언트 사이드에서만 로드
 const BlogEditorWrapper = dynamic(
-  () => import('./blog-editor-wrapper').then((mod) => ({ default: mod.BlogEditorWrapper })),
+  () =>
+    import("./blog-editor-wrapper").then((mod) => ({
+      default: mod.BlogEditorWrapper,
+    })),
   {
     ssr: false,
     loading: () => (
@@ -40,181 +43,215 @@ const BlogEditorWrapper = dynamic(
         <p className="text-muted-foreground">에디터 로딩 중...</p>
       </div>
     ),
-  }
-)
+  },
+);
 
 interface BlogDialogProps {
-  open: boolean
-  onClose: () => void
-  blogPost: BlogPost | null
+  open: boolean;
+  onClose: () => void;
+  blogPost: BlogPost | null;
 }
 
-const CATEGORIES = ['업계 동향', '최신 트렌드', '전문가 인사이트', '마케팅 뉴스'] as const
+const CATEGORIES = [
+  "업계 동향",
+  "최신 트렌드",
+  "전문가 인사이트",
+  "마케팅 뉴스",
+] as const;
 
 export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
-  const [title, setTitle] = useState('')
-  const [slug, setSlug] = useState('')
-  const [category, setCategory] = useState<string>('')
-  const [thumbnailUrl, setThumbnailUrl] = useState('')
-  const [summary, setSummary] = useState('')
-  const [published, setPublished] = useState(false)
-  const [metaTitle, setMetaTitle] = useState('')
-  const [metaDescription, setMetaDescription] = useState('')
-  const [uploading, setUploading] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
-  const [editorContent, setEditorContent] = useState<any[]>([])
-  const [initialEditorContent, setInitialEditorContent] = useState<any[] | undefined>(undefined)
-  const editorRef = useRef<BlockNoteEditor | null>(null)
-  const { toast } = useToast()
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [category, setCategory] = useState<string>("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [summary, setSummary] = useState("");
+  const [published, setPublished] = useState(false);
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [editorContent, setEditorContent] = useState<any[]>([]);
+  const [initialEditorContent, setInitialEditorContent] = useState<
+    any[] | undefined
+  >(undefined);
+  const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>(
+    [],
+  );
+  const editorRef = useRef<BlockNoteEditor | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (blogPost) {
-      setTitle(blogPost.title)
-      setSlug(blogPost.slug)
-      setCategory(blogPost.category)
-      setThumbnailUrl(blogPost.thumbnail_url || '')
-      setSummary(blogPost.summary || '')
-      setPublished(blogPost.published || false)
-      setMetaTitle(blogPost.meta_title || '')
-      setMetaDescription(blogPost.meta_description || '')
-      setThumbnailFile(null)
-      if (blogPost.content && Array.isArray(blogPost.content) && blogPost.content.length > 0) {
-        setInitialEditorContent(blogPost.content)
+      setTitle(blogPost.title);
+      setSlug(blogPost.slug);
+      setCategory(blogPost.category);
+      setThumbnailUrl(blogPost.thumbnail_url || "");
+      setSummary(blogPost.summary || "");
+      setPublished(blogPost.published || false);
+      setMetaTitle(blogPost.meta_title || "");
+      setMetaDescription(blogPost.meta_description || "");
+      setThumbnailFile(null);
+      setFaqs(
+        blogPost.faqs && Array.isArray(blogPost.faqs) ? blogPost.faqs : [],
+      );
+      if (
+        blogPost.content &&
+        Array.isArray(blogPost.content) &&
+        blogPost.content.length > 0
+      ) {
+        setInitialEditorContent(blogPost.content);
       } else {
-        setInitialEditorContent(undefined)
+        setInitialEditorContent(undefined);
       }
     } else {
-      setTitle('')
-      setSlug('')
-      setCategory('')
-      setThumbnailUrl('')
-      setSummary('')
-      setPublished(false)
-      setMetaTitle('')
-      setMetaDescription('')
-      setThumbnailFile(null)
-      setInitialEditorContent(undefined)
+      setTitle("");
+      setSlug("");
+      setCategory("");
+      setThumbnailUrl("");
+      setSummary("");
+      setPublished(false);
+      setMetaTitle("");
+      setMetaDescription("");
+      setThumbnailFile(null);
+      setFaqs([]);
+      setInitialEditorContent(undefined);
     }
-  }, [blogPost, open])
+  }, [blogPost, open]);
 
   // 제목에서 슬러그 자동 생성
   useEffect(() => {
     if (!blogPost && title) {
       const autoSlug = title
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '')
-      setSlug(autoSlug)
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+      setSlug(autoSlug);
     }
-  }, [title, blogPost])
+  }, [title, blogPost]);
 
   async function uploadImage(file: File): Promise<string> {
     try {
-      setUploading(true)
+      setUploading(true);
 
       // 1. 파일 타입 검증 (MIME type)
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+      ];
       if (!allowedTypes.includes(file.type)) {
-        throw new Error('지원하지 않는 파일 형식입니다. (JPEG, PNG, WebP, GIF만 허용)')
+        throw new Error(
+          "지원하지 않는 파일 형식입니다. (JPEG, PNG, WebP, GIF만 허용)",
+        );
       }
 
       // 2. 파일 크기 검증 (5MB)
-      const maxSize = 5 * 1024 * 1024 // 5MB
+      const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
-        throw new Error('파일 크기는 5MB를 초과할 수 없습니다.')
+        throw new Error("파일 크기는 5MB를 초과할 수 없습니다.");
       }
 
       // 3. 파일 확장자 검증
-      const fileExt = file.name.split('.').pop()?.toLowerCase()
-      const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif']
+      const fileExt = file.name.split(".").pop()?.toLowerCase();
+      const allowedExts = ["jpg", "jpeg", "png", "webp", "gif"];
       if (!fileExt || !allowedExts.includes(fileExt)) {
-        throw new Error('유효하지 않은 파일 확장자입니다.')
+        throw new Error("유효하지 않은 파일 확장자입니다.");
       }
 
       // 4. 파일명 안전 처리 (경로 조작 방지)
-      const fileName = `${Date.now()}-${crypto.randomUUID()}.${fileExt}`
-      const filePath = `blog/${fileName}` // 경로 하드코딩
+      const fileName = `${Date.now()}-${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `blog/${fileName}`; // 경로 하드코딩
 
-      console.log('1. 파일 업로드 시도:', fileName)
-      console.log('[BlogDialog] 이미지 업로드 시작:', { fileName, filePath, fileSize: file.size })
+      console.log("1. 파일 업로드 시도:", fileName);
+      console.log("[BlogDialog] 이미지 업로드 시작:", {
+        fileName,
+        filePath,
+        fileSize: file.size,
+      });
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from(STORAGE_BUCKET)
         .upload(filePath, file, {
-          cacheControl: '3600',
+          cacheControl: "3600",
           upsert: false,
-        })
+        });
 
       if (uploadError) {
-        console.error('[BlogDialog] 업로드 에러:', uploadError)
+        console.error("[BlogDialog] 업로드 에러:", uploadError);
         if (
-          typeof uploadError.message === 'string' &&
-          uploadError.message.toLowerCase().includes('bucket') &&
-          uploadError.message.toLowerCase().includes('not found')
+          typeof uploadError.message === "string" &&
+          uploadError.message.toLowerCase().includes("bucket") &&
+          uploadError.message.toLowerCase().includes("not found")
         ) {
           console.error(
-            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
-          )
+            "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요",
+          );
         }
-        throw uploadError
+        throw uploadError;
       }
 
-      console.log('[BlogDialog] 업로드 성공:', uploadData)
+      console.log("[BlogDialog] 업로드 성공:", uploadData);
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+      } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
 
-      console.log('2. 획득된 Public URL:', publicUrl)
-      console.log('[BlogDialog] Public URL 생성:', publicUrl)
+      console.log("2. 획득된 Public URL:", publicUrl);
+      console.log("[BlogDialog] Public URL 생성:", publicUrl);
 
-      if (!publicUrl || publicUrl.trim() === '') {
-        console.error('[BlogDialog] Public URL이 비어있음!')
-        throw new Error('이미지 URL을 생성할 수 없습니다.')
+      if (!publicUrl || publicUrl.trim() === "") {
+        console.error("[BlogDialog] Public URL이 비어있음!");
+        throw new Error("이미지 URL을 생성할 수 없습니다.");
       }
 
-      return publicUrl
+      return publicUrl;
     } catch (err: any) {
-      console.error('[BlogDialog] 업로드 실패:', err)
+      console.error("[BlogDialog] 업로드 실패:", err);
       toast({
-        title: '업로드 실패',
-        description: err.message || '이미지 업로드에 실패했습니다.',
-        variant: 'destructive',
-      })
-      throw err
+        title: "업로드 실패",
+        description: err.message || "이미지 업로드에 실패했습니다.",
+        variant: "destructive",
+      });
+      throw err;
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
   }
 
   function handleThumbnailUpload(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] || null
-    setThumbnailFile(file)
+    const file = e.target.files?.[0] || null;
+    setThumbnailFile(file);
 
     if (file) {
       // 로컬 미리보기 URL 생성
-      const previewUrl = URL.createObjectURL(file)
-      setThumbnailUrl(previewUrl)
+      const previewUrl = URL.createObjectURL(file);
+      setThumbnailUrl(previewUrl);
     } else {
-      setThumbnailUrl('')
+      setThumbnailUrl("");
     }
   }
 
   async function handleSubmit(publish: boolean) {
     // 이미 저장 중이면 중복 실행 방지
     if (saving) {
-      return
+      return;
     }
 
     // 본문 내용 가져오기
-    const content = editorRef.current?.document || editorContent
-    const contentString = JSON.stringify(content || [])
+    const content = editorRef.current?.document || editorContent;
+    const contentString = JSON.stringify(content || []);
+
+    // FAQ 필터링 (빈 항목 제거)
+    const filteredFaqs = faqs.filter(
+      (f) => f.question.trim() && f.answer.trim(),
+    );
 
     // Zod 스키마 검증
     const validationResult = blogPostSchema.safeParse({
-      title: title?.trim() || '',
-      slug: slug?.trim() || '',
+      title: title?.trim() || "",
+      slug: slug?.trim() || "",
       category,
       summary: summary?.trim() || undefined,
       metaTitle: metaTitle?.trim() || undefined,
@@ -222,117 +259,124 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       thumbnailUrl: thumbnailUrl || undefined,
       content: contentString,
       published: publish,
-    })
+      faqs: filteredFaqs.length > 0 ? filteredFaqs : undefined,
+    });
 
     if (!validationResult.success) {
-      const firstError = validationResult.error.errors[0]
+      const firstError = validationResult.error.errors[0];
       toast({
-        title: '입력 오류',
+        title: "입력 오류",
         description: firstError.message,
-        variant: 'destructive',
-      })
-      return
+        variant: "destructive",
+      });
+      return;
     }
 
     // 본문 내용 검증 (배열 형식 확인)
     if (!content || !Array.isArray(content) || content.length === 0) {
       toast({
-        title: '필수 항목 누락',
-        description: '본문 내용을 입력해주세요.',
-        variant: 'destructive',
-      })
-      return
+        title: "필수 항목 누락",
+        description: "본문 내용을 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
     }
 
     // 발행 시 SEO 필드 필수
     if (publish) {
       if (!metaTitle || !metaTitle.trim()) {
         toast({
-          title: 'SEO 필수 항목',
-          description: '발행하려면 검색 엔진용 제목(Meta Title)을 입력해주세요.',
-          variant: 'destructive',
-        })
-        return
+          title: "SEO 필수 항목",
+          description:
+            "발행하려면 검색 엔진용 제목(Meta Title)을 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
       }
       if (!metaDescription || !metaDescription.trim()) {
         toast({
-          title: 'SEO 필수 항목',
-          description: '발행하려면 검색 결과 요약문(Meta Description)을 입력해주세요.',
-          variant: 'destructive',
-        })
-        return
+          title: "SEO 필수 항목",
+          description:
+            "발행하려면 검색 결과 요약문(Meta Description)을 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
       }
     }
 
-    setSaving(true)
+    setSaving(true);
     try {
       // summary / meta 필드 안전 처리
-      const safeSummary = summary && summary.trim() ? summary.trim() : null
-      const safeMetaTitle = metaTitle && metaTitle.trim() ? metaTitle.trim() : null
-      const safeMetaDescription = metaDescription && metaDescription.trim()
-        ? metaDescription.trim()
-        : null
+      const safeSummary = summary && summary.trim() ? summary.trim() : null;
+      const safeMetaTitle =
+        metaTitle && metaTitle.trim() ? metaTitle.trim() : null;
+      const safeMetaDescription =
+        metaDescription && metaDescription.trim()
+          ? metaDescription.trim()
+          : null;
 
       // Step 1: 업로드할 파일 확인
-      const file = thumbnailFile
-      console.log('Step 1: 업로드할 파일 확인 ->', file)
+      const file = thumbnailFile;
+      console.log("Step 1: 업로드할 파일 확인 ->", file);
 
       // thumbnail_url 처리: 선택된 파일이 있으면 우선 업로드, 없으면 기존 URL 정규화
-      let finalThumbnailUrl: string | null = null
+      let finalThumbnailUrl: string | null = null;
 
       if (file) {
         try {
-          setUploading(true)
-          const fileExt = file.name.split('.').pop()
+          setUploading(true);
+          const fileExt = file.name.split(".").pop();
           const fileName = `${Date.now()}-${Math.random()
             .toString(36)
-            .substring(7)}.${fileExt}`
-          const filePath = `blog/${fileName}`
+            .substring(7)}.${fileExt}`;
+          const filePath = `blog/${fileName}`;
 
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from(STORAGE_BUCKET)
-            .upload(filePath, file, {
-              cacheControl: '3600',
+          const { data: uploadData, error: uploadError } =
+            await supabase.storage.from(STORAGE_BUCKET).upload(filePath, file, {
+              cacheControl: "3600",
               upsert: false,
-            })
+            });
 
           if (uploadError) {
-            console.error('[BlogDialog] 썸네일 업로드 에러:', uploadError)
+            console.error("[BlogDialog] 썸네일 업로드 에러:", uploadError);
             if (
-              typeof uploadError.message === 'string' &&
-              uploadError.message.toLowerCase().includes('bucket') &&
-              uploadError.message.toLowerCase().includes('not found')
+              typeof uploadError.message === "string" &&
+              uploadError.message.toLowerCase().includes("bucket") &&
+              uploadError.message.toLowerCase().includes("not found")
             ) {
               console.error(
-                "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요"
-              )
+                "Supabase Storage에 'website-assets' 버킷을 생성하고 Public으로 설정했는지 확인하세요",
+              );
             }
-            throw uploadError
+            throw uploadError;
           }
 
-          console.log('[BlogDialog] 썸네일 업로드 성공:', uploadData)
+          console.log("[BlogDialog] 썸네일 업로드 성공:", uploadData);
 
           const {
             data: { publicUrl },
-          } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath)
+          } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
 
-          console.log('Step 2: 생성된 Public URL ->', publicUrl)
+          console.log("Step 2: 생성된 Public URL ->", publicUrl);
 
-          if (!publicUrl || publicUrl.trim() === '') {
-            console.error('[BlogDialog] 썸네일 Public URL이 비어있음!')
-            throw new Error('이미지 URL을 생성할 수 없습니다.')
+          if (!publicUrl || publicUrl.trim() === "") {
+            console.error("[BlogDialog] 썸네일 Public URL이 비어있음!");
+            throw new Error("이미지 URL을 생성할 수 없습니다.");
           }
 
-          finalThumbnailUrl = publicUrl
+          finalThumbnailUrl = publicUrl;
         } finally {
-          setUploading(false)
+          setUploading(false);
         }
       } else if (thumbnailUrl && thumbnailUrl.trim()) {
-        const trimmedUrl = thumbnailUrl.trim()
-        if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
-          finalThumbnailUrl = trimmedUrl
+        const trimmedUrl = thumbnailUrl.trim();
+        if (
+          trimmedUrl.startsWith("http://") ||
+          trimmedUrl.startsWith("https://")
+        ) {
+          finalThumbnailUrl = trimmedUrl;
         } else {
-          finalThumbnailUrl = resolveThumbnailSrc(trimmedUrl)
+          finalThumbnailUrl = resolveThumbnailSrc(trimmedUrl);
         }
       }
 
@@ -346,75 +390,90 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
         published: publish,
         meta_title: safeMetaTitle,
         meta_description: safeMetaDescription,
-      }
+        faqs: filteredFaqs.length > 0 ? filteredFaqs : null,
+      };
 
-      console.log('Step 3: DB로 전송할 최종 Payload ->', finalPayload)
+      console.log("Step 3: DB로 전송할 최종 Payload ->", finalPayload);
 
       if (blogPost) {
         // 수정
         const { error } = await supabase
-          .from('blog_posts')
+          .from("blog_posts")
           .update({
             ...finalPayload,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', blogPost.id)
+          .eq("id", blogPost.id);
 
         if (error) {
-          console.error('[BlogDialog] 업데이트 실패:', error.message || '알 수 없는 에러')
-          throw error
+          console.error(
+            "[BlogDialog] 업데이트 실패:",
+            error.message || "알 수 없는 에러",
+          );
+          throw error;
         }
 
         toast({
-          title: '저장 완료',
-          description: publish ? '인사이트가 성공적으로 발행되었습니다.' : '인사이트가 임시저장되었습니다.',
-        })
+          title: "저장 완료",
+          description: publish
+            ? "인사이트가 성공적으로 발행되었습니다."
+            : "인사이트가 임시저장되었습니다.",
+        });
       } else {
         // 생성
-        const { data, error } = await supabase.from('blog_posts').insert(finalPayload).select()
+        const { data, error } = await supabase
+          .from("blog_posts")
+          .insert(finalPayload)
+          .select();
 
         if (error) {
-          console.error('[BlogDialog] 생성 실패:', error.message || '알 수 없는 에러')
-          throw error
+          console.error(
+            "[BlogDialog] 생성 실패:",
+            error.message || "알 수 없는 에러",
+          );
+          throw error;
         }
 
         if (!data || data.length === 0) {
-          throw new Error('데이터가 저장되지 않았습니다.')
+          throw new Error("데이터가 저장되지 않았습니다.");
         }
 
         toast({
-          title: '저장 완료',
-          description: publish ? '인사이트가 성공적으로 발행되었습니다.' : '인사이트가 임시저장되었습니다.',
-        })
+          title: "저장 완료",
+          description: publish
+            ? "인사이트가 성공적으로 발행되었습니다."
+            : "인사이트가 임시저장되었습니다.",
+        });
       }
 
-      onClose()
+      onClose();
     } catch (err: any) {
-      const errorMessage = err?.message || '저장에 실패했습니다. 필수 필드를 확인해주세요.'
-      console.error('[BlogDialog] 저장 실패:', errorMessage)
+      const errorMessage =
+        err?.message || "저장에 실패했습니다. 필수 필드를 확인해주세요.";
+      console.error("[BlogDialog] 저장 실패:", errorMessage);
       toast({
-        title: '발행 실패',
+        title: "발행 실패",
         description: errorMessage,
-        variant: 'destructive',
-      })
+        variant: "destructive",
+      });
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
   }
 
   const dialogContentClass = [
-    'overflow-y-auto',
-    'h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4',
-    'inset-0 top-0 left-0 translate-x-0 translate-y-0',
-    'md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-auto md:max-w-4xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-lg md:border md:p-6',
-  ].join(' ')
+    "overflow-y-auto",
+    "h-[100dvh] w-full max-h-none max-w-none rounded-none border-0 p-4",
+    "inset-0 top-0 left-0 translate-x-0 translate-y-0",
+    "md:inset-auto md:top-1/2 md:left-1/2 md:h-auto md:max-h-[90vh] md:w-auto md:max-w-4xl md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-lg md:border md:p-6",
+  ].join(" ");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className={dialogContentClass}>
         <DialogHeader>
           <DialogTitle>
-            {blogPost ? '마케팅 인사이트 수정' : '새 마케팅 인사이트'}
+            {blogPost ? "마케팅 인사이트 수정" : "새 마케팅 인사이트"}
           </DialogTitle>
         </DialogHeader>
 
@@ -437,14 +496,17 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
                 id="slug"
                 value={slug}
                 onChange={(e) => {
-                  const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
-                  setSlug(value)
+                  const value = e.target.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-]/g, "");
+                  setSlug(value);
                 }}
                 placeholder="global-marketing-insights-2024"
                 className="w-full"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                URL에 사용될 고유한 식별자입니다. 영문 소문자, 숫자, 하이픈만 사용 가능합니다.
+                URL에 사용될 고유한 식별자입니다. 영문 소문자, 숫자, 하이픈만
+                사용 가능합니다.
               </p>
             </div>
 
@@ -494,7 +556,7 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
                     />
                     <button
                       type="button"
-                      onClick={() => setThumbnailUrl('')}
+                      onClick={() => setThumbnailUrl("")}
                       className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white"
                       aria-label="썸네일 제거"
                     >
@@ -511,40 +573,112 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
             <div className="space-y-2">
               <Label htmlFor="meta_title">
                 검색 엔진용 제목 (Meta Title) *
-                {published && <span className="ml-1 text-destructive">(발행 시 필수)</span>}
+                {published && (
+                  <span className="ml-1 text-destructive">(발행 시 필수)</span>
+                )}
               </Label>
               <Input
                 id="meta_title"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
-                placeholder={title || '블로그 포스트 제목'}
+                placeholder={title || "블로그 포스트 제목"}
                 maxLength={60}
                 required
                 className="w-full"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                검색 결과에 표시될 제목입니다. {metaTitle.length}/60자 (권장: 50-60자)
+                검색 결과에 표시될 제목입니다. {metaTitle.length}/60자 (권장:
+                50-60자)
               </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="meta_description">
                 검색 결과 요약문 (Meta Description) *
-                {published && <span className="ml-1 text-destructive">(발행 시 필수)</span>}
+                {published && (
+                  <span className="ml-1 text-destructive">(발행 시 필수)</span>
+                )}
               </Label>
               <Textarea
                 id="meta_description"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder={summary || '블로그 포스트 요약'}
+                placeholder={summary || "블로그 포스트 요약"}
                 maxLength={160}
                 rows={3}
                 required
                 className="w-full"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                검색 결과에 표시될 설명입니다. {metaDescription.length}/160자 (권장: 120-160자)
+                검색 결과에 표시될 설명입니다. {metaDescription.length}/160자
+                (권장: 120-160자)
               </p>
             </div>
+          </div>
+
+          {/* FAQ 섹션 (GEO 최적화) */}
+          <div className="space-y-4 border-t pt-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">FAQ (자주 묻는 질문)</h3>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setFaqs([...faqs, { question: "", answer: "" }])}
+                disabled={faqs.length >= 10}
+              >
+                + FAQ 추가
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              FAQ를 추가하면 Google AI Overview, ChatGPT 등에서 인용될 확률이
+              높아집니다. (최대 10개)
+            </p>
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="space-y-2 border rounded-lg p-4 relative"
+              >
+                <button
+                  type="button"
+                  onClick={() => setFaqs(faqs.filter((_, i) => i !== index))}
+                  className="absolute top-2 right-2 text-muted-foreground hover:text-destructive"
+                  aria-label="FAQ 삭제"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+                <div className="space-y-1">
+                  <Label>질문 {index + 1}</Label>
+                  <Input
+                    value={faq.question}
+                    onChange={(e) => {
+                      const updated = [...faqs];
+                      updated[index] = {
+                        ...updated[index],
+                        question: e.target.value,
+                      };
+                      setFaqs(updated);
+                    }}
+                    placeholder="예: 일본 인플루언서 마케팅 비용은 얼마인가요?"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>답변</Label>
+                  <Textarea
+                    value={faq.answer}
+                    onChange={(e) => {
+                      const updated = [...faqs];
+                      updated[index] = {
+                        ...updated[index],
+                        answer: e.target.value,
+                      };
+                      setFaqs(updated);
+                    }}
+                    placeholder="간결하고 명확한 답변을 작성하세요 (AI가 인용하기 좋은 형식)"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="space-y-2">
@@ -552,11 +686,11 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
             <BlogEditorWrapper
               initialContent={initialEditorContent}
               onContentChange={(content) => {
-                setEditorContent(content)
+                setEditorContent(content);
               }}
               uploadFile={uploadImage}
               onEditorReady={(editor) => {
-                editorRef.current = editor
+                editorRef.current = editor;
               }}
             />
           </div>
@@ -576,18 +710,18 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
               disabled={saving || uploading}
               className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
             >
-              {saving ? '처리 중...' : '임시저장'}
+              {saving ? "처리 중..." : "임시저장"}
             </Button>
             <Button
               onClick={() => handleSubmit(true)}
               disabled={saving || uploading}
               className="min-h-[44px] w-full touch-manipulation sm:w-auto sm:min-h-0"
             >
-              {saving ? '처리 중...' : '발행하기'}
+              {saving ? "처리 중..." : "발행하기"}
             </Button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
