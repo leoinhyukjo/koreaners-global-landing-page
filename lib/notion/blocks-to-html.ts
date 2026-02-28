@@ -275,6 +275,17 @@ export async function blocksToHtml(
       continue;
     }
 
+    // Stop before FAQ section — BlogFAQSection renders it separately
+    if (type === "heading_2") {
+      const text = (block.heading_2?.rich_text ?? [])
+        .map((rt: any) => rt.plain_text ?? "")
+        .join("")
+        .toLowerCase();
+      if (text.includes("faq") || text.includes("자주 묻는 질문")) {
+        break;
+      }
+    }
+
     // Group consecutive bulleted_list_item
     if (type === "bulleted_list_item") {
       const items: string[] = [];

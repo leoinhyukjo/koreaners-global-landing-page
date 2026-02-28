@@ -143,6 +143,13 @@ async function fetchAllBlocks(pageId: string): Promise<any[]> {
     cursor = response.has_more ? response.next_cursor : undefined;
   } while (cursor);
 
+  // Fetch children for blocks that have nested content (table, toggle, etc.)
+  for (const block of allBlocks) {
+    if (block.has_children && block.type !== "child_page" && block.type !== "child_database") {
+      block.children = await fetchAllBlocks(block.id);
+    }
+  }
+
   return allBlocks;
 }
 

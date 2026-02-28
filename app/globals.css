@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -229,6 +230,222 @@ footer {
   max-width: 100%;
 }
 
+/* ─── Blog Prose Styles (Notion HTML) ─── raw HTML 콘텐츠용 서식 */
+
+.blog-content-wrapper .prose p {
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+  color: rgb(229 231 235) !important;
+  margin-bottom: 1.5rem !important;
+  word-break: keep-all !important;
+}
+@media (min-width: 1024px) {
+  .blog-content-wrapper .prose p {
+    font-size: 1.125rem !important;
+  }
+}
+
+.blog-content-wrapper .prose h1,
+.blog-content-wrapper .prose h2,
+.blog-content-wrapper .prose h3,
+.blog-content-wrapper .prose h4,
+.blog-content-wrapper .prose h5,
+.blog-content-wrapper .prose h6 {
+  color: rgb(255 255 255) !important;
+  font-weight: 700 !important;
+  word-break: keep-all !important;
+}
+
+.blog-content-wrapper .prose h2 {
+  font-size: 1.875rem !important;
+  margin-top: 2.5rem !important;
+  margin-bottom: 1rem !important;
+  line-height: 1.3 !important;
+  position: relative !important;
+  padding-left: 1rem !important;
+}
+
+.blog-content-wrapper .prose h2::before {
+  content: '|' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: rgb(255 255 255) !important;
+  font-weight: 900 !important;
+}
+
+.blog-content-wrapper .prose h3 {
+  font-size: 1.5rem !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.75rem !important;
+  line-height: 1.3 !important;
+  position: relative !important;
+  padding-left: 1rem !important;
+}
+
+.blog-content-wrapper .prose h3::before {
+  content: '|' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: rgb(255 255 255) !important;
+  font-weight: 900 !important;
+}
+
+.blog-content-wrapper .prose ul,
+.blog-content-wrapper .prose ol {
+  margin: 1.5rem 0 !important;
+  color: rgb(229 231 235) !important;
+  word-break: keep-all !important;
+  padding-left: 1.5rem !important;
+}
+
+.blog-content-wrapper .prose li {
+  margin-bottom: 0.5rem !important;
+  word-break: keep-all !important;
+}
+
+.blog-content-wrapper .prose strong {
+  color: rgb(255 255 255) !important;
+  font-weight: 600 !important;
+}
+
+.blog-content-wrapper .prose blockquote {
+  border-left: 4px solid rgb(212 212 212) !important;
+  padding-left: 1rem !important;
+  font-style: italic !important;
+  color: rgb(163 163 163) !important;
+  margin: 1.5rem 0 !important;
+}
+
+.blog-content-wrapper .prose code {
+  background: rgba(255, 255, 255, 0.1) !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0 !important;
+  font-size: 0.875rem !important;
+  color: rgb(255 255 255) !important;
+}
+
+.blog-content-wrapper .prose pre {
+  background: rgba(255, 255, 255, 0.05) !important;
+  padding: 1rem !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  overflow-x: auto !important;
+  margin: 1.5rem 0 !important;
+}
+
+.blog-content-wrapper .prose pre code {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.blog-content-wrapper .prose a {
+  color: rgb(255 255 255) !important;
+  text-decoration: underline !important;
+}
+
+.blog-content-wrapper .prose a:hover {
+  color: rgb(212 212 212) !important;
+}
+
+.blog-content-wrapper .prose s,
+.blog-content-wrapper .prose del {
+  text-decoration: none !important;
+}
+
+/* 표 스타일 — Notion HTML 테이블 */
+.blog-content-wrapper .prose table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  margin: 1.5rem 0 !important;
+  overflow-x: auto !important;
+  display: block !important;
+}
+
+.blog-content-wrapper .prose thead {
+  background-color: #333 !important;
+}
+
+.blog-content-wrapper .prose th {
+  background-color: #333 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  padding: 0.75rem !important;
+  text-align: left !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+.blog-content-wrapper .prose td {
+  padding: 0.75rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: rgb(229 231 235) !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+.blog-content-wrapper .prose tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 이미지 반응형 */
+.blog-content-wrapper .prose img {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+@media (min-width: 1024px) {
+  .blog-content-wrapper .prose img {
+    max-width: 56rem !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+.blog-content-wrapper .prose figure {
+  margin: 1.5rem 0 !important;
+}
+
+.blog-content-wrapper .prose figcaption {
+  text-align: center !important;
+  font-size: 0.875rem !important;
+  color: rgb(163 163 163) !important;
+  margin-top: 0.5rem !important;
+}
+
+.blog-content-wrapper .prose hr {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  margin: 2rem 0 !important;
+}
+
+/* 모바일 반응형 - prose */
+@media (max-width: 768px) {
+  .blog-content-wrapper .prose table {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .blog-content-wrapper .prose h2,
+  .blog-content-wrapper .prose h3 {
+    padding-left: 0.75rem !important;
+  }
+
+  .blog-content-wrapper .prose h2::before,
+  .blog-content-wrapper .prose h3::before {
+    left: -0.25rem !important;
+  }
+}
+
+/* ─── Blog Content Styles (BlockNote Legacy) ─── */
 /* Blog Content Styles - 요약/본문 패딩 일치: BlockNote 기본 padding-inline 제거 */
 .blog-content-wrapper .bn-container {
   background: transparent !important;
