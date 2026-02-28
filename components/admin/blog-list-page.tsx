@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Edit, Trash2, RefreshCw } from "lucide-react";
+import { ExternalLink, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,40 +51,6 @@ export function BlogListPage() {
       alert("블로그 포스트를 불러오는데 실패했습니다: " + errorMessage);
     } finally {
       setLoading(false);
-    }
-  }
-
-  function handleCreate() {
-    window.location.href = "/admin/blog/edit";
-  }
-
-  function handleEdit(post: BlogPost) {
-    window.location.href = `/admin/blog/edit?id=${post.id}`;
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-
-    try {
-      const { error: supabaseError } = await supabase
-        .from("blog_posts")
-        .delete()
-        .eq("id", id);
-
-      if (supabaseError) {
-        console.error(
-          "[Admin Blog] 삭제 에러: " +
-            (supabaseError?.message || "알 수 없는 에러"),
-        );
-        throw supabaseError;
-      }
-
-      alert("블로그 포스트가 삭제되었습니다.");
-      fetchBlogPosts();
-    } catch (err: any) {
-      const errorMessage = err?.message || "알 수 없는 에러";
-      console.error("[Admin Blog] 삭제 에러: " + errorMessage);
-      alert("삭제에 실패했습니다: " + errorMessage);
     }
   }
 
@@ -162,9 +128,19 @@ export function BlogListPage() {
               {syncing ? "동기화 중..." : "Notion 동기화"}
             </span>
           </Button>
-          <Button onClick={handleCreate} className="h-11 shrink-0 px-5 sm:h-10">
-            <Plus className="h-4 w-4 shrink-0 sm:mr-2" />
-            <span className="sm:inline">새 포스트 작성</span>
+          <Button
+            asChild
+            variant="secondary"
+            className="h-11 shrink-0 px-5 sm:h-10"
+          >
+            <a
+              href="https://www.notion.so/2f501ca3e4808082aae4f046911ccf9b"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink className="h-4 w-4 shrink-0 sm:mr-2" />
+              <span className="sm:inline">Notion에서 편집</span>
+            </a>
           </Button>
         </div>
       </div>
@@ -202,7 +178,7 @@ export function BlogListPage() {
                     <TableHead>카테고리</TableHead>
                     <TableHead>상태</TableHead>
                     <TableHead>생성일</TableHead>
-                    <TableHead className="text-right">작업</TableHead>
+                    <TableHead className="text-right">보기</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -211,8 +187,7 @@ export function BlogListPage() {
                     return (
                       <TableRow
                         key={post.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => handleEdit(post)}
+                        className="hover:bg-muted/50"
                       >
                         <TableCell>
                           {thumbSrc ? (
@@ -272,28 +247,21 @@ export function BlogListPage() {
                             "ko-KR",
                           )}
                         </TableCell>
-                        <TableCell
-                          className="text-right"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(post)}
-                              className="h-9 w-9 text-foreground hover:bg-white/10"
+                        <TableCell className="text-right">
+                          <Button
+                            asChild
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 text-foreground hover:bg-white/10"
+                          >
+                            <a
+                              href={`/blog/${post.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(post.id)}
-                              className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
-                            >
-                              <Trash2 className="h-4 w-4 text-white" />
-                            </Button>
-                          </div>
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
@@ -310,8 +278,7 @@ export function BlogListPage() {
               return (
                 <Card
                   key={post.id}
-                  className="rounded-lg border shadow-sm p-6 cursor-pointer hover:bg-muted/30"
-                  onClick={() => handleEdit(post)}
+                  className="rounded-lg border shadow-sm p-6 hover:bg-muted/30"
                 >
                   <div className="flex items-center gap-4">
                     {thumbSrc ? (
@@ -355,27 +322,20 @@ export function BlogListPage() {
                         )}
                       </div>
                     </div>
-                    <div
-                      className="flex gap-2 shrink-0"
-                      onClick={(e) => e.stopPropagation()}
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 shrink-0 text-foreground hover:bg-white/10"
                     >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(post)}
-                        className="h-9 w-9 text-foreground hover:bg-white/10"
+                      <a
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(post.id)}
-                        className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
-                      >
-                        <Trash2 className="h-4 w-4 text-white" />
-                      </Button>
-                    </div>
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </Button>
                   </div>
                 </Card>
               );
