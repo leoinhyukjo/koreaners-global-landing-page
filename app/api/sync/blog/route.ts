@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { notion } from "@/lib/notion/client";
 import { blocksToHtml } from "@/lib/notion/blocks-to-html";
 import { parseFaqsFromBlocks } from "@/lib/notion/parse-faqs";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+export const maxDuration = 60;
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -12,6 +15,11 @@ interface SyncResult {
 }
 
 // ─── Auth ─────────────────────────────────────────────────────
+
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
 
 function authenticate(request: NextRequest, body: unknown): boolean {
   const secret = process.env.SYNC_SECRET;
@@ -24,7 +32,7 @@ function authenticate(request: NextRequest, body: unknown): boolean {
   const authHeader = request.headers.get("authorization");
   if (authHeader) {
     const [scheme, token] = authHeader.split(" ");
-    if (scheme === "Bearer" && token === secret) return true;
+    if (scheme === "Bearer" && token && safeEqual(token, secret)) return true;
   }
 
   // Fallback: check request body
@@ -32,7 +40,8 @@ function authenticate(request: NextRequest, body: unknown): boolean {
     body &&
     typeof body === "object" &&
     "secret" in body &&
-    (body as { secret: string }).secret === secret
+    typeof (body as { secret: string }).secret === "string" &&
+    safeEqual((body as { secret: string }).secret, secret)
   ) {
     return true;
   }
@@ -136,7 +145,10 @@ async function fetchAllPages(): Promise<any[]> {
 
 // ─── Process Single Post ──────────────────────────────────────
 
-async function processPost(page: any): Promise<{
+async function processPost(
+  page: any,
+  supabase: ReturnType<typeof createAdminClient>,
+): Promise<{
   slug: string;
   title: string;
   category: string;
@@ -168,8 +180,8 @@ async function processPost(page: any): Promise<{
   // Fetch all blocks for the page
   const blocks = await fetchAllBlocks(page.id);
 
-  // Convert blocks to HTML
-  const content = await blocksToHtml(blocks);
+  // Convert blocks to HTML (pass supabase for image uploads)
+  const content = await blocksToHtml(blocks, supabase);
 
   // Parse FAQs from blocks
   const faqs = parseFaqsFromBlocks(blocks);
@@ -222,8 +234,8 @@ export async function POST(request: NextRequest) {
     const pages = await fetchAllPages();
     console.log(`[sync/blog] Found ${pages.length} pages in Notion DB`);
 
-    // 2. Create Supabase client
-    const supabase = await createClient();
+    // 2. Create Supabase admin client (service role, bypasses RLS)
+    const supabase = createAdminClient();
 
     // 3. Process each page
     for (const page of pages) {
@@ -231,7 +243,7 @@ export async function POST(request: NextRequest) {
 
       try {
         console.log(`[sync/blog] Processing: "${pageTitle}"`);
-        const postData = await processPost(page);
+        const postData = await processPost(page, supabase);
 
         if (!postData.slug) {
           result.errors.push(`"${pageTitle}": empty slug after generation`);

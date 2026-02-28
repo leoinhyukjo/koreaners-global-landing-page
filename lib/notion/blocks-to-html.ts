@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createHash } from "crypto";
 
 // ─── Rich Text ───────────────────────────────────────────────
@@ -115,7 +115,7 @@ function isSafeUrl(url: string): boolean {
  * Uses upsert so same-hash files are overwritten (idempotent).
  */
 async function uploadToSupabase(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: SupabaseClient,
   buf: Buffer,
   originalUrl: string,
   contentType: string,
@@ -141,7 +141,7 @@ async function uploadToSupabase(
  * - Notion-hosted (type "file"): download → upload to Supabase → return permanent URL
  */
 async function resolveImageUrl(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: SupabaseClient,
   imageBlock: {
     type: "file" | "external";
     file?: { url: string };
@@ -175,7 +175,7 @@ async function resolveImageUrl(
 
 async function blockToHtml(
   block: any,
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: SupabaseClient,
 ): Promise<string> {
   const type: string = block.type;
   const data = block[type];
@@ -258,10 +258,11 @@ async function blockToHtml(
  * Handles list grouping (consecutive list items wrapped in <ul>/<ol>)
  * and table grouping (table block followed by table_row children).
  */
-export async function blocksToHtml(blocks: any[]): Promise<string> {
+export async function blocksToHtml(
+  blocks: any[],
+  supabase: SupabaseClient,
+): Promise<string> {
   if (!blocks || blocks.length === 0) return "";
-
-  const supabase = await createClient();
   const htmlParts: string[] = [];
   let i = 0;
 
