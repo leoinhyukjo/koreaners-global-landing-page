@@ -21,22 +21,24 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(Buffer.from(a), Buffer.from(b));
 }
 
-function authenticate(request: NextRequest, body: unknown): boolean {
+async function authenticate(
+  request: NextRequest,
+  body: unknown,
+): Promise<boolean> {
   const secret = process.env.SYNC_SECRET;
-  if (!secret) {
-    console.error("[sync/blog] SYNC_SECRET environment variable is not set");
-    return false;
+
+  // 1. Check Authorization header
+  if (secret) {
+    const authHeader = request.headers.get("authorization");
+    if (authHeader) {
+      const [scheme, token] = authHeader.split(" ");
+      if (scheme === "Bearer" && token && safeEqual(token, secret)) return true;
+    }
   }
 
-  // Check Authorization header first
-  const authHeader = request.headers.get("authorization");
-  if (authHeader) {
-    const [scheme, token] = authHeader.split(" ");
-    if (scheme === "Bearer" && token && safeEqual(token, secret)) return true;
-  }
-
-  // Fallback: check request body
+  // 2. Check request body secret
   if (
+    secret &&
     body &&
     typeof body === "object" &&
     "secret" in body &&
@@ -44,6 +46,22 @@ function authenticate(request: NextRequest, body: unknown): boolean {
     safeEqual((body as { secret: string }).secret, secret)
   ) {
     return true;
+  }
+
+  // 3. Check Supabase Auth session (for admin page calls)
+  try {
+    const { createClient } = await import("@/lib/supabase/server");
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) return true;
+  } catch {
+    // Session check failed, fall through
+  }
+
+  if (!secret) {
+    console.error("[sync/blog] SYNC_SECRET environment variable is not set");
   }
 
   return false;
@@ -213,7 +231,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Authenticate
-  if (!authenticate(request, body)) {
+  if (!(await authenticate(request, body))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
