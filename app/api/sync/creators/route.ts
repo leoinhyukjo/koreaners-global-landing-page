@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
 
     // 2. Filter: only sync pages where 홈페이지공개 checkbox is checked
     const publicPages = allPages.filter((page: any) =>
-      getCheckbox(page.properties, "홈페이지공개"),
+      getCheckbox(page.properties, "홈페이지 게시"),
     );
     console.log(
       `[sync/creators] ${publicPages.length} creators marked as public`,
@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
         publicNotionIds.push(notionId);
 
         // Extract profile image
-        const profileFile = getFileOrUrl(page.properties, "프로필이미지");
+        const profileFile = getFileOrUrl(page.properties, "프로필 이미지");
         const profileImageUrl = profileFile
           ? await resolveImageUrl(supabase, profileFile)
           : null;
