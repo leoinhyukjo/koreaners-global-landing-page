@@ -29,6 +29,7 @@ export type Creator = {
   // X(Twitter) 링크 컬럼 (스키마에 따라 둘 중 하나 사용)
   x_url?: string | null;
   twitter_url?: string | null;
+  notion_id?: string | null;
   created_at: string;
 };
 

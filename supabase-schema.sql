@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS creators (
   instagram_url TEXT,
   youtube_url TEXT,
   tiktok_url TEXT,
+  x_url TEXT,
+  notion_id TEXT UNIQUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
