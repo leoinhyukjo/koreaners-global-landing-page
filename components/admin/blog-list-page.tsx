@@ -1,18 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExternalLink, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { ExternalLink, FileText, RefreshCw } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import type { BlogPost } from "@/lib/supabase";
 import { resolveThumbnailSrc } from "@/lib/thumbnail";
@@ -103,99 +92,135 @@ export function BlogListPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+    <div className="space-y-6">
+      {/* Page header — matches dashboard pattern */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl text-white">
-            글로벌 마케팅 인사이트 관리
-          </h1>
-          <p className="mt-1 text-sm text-zinc-300 sm:text-base">
-            글로벌 마케팅 트렌드, 최신 뉴스, 실무 인사이트를 아우르는 전문 지식
-            채널을 관리합니다
+          <h1 className="text-lg font-semibold text-neutral-50">블로그 관리</h1>
+          <p className="mt-1 text-sm text-neutral-400">
+            Notion에서 작성한 블로그 포스트를 동기화하고 관리합니다
           </p>
         </div>
-        <div className="flex gap-2 shrink-0">
-          <Button
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href="https://www.notion.so/2f501ca3e4808082aae4f046911ccf9b"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-neutral-800 px-3 py-2 text-sm text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-neutral-50"
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span className="hidden sm:inline">Notion</span>
+          </a>
+          <button
             onClick={handleSync}
             disabled={syncing}
-            variant="outline"
-            className="h-11 px-5 sm:h-10"
+            className="inline-flex items-center gap-2 rounded-lg bg-neutral-800 px-3 py-2 text-sm text-neutral-50 transition-colors hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCw
-              className={`h-4 w-4 shrink-0 sm:mr-2 ${syncing ? "animate-spin" : ""}`}
+              className={`h-4 w-4 shrink-0 ${syncing ? "animate-spin" : ""}`}
             />
-            <span className="sm:inline">
-              {syncing ? "동기화 중..." : "Notion 동기화"}
-            </span>
-          </Button>
-          <Button
-            asChild
-            variant="secondary"
-            className="h-11 shrink-0 px-5 sm:h-10"
-          >
-            <a
-              href="https://www.notion.so/2f501ca3e4808082aae4f046911ccf9b"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLink className="h-4 w-4 shrink-0 sm:mr-2" />
-              <span className="sm:inline">Notion에서 편집</span>
-            </a>
-          </Button>
+            <span>{syncing ? "동기화 중..." : "Notion 동기화"}</span>
+          </button>
         </div>
       </div>
 
+      {/* Sync result banner */}
       {syncResult && (
         <div
           className={`rounded-lg border px-4 py-3 text-sm ${
             syncResult.includes("실패") || syncResult.includes("오류")
-              ? "border-red-500/50 bg-red-500/10 text-red-300"
-              : "border-green-500/50 bg-green-500/10 text-green-300"
+              ? "border-red-500/30 bg-red-500/10 text-red-400"
+              : "border-green-500/30 bg-green-500/10 text-green-400"
           }`}
         >
           {syncResult}
         </div>
       )}
 
+      {/* Content */}
       {loading ? (
-        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
-          로딩 중...
-        </Card>
+        /* Loading skeleton */
+        <div className="space-y-4">
+          <div className="hidden md:block">
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900 overflow-hidden">
+              <div className="px-4 py-3 border-b border-neutral-800">
+                <div className="h-4 w-48 animate-pulse rounded bg-neutral-800" />
+              </div>
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-4 px-4 py-3 border-b border-neutral-800 last:border-b-0"
+                >
+                  <div className="h-10 w-14 animate-pulse rounded bg-neutral-800 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-800" />
+                    <div className="h-3 w-1/3 animate-pulse rounded bg-neutral-800" />
+                  </div>
+                  <div className="h-5 w-16 animate-pulse rounded-full bg-neutral-800" />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="md:hidden space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-24 animate-pulse rounded-lg bg-neutral-800"
+              />
+            ))}
+          </div>
+        </div>
       ) : blogPosts.length === 0 ? (
-        <Card className="rounded-lg border shadow-sm p-6 sm:p-8 text-center text-muted-foreground">
-          작성된 인사이트가 없습니다.
-        </Card>
+        /* Empty state */
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900 py-16">
+          <div className="flex flex-col items-center justify-center text-neutral-500">
+            <FileText className="mb-3 h-10 w-10" />
+            <p className="text-sm">아직 블로그 포스트가 없습니다</p>
+          </div>
+        </div>
       ) : (
         <>
-          {/* 데스크톱: 크리에이터 관리와 동일한 테이블 스타일 + 썸네일 컬럼 */}
+          {/* Desktop table */}
           <div className="hidden md:block">
-            <Card className="rounded-lg border shadow-sm overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>썸네일</TableHead>
-                    <TableHead>제목</TableHead>
-                    <TableHead>카테고리</TableHead>
-                    <TableHead>상태</TableHead>
-                    <TableHead>생성일</TableHead>
-                    <TableHead className="text-right">보기</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900 overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-neutral-800">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      썸네일
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      제목
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      카테고리
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      상태
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      생성일
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      보기
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-800">
                   {blogPosts.map((post) => {
                     const thumbSrc = getThumbnailDisplaySrc(post);
                     return (
-                      <TableRow
+                      <tr
                         key={post.id}
-                        className="hover:bg-muted/50"
+                        className="transition-colors hover:bg-neutral-800/50"
                       >
-                        <TableCell>
+                        <td className="px-4 py-3">
                           {thumbSrc ? (
                             <>
                               <img
                                 src={thumbSrc}
                                 alt=""
-                                className="h-12 w-16 object-cover rounded border border-border bg-muted"
+                                className="h-10 w-14 object-cover rounded border border-neutral-800 bg-neutral-800"
                                 onError={(e) => {
                                   const t = e.currentTarget;
                                   t.onerror = null;
@@ -204,88 +229,84 @@ export function BlogListPage() {
                                     t.nextElementSibling as HTMLElement;
                                   if (fallback) {
                                     fallback.classList.remove("hidden");
-                                    fallback.classList.add(
-                                      "text-sm",
-                                      "text-muted-foreground",
-                                    );
                                   }
                                 }}
                               />
-                              <span
-                                className="hidden text-sm text-muted-foreground"
-                                aria-hidden
-                              >
+                              <span className="hidden text-xs text-neutral-500">
                                 없음
                               </span>
                             </>
                           ) : (
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-xs text-neutral-500">
                               없음
                             </span>
                           )}
-                        </TableCell>
-                        <TableCell className="font-medium max-w-[280px] text-foreground">
-                          <span className="truncate block" title={post.title}>
+                        </td>
+                        <td className="px-4 py-3 max-w-[280px]">
+                          <span
+                            className="block truncate text-sm text-neutral-50"
+                            title={post.title}
+                          >
                             {post.title}
                           </span>
-                          <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground mt-0.5 block truncate">
+                          <code className="mt-0.5 block truncate rounded bg-neutral-800 px-1.5 py-0.5 text-xs text-neutral-500">
                             {post.slug}
                           </code>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{post.category}</Badge>
-                        </TableCell>
-                        <TableCell>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="rounded-full bg-neutral-800 px-2 py-0.5 text-xs text-neutral-300">
+                            {post.category}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
                           {post.published ? (
-                            <Badge variant="default">발행됨</Badge>
+                            <span className="rounded-full bg-green-400/10 px-2 py-0.5 text-xs text-green-400">
+                              발행됨
+                            </span>
                           ) : (
-                            <Badge variant="outline">임시저장</Badge>
+                            <span className="rounded-full bg-yellow-400/10 px-2 py-0.5 text-xs text-yellow-400">
+                              임시저장
+                            </span>
                           )}
-                        </TableCell>
-                        <TableCell className="text-foreground">
+                        </td>
+                        <td className="px-4 py-3 text-sm text-neutral-400">
                           {new Date(post.created_at).toLocaleDateString(
                             "ko-KR",
                           )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            asChild
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 text-foreground hover:bg-white/10"
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <a
+                            href={`/blog/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-50"
                           >
-                            <a
-                              href={`/blog/${post.slug}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </a>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </td>
+                      </tr>
                     );
                   })}
-                </TableBody>
-              </Table>
-            </Card>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          {/* 모바일: 크리에이터 관리와 동일한 카드 스타일(썸네일 + 제목/날짜/상태 + 편집/삭제) */}
-          <div className="space-y-4 md:hidden">
-            {blogPosts.map((post) => {
-              const thumbSrc = getThumbnailDisplaySrc(post);
-              return (
-                <Card
-                  key={post.id}
-                  className="rounded-lg border shadow-sm p-6 hover:bg-muted/30"
-                >
-                  <div className="flex items-center gap-4">
+          {/* Mobile cards */}
+          <div className="md:hidden">
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900 divide-y divide-neutral-800">
+              {blogPosts.map((post) => {
+                const thumbSrc = getThumbnailDisplaySrc(post);
+                return (
+                  <div
+                    key={post.id}
+                    className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-neutral-800/50"
+                  >
                     {thumbSrc ? (
                       <img
                         src={thumbSrc}
                         alt=""
-                        className="h-12 w-16 shrink-0 object-cover rounded border border-border bg-muted"
+                        className="h-10 w-14 shrink-0 object-cover rounded border border-neutral-800 bg-neutral-800"
                         onError={(e) => {
                           const t = e.currentTarget;
                           t.onerror = null;
@@ -293,53 +314,45 @@ export function BlogListPage() {
                         }}
                       />
                     ) : (
-                      <div className="h-12 w-16 shrink-0 rounded border border-border bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                      <div className="h-10 w-14 shrink-0 rounded border border-neutral-800 bg-neutral-800 flex items-center justify-center text-xs text-neutral-500">
                         없음
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3
-                        className="font-semibold truncate text-foreground"
+                      <p
+                        className="truncate text-sm text-neutral-50"
                         title={post.title}
                       >
                         {post.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
+                      </p>
+                      <p className="mt-0.5 text-xs text-neutral-500">
+                        {post.category} ·{" "}
                         {new Date(post.created_at).toLocaleDateString("ko-KR")}
                       </p>
-                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                        <Badge variant="secondary" className="text-xs">
-                          {post.category}
-                        </Badge>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                         {post.published ? (
-                          <Badge variant="default" className="text-xs">
+                          <span className="rounded-full bg-green-400/10 px-2 py-0.5 text-xs text-green-400">
                             발행됨
-                          </Badge>
+                          </span>
                         ) : (
-                          <Badge variant="outline" className="text-xs">
+                          <span className="rounded-full bg-yellow-400/10 px-2 py-0.5 text-xs text-yellow-400">
                             임시저장
-                          </Badge>
+                          </span>
                         )}
                       </div>
                     </div>
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9 shrink-0 text-foreground hover:bg-white/10"
+                    <a
+                      href={`/blog/${post.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-50"
                     >
-                      <a
-                        href={`/blog/${post.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    </Button>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
                   </div>
-                </Card>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </>
       )}
