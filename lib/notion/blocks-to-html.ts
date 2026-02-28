@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createHash } from "crypto";
+import { resolveImageUrl } from "./image-upload";
 
 // ─── Rich Text ───────────────────────────────────────────────
 
@@ -32,7 +32,6 @@ function richTextToHtml(richTexts: RichText[] | undefined): string {
       if (strikethrough) text = `<s>${text}</s>`;
       if (underline) text = `<u>${text}</u>`;
       if (color && color !== "default") {
-        // Notion colors: "red", "blue_background", etc.
         const isBackground = color.endsWith("_background");
         const cssColor = color.replace("_background", "");
         const prop = isBackground ? "background-color" : "color";
@@ -57,116 +56,6 @@ function escapeHtml(str: string): string {
 
 function escapeAttr(str: string): string {
   return escapeHtml(str).replace(/'/g, "&#39;");
-}
-
-// ─── Image Upload (Supabase Storage) ─────────────────────────
-
-const BUCKET = "website-assets";
-const IMAGE_PREFIX = "blog-images";
-
-async function downloadBuffer(
-  url: string,
-): Promise<{ buf: Buffer; contentType: string }> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to download image: ${res.status}`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  const contentType = res.headers.get("content-type") ?? "";
-  return { buf, contentType };
-}
-
-function hashBuffer(buf: Buffer): string {
-  return createHash("sha256").update(buf).digest("hex");
-}
-
-function guessExtension(url: string, contentType?: string): string {
-  // Try from URL path first
-  try {
-    const pathname = new URL(url).pathname;
-    const match = pathname.match(/\.(\w+)$/);
-    if (match) return match[1].toLowerCase();
-  } catch {
-    // Invalid URL — fall through to content-type
-  }
-
-  // Fallback to content-type mapping
-  const map: Record<string, string> = {
-    "image/png": "png",
-    "image/jpeg": "jpg",
-    "image/gif": "gif",
-    "image/webp": "webp",
-    "image/svg+xml": "svg",
-  };
-  if (contentType && map[contentType]) return map[contentType];
-
-  return "png"; // safe default
-}
-
-function isSafeUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "https:" || parsed.protocol === "http:";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Upload image buffer to Supabase Storage with hash-based deduplication.
- * Uses upsert so same-hash files are overwritten (idempotent).
- */
-async function uploadToSupabase(
-  supabase: SupabaseClient,
-  buf: Buffer,
-  originalUrl: string,
-  contentType: string,
-): Promise<string> {
-  const hash = hashBuffer(buf);
-  const ext = guessExtension(originalUrl, contentType);
-  const path = `${IMAGE_PREFIX}/${hash}.${ext}`;
-
-  const { error } = await supabase.storage.from(BUCKET).upload(path, buf, {
-    contentType: `image/${ext === "jpg" ? "jpeg" : ext}`,
-    upsert: true,
-  });
-
-  if (error) throw error;
-
-  const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return urlData.publicUrl;
-}
-
-/**
- * Resolve a Notion image block to a permanent URL.
- * - External images: use as-is (with protocol validation)
- * - Notion-hosted (type "file"): download → upload to Supabase → return permanent URL
- */
-async function resolveImageUrl(
-  supabase: SupabaseClient,
-  imageBlock: {
-    type: "file" | "external";
-    file?: { url: string };
-    external?: { url: string };
-  },
-): Promise<string> {
-  if (imageBlock.type === "external") {
-    const url = imageBlock.external?.url ?? "";
-    return isSafeUrl(url) ? url : "";
-  }
-
-  // Notion temporary URL → upload to Supabase
-  const tempUrl = imageBlock.file?.url ?? "";
-  if (!tempUrl) return "";
-
-  try {
-    const { buf, contentType } = await downloadBuffer(tempUrl);
-    return await uploadToSupabase(supabase, buf, tempUrl, contentType);
-  } catch (err) {
-    console.warn(
-      "[blocks-to-html] Image upload failed, falling back to original URL:",
-      err instanceof Error ? err.message : err,
-    );
-    return tempUrl;
-  }
 }
 
 // ─── Block → HTML Conversion ─────────────────────────────────

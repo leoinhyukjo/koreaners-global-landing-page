@@ -3,6 +3,7 @@ import { timingSafeEqual } from "crypto";
 import { notion } from "@/lib/notion/client";
 import { blocksToHtml } from "@/lib/notion/blocks-to-html";
 import { parseFaqsFromBlocks } from "@/lib/notion/parse-faqs";
+import { resolveImageUrl } from "@/lib/notion/image-upload";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const maxDuration = 60;
@@ -108,6 +109,36 @@ function getUrl(properties: any, key: string): string | null {
   return prop.url ?? null;
 }
 
+/**
+ * Extract image from a Notion Files & Media property (or fall back to URL property).
+ * Returns the first file's raw data for later resolution, or a plain URL string.
+ */
+function getFileOrUrl(
+  properties: any,
+  key: string,
+): { type: "file"; file: { url: string } } | { type: "external"; external: { url: string } } | null {
+  const prop = properties[key];
+  if (!prop) return null;
+
+  // Files & Media property
+  if (prop.type === "files" && Array.isArray(prop.files) && prop.files.length > 0) {
+    const first = prop.files[0];
+    if (first.type === "file" && first.file?.url) {
+      return { type: "file", file: { url: first.file.url } };
+    }
+    if (first.type === "external" && first.external?.url) {
+      return { type: "external", external: { url: first.external.url } };
+    }
+  }
+
+  // Fallback: URL property
+  if (prop.type === "url" && prop.url) {
+    return { type: "external", external: { url: prop.url } };
+  }
+
+  return null;
+}
+
 function getDate(properties: any, key: string): string | null {
   const prop = properties[key];
   if (!prop || prop.type !== "date") return null;
@@ -202,7 +233,11 @@ async function processPost(
   const statusSelect = getSelect(props, "상태");
   const published = statusSelect === "발행";
   const category = getMultiSelectFirst(props, "카테고리");
-  const thumbnailUrl = getUrl(props, "썸네일");
+  // Thumbnail: Files & Media (file upload) or URL property
+  const thumbnailFile = getFileOrUrl(props, "썸네일");
+  const thumbnailUrl = thumbnailFile
+    ? await resolveImageUrl(supabase, thumbnailFile)
+    : null;
   const metaTitle = getRichText(props, "Meta Title") || null;
   const metaDescription = getRichText(props, "Meta Description") || null;
   const publishDate = getDate(props, "발행일");
