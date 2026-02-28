@@ -27,12 +27,6 @@ export function getBlogTitle(p: BlogPost, locale: Locale): string {
   return p.title?.trim() ?? "";
 }
 
-/** 블로그 요약 */
-export function getBlogSummary(p: BlogPost, locale: Locale): string | null {
-  if (locale === "ja" && p.summary_jp != null) return p.summary_jp;
-  return p.summary ?? null;
-}
-
 /** 블로그 본문 */
 export function getBlogContent(p: BlogPost, locale: Locale): any {
   if (locale === "ja" && p.content_jp != null) return p.content_jp;

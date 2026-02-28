@@ -64,7 +64,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
   const [slug, setSlug] = useState("");
   const [category, setCategory] = useState<string>("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
-  const [summary, setSummary] = useState("");
   const [published, setPublished] = useState(false);
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
@@ -87,7 +86,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       setSlug(blogPost.slug);
       setCategory(blogPost.category);
       setThumbnailUrl(blogPost.thumbnail_url || "");
-      setSummary(blogPost.summary || "");
       setPublished(blogPost.published || false);
       setMetaTitle(blogPost.meta_title || "");
       setMetaDescription(blogPost.meta_description || "");
@@ -109,7 +107,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       setSlug("");
       setCategory("");
       setThumbnailUrl("");
-      setSummary("");
       setPublished(false);
       setMetaTitle("");
       setMetaDescription("");
@@ -253,7 +250,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
       title: title?.trim() || "",
       slug: slug?.trim() || "",
       category,
-      summary: summary?.trim() || undefined,
       metaTitle: metaTitle?.trim() || undefined,
       metaDescription: metaDescription?.trim() || undefined,
       thumbnailUrl: thumbnailUrl || undefined,
@@ -306,8 +302,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
 
     setSaving(true);
     try {
-      // summary / meta 필드 안전 처리
-      const safeSummary = summary && summary.trim() ? summary.trim() : null;
       const safeMetaTitle =
         metaTitle && metaTitle.trim() ? metaTitle.trim() : null;
       const safeMetaDescription =
@@ -385,7 +379,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
         slug: slug.trim(),
         category,
         thumbnail_url: finalThumbnailUrl,
-        summary: safeSummary,
         content,
         published: publish,
         meta_title: safeMetaTitle,
@@ -527,17 +520,6 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="summary">요약</Label>
-              <Input
-                id="summary"
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                placeholder="블로그 포스트 요약 문구"
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-2">
               <Label>썸네일 이미지</Label>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Input
@@ -602,7 +584,7 @@ export function BlogDialog({ open, onClose, blogPost }: BlogDialogProps) {
                 id="meta_description"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder={summary || "블로그 포스트 요약"}
+                placeholder="검색 결과에 표시될 설명"
                 maxLength={160}
                 rows={3}
                 required

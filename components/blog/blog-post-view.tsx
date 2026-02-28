@@ -13,7 +13,6 @@ import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
 import {
   getBlogTitle,
-  getBlogSummary,
   getBlogContent,
   getBlogFaqs,
 } from "@/lib/localized-content";
@@ -53,10 +52,11 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, []);
-  const displaySummary = getBlogSummary(blogPost, locale);
   const contentToShow = getBlogContent(blogPost, locale);
   const hasContent =
-    contentToShow && Array.isArray(contentToShow) && contentToShow.length > 0;
+    contentToShow &&
+    ((typeof contentToShow === "string" && contentToShow.trim().length > 0) ||
+      (Array.isArray(contentToShow) && contentToShow.length > 0));
 
   return (
     <SafeHydration fallback={<BlogDetailSkeleton />}>
@@ -121,20 +121,8 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                 </div>
               </div>
             </header>
-            {displaySummary && (
-              <div className="mb-10 sm:mb-12">
-                <div className="border border-zinc-700/50 bg-zinc-800 px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none">
-                  <p
-                    className={`text-base lg:text-lg text-zinc-200 leading-relaxed ${locale === "ja" ? "break-all" : "break-keep"}`}
-                  >
-                    {displaySummary}
-                  </p>
-                </div>
-                <div className="mt-10 sm:mt-12 border-t border-zinc-700/50" />
-              </div>
-            )}
             <div
-              className={`${displaySummary ? "mt-0" : "mt-10 sm:mt-12"} border border-zinc-700/50 bg-zinc-800 px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper`}
+              className="mt-10 sm:mt-12 border border-zinc-700/50 bg-zinc-800 px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper"
             >
               <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-200 leading-relaxed text-base lg:text-lg blog-content-prose">
                 {hasContent ? (

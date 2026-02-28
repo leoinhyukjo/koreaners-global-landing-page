@@ -43,8 +43,7 @@ export type BlogPost = {
   slug: string;
   category: string;
   thumbnail_url: string | null;
-  summary: string | null;
-  content: any; // BlockNote JSON
+  content: any; // BlockNote JSON or HTML string
   published: boolean;
   meta_title: string | null;
   meta_description: string | null;
@@ -52,7 +51,6 @@ export type BlogPost = {
   updated_at: string;
   // 일본어
   title_jp?: string | null;
-  summary_jp?: string | null;
   content_jp?: any | null;
   meta_title_jp?: string | null;
   meta_description_jp?: string | null;

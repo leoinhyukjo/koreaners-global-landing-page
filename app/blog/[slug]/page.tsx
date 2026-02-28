@@ -59,7 +59,6 @@ export async function generateMetadata({
   const metaTitle = blogPost.meta_title || blogPost.title;
   const metaDescription =
     blogPost.meta_description ||
-    blogPost.summary ||
     `${blogPost.title} - ${blogPost.category}`;
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://www.koreaners.co";
@@ -122,7 +121,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     "@type": schemaType,
     headline: blogPost.meta_title || blogPost.title,
     description:
-      blogPost.meta_description || blogPost.summary || blogPost.title,
+      blogPost.meta_description || blogPost.title,
     image: [thumbnailAbsolute],
     datePublished: blogPost.created_at,
     dateModified: blogPost.updated_at,

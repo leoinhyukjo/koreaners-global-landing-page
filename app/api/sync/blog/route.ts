@@ -177,7 +177,8 @@ async function processPost(
   title: string;
   category: string;
   thumbnail_url: string | null;
-  summary: string | null;
+
+
   content: string;
   published: boolean;
   meta_title: string | null;
@@ -194,7 +195,6 @@ async function processPost(
   const statusSelect = getSelect(props, "상태");
   const published = statusSelect === "발행";
   const category = getMultiSelectFirst(props, "카테고리");
-  const summary = getRichText(props, "요약") || null;
   const thumbnailUrl = getUrl(props, "썸네일");
   const metaTitle = getRichText(props, "Meta Title") || null;
   const metaDescription = getRichText(props, "Meta Description") || null;
@@ -215,7 +215,6 @@ async function processPost(
     title,
     category,
     thumbnail_url: thumbnailUrl,
-    summary,
     content,
     published,
     meta_title: metaTitle,
@@ -288,7 +287,6 @@ export async function POST(request: NextRequest) {
             slug: postData.slug,
             category: postData.category,
             thumbnail_url: postData.thumbnail_url,
-            summary: postData.summary,
             content: postData.content,
             published: postData.published,
             meta_title: postData.meta_title,

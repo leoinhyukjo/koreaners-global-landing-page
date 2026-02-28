@@ -54,15 +54,6 @@ export const blogPostSchema = z.object({
     },
   ),
 
-  summary: z
-    .string()
-    .max(300, "요약은 300자를 초과할 수 없습니다")
-    .refine(
-      (val) => !XSS_PATTERN.test(val),
-      "요약에 허용되지 않는 패턴이 감지되었습니다.",
-    )
-    .optional(),
-
   metaTitle: z
     .string()
     .max(60, "Meta Title은 60자를 초과할 수 없습니다 (SEO 최적화)")

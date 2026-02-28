@@ -18,7 +18,7 @@ import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
-import { getBlogTitle, getBlogSummary } from '@/lib/localized-content'
+import { getBlogTitle } from '@/lib/localized-content'
 
 const POSTS_PER_PAGE = 12
 
@@ -167,12 +167,6 @@ function BlogContent() {
                         <h2 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors leading-tight tracking-tight break-words pr-1">
                           {getBlogTitle(post, locale)}
                         </h2>
-                        {(getBlogSummary(post, locale) ?? post.summary) && (
-                          <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed line-clamp-3 tracking-normal break-words pr-1 min-w-0">
-                            {getBlogSummary(post, locale) ?? post.summary}
-                          </p>
-                        )}
-
                         <div className="mt-auto pt-3 sm:pt-4 border-t border-zinc-700/50 flex items-center justify-between">
                           <time className="text-xs text-zinc-300 flex items-center gap-1" dateTime={post.created_at}>
                             <Calendar className="h-3 w-3" />

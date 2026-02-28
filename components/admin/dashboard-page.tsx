@@ -274,9 +274,6 @@ export function DashboardPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <h4 className="truncate text-sm font-medium">{post.title}</h4>
-                        {post.summary && (
-                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{post.summary}</p>
-                        )}
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <Badge variant="secondary" className="text-xs">
                             {post.category}

@@ -92,11 +92,6 @@ export function LatestInsights() {
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4 group-hover:text-primary transition-colors break-keep leading-tight">
                   {getBlogTitle(latestPost, locale)}
                 </h3>
-                {(locale === 'ko' ? latestPost.summary : latestPost.summary_jp) && (
-                  <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 leading-relaxed line-clamp-3 break-keep">
-                    {locale === 'ko' ? latestPost.summary : (latestPost.summary_jp ?? latestPost.summary)}
-                  </p>
-                )}
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
                   <time className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 break-keep" dateTime={latestPost.created_at}>
                     <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
