@@ -11,12 +11,14 @@ export type Portfolio = {
   thumbnail_url: string | null;
   category: string[];
   link: string | null;
-  content: any; // BlockNote JSON
+  content: string | null; // HTML (Notion sync)
+  summary: string | null; // Notion '요약' 필드
+  notion_id: string | null; // Notion 페이지 ID (upsert key)
   created_at: string;
   // 일본어 (KR=기존 필드, JP=아래)
   title_jp?: string | null;
   client_name_jp?: string | null;
-  content_jp?: any | null;
+  content_jp?: string | null;
 };
 
 export type Creator = {

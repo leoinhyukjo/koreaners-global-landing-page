@@ -2,26 +2,29 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
-import { FileText, Globe, FilePen, RefreshCw, Users } from 'lucide-react'
+import { FileText, Globe, FilePen, RefreshCw, Users, Briefcase } from 'lucide-react'
 
 export function DashboardPage() {
-  const [stats, setStats] = useState({ total: 0, published: 0, draft: 0 })
+  const [stats, setStats] = useState({ total: 0, published: 0, draft: 0, portfolioCount: 0 })
   const [loading, setLoading] = useState(true)
   const [blogSyncing, setBlogSyncing] = useState(false)
   const [creatorSyncing, setCreatorSyncing] = useState(false)
+  const [portfolioSyncing, setPortfolioSyncing] = useState(false)
   const [syncResult, setSyncResult] = useState<{ message: string; success: boolean } | null>(null)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [allRes, publishedRes] = await Promise.all([
+        const [allRes, publishedRes, portfolioRes] = await Promise.all([
           supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
           supabase.from('blog_posts').select('id', { count: 'exact', head: true }).eq('published', true),
+          supabase.from('portfolios').select('id', { count: 'exact', head: true }),
         ])
         setStats({
           total: allRes.count || 0,
           published: publishedRes.count || 0,
           draft: (allRes.count || 0) - (publishedRes.count || 0),
+          portfolioCount: portfolioRes.count || 0,
         })
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
@@ -32,15 +35,16 @@ export function DashboardPage() {
     fetchData()
   }, [])
 
-  const handleSync = async (type: 'blog' | 'creator') => {
-    const setSyncing = type === 'blog' ? setBlogSyncing : setCreatorSyncing
+  const handleSync = async (type: 'blog' | 'creator' | 'portfolio') => {
+    const setSyncing = type === 'blog' ? setBlogSyncing : type === 'creator' ? setCreatorSyncing : setPortfolioSyncing
     setSyncing(true)
     setSyncResult(null)
     try {
-      const res = await fetch(`/api/sync/${type === 'blog' ? 'blog' : 'creators'}`, { method: 'POST' })
+      const endpoint = type === 'blog' ? 'blog' : type === 'creator' ? 'creators' : 'portfolio'
+      const res = await fetch(`/api/sync/${endpoint}`, { method: 'POST' })
       const data = await res.json()
       if (res.ok) {
-        const label = type === 'blog' ? '블로그' : '크리에이터'
+        const label = type === 'blog' ? '블로그' : type === 'creator' ? '크리에이터' : '포트폴리오'
         const parts = [`${data.synced}건 동기화`]
         if (data.deleted) parts.push(`${data.deleted}건 제거`)
         if (data.errors?.length) parts.push(`${data.errors.length}건 오류`)
@@ -59,8 +63,8 @@ export function DashboardPage() {
     return (
       <div className="space-y-6">
         <div className="h-8 w-32 animate-pulse rounded-md bg-neutral-800" />
-        <div className="grid grid-cols-3 gap-4">
-          {[...Array(3)].map((_, i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
             <div key={i} className="h-24 animate-pulse rounded-lg bg-neutral-800" />
           ))}
         </div>
@@ -73,6 +77,7 @@ export function DashboardPage() {
     { label: '전체 포스트', value: stats.total, icon: FileText, color: 'text-neutral-50' },
     { label: '발행됨', value: stats.published, icon: Globe, color: 'text-green-400' },
     { label: '임시저장', value: stats.draft, icon: FilePen, color: 'text-yellow-400' },
+    { label: '포트폴리오', value: stats.portfolioCount, icon: Briefcase, color: 'text-blue-400' },
   ]
 
   return (
@@ -82,7 +87,7 @@ export function DashboardPage() {
         <p className="mt-1 text-sm text-neutral-400">사이트 현황 요약</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
@@ -99,7 +104,7 @@ export function DashboardPage() {
 
       <div>
         <h2 className="mb-4 text-sm font-medium text-neutral-50">Notion 동기화</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <button
             onClick={() => handleSync('blog')}
             disabled={blogSyncing}
@@ -115,6 +120,14 @@ export function DashboardPage() {
           >
             <Users className={`h-4 w-4 ${creatorSyncing ? 'animate-spin' : ''}`} />
             {creatorSyncing ? '동기화 중...' : '크리에이터 동기화'}
+          </button>
+          <button
+            onClick={() => handleSync('portfolio')}
+            disabled={portfolioSyncing}
+            className="flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-50 transition-colors hover:border-neutral-700 hover:bg-neutral-800 disabled:opacity-50"
+          >
+            <Briefcase className={`h-4 w-4 ${portfolioSyncing ? 'animate-spin' : ''}`} />
+            {portfolioSyncing ? '동기화 중...' : '포트폴리오 동기화'}
           </button>
         </div>
         {syncResult && (
