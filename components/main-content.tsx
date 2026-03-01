@@ -2,15 +2,15 @@
 
 import { SafeHydration } from '@/components/common/SafeHydration'
 import HeroSection from '@/components/hero-section'
+import { TrustSignals } from '@/components/trust-signals'
 import { MarketOpportunity } from '@/components/market-opportunity'
 import { Barriers } from '@/components/barriers'
 import { SolutionRoadmap } from '@/components/solution-roadmap'
 import { Performance } from '@/components/performance'
-import { TrustSignals } from '@/components/trust-signals'
 import { FinalCTA } from '@/components/final-cta'
 import { FooterCTA } from '@/components/footer-cta'
 
-/** 히어로+첫 섹션 헤더와 동일한 레이아웃 틀을 유지해 하이드레이션 시 레이아웃 시프트 방지 */
+/** 히어로 스켈레톤 — 하이드레이션 시 레이아웃 시프트 방지 */
 const MainSkeleton = () => (
   <div className="min-h-screen w-full max-w-full overflow-hidden" aria-hidden="true">
     <div className="relative min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-12 px-4 sm:px-6 lg:px-24">
@@ -30,14 +30,6 @@ const MainSkeleton = () => (
         </div>
       </div>
     </div>
-    <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 border-t border-zinc-800/50">
-      <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-12 block">
-          <div className="h-8 sm:h-10 bg-zinc-800/50 rounded w-2/3 mx-auto mb-4 block" />
-          <div className="h-5 bg-zinc-800/40 rounded w-full max-w-md mx-auto block" />
-        </div>
-      </div>
-    </div>
   </div>
 )
 
@@ -48,12 +40,12 @@ export function MainContent() {
   return (
     <SafeHydration fallback={<MainSkeleton />}>
       <HeroSection />
+      <TrustSignals />
       <MarketOpportunity />
       <Barriers />
       <SolutionRoadmap />
-      <Performance />
       <FinalCTA />
-      <TrustSignals />
+      <Performance />
       <FooterCTA />
     </SafeHydration>
   )

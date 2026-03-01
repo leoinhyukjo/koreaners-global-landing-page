@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
+import { Barlow_Condensed, Playfair_Display, Noto_Sans_JP } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -10,11 +10,25 @@ import { LocaleProvider } from "@/contexts/locale-context";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import ClarityProvider from "./ClarityProvider";
 
-const geist = Geist({ subsets: ["latin"] });
-const geistMono = Geist_Mono({ subsets: ["latin"] });
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["italic"],
+  variable: "--font-accent",
+  display: "swap",
+});
+
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
-  variable: "--font-noto-sans-jp",
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-body",
   display: "swap",
 });
 
@@ -103,9 +117,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${notoSansJP.variable} text-[15px]`}>
+    <html lang="ko" className={`${barlowCondensed.variable} ${playfairDisplay.variable} ${notoSansJP.variable}`}>
       <body
-        className={`${geist.className} flex min-h-screen flex-col font-sans antialiased bg-zinc-900`}
+        className="flex min-h-screen flex-col font-body antialiased bg-black text-base"
       >
         <Script
           id="json-ld"

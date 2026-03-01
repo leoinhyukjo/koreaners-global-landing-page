@@ -16,40 +16,39 @@ footer {
 }
 
 :root {
-  /* B&W Professional Theme - Enhanced Brightness */
-  --background: oklch(0.18 0 0); /* Zinc-900 - brighter base */
-  --foreground: oklch(1 0 0); /* Pure white #FFF */
-  --card: oklch(0.22 0 0); /* Zinc-800 - lighter for cards */
-  --card-foreground: oklch(0.95 0 0); /* Off-white for card text */
-  --popover: oklch(0.22 0 0);
-  --popover-foreground: oklch(1 0 0);
-  --primary: oklch(1 0 0); /* White for primary actions */
-  --primary-foreground: oklch(0 0 0); /* Black text on white */
-  --secondary: oklch(0.25 0 0); /* Lighter gray */
-  --secondary-foreground: oklch(0.9 0 0); /* Light gray text */
-  --muted: oklch(0.22 0 0); /* Muted dark gray */
-  --muted-foreground: oklch(0.8 0 0); /* Brighter gray text - zinc-200 equivalent */
-  --accent: oklch(0.25 0 0); /* Slightly lighter gray */
-  --accent-foreground: oklch(0.9 0 0);
-  --destructive: oklch(0.5 0 0); /* Gray for destructive */
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.3 0 0); /* Zinc-700 - more visible borders */
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.75 0 0); /* Brighter gray for focus rings */
-  --chart-1: oklch(0.9 0 0);
-  --chart-2: oklch(0.7 0 0);
-  --chart-3: oklch(0.5 0 0);
-  --chart-4: oklch(0.3 0 0);
-  --chart-5: oklch(0.1 0 0);
-  --radius: 0px; /* Sharp edges - no rounding */
-  --sidebar: oklch(0.22 0 0);
-  --sidebar-foreground: oklch(1 0 0);
-  --sidebar-primary: oklch(1 0 0);
-  --sidebar-primary-foreground: oklch(0 0 0);
-  --sidebar-accent: oklch(0.25 0 0);
-  --sidebar-accent-foreground: oklch(0.9 0 0);
-  --sidebar-border: oklch(0.3 0 0);
-  --sidebar-ring: oklch(0.75 0 0);
+  --background: #000000;
+  --foreground: #FAFAFA;
+  --card: #111111;
+  --card-foreground: #FAFAFA;
+  --popover: #111111;
+  --popover-foreground: #FAFAFA;
+  --primary: #FFFFFF;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #FAFAFA;
+  --muted: #111111;
+  --muted-foreground: #888888;
+  --accent: #111111;
+  --accent-foreground: #FAFAFA;
+  --destructive: #888888;
+  --destructive-foreground: #FAFAFA;
+  --border: rgba(255,255,255,0.12);
+  --input: #111111;
+  --ring: #FAFAFA;
+  --chart-1: #FAFAFA;
+  --chart-2: #888888;
+  --chart-3: #555555;
+  --chart-4: #333333;
+  --chart-5: #111111;
+  --radius: 0px;
+  --sidebar: #111111;
+  --sidebar-foreground: #FAFAFA;
+  --sidebar-primary: #FFFFFF;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #FAFAFA;
+  --sidebar-border: rgba(255,255,255,0.12);
+  --sidebar-ring: #FAFAFA;
 }
 
 .dark {
@@ -693,4 +692,20 @@ footer {
 @keyframes marquee-right {
   0% { transform: translateX(-50%); }
   100% { transform: translateX(0); }
+}
+
+/* === Design System: Exaggerated Minimalism === */
+
+/* Font utilities */
+@utility font-display {
+  font-family: var(--font-display), sans-serif;
+}
+
+@utility font-accent {
+  font-family: var(--font-accent), serif;
+  font-style: italic;
+}
+
+@utility font-body {
+  font-family: var(--font-body), sans-serif;
 }
