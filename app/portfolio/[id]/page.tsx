@@ -83,6 +83,7 @@ export default function PortfolioDetailPage() {
         .from('portfolios')
         .select('*')
         .neq('id', id)
+        .order('published_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
         .limit(3)
 
@@ -179,9 +180,9 @@ export default function PortfolioDetailPage() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight break-keep text-white">
                   {displayTitle}
                 </h1>
-                <time className="text-xs sm:text-sm text-white/40 flex items-center gap-1.5 break-keep" dateTime={portfolio.created_at}>
+                <time className="text-xs sm:text-sm text-white/40 flex items-center gap-1.5 break-keep" dateTime={portfolio.published_at ?? portfolio.created_at}>
                   <Calendar className="h-3.5 w-3.5" />
-                  {new Date(portfolio.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
+                  {new Date(portfolio.published_at ?? portfolio.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                 </time>
               </div>
             </div>

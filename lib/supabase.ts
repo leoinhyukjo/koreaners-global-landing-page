@@ -14,6 +14,7 @@ export type Portfolio = {
   content: string | null; // HTML (Notion sync)
   summary: string | null; // Notion '요약' 필드
   notion_id: string | null; // Notion 페이지 ID (upsert key)
+  published_at: string | null; // Notion 발행일
   created_at: string;
   // 일본어 (KR=기존 필드, JP=아래)
   title_jp?: string | null;
