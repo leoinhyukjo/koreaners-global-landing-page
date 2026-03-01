@@ -136,10 +136,10 @@ function BlogContent() {
                 <article key={post.id} className="h-full">
                   <Link href={`/blog/${post.slug}`} className="block h-full">
                     <Card 
-                      className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
+                      className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
                       {/* Image */}
-                      <div className="aspect-video relative overflow-hidden bg-[#111]">
+                      <div className="aspect-video relative overflow-hidden bg-card">
                         {post.thumbnail_url ? (
                           <SafeImage
                             src={resolveThumbnailSrc(post.thumbnail_url)}
@@ -149,7 +149,7 @@ function BlogContent() {
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
+                          <div className="absolute inset-0 flex items-center justify-center bg-card">
                             <div className="text-center px-4">
                               <div className="text-4xl mb-2">📝</div>
                               <p className="text-sm text-white/40">{t('performanceNoImage')}</p>
@@ -157,7 +157,7 @@ function BlogContent() {
                           </div>
                         )}
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <Badge variant="secondary" className="text-xs bg-[#111] text-white/80 border-white/10 rounded-none">{post.category}</Badge>
+                          <Badge variant="secondary" className="text-xs bg-card text-white/80 border-border rounded-none">{post.category}</Badge>
                         </div>
                       </div>
 
@@ -166,7 +166,7 @@ function BlogContent() {
                         <h2 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors leading-tight tracking-tight break-words pr-1">
                           {getBlogTitle(post, locale)}
                         </h2>
-                        <div className="mt-auto pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+                        <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex items-center justify-between">
                           <time className="text-xs text-white/60 flex items-center gap-1" dateTime={post.created_at}>
                             <Calendar className="h-3 w-3" />
                             {new Date(post.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
@@ -194,7 +194,7 @@ function BlogContent() {
                       }
                     }}
                     disabled={currentPage === 1}
-                    className="rounded-none border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-none border-border bg-card text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     {t('prev')}
@@ -216,7 +216,7 @@ function BlogContent() {
                             className={`rounded-none min-w-[44px] ${
                               page === currentPage
                                 ? 'bg-white text-black hover:bg-white'
-                                : 'border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white'
+                                : 'border-border bg-card text-white hover:bg-white hover:text-black hover:border-white'
                             }`}
                           >
                             {page}
@@ -244,7 +244,7 @@ function BlogContent() {
                       }
                     }}
                     disabled={currentPage === totalPages}
-                    className="rounded-none border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-none border-border bg-card text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -263,8 +263,8 @@ const BlogSkeleton = () => (
   <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="container mx-auto max-w-7xl">
       <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
-        <div className="h-5 max-w-3xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
+        <div className="h-5 max-w-3xl mx-auto bg-card/50 rounded animate-pulse" />
       </div>
       <div className="text-center py-20">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
@@ -275,7 +275,7 @@ const BlogSkeleton = () => (
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<BlogSkeleton />}>
         <Suspense fallback={<BlogSkeleton />}>

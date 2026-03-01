@@ -85,7 +85,7 @@ export default function Navigation() {
       ref={navRef}
       className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
-          ? 'bg-[#141414]/90 backdrop-blur-md border-b border-white/10'
+          ? 'bg-background/90 backdrop-blur-md border-b border-border'
           : 'bg-transparent border-b border-transparent'
       }`}
       style={{ width: '100%' }}
@@ -100,7 +100,7 @@ export default function Navigation() {
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 flex-shrink-0">
-            <div className="flex items-center gap-1 rounded-none border border-white/20 bg-[#111]/50 p-0.5">
+            <div className="flex items-center gap-1 rounded-none border border-white/20 bg-card/50 p-0.5">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
@@ -143,7 +143,7 @@ export default function Navigation() {
           {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 — 하이드레이션 가드로 Sheet는 클라이언트 마운트 후에만 렌더 */}
           <div className="flex md:hidden items-center gap-2 flex-shrink-0 min-w-0">
             {/* 언어 토글: 화면 크기와 관계없이 항상 헤더 우측(햄버거 옆)에 노출 */}
-            <div className="flex items-center gap-0.5 rounded-none border border-white/20 bg-[#111]/50 p-0.5 flex-shrink-0">
+            <div className="flex items-center gap-0.5 rounded-none border border-white/20 bg-card/50 p-0.5 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
@@ -165,7 +165,7 @@ export default function Navigation() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 min-w-[2.25rem] hover:bg-[#111] border-0 flex-shrink-0"
+                    className="h-9 w-9 min-w-[2.25rem] hover:bg-card border-0 flex-shrink-0"
                     aria-label="메뉴 열기"
                   >
                     <Menu className="h-5 w-5 text-white" />
@@ -173,9 +173,9 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent 
                   side="right" 
-                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-[#141414] border-l border-white/10 z-50 rounded-none overflow-y-auto"
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-background border-l border-border z-50 rounded-none overflow-y-auto"
                 >
-                  <SheetHeader className="border-b border-white/10 pb-4 mb-4 z-10 relative">
+                  <SheetHeader className="border-b border-border pb-4 mb-4 z-10 relative">
                     <SheetTitle className="text-left text-xl font-bold text-white break-words">
                       {t('menu')}
                     </SheetTitle>
@@ -186,8 +186,8 @@ export default function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`group flex items-center justify-between hover:bg-[#141414] active:bg-[#111] transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-white/10 break-words ${
-                          pathname === item.href ? 'text-white border-l-2 border-l-white bg-[#141414]' : 'text-white'
+                        className={`group flex items-center justify-between hover:bg-background active:bg-card transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-border break-words ${
+                          pathname === item.href ? 'text-white border-l-2 border-l-white bg-background' : 'text-white'
                         }`}
                         style={{
                           animation: `fadeInSlide 0.3s ease-out ${index * 60}ms both`,

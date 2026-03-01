@@ -17,7 +17,7 @@ export function Barriers() {
   ]
 
   return (
-    <section className="bg-[#141414] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <span className="text-xs uppercase tracking-[0.2em] text-white/40">BARRIERS</span>
         <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-6" />
@@ -30,7 +30,7 @@ export function Barriers() {
           {barriers.map((barrier, index) => (
             <div
               key={index}
-              className="bg-[#111] border border-white/10 p-8 hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+              className="bg-card border border-border p-8 hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             >
               <barrier.icon className="w-10 h-10 text-[#FF4500]/70 mb-4" />
               <h3 className="text-lg font-bold text-white mb-2">{barrier.title}</h3>

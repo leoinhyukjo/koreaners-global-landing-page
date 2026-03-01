@@ -32,7 +32,7 @@ footer {
   --accent-foreground: #FAFAFA;
   --destructive: #888888;
   --destructive-foreground: #FAFAFA;
-  --border: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.10);
   --input: #111111;
   --ring: #FAFAFA;
   --chart-1: #FAFAFA;
@@ -145,7 +145,7 @@ footer {
     max-width: 100vw;
   }
   body {
-    @apply bg-[#141414] text-white;
+    @apply bg-background text-white;
     word-break: keep-all;
     overflow-wrap: break-word;
     font-family: 'Inter', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
@@ -162,7 +162,7 @@ footer {
     line-height: 1.2;
   }
   p {
-    @apply break-keep text-zinc-200;
+    @apply break-keep text-white/80;
     word-break: keep-all;
     overflow-wrap: break-word;
     line-height: 1.5;

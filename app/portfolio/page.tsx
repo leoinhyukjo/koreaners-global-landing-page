@@ -15,8 +15,8 @@ const PortfolioSkeleton = () => (
 <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
   <div className="container mx-auto max-w-7xl">
       <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
-        <div className="h-5 max-w-3xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
+        <div className="h-5 max-w-3xl mx-auto bg-card/50 rounded animate-pulse" />
       </div>
       <div className="text-center py-20">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
@@ -93,7 +93,7 @@ export default function PortfolioPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
@@ -119,7 +119,7 @@ export default function PortfolioPage() {
                 className={`px-4 sm:px-6 py-2 sm:py-3 rounded-none font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
                     ? 'bg-white text-black'
-                    : 'bg-[#111] text-white/80 hover:bg-white/10 border border-white/10'
+                    : 'bg-card text-white/80 hover:bg-white/10 border border-border'
                 }`}
               >
                 {tab.label}
@@ -143,11 +143,11 @@ export default function PortfolioPage() {
               {filteredItems.map(item => (
                 <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
                   <Card 
-                    className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
+                    className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
                   >
                     {/* Image */}
                     {item.thumbnail_url ? (
-                      <div className="aspect-video relative overflow-hidden bg-[#111]">
+                      <div className="aspect-video relative overflow-hidden bg-card">
                         <img
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale)}
@@ -159,7 +159,7 @@ export default function PortfolioPage() {
                             const parent = target.parentElement
                             if (parent && !parent.querySelector('.placeholder-fallback')) {
                               const placeholder = document.createElement('div')
-                              placeholder.className = 'placeholder-fallback absolute inset-0 flex items-center justify-center bg-[#111]'
+                              placeholder.className = 'placeholder-fallback absolute inset-0 flex items-center justify-center bg-card'
                               placeholder.innerHTML = `
                                 <div class="text-center px-4">
                                   <div class="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
@@ -179,7 +179,7 @@ export default function PortfolioPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="aspect-video bg-[#111] relative overflow-hidden">
+                      <div className="aspect-video bg-card relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center px-4">
                             <div className="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
@@ -207,11 +207,11 @@ export default function PortfolioPage() {
 
                       {/* Category Tags */}
                       {item.category && item.category.length > 0 && (
-                        <div className="mt-auto pt-3 sm:pt-4 border-t border-white/10 flex gap-2 flex-wrap">
+                        <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex gap-2 flex-wrap">
                           {item.category.map((cat, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-1 text-xs rounded-none bg-white/10 text-white border border-white/10"
+                              className="px-2 py-1 text-xs rounded-none bg-white/10 text-white border border-border"
                             >
                               {cat}
                             </span>

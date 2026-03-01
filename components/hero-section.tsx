@@ -16,7 +16,7 @@ export default function HeroSection() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-[#141414] px-6 lg:px-24">
+    <section className="relative min-h-screen flex items-center justify-center bg-background px-6 lg:px-24">
       <motion.div
         {...fadeUp}
         className="text-center"

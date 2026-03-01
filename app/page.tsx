@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <MainContent />
     </main>

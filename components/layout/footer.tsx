@@ -14,7 +14,7 @@ export function Footer() {
     getTranslation(locale, key);
 
   return (
-    <footer className="py-8 border-t border-white/10 bg-[#141414] w-full max-w-full overflow-visible">
+    <footer className="py-8 border-t border-border bg-background w-full max-w-full overflow-visible">
       <div className="w-full max-w-full px-6 md:px-12 lg:px-24 overflow-visible">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-start gap-4 leading-relaxed">

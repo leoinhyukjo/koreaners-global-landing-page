@@ -40,7 +40,7 @@ interface JobPosting {
 
 const CareersSkeleton = () => (
   <div className="min-h-[60vh] flex items-center justify-center pt-24" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+    <div className="h-32 w-full max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
   </div>
 )
 
@@ -115,7 +115,7 @@ export default function CareersPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<CareersSkeleton />}>
 
@@ -162,7 +162,7 @@ export default function CareersPage() {
         </section>
 
         {/* Core Business Areas */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-[#111]/30 w-full max-w-full">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-card/30 w-full max-w-full">
           <div className="container mx-auto max-w-7xl">
             <p className="text-xs tracking-widest text-white/50 uppercase text-center mb-4">Business</p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-12 break-keep">
@@ -172,7 +172,7 @@ export default function CareersPage() {
               {bizAreas.map((area, index) => (
                 <Card
                   key={index}
-                  className="p-6 sm:p-8 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-1 transition-all duration-300 group min-w-0 overflow-hidden"
+                  className="p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group min-w-0 overflow-hidden"
                 >
                   <p className="text-xs text-white/30 font-mono mb-4">{String(index + 1).padStart(2, '0')}</p>
                   <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-300 shrink-0">
@@ -198,7 +198,7 @@ export default function CareersPage() {
         </section>
 
         {/* Core Strengths */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-[#111]/30 w-full max-w-full">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-card/30 w-full max-w-full">
           <div className="container mx-auto max-w-7xl">
             <p className="text-xs tracking-widest text-white/50 uppercase text-center mb-4">Strengths</p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-12 break-keep">
@@ -208,7 +208,7 @@ export default function CareersPage() {
               {strengthItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 p-5 sm:p-6 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-1 transition-all duration-300 group"
+                  className="flex items-start gap-4 p-5 sm:p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group"
                 >
                   <div className="w-12 h-12 bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
                     <item.icon className="w-6 h-6 text-white group-hover:text-black transition-colors duration-300" />
@@ -244,7 +244,7 @@ export default function CareersPage() {
                 return (
                   <Card
                     key={index}
-                    className="p-6 sm:p-8 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-1 transition-all duration-300 group text-center"
+                    className="p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group text-center"
                   >
                     <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
                       <Icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-300" />
@@ -275,7 +275,7 @@ export default function CareersPage() {
                 return (
                   <div
                     key={index}
-                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-1 transition-all duration-300 group ${
+                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group ${
                       !isEven ? 'sm:flex-row-reverse' : ''
                     }`}
                   >
@@ -305,7 +305,7 @@ export default function CareersPage() {
         </section>
 
         {/* Job Openings Section */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-[#111]/30 w-full max-w-full">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-card/30 w-full max-w-full">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-12">
               <p className="text-xs tracking-widest text-white/50 uppercase mb-4">Openings</p>
@@ -321,7 +321,7 @@ export default function CareersPage() {
             {loading && (
               <div className="space-y-4 max-w-7xl mx-auto">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-32 bg-[#111]/50 animate-pulse border border-white/10" />
+                  <div key={i} className="h-32 bg-card/50 animate-pulse border border-border" />
                 ))}
                 <p className="text-center text-white/40 text-base mt-4">{t('careersLoading')}</p>
               </div>
@@ -337,7 +337,7 @@ export default function CareersPage() {
             {/* Empty State */}
             {!loading && !error && jobs.length === 0 && (
               <div className="text-center py-16">
-                <div className="w-16 h-16 rounded-none bg-[#111] flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-none bg-card flex items-center justify-center mx-auto mb-6">
                   <FileText className="w-8 h-8 text-white/50" />
                 </div>
                 <p className="text-white/40 text-lg">{t('careersNoOpenings')}</p>
@@ -352,7 +352,7 @@ export default function CareersPage() {
                   return (
                     <Card
                       key={job.id}
-                      className={`p-6 sm:p-8 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-1 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                      className={`p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="min-w-0 flex-1">
@@ -410,7 +410,7 @@ export default function CareersPage() {
             )}
 
             {/* Fallback CTA */}
-            <div className="text-center mt-12 pt-8 border-t border-white/10">
+            <div className="text-center mt-12 pt-8 border-t border-border">
               <p className="text-white text-lg font-semibold mb-2">{t('careersNoPositionQuestion')}</p>
               <p className="text-white/40 text-base mb-4">{t('careersNoPositionDesc')}</p>
               <a

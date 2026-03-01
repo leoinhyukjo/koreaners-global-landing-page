@@ -15,7 +15,7 @@ export function FinalCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <section className="bg-[#141414] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <span className="text-xs uppercase tracking-[0.2em] text-white/40">RESULTS</span>
@@ -29,7 +29,7 @@ export function FinalCTA() {
           {stats.map((stat, index) => (
             <div
               key={stat.key}
-              className={`${index < stats.length - 1 ? 'border-r border-white/10' : ''}`}
+              className={`${index < stats.length - 1 ? 'border-r border-border' : ''}`}
             >
               <div className="font-display font-bold text-6xl lg:text-8xl text-[#FF4500] leading-none">
                 {typeof stat.value === 'function' ? stat.value(locale) : stat.value}

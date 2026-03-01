@@ -230,7 +230,7 @@ export function FooterCTA() {
   };
 
   return (
-    <section className="bg-[#141414] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
           {/* Left: heading + description */}
@@ -451,7 +451,7 @@ export function FooterCTA() {
 
             {/* Success Dialog */}
             <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-              <DialogContent className="sm:max-w-md bg-[#111] backdrop-blur-md border border-white/10 rounded-none shadow-xl [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:text-white/80">
+              <DialogContent className="sm:max-w-md bg-card backdrop-blur-md border border-border rounded-none shadow-xl [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:text-white/80">
                 <DialogHeader className="text-center">
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
                     <CheckCircle2 className="h-10 w-10 text-white" />

@@ -264,10 +264,10 @@ function CreatorContent() {
                     return (
                       <Card
                         key={creator.id}
-                        className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 min-w-0"
+                        className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 min-w-0"
                       >
                         {/* Creator Avatar: 3열 시 비율 유지·축소 */}
-                        <div className="aspect-[3/4] min-h-0 bg-[#111] relative overflow-hidden">
+                        <div className="aspect-[3/4] min-h-0 bg-card relative overflow-hidden">
                           {creator.profile_image_url ? (
                             <img
                               src={creator.profile_image_url}
@@ -371,9 +371,9 @@ function CreatorContent() {
                     [1, 2].map((i) => (
                       <Card
                         key={`placeholder-${i}`}
-                        className="overflow-hidden bg-[#111]/40 border border-dashed border-white/20/60 opacity-60 pointer-events-none min-w-0"
+                        className="overflow-hidden bg-card/40 border border-dashed border-white/20/60 opacity-60 pointer-events-none min-w-0"
                       >
-                        <div className="aspect-[3/4] bg-[#111]/50 relative flex items-center justify-center min-h-0">
+                        <div className="aspect-[3/4] bg-card/50 relative flex items-center justify-center min-h-0">
                           <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white/30" />
                         </div>
                         <div className="p-2 md:p-4 h-[64px] sm:h-[72px] md:h-[88px]" />
@@ -404,7 +404,7 @@ function CreatorContent() {
                               className={`rounded-none min-w-[44px] ${
                                 page === currentPage
                                   ? "bg-white text-black hover:bg-white"
-                                  : "border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white"
+                                  : "border-border bg-card text-white hover:bg-white hover:text-black hover:border-white"
                               }`}
                             >
                               {page}
@@ -432,7 +432,7 @@ function CreatorContent() {
                       {t("creatorUpdating")}
                     </p>
                     <div
-                      className="mt-4 h-12 bg-gradient-to-b from-transparent to-[#141414]/80 pointer-events-none"
+                      className="mt-4 h-12 bg-gradient-to-b from-transparent to-background/80 pointer-events-none"
                       aria-hidden
                     />
                   </div>
@@ -449,7 +449,7 @@ function CreatorContent() {
             </h2>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-8 bg-[#111] border-white/10 hover:border-white transition-all duration-300">
+              <Card className="p-8 bg-card border-border hover:border-white transition-all duration-300">
                 <h3 className="text-2xl font-bold text-white mb-4">
                   {t("creatorPlatformExpertise")}
                 </h3>
@@ -478,7 +478,7 @@ function CreatorContent() {
                 </ul>
               </Card>
 
-              <Card className="p-8 bg-[#111] border-white/10 hover:border-white transition-all duration-300">
+              <Card className="p-8 bg-card border-border hover:border-white transition-all duration-300">
                 <h3 className="text-2xl font-bold text-white mb-4">
                   {t("creatorDemographicTitle")}
                 </h3>
@@ -535,7 +535,7 @@ function CreatorContent() {
             </h2>
 
             <div className="space-y-6">
-              <Card className="p-8 bg-[#111] border-white/10">
+              <Card className="p-8 bg-card border-border">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-none">
                     <Award className="w-6 h-6 text-white" />
@@ -551,7 +551,7 @@ function CreatorContent() {
                 </div>
               </Card>
 
-              <Card className="p-8 bg-[#111] border-white/10">
+              <Card className="p-8 bg-card border-border">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-none">
                     <Target className="w-6 h-6 text-white" />
@@ -567,7 +567,7 @@ function CreatorContent() {
                 </div>
               </Card>
 
-              <Card className="p-8 bg-[#111] border-white/10">
+              <Card className="p-8 bg-card border-border">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-none">
                     <Users className="w-6 h-6 text-white" />
@@ -590,7 +590,7 @@ function CreatorContent() {
 
           {/* Creator Application Form Modal */}
           <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-[#141414] border-white/10 rounded-none p-0">
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border rounded-none p-0">
               <div className="p-8 sm:p-10">
                 <DialogHeader className="mb-8">
                   <div className="flex items-center gap-3 mb-4">
@@ -639,7 +639,7 @@ function CreatorContent() {
                         name="name"
                         value={formData.name}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder={t("creatorPlaceholderName")}
                       />
                     </div>
@@ -660,7 +660,7 @@ function CreatorContent() {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setFormData({ ...formData, phone: value });
                         }}
-                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="01000000000"
                       />
                       <p className="mt-1.5 text-xs text-white/40">
@@ -685,7 +685,7 @@ function CreatorContent() {
                       name="email"
                       value={formData.email}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                      className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                       placeholder="example@email.com"
                     />
                   </div>
@@ -706,7 +706,7 @@ function CreatorContent() {
                         name="instagram_url"
                         value={formData.instagram_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://instagram.com/..."
                       />
                     </div>
@@ -724,7 +724,7 @@ function CreatorContent() {
                         name="youtube_url"
                         value={formData.youtube_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://youtube.com/..."
                       />
                     </div>
@@ -742,7 +742,7 @@ function CreatorContent() {
                         name="tiktok_url"
                         value={formData.tiktok_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://tiktok.com/..."
                       />
                     </div>
@@ -760,7 +760,7 @@ function CreatorContent() {
                         name="x_url"
                         value={formData.x_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://x.com/..."
                       />
                     </div>
@@ -780,7 +780,7 @@ function CreatorContent() {
                       rows={4}
                       value={formData.message}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
+                      className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
                       placeholder={t("creatorPlaceholderMessage")}
                     />
                   </div>
@@ -790,7 +790,7 @@ function CreatorContent() {
                       type="button"
                       variant="outline"
                       onClick={() => setApplyModalOpen(false)}
-                      className="flex-1 border-white/10 text-white hover:bg-[#111] rounded-none"
+                      className="flex-1 border-border text-white hover:bg-card rounded-none"
                     >
                       {t("dialogCancel") || "취소"}
                     </Button>
@@ -811,7 +811,7 @@ function CreatorContent() {
 
           {/* Success Dialog */}
           <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-            <DialogContent className="sm:max-w-md bg-[#111] border-white/10 rounded-none">
+            <DialogContent className="sm:max-w-md bg-card border-border rounded-none">
               <DialogHeader className="text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
                   <CheckCircle2 className="h-10 w-10 text-white" />
@@ -865,7 +865,7 @@ function CreatorFallback() {
       aria-hidden="true"
     >
       <div className="container mx-auto max-w-7xl">
-        <div className="h-32 w-full max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+        <div className="h-32 w-full max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
       </div>
     </div>
   );
@@ -873,7 +873,7 @@ function CreatorFallback() {
 
 export default function CreatorPage() {
   return (
-    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<CreatorFallback />}>
         <Suspense fallback={<CreatorFallback />}>

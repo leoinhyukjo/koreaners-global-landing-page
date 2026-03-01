@@ -26,14 +26,14 @@ interface BlogPostViewProps {
 
 const BlogDetailSkeleton = () => (
   <main
-    className="min-h-screen relative overflow-hidden bg-[#141414]"
+    className="min-h-screen relative overflow-hidden bg-background"
     aria-hidden="true"
   >
     <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24">
       <div className="container mx-auto max-w-7xl">
-        <div className="h-10 w-48 bg-[#111]/50 rounded animate-pulse mb-8" />
-        <div className="aspect-video bg-[#111]/50 rounded animate-pulse mb-6" />
-        <div className="h-8 max-w-2xl bg-[#111]/50 rounded animate-pulse" />
+        <div className="h-10 w-48 bg-card/50 rounded animate-pulse mb-8" />
+        <div className="aspect-video bg-card/50 rounded animate-pulse mb-6" />
+        <div className="h-8 max-w-2xl bg-card/50 rounded animate-pulse" />
       </div>
     </div>
   </main>
@@ -59,14 +59,14 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
 
   return (
     <SafeHydration fallback={<BlogDetailSkeleton />}>
-      <main className="min-h-screen relative overflow-hidden bg-[#141414]">
+      <main className="min-h-screen relative overflow-hidden bg-background">
         <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 relative z-10">
           <div className="container mx-auto max-w-7xl">
             <header className="mb-8 sm:mb-12">
               <Link href="/blog">
                 <Button
                   variant="ghost"
-                  className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-[#111] border-0"
+                  className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card border-0"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("backToList")}
@@ -74,7 +74,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
               </Link>
               <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
                 <div className="w-full max-w-none lg:max-w-4xl mx-auto">
-                  <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-white/10 relative bg-[#111] w-full flex items-center justify-center">
+                  <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-border relative bg-card w-full flex items-center justify-center">
                     {blogPost.thumbnail_url ? (
                       <SafeImage
                         src={thumbnailSrc}
@@ -85,7 +85,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                         priority
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
+                      <div className="absolute inset-0 flex items-center justify-center bg-card">
                         <div className="text-center px-4">
                           <div className="text-4xl mb-2">📝</div>
                           <p className="text-sm text-white/40">
@@ -100,7 +100,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                   <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap break-keep">
                     <Badge
                       variant="secondary"
-                      className="text-xs break-keep bg-[#111] text-white/80 border-white/10 rounded-none"
+                      className="text-xs break-keep bg-card text-white/80 border-border rounded-none"
                     >
                       {blogPost.category}
                     </Badge>
@@ -121,7 +121,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
               </div>
             </header>
             <div
-              className="mt-10 sm:mt-12 border border-white/10 bg-[#111] px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper"
+              className="mt-10 sm:mt-12 border border-border bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper"
             >
               <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-white/80 leading-relaxed text-base lg:text-lg blog-content-prose">
                 {hasContent ? (

@@ -18,9 +18,9 @@ import { getTranslation } from '@/lib/translations'
 const PortfolioDetailSkeleton = () => (
   <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="container mx-auto max-w-7xl">
-      <div className="h-10 w-48 bg-[#111]/50 rounded animate-pulse mb-8" />
-      <div className="aspect-video bg-[#111]/50 rounded animate-pulse mb-6" />
-      <div className="h-8 max-w-2xl bg-[#111]/50 rounded animate-pulse" />
+      <div className="h-10 w-48 bg-card/50 rounded animate-pulse mb-8" />
+      <div className="aspect-video bg-card/50 rounded animate-pulse mb-6" />
+      <div className="h-8 max-w-2xl bg-card/50 rounded animate-pulse" />
     </div>
   </div>
 )
@@ -95,7 +95,7 @@ export default function PortfolioDetailPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen relative overflow-hidden bg-[#141414]">
+      <main className="min-h-screen relative overflow-hidden bg-background">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
           <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
@@ -110,14 +110,14 @@ export default function PortfolioDetailPage() {
 
   if (!portfolio) {
     return (
-      <main className="min-h-screen relative overflow-hidden bg-[#141414]">
+      <main className="min-h-screen relative overflow-hidden bg-background">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
           <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24">
             <div className="container mx-auto max-w-7xl text-center">
               <p className="text-white/80 mb-6">{t('portfolioNotFound')}</p>
               <Link href="/portfolio">
-                <Button variant="ghost" className="min-h-[44px] text-white hover:bg-[#111] border-0">
+                <Button variant="ghost" className="min-h-[44px] text-white hover:bg-card border-0">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t('backToList')}
                 </Button>
@@ -137,14 +137,14 @@ export default function PortfolioDetailPage() {
   const hasContent = contentHtml.trim().length > 0
 
   return (
-    <main className="min-h-screen relative overflow-hidden bg-[#141414]">
+    <main className="min-h-screen relative overflow-hidden bg-background">
       <Navigation />
       <SafeHydration fallback={<PortfolioDetailSkeleton />}>
       <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 relative z-10">
         <div className="container mx-auto max-w-7xl">
           <header className="mb-8 sm:mb-12">
             <Link href="/portfolio">
-              <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-[#111] border-0">
+              <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card border-0">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t('backToList')}
               </Button>
@@ -152,7 +152,7 @@ export default function PortfolioDetailPage() {
 
             <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
               <div className="w-full max-w-none lg:max-w-4xl mx-auto">
-                <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-white/10 relative bg-[#111] w-full">
+                <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-border relative bg-card w-full">
                   {portfolio.thumbnail_url ? (
                     <img
                       src={portfolio.thumbnail_url}
@@ -160,7 +160,7 @@ export default function PortfolioDetailPage() {
                       className="w-full h-full object-cover mx-auto block"
                     />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
+                    <div className="absolute inset-0 flex items-center justify-center bg-card">
                       <div className="text-center px-4">
                         <div className="text-4xl mb-2">📁</div>
                         <p className="text-sm text-white/40">{t('performanceNoImage')}</p>
@@ -184,10 +184,10 @@ export default function PortfolioDetailPage() {
           </header>
 
           {/* 제목과 본문 구분선 */}
-          <div className="border-t border-white/10 mt-8 sm:mt-10 mb-8 sm:mb-10" />
+          <div className="border-t border-border mt-8 sm:mt-10 mb-8 sm:mb-10" />
 
           {/* 본문 - 블로그와 동일한 박스 + prose */}
-          <div className="border border-white/10 bg-[#111] px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper">
+          <div className="border border-border bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper">
             {hasContent ? (
               <div
                 className="prose prose-lg dark:prose-invert max-w-none break-keep text-white/80 leading-relaxed text-base lg:text-lg blog-content-prose"
@@ -201,13 +201,13 @@ export default function PortfolioDetailPage() {
           <MarketingCTA />
 
           {otherPortfolios.length > 0 && (
-            <section className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-white/10">
+            <section className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-border">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">{t('portfolioOther')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {otherPortfolios.map((item) => (
                   <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
-                    <Card className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col">
-                      <div className="aspect-video relative overflow-hidden bg-[#111]">
+                    <Card className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col">
+                      <div className="aspect-video relative overflow-hidden bg-card">
                         {item.thumbnail_url ? (
                           <img
                             src={item.thumbnail_url}

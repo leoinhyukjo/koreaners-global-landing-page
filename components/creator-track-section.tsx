@@ -61,7 +61,7 @@ export function CreatorTrackSection({
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Exclusive Creator Track */}
-        <Card className="overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300">
+        <Card className="overflow-hidden bg-card border-border hover:border-white transition-all duration-300">
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-white/10 rounded-none">
@@ -140,7 +140,7 @@ export function CreatorTrackSection({
               </div>
             </div>
 
-            <div className="pt-6 border-t border-white/10">
+            <div className="pt-6 border-t border-border">
               <p className="text-xs text-white/40 mb-4">
                 {locale === "ja"
                   ? "最適な方：ブランドと長期的にコラボしたい、複数ジャンルを扱いたい"
@@ -169,7 +169,7 @@ export function CreatorTrackSection({
         </Card>
 
         {/* Partner Track */}
-        <Card className="overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300">
+        <Card className="overflow-hidden bg-card border-border hover:border-white transition-all duration-300">
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-white/10 rounded-none">
@@ -244,7 +244,7 @@ export function CreatorTrackSection({
               </div>
             </div>
 
-            <div className="pt-6 border-t border-white/10">
+            <div className="pt-6 border-t border-border">
               <p className="text-xs text-white/40 mb-4">
                 {locale === "ja"
                   ? "最適な方：複数ブランドを試したい、案件ベースの協業希望"

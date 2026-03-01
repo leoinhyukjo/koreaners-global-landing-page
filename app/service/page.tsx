@@ -23,7 +23,7 @@ const SEEDING_KEYS = [
 
 const ServiceSkeleton = () => (
   <div className="min-h-[60vh] flex items-center justify-center pt-24" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+    <div className="h-32 w-full max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
   </div>
 )
 
@@ -47,7 +47,7 @@ export default function ServicePage() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<ServiceSkeleton />}>
       
@@ -87,7 +87,7 @@ export default function ServicePage() {
             {painPoints.map((point, index) => (
               <Card 
                 key={index}
-                className="p-6 sm:p-8 bg-[#111] border-white/10 hover:border-white hover:-translate-y-1 transition-all duration-500 group min-w-0 overflow-hidden"
+                className="p-6 sm:p-8 bg-card border-border hover:border-white hover:-translate-y-1 transition-all duration-500 group min-w-0 overflow-hidden"
               >
                 <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-500 shrink-0">
                   <point.icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-500" />
@@ -105,7 +105,7 @@ export default function ServicePage() {
       </section>
 
       {/* Service 01: Influencer Marketing */}
-      <section className="py-20 px-4 sm:px-6 lg:px-24 bg-[#111]/30">
+      <section className="py-20 px-4 sm:px-6 lg:px-24 bg-card/30">
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -141,7 +141,7 @@ export default function ServicePage() {
             </div>
 
             <div className="relative min-w-0">
-              <Card className="p-6 sm:p-8 bg-[#111] border-white/10 min-w-0 overflow-hidden">
+              <Card className="p-6 sm:p-8 bg-card border-border min-w-0 overflow-hidden">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <Users className="w-12 h-12 text-white shrink-0" />
@@ -176,7 +176,7 @@ export default function ServicePage() {
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 min-w-0">
-              <Card className="p-6 sm:p-8 bg-[#111] border-white/10 min-w-0 overflow-hidden">
+              <Card className="p-6 sm:p-8 bg-card border-border min-w-0 overflow-hidden">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <Globe className="w-12 h-12 text-white shrink-0" />
@@ -239,7 +239,7 @@ export default function ServicePage() {
       </section>
 
       {/* Data & Reporting Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden bg-[#141414]">
+      <section className="py-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden bg-background">
         
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center mb-16">
@@ -262,7 +262,7 @@ export default function ServicePage() {
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-2 transition-all duration-300">
+              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricEfficiency')}</h4>
@@ -272,7 +272,7 @@ export default function ServicePage() {
                 </div>
                 <div className="space-y-4">
                   {/* 분석 설명 */}
-                  <div className="p-3 bg-white/5 rounded-none border border-white/10">
+                  <div className="p-3 bg-white/5 rounded-none border border-border">
                     <p className="text-xs text-foreground leading-relaxed">
                       <span className="font-semibold text-[#FF4500]">{t('serviceReportRoasIntro')}</span> {t('serviceReportRoasDesc')}
                     </p>
@@ -320,7 +320,7 @@ export default function ServicePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-2 transition-all duration-300">
+              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricInflow')}</h4>
@@ -329,7 +329,7 @@ export default function ServicePage() {
                   <Clock className="w-5 h-5 text-[#FF4500]" />
                 </div>
                 <div className="space-y-4">
-                  <div className="p-3 bg-white/5 rounded-none border border-white/10">
+                  <div className="p-3 bg-white/5 rounded-none border border-border">
                     <p className="text-xs text-foreground leading-relaxed">
                       <span className="font-semibold text-[#FF4500]">{t('serviceMetricInflow')}:</span> {t('serviceReportSectionDesc')}
                     </p>
@@ -376,7 +376,7 @@ export default function ServicePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-2 transition-all duration-300">
+              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricSpread')}</h4>
@@ -385,7 +385,7 @@ export default function ServicePage() {
                   <Share2 className="w-5 h-5 text-[#FF4500]" />
                 </div>
                 <div className="space-y-4">
-                  <div className="p-3 bg-white/5 rounded-none border border-white/10">
+                  <div className="p-3 bg-white/5 rounded-none border border-border">
                     <p className="text-xs text-foreground leading-relaxed">
                       <span className="font-semibold text-[#FF4500]">{t('serviceSave')}/{t('serviceShare')}:</span> {t('serviceReportSectionDesc')}
                     </p>
@@ -424,7 +424,7 @@ export default function ServicePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-[#111] border-2 border-white/10 hover:border-white hover:-translate-y-2 transition-all duration-300">
+              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h4 className="text-lg font-bold text-foreground">{t('serviceMetricQualitative')}</h4>
@@ -433,7 +433,7 @@ export default function ServicePage() {
                   <MessageSquare className="w-5 h-5 text-[#FF4500]" />
                 </div>
                 <div className="space-y-4">
-                  <div className="p-3 bg-white/5 rounded-none border border-white/10">
+                  <div className="p-3 bg-white/5 rounded-none border border-border">
                     <p className="text-xs text-foreground leading-relaxed">
                       <span className="font-semibold text-[#FF4500]">{t('serviceMetricQualitative')}:</span> {t('serviceReportSectionDesc')}
                     </p>

@@ -10,7 +10,7 @@ export function MarketingCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
     <section
-      className="mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-none border border-white/10 bg-[#111]"
+      className="mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-none border border-border bg-card"
       aria-label={t('marketingCtaButton')}
     >
       <div className="container mx-auto max-w-7xl">

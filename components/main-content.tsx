@@ -18,15 +18,15 @@ const MainSkeleton = () => (
       <div className="container mx-auto max-w-7xl">
         <div className="max-w-5xl mx-auto text-center w-full">
           <div className="pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[4.5rem] sm:min-h-[5rem] block">
-            <div className="h-12 sm:h-14 md:h-16 bg-[#111]/60 rounded w-3/4 mx-auto mb-2 block" />
-            <div className="h-12 sm:h-14 md:h-16 bg-[#111]/60 rounded w-2/3 mx-auto block" />
+            <div className="h-12 sm:h-14 md:h-16 bg-card/60 rounded w-3/4 mx-auto mb-2 block" />
+            <div className="h-12 sm:h-14 md:h-16 bg-card/60 rounded w-2/3 mx-auto block" />
           </div>
           <div className="pt-12 sm:pt-14 pb-10 sm:pb-12 min-h-[3rem] block">
-            <div className="h-8 sm:h-10 md:h-12 bg-[#111]/50 rounded w-1/2 mx-auto block" />
+            <div className="h-8 sm:h-10 md:h-12 bg-card/50 rounded w-1/2 mx-auto block" />
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 min-h-[3rem]">
-            <div className="h-12 bg-[#111]/50 rounded w-full sm:w-48 mx-auto sm:mx-0" />
-            <div className="h-12 bg-[#111]/50 rounded w-full sm:w-48 mx-auto sm:mx-0" />
+            <div className="h-12 bg-card/50 rounded w-full sm:w-48 mx-auto sm:mx-0" />
+            <div className="h-12 bg-card/50 rounded w-full sm:w-48 mx-auto sm:mx-0" />
           </div>
         </div>
       </div>

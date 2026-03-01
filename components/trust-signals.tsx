@@ -8,7 +8,7 @@ const PHRASES = [
   'FULL-CYCLE MARKETING',
 ]
 
-const REPEAT = 10
+const REPEAT = 4
 
 export function TrustSignals() {
   const items = Array.from({ length: REPEAT }, (_, i) => i)
@@ -19,11 +19,11 @@ export function TrustSignals() {
   const all = [...duplicated, ...duplicated]
 
   return (
-    <div className="bg-[#141414] overflow-hidden">
+    <div className="bg-background overflow-hidden">
       <div className="overflow-hidden py-4" aria-hidden>
         <div
           className="flex gap-6 w-max"
-          style={{ animation: 'marquee-left 15s linear infinite' }}
+          style={{ animation: 'marquee-left 50s linear infinite' }}
         >
           {all.map((item, i) => (
             <span key={`${item.key}-${i}`} className="text-sm font-bold uppercase tracking-[0.15em] text-[#FF4500] whitespace-nowrap">
