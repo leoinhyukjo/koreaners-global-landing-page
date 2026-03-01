@@ -15,8 +15,8 @@ const PortfolioSkeleton = () => (
 <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
   <div className="container mx-auto max-w-7xl">
       <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
-        <div className="h-5 max-w-3xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+        <div className="h-5 max-w-3xl mx-auto bg-[#111]/50 rounded animate-pulse" />
       </div>
       <div className="text-center py-20">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
@@ -93,20 +93,19 @@ export default function PortfolioPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-900 w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
 <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,_rgba(255,255,255,0.04)_0%,_transparent_70%)]" />
       <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-balance leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight">
               <span className="text-white">{t('portfolioPageHero1')}</span>
               <br />
               <span className="text-white">{t('portfolioPageHero2')}</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-3xl mx-auto text-pretty px-2">
+            <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-3xl mx-auto text-pretty px-2">
               {t('portfolioPageHeroSub')}
             </p>
           </div>
@@ -120,7 +119,7 @@ export default function PortfolioPage() {
                 className={`px-4 sm:px-6 py-2 sm:py-3 rounded-none font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
                     ? 'bg-white text-black'
-                    : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 border border-zinc-700/50'
+                    : 'bg-[#111] text-white/80 hover:bg-white/10 border border-white/10'
                 }`}
               >
                 {tab.label}
@@ -131,11 +130,11 @@ export default function PortfolioPage() {
           {/* Portfolio Grid */}
           {loading ? (
             <div className="text-center py-20">
-              <p className="text-zinc-200">{t('loading')}</p>
+              <p className="text-white/80">{t('loading')}</p>
             </div>
           ) : filteredItems.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-zinc-200 text-lg">
+              <p className="text-white/80 text-lg">
                 {portfolios.length === 0 ? t('portfolioEmpty') : t('portfolioEmptyFilter')}
               </p>
             </div>
@@ -144,11 +143,11 @@ export default function PortfolioPage() {
               {filteredItems.map(item => (
                 <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
                   <Card 
-                    className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
+                    className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
                   >
                     {/* Image */}
                     {item.thumbnail_url ? (
-                      <div className="aspect-video relative overflow-hidden bg-zinc-800">
+                      <div className="aspect-video relative overflow-hidden bg-[#111]">
                         <img
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale)}
@@ -160,13 +159,13 @@ export default function PortfolioPage() {
                             const parent = target.parentElement
                             if (parent && !parent.querySelector('.placeholder-fallback')) {
                               const placeholder = document.createElement('div')
-                              placeholder.className = 'placeholder-fallback absolute inset-0 flex items-center justify-center bg-zinc-800'
+                              placeholder.className = 'placeholder-fallback absolute inset-0 flex items-center justify-center bg-[#111]'
                               placeholder.innerHTML = `
                                 <div class="text-center px-4">
-                                  <div class="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase mb-2">
+                                  <div class="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
                                     ${getCategoryInitial(item.category)}
                                   </div>
-                                  <p class="text-xs text-zinc-400">${noImageText}</p>
+                                  <p class="text-xs text-white/40">${noImageText}</p>
                                 </div>
                               `
                               parent.appendChild(placeholder)
@@ -180,13 +179,13 @@ export default function PortfolioPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="aspect-video bg-zinc-800 relative overflow-hidden">
+                      <div className="aspect-video bg-[#111] relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center px-4">
-                            <div className="text-4xl sm:text-6xl font-bold text-zinc-600 uppercase mb-2">
+                            <div className="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
                               {getCategoryInitial(item.category)}
                             </div>
-                            <p className="text-xs text-zinc-400">{noImageText}</p>
+                            <p className="text-xs text-white/40">{noImageText}</p>
                           </div>
                         </div>
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
@@ -202,17 +201,17 @@ export default function PortfolioPage() {
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors">
                         {getPortfolioTitle(item, locale)}
                       </h3>
-                      <p className="text-xs sm:text-sm text-zinc-200 mb-4 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-white/80 mb-4 leading-relaxed">
                         {getPortfolioClientName(item, locale)}
                       </p>
 
                       {/* Category Tags */}
                       {item.category && item.category.length > 0 && (
-                        <div className="mt-auto pt-3 sm:pt-4 border-t border-zinc-700/50 flex gap-2 flex-wrap">
+                        <div className="mt-auto pt-3 sm:pt-4 border-t border-white/10 flex gap-2 flex-wrap">
                           {item.category.map((cat, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-1 text-xs rounded-none bg-white/10 text-white border border-zinc-700/50"
+                              className="px-2 py-1 text-xs rounded-none bg-white/10 text-white border border-white/10"
                             >
                               {cat}
                             </span>

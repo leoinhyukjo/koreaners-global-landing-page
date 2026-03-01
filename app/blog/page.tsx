@@ -89,14 +89,13 @@ function BlogContent() {
     <>
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,_rgba(255,255,255,0.04)_0%,_transparent_70%)]" />
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-balance break-words leading-tight tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-balance break-words leading-tight tracking-tight">
               <span className="text-white">{t('blogHeroTitle')}</span>
               <span className="text-white">{t('blogHeroTitle2')}</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-zinc-200 max-w-3xl mx-auto text-pretty break-words leading-relaxed tracking-normal px-2">
+            <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-3xl mx-auto text-pretty break-words leading-relaxed tracking-normal px-2">
               {t('blogHeroDesc')}
             </p>
           </div>
@@ -106,14 +105,14 @@ function BlogContent() {
             <div className="text-center py-20">
               <div className="space-y-3">
                 <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent"></div>
-                <p className="text-zinc-200 text-lg">{t('blogLoading')}</p>
+                <p className="text-white/80 text-lg">{t('blogLoading')}</p>
               </div>
             </div>
           ) : error ? (
             <div className="text-center py-20">
               <div className="space-y-4 max-w-md mx-auto">
                 <div className="text-white text-4xl">⚠️</div>
-                <p className="text-zinc-200 text-lg">{error}</p>
+                <p className="text-white/80 text-lg">{error}</p>
                 <button
                   onClick={fetchBlogPosts}
                   className="text-white hover:underline text-sm"
@@ -125,9 +124,9 @@ function BlogContent() {
           ) : allBlogPosts.length === 0 ? (
             <div className="text-center py-20">
               <div className="space-y-3">
-                <div className="text-zinc-200 text-4xl">📝</div>
-                <p className="text-zinc-200 text-lg">{t('blogEmpty')}</p>
-                <p className="text-zinc-300 text-sm">{t('blogEmptySub')}</p>
+                <div className="text-white/80 text-4xl">📝</div>
+                <p className="text-white/80 text-lg">{t('blogEmpty')}</p>
+                <p className="text-white/60 text-sm">{t('blogEmptySub')}</p>
               </div>
             </div>
           ) : (
@@ -137,10 +136,10 @@ function BlogContent() {
                 <article key={post.id} className="h-full">
                   <Link href={`/blog/${post.slug}`} className="block h-full">
                     <Card 
-                      className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
+                      className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
                       {/* Image */}
-                      <div className="aspect-video relative overflow-hidden bg-zinc-800">
+                      <div className="aspect-video relative overflow-hidden bg-[#111]">
                         {post.thumbnail_url ? (
                           <SafeImage
                             src={resolveThumbnailSrc(post.thumbnail_url)}
@@ -150,15 +149,15 @@ function BlogContent() {
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
+                          <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
                             <div className="text-center px-4">
                               <div className="text-4xl mb-2">📝</div>
-                              <p className="text-sm text-zinc-400">{t('performanceNoImage')}</p>
+                              <p className="text-sm text-white/40">{t('performanceNoImage')}</p>
                             </div>
                           </div>
                         )}
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <Badge variant="secondary" className="text-xs bg-zinc-800 text-zinc-200 border-zinc-700/50 rounded-none">{post.category}</Badge>
+                          <Badge variant="secondary" className="text-xs bg-[#111] text-white/80 border-white/10 rounded-none">{post.category}</Badge>
                         </div>
                       </div>
 
@@ -167,8 +166,8 @@ function BlogContent() {
                         <h2 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors leading-tight tracking-tight break-words pr-1">
                           {getBlogTitle(post, locale)}
                         </h2>
-                        <div className="mt-auto pt-3 sm:pt-4 border-t border-zinc-700/50 flex items-center justify-between">
-                          <time className="text-xs text-zinc-300 flex items-center gap-1" dateTime={post.created_at}>
+                        <div className="mt-auto pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+                          <time className="text-xs text-white/60 flex items-center gap-1" dateTime={post.created_at}>
                             <Calendar className="h-3 w-3" />
                             {new Date(post.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                           </time>
@@ -195,7 +194,7 @@ function BlogContent() {
                       }
                     }}
                     disabled={currentPage === 1}
-                    className="rounded-none border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-none border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     {t('prev')}
@@ -217,7 +216,7 @@ function BlogContent() {
                             className={`rounded-none min-w-[44px] ${
                               page === currentPage
                                 ? 'bg-white text-black hover:bg-white'
-                                : 'border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white'
+                                : 'border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white'
                             }`}
                           >
                             {page}
@@ -228,7 +227,7 @@ function BlogContent() {
                         page === currentPage + 3
                       ) {
                         return (
-                          <span key={page} className="px-2 text-zinc-400">
+                          <span key={page} className="px-2 text-white/40">
                             ...
                           </span>
                         )
@@ -245,7 +244,7 @@ function BlogContent() {
                       }
                     }}
                     disabled={currentPage === totalPages}
-                    className="rounded-none border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-none border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -264,8 +263,8 @@ const BlogSkeleton = () => (
   <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="container mx-auto max-w-7xl">
       <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
-        <div className="h-5 max-w-3xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
+        <div className="h-5 max-w-3xl mx-auto bg-[#111]/50 rounded animate-pulse" />
       </div>
       <div className="text-center py-20">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
@@ -276,7 +275,7 @@ const BlogSkeleton = () => (
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-zinc-900 w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<BlogSkeleton />}>
         <Suspense fallback={<BlogSkeleton />}>

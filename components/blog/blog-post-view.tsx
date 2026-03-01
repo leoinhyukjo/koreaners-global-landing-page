@@ -26,14 +26,14 @@ interface BlogPostViewProps {
 
 const BlogDetailSkeleton = () => (
   <main
-    className="min-h-screen relative overflow-hidden bg-zinc-900"
+    className="min-h-screen relative overflow-hidden bg-[#141414]"
     aria-hidden="true"
   >
     <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24">
       <div className="container mx-auto max-w-7xl">
-        <div className="h-10 w-48 bg-zinc-800/50 rounded animate-pulse mb-8" />
-        <div className="aspect-video bg-zinc-800/50 rounded animate-pulse mb-6" />
-        <div className="h-8 max-w-2xl bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-10 w-48 bg-[#111]/50 rounded animate-pulse mb-8" />
+        <div className="aspect-video bg-[#111]/50 rounded animate-pulse mb-6" />
+        <div className="h-8 max-w-2xl bg-[#111]/50 rounded animate-pulse" />
       </div>
     </div>
   </main>
@@ -59,14 +59,14 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
 
   return (
     <SafeHydration fallback={<BlogDetailSkeleton />}>
-      <main className="min-h-screen relative overflow-hidden bg-zinc-900">
+      <main className="min-h-screen relative overflow-hidden bg-[#141414]">
         <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 relative z-10">
           <div className="container mx-auto max-w-7xl">
             <header className="mb-8 sm:mb-12">
               <Link href="/blog">
                 <Button
                   variant="ghost"
-                  className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-zinc-800 border-0"
+                  className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-[#111] border-0"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("backToList")}
@@ -74,7 +74,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
               </Link>
               <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
                 <div className="w-full max-w-none lg:max-w-4xl mx-auto">
-                  <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-zinc-700/50 relative bg-zinc-800 w-full flex items-center justify-center">
+                  <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-white/10 relative bg-[#111] w-full flex items-center justify-center">
                     {blogPost.thumbnail_url ? (
                       <SafeImage
                         src={thumbnailSrc}
@@ -85,10 +85,10 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                         priority
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
+                      <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
                         <div className="text-center px-4">
                           <div className="text-4xl mb-2">📝</div>
-                          <p className="text-sm text-zinc-400">
+                          <p className="text-sm text-white/40">
                             {t("performanceNoImage")}
                           </p>
                         </div>
@@ -100,12 +100,12 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                   <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap break-keep">
                     <Badge
                       variant="secondary"
-                      className="text-xs break-keep bg-zinc-800 text-zinc-200 border-zinc-700/50 rounded-none"
+                      className="text-xs break-keep bg-[#111] text-white/80 border-white/10 rounded-none"
                     >
                       {blogPost.category}
                     </Badge>
                     <time
-                      className="text-xs sm:text-sm text-zinc-300 flex items-center gap-1 break-keep"
+                      className="text-xs sm:text-sm text-white/60 flex items-center gap-1 break-keep"
                       dateTime={blogPost.created_at}
                     >
                       <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -114,20 +114,20 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                       )}
                     </time>
                   </div>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 leading-tight break-keep text-white">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight break-keep text-white">
                     {displayTitle}
                   </h1>
                 </div>
               </div>
             </header>
             <div
-              className="mt-10 sm:mt-12 border border-zinc-700/50 bg-zinc-800 px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper"
+              className="mt-10 sm:mt-12 border border-white/10 bg-[#111] px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper"
             >
-              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-zinc-200 leading-relaxed text-base lg:text-lg blog-content-prose">
+              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-white/80 leading-relaxed text-base lg:text-lg blog-content-prose">
                 {hasContent ? (
                   <BlogContent blogPost={blogPost} content={contentToShow} />
                 ) : (
-                  <p className="text-zinc-400">{t("blogNoContent")}</p>
+                  <p className="text-white/40">{t("blogNoContent")}</p>
                 )}
               </div>
             </div>
