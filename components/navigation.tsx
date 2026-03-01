@@ -85,8 +85,8 @@ export default function Navigation() {
       ref={navRef}
       className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
-          ? 'bg-zinc-950/95 backdrop-blur-md border-b border-zinc-700/60 shadow-[0_18px_60px_rgba(0,0,0,0.9)]'
-          : 'bg-zinc-900/85 backdrop-blur-sm border-b border-transparent'
+          ? 'bg-black/90 backdrop-blur-md border-b border-white/10'
+          : 'bg-transparent border-b border-transparent'
       }`}
       style={{ width: '100%' }}
     >
@@ -95,10 +95,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between min-w-0 w-full">
           <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">
             <Logo variant="header" />
-            <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-black text-white leading-tight truncate">KOREANERS</div>
-              <div className="text-[11px] sm:text-sm text-zinc-300 mt-0.5 break-words">{t('tagline')}</div>
-            </div>
+            <span className="font-display font-bold text-lg uppercase tracking-tight text-white">KOREANERS</span>
           </a>
           
           {/* Desktop Menu */}
