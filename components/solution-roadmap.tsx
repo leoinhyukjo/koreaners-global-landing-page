@@ -16,12 +16,12 @@ export function SolutionRoadmap() {
   const steps = STEP_KEYS
 
   return (
-    <section id="solution" className="bg-[#FF4500] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section id="solution" className="bg-white py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section tag */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="text-xs uppercase tracking-[0.3em] text-[#141414]/50 font-bold">OUR PROCESS</span>
-          <div className="h-px flex-1 bg-[#141414]/15" />
+          <span className="text-xs uppercase tracking-[0.3em] text-black/40 font-bold">OUR PROCESS</span>
+          <div className="h-px flex-1 bg-black/10" />
         </div>
 
         {/* Steps */}
@@ -30,27 +30,27 @@ export function SolutionRoadmap() {
             <div key={i}>
               {/* Number + Tag */}
               <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <span className="font-display font-black text-xl md:text-2xl text-[#141414]">
+                <span className="font-display font-bold text-xl md:text-2xl text-[#FF4500]">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span className="text-xs uppercase tracking-[0.2em] text-[#141414]/50 font-bold">
+                <span className="text-xs uppercase tracking-[0.2em] text-black/40 font-bold">
                   {step.tag}
                 </span>
               </div>
 
-              {/* MASSIVE title — Forma style */}
-              <h3 className="font-display font-black text-5xl md:text-7xl lg:text-[6rem] xl:text-[8rem] uppercase leading-[0.85] tracking-tight text-[#141414]">
+              {/* MASSIVE title — Forma style, font-bold not font-black */}
+              <h3 className="font-display font-bold text-5xl md:text-7xl lg:text-[6rem] xl:text-[8rem] uppercase leading-[0.85] tracking-tight text-[#141414]">
                 {t(step.titleKey)}
               </h3>
 
               {/* Description + Features row */}
               <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 items-start">
-                <p className="text-base md:text-lg text-[#141414]/70 leading-relaxed max-w-xl">
+                <p className="text-base md:text-lg text-black/60 leading-relaxed max-w-xl">
                   {t(step.descKey)}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {step.featureKeys.map((f, j) => (
-                    <span key={j} className="text-xs text-[#141414]/60 border border-[#141414]/20 px-3 py-1.5 uppercase tracking-wider">
+                    <span key={j} className="text-xs text-black/50 border border-black/10 px-3 py-1.5 uppercase tracking-wider">
                       {t(f)}
                     </span>
                   ))}
@@ -59,7 +59,7 @@ export function SolutionRoadmap() {
 
               {/* Divider */}
               {i < steps.length - 1 && (
-                <div className="h-px bg-[#141414]/15 mt-24 md:mt-32" />
+                <div className="h-px bg-black/10 mt-24 md:mt-32" />
               )}
             </div>
           ))}

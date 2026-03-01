@@ -21,7 +21,7 @@ export function Barriers() {
       <div className="max-w-7xl mx-auto">
         <span className="text-xs uppercase tracking-[0.2em] text-white/40">BARRIERS</span>
         <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-6" />
-        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase leading-[0.9] text-white max-w-2xl">
+        <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase leading-[0.9] text-white max-w-2xl">
           {t('barriersTitle1')}
           {t('barriersTitle2')}
         </h2>

@@ -34,7 +34,7 @@ export default function HeroSection() {
           <span className="block font-accent text-8xl md:text-9xl lg:text-[12rem] text-white">
             BEYOND
           </span>
-          <span className="block font-display font-black text-6xl md:text-7xl lg:text-[8rem] uppercase text-white">
+          <span className="block font-display font-bold text-6xl md:text-7xl lg:text-[8rem] uppercase text-white">
             AGENCY
           </span>
         </h1>
