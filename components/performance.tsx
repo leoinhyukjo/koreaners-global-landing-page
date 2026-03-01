@@ -1,13 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase/client'
 import type { Portfolio } from '@/lib/supabase'
 import Link from 'next/link'
-import useEmblaCarousel from 'embla-carousel-react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { SkeletonGrid } from '@/components/ui/skeleton-card'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
@@ -18,21 +14,6 @@ export function Performance() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [loading, setLoading] = useState(true)
-
-  // Embla Carousel 설정
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: true,
-    align: 'start',
-    slidesToScroll: 1,
-  })
-
-  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
-  const [nextBtnDisabled, setNextBtnDisabled] = useState(true)
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
-
-  const scrollPrev = () => emblaApi?.scrollPrev()
-  const scrollNext = () => emblaApi?.scrollNext()
 
   useEffect(() => {
     fetchPortfolios()
@@ -45,6 +26,7 @@ export function Performance() {
         .from('portfolios')
         .select('*')
         .order('created_at', { ascending: false })
+        .limit(3)
 
       if (error) throw error
       setPortfolios(data || [])
@@ -56,232 +38,71 @@ export function Performance() {
     }
   }
 
-  useEffect(() => {
-    if (!emblaApi) return
-
-    const onSelect = () => {
-      setPrevBtnDisabled(!emblaApi.canScrollPrev())
-      setNextBtnDisabled(!emblaApi.canScrollNext())
-      setSelectedIndex(emblaApi.selectedScrollSnap())
-    }
-
-    setScrollSnaps(emblaApi.scrollSnapList())
-    emblaApi.on('select', onSelect)
-    onSelect()
-  }, [emblaApi])
-
   return (
-    <section id="performance" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 block">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight block">
-              <span className="text-white">{t('performanceTitle1')}{t('performanceTitle2')}</span>
-            </h2>
-            <p className="text-lg text-zinc-200 mb-8 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
-              {t('performanceSubtitle')}
+    <section id="performance" className="bg-white py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <span className="text-xs uppercase tracking-[0.2em] text-black/40">PORTFOLIO</span>
+        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-[#09090B]">
+          {t('performanceTitle1')}{t('performanceTitle2')}
+        </h2>
+
+        {/* Portfolio Grid */}
+        {loading ? (
+          <div className="mt-16">
+            <SkeletonGrid count={3} />
+          </div>
+        ) : portfolios.length === 0 ? (
+          <div className="text-center py-20 mt-16">
+            <p className="text-black/50 text-lg">
+              {t('performanceEmpty')}
             </p>
           </div>
-
-          {/* Portfolio Carousel */}
-          {loading ? (
-            <SkeletonGrid count={3} />
-          ) : portfolios.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-zinc-200 text-lg">
-                {t('performanceEmpty')}
-              </p>
-            </div>
-          ) : (
-            <div className="relative">
-              {/* Navigation Buttons - Desktop */}
-              <div className="hidden lg:block">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={scrollPrev}
-                  disabled={prevBtnDisabled}
-                  className="absolute left-4 sm:left-6 lg:left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
-                  aria-label={t('performancePrevSlide')}
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={scrollNext}
-                  disabled={nextBtnDisabled}
-                  className="absolute right-4 sm:right-6 lg:right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-zinc-800/95 backdrop-blur-sm border-zinc-700/50 hover:bg-white hover:text-black hover:border-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
-                  aria-label={t('performanceNextSlide')}
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </div>
-
-              {/* Navigation Buttons - Mobile/Tablet (overlay, keeps peek UI) */}
-              <div className="lg:hidden pointer-events-none">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={scrollPrev}
-                  disabled={prevBtnDisabled}
-                  className="pointer-events-auto w-10 h-10 bg-black/40 backdrop-blur-md border border-zinc-700/70 hover:bg-black/70 hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.9)] disabled:opacity-40 disabled:cursor-not-allowed absolute top-1/2 -translate-y-1/2 left-2 sm:left-4 z-20"
-                  aria-label={t('performancePrevSlide')}
-                >
-                  <ChevronLeft className="h-4 w-4 text-white" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={scrollNext}
-                  disabled={nextBtnDisabled}
-                  className="pointer-events-auto w-10 h-10 bg-black/40 backdrop-blur-md border border-zinc-700/70 hover:bg-black/70 hover:border-white rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.9)] disabled:opacity-40 disabled:cursor-not-allowed absolute top-1/2 -translate-y-1/2 right-2 sm:right-4 z-20"
-                  aria-label={t('performanceNextSlide')}
-                >
-                  <ChevronRight className="h-4 w-4 text-white" />
-                </Button>
-              </div>
-
-              {/* Carousel Container */}
-              <div className="overflow-hidden px-1 sm:px-2 lg:pl-36 lg:pr-36" ref={emblaRef}>
-                <div className="flex gap-4">
-                  {portfolios.map(item => (
-                    <div
-                      key={item.id}
-                      className="flex-[0_0_88%] sm:flex-[0_0_80%] md:flex-[0_0_calc(50%-8px)] lg:flex-[0_0_calc(33.333%-11px)] min-w-0"
-                    >
-                      <Link href={`/portfolio/${item.id}`}>
-                        <Card 
-                          className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer h-full rounded-none"
-                        >
-                          {/* Image */}
-                          {item.thumbnail_url ? (
-                            <div className="aspect-video relative overflow-hidden bg-zinc-950">
-                              <img
-                                src={item.thumbnail_url}
-                                alt={getPortfolioTitle(item, locale) || 'Portfolio image'}
-                                className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
-                                loading="lazy"
-                                onError={(e) => {
-                                  // 이미지 로드 실패 시 플레이스홀더로 대체 (XSS 방어: innerHTML 제거)
-                                  const target = e.target as HTMLImageElement
-                                  target.style.display = 'none'
-                                  const parent = target.parentElement
-                                  if (parent) {
-                                    // 안전한 DOM 조작 방식으로 변경
-                                    const categoryInitial = item.category?.[0]?.charAt(0) || 'E'
-                                    const categoryName = item.category?.[0] || 'ETC'
-
-                                    // 중앙 대문자 컨테이너
-                                    const centerContainer = document.createElement('div')
-                                    centerContainer.className = 'absolute inset-0 flex items-center justify-center'
-                                    const initialText = document.createElement('div')
-                                    initialText.className = 'text-6xl font-black text-zinc-800 uppercase'
-                                    initialText.textContent = categoryInitial
-                                    centerContainer.appendChild(initialText)
-
-                                    // 좌상단 배지 컨테이너
-                                    const badgeContainer = document.createElement('div')
-                                    badgeContainer.className = 'absolute top-4 left-4'
-                                    const badge = document.createElement('span')
-                                    badge.className = 'px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none'
-                                    badge.textContent = categoryName
-                                    badgeContainer.appendChild(badge)
-
-                                    // 기존 내용 제거 후 새 요소 추가
-                                    parent.innerHTML = ''
-                                    parent.appendChild(centerContainer)
-                                    parent.appendChild(badgeContainer)
-                                  }
-                                }}
-                              />
-                              <div className="absolute top-4 left-4 z-10">
-                                <span className="px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none">
-                                  {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
-                                </span>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="aspect-video bg-zinc-950 relative overflow-hidden">
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-center px-4">
-                                  <div className="text-6xl font-black text-zinc-800 uppercase mb-2">
-                                    {item.category && item.category.length > 0 
-                                      ? item.category[0].charAt(0) 
-                                      : 'E'}
-                                  </div>
-                                  <p className="text-xs text-zinc-400">{t('performanceNoImage')}</p>
-                                </div>
-                              </div>
-                              <div className="absolute top-4 left-4 z-10">
-                                <span className="px-3 py-1 bg-white text-black text-xs font-black uppercase rounded-none">
-                                  {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Content */}
-                          <div className="p-4 sm:p-6">
-                            <h3 className="text-lg sm:text-xl font-black text-white mb-2 group-hover:text-white transition-colors break-keep">
-                              {getPortfolioTitle(item, locale)}
-                            </h3>
-                            <p className="text-sm text-zinc-200 mb-4 leading-[1.5] tracking-tight break-keep block">
-                              {getPortfolioClientName(item, locale)}
-                            </p>
-
-                            {/* Category Tags */}
-                            {item.category && item.category.length > 0 && (
-                              <div className="flex gap-2 flex-wrap pt-4 border-t border-zinc-700/50">
-                                {item.category.map((cat, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="px-2 py-1 text-xs bg-white/10 text-white border border-zinc-700/50 rounded-none font-bold"
-                                  >
-                                    {cat}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </Card>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Pagination Dots */}
-              {scrollSnaps.length > 1 && (
-                <div className="flex justify-center gap-2 mt-6">
-                  {scrollSnaps.map((_, index) => {
-                    const isActive = index === selectedIndex
-                    return (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => emblaApi && emblaApi.scrollTo(index)}
-                        className={`h-2 rounded-full border border-zinc-600 transition-all duration-200 ${
-                          isActive ? 'w-5 bg-white' : 'w-2 bg-zinc-700/70'
-                        }`}
-                        aria-label={`${index + 1} / ${scrollSnaps.length}`}
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+              {portfolios.slice(0, 3).map((item) => (
+                <Link key={item.id} href={`/portfolio/${item.id}`} className="group cursor-pointer">
+                  <div className="aspect-video bg-[#F5F5F5] overflow-hidden border border-black/10">
+                    {item.thumbnail_url ? (
+                      <img
+                        src={item.thumbnail_url}
+                        alt={getPortfolioTitle(item, locale) || 'Portfolio image'}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
                       />
-                    )
-                  })}
-                </div>
-              )}
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-black/20 font-display font-black text-4xl">
+                        {item.category?.[0]?.charAt(0) || 'P'}
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-4">
+                    <span className="text-xs uppercase tracking-wider text-black/40">
+                      {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
+                    </span>
+                    <h3 className="text-xl font-bold text-[#09090B] mt-1">
+                      {getPortfolioTitle(item, locale)}
+                    </h3>
+                    <p className="text-sm text-black/50 mt-1">
+                      {getPortfolioClientName(item, locale)}
+                    </p>
+                  </div>
+                </Link>
+              ))}
             </div>
-          )}
 
-          {/* View All Link */}
-          {portfolios.length > 0 && (
-            <div className="text-center mt-12">
-              <Link href="/portfolio">
-                <Button className="px-6 py-3 rounded-none font-black">
-                  {t('performanceViewAll')}
-                </Button>
+            {/* Bottom CTA */}
+            <div className="mt-12 text-center">
+              <Link
+                href="/portfolio"
+                className="text-sm uppercase tracking-wider font-bold text-[#09090B] border-b border-black/30 hover:border-black pb-1 transition-colors duration-300"
+              >
+                {t('performanceViewAll')} →
               </Link>
             </div>
-          )}
+          </>
+        )}
       </div>
     </section>
   )
