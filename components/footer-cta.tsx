@@ -236,8 +236,8 @@ export function FooterCTA() {
           {/* Left: heading + description */}
           <div>
             <h2 className="font-display font-bold text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
-              LET&apos;S<br />
-              <span className="italic text-[#FF4500]">TALK</span>
+              <span className="italic text-[#FF4500]">CONTACT</span><br />
+              US
             </h2>
             <p className="text-base text-white/60 mt-8 leading-relaxed">
               {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
