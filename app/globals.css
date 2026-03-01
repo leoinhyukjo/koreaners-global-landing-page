@@ -705,8 +705,8 @@ footer {
   top: 0;
   left: 0;
   right: 0;
-  height: 60%;
-  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,69,0,0.18) 0%, transparent 60%);
+  height: 500px;
+  background: radial-gradient(ellipse 900px 400px at 50% 0%, rgba(255,69,0,0.18) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
