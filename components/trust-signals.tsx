@@ -8,15 +8,15 @@ const PHRASES = [
   'FULL-CYCLE MARKETING',
 ]
 
-const REPEAT = 4
+const REPEAT = 10
 
 export function TrustSignals() {
   const items = Array.from({ length: REPEAT }, (_, i) => i)
 
   return (
     <div className="bg-[#141414] overflow-hidden">
-      {/* Single-row marquee — faster, punchier */}
-      <div className="py-4 flex whitespace-nowrap [animation:marquee-left_20s_linear_infinite] hover:[animation-play-state:paused]">
+      {/* Single-row marquee — fast + smooth */}
+      <div className="py-4 flex whitespace-nowrap [animation:marquee-left_4s_linear_infinite] hover:[animation-play-state:paused]">
         {items.map((setIdx) =>
           PHRASES.map((phrase, phraseIdx) => (
             <span key={`${setIdx}-${phraseIdx}`} className="mx-6 text-sm font-bold uppercase tracking-[0.15em] text-[#FF4500]">

@@ -155,7 +155,7 @@ footer {
     max-width: 100%;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply break-keep text-white font-black;
+    @apply break-keep text-white font-bold;
     word-break: keep-all;
     overflow-wrap: break-word;
     letter-spacing: -0.02em;
