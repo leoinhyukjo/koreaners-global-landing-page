@@ -8,12 +8,73 @@
 레퍼런스: Squarespace Forma (https://forma-fluid-demo.squarespace.com/)
 
 핵심 원칙:
-- 흑백 교차 섹션 (다크 ↔ 라이트)
-- 오버사이즈 condensed 타이포그래피
+- **진회색(#141414) + 오렌지(#FF4500) 교차** — 화이트 배경 없음
+- 오버사이즈 condensed 타이포그래피 — 타이포가 곧 디자인
 - 극단적 여백 (negative space)
-- 단일 악센트만 (흑백 외 색상 최소화)
+- 오렌지는 전체 섹션의 30% 이하 — 나머지는 진회색
 - 에디토리얼/매거진 그리드 (비대칭 허용)
 - 장식 요소 최소화 (그라데이션, 그리드 패턴, 글로우 금지)
+
+---
+
+## Colors
+
+### Color Tokens
+
+```css
+--kn-base:    #141414;    /* 기본 배경 (진회색) */
+--kn-accent:  #FF4500;    /* 강조 — 유일한 컬러 */
+--kn-text:    #FFFFFF;    /* 텍스트 */
+--kn-muted:   #A0A0A0;    /* 보조 텍스트 */
+--kn-border:  #FF450033;  /* 액센트 20% 투명 (카드 보더) */
+```
+
+### 규칙
+
+- 이 5개 외 색상 사용 금지
+- 사진을 제외한 모든 UI 요소는 이 팔레트 안에서
+- 그라데이션 사용 금지 — 플랫 컬러만
+- "이거 써도 되나?" 싶으면 쓰지 않는 게 맞음
+
+### 다크 섹션 (bg-[#141414])
+
+| 토큰 | 값 | 용도 |
+|------|------|------|
+| 배경 | `#141414` | 섹션 배경 |
+| 카드 배경 | `#1a1a1a` | 카드, 입력 필드 |
+| 텍스트 | `#FFFFFF` | 제목, 주요 텍스트 |
+| 뮤트 | `#A0A0A0` / `white/50` | 부가 설명, 캡션 |
+| 보더 | `white/10` | 구분선, 카드 테두리 |
+| 액센트 | `#FF4500` | 숫자, CTA, 카테고리, 장식 |
+
+### 오렌지 섹션 (bg-[#FF4500])
+
+| 토큰 | 값 | 용도 |
+|------|------|------|
+| 배경 | `#FF4500` | 섹션 배경 |
+| 텍스트 | `#FFFFFF` | 제목, 주요 텍스트 |
+| 뮤트 | `white/70` | 부가 설명, 캡션 |
+| 보더 | `white/30` | 구분선 |
+| 카드 배경 | `#141414` | 카드, 태그 배지 |
+| 액센트 | `#141414` 또는 `#FFFFFF` | 대비 요소 |
+
+### 섹션 리듬
+
+```
+[#141414] 히어로 — 타이포 중심
+[#FF4500] 파트너 마키 — Trusted by 105+ Brands
+[#141414] 마켓 기회 — 데이터, 통계
+[#141414] 장벽 — 문제 제시
+[#FF4500] 솔루션 로드맵 — 해결책 하이라이트
+[#141414] 실적(Results) — 오렌지 숫자
+[#141414] 포트폴리오 — 케이스 그리드
+[#FF4500] CTA — "LET'S TALK" + 문의 폼
+[#141414] 푸터
+```
+
+- 오렌지 섹션은 전체의 30% 이하 (과하면 피로)
+- 오렌지 섹션 연속 배치 금지
+- 다크 섹션이 기본, 오렌지는 강조 포인트
 
 ---
 
@@ -23,15 +84,20 @@
 
 | 역할 | 폰트 | Weight | CSS Variable | 용도 |
 |------|------|--------|-------------|------|
-| Display | Barlow Condensed | 700, 900 | `--font-display` | 섹션 헤딩, 대형 숫자, 스텝 번호, 로고 |
+| Display EN | Barlow Condensed | 700, 900 | `--font-display` | 영문 섹션 헤딩, 대형 숫자, 로고 |
+| Display KR | Black Han Sans | 400 | `--font-display-kr` | 한글 섹션 헤딩 (font-display fallback) |
 | Accent | Playfair Display Italic | 400, 700 | `--font-accent` | 헤딩 내 강조 단어 (섹션당 1개) |
-| Body | Noto Sans KR / Noto Sans JP | 300, 400, 500, 700 | `--font-body` | 본문, 설명, UI 요소, 폼 |
+| Body | Noto Sans KR / Noto Sans JP | 300-700 | `--font-body` | 본문, 설명, UI, 폼 |
 
-### Google Fonts Import
+### Font Stack
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Playfair+Display:ital,wght@1,400;1,700&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+@utility font-display {
+  font-family: var(--font-display), var(--font-display-kr), sans-serif;
+}
 ```
+
+영문 → Barlow Condensed, 한글 → Black Han Sans (자동 fallback)
 
 ### Heading Hierarchy
 
@@ -44,47 +110,12 @@
 | Body | Body | `text-base` (16px) | `font-normal leading-relaxed` |
 | Caption | Body | `text-sm` | `font-normal` |
 
-### Italic Accent Rule
+### 타이포 문법
 
-각 섹션 헤딩에서 **핵심 1단어**만 Playfair Display Italic으로 강조.
-
-```tsx
-// 예시
-<h2 className="font-display font-black text-6xl uppercase">
-  <span className="font-accent italic">BEYOND</span>{' '}AGENCY
-</h2>
-```
-
----
-
-## Colors
-
-### 다크 섹션 (bg-black)
-
-| 토큰 | 값 | 용도 |
-|------|------|------|
-| `--bg-dark` | `#000000` | 섹션 배경 |
-| `--surface-dark` | `#111111` | 카드, 입력 필드 배경 |
-| `--text-dark` | `#FAFAFA` | 제목, 주요 텍스트 |
-| `--muted-dark` | `#888888` | 부가 설명, 캡션 |
-| `--border-dark` | `rgba(255,255,255,0.12)` | 구분선, 카드 테두리 |
-
-### 라이트 섹션 (bg-white)
-
-| 토큰 | 값 | 용도 |
-|------|------|------|
-| `--bg-light` | `#FFFFFF` | 섹션 배경 |
-| `--surface-light` | `#F5F5F5` | 카드 배경 |
-| `--text-light` | `#09090B` | 제목, 주요 텍스트 |
-| `--muted-light` | `#666666` | 부가 설명, 캡션 |
-| `--border-light` | `rgba(0,0,0,0.12)` | 구분선, 카드 테두리 |
-
-### CTA Colors
-
-| 상태 | 다크 섹션 위 | 라이트 섹션 위 |
-|------|-----------|-------------|
-| Default | `bg-white text-black` | `bg-black text-white` |
-| Hover | `bg-transparent border-white text-white` | `bg-transparent border-black text-black` |
+- 헤드라인은 **최대한 크게, 2-3줄**
+- 키워드 하나를 Playfair Display Italic으로 강조
+- 영문은 ALL CAPS 가능, 한글은 폰트 크기로 위계 표현
+- 본문은 작게, 절제하여
 
 ---
 
@@ -107,12 +138,12 @@
 
 ```tsx
 // 다크 섹션
-<section className="bg-black py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+<section className="bg-[#141414] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
   <div className="max-w-7xl mx-auto">...</div>
 </section>
 
-// 라이트 섹션
-<section className="bg-white py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+// 오렌지 섹션
+<section className="bg-[#FF4500] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
   <div className="max-w-7xl mx-auto">...</div>
 </section>
 ```
@@ -120,12 +151,21 @@
 ### Section Header
 
 ```tsx
+// 다크 섹션 위
 <div className="mb-16">
-  <span className="text-xs uppercase tracking-[0.2em] text-white/40">
-    SECTION TAG
-  </span>
-  <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9]">
-    헤딩 텍스트 <span className="font-accent italic">강조</span>
+  <span className="text-xs uppercase tracking-[0.2em] text-white/40">SECTION TAG</span>
+  <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-6" />
+  <h2 className="font-display font-black text-4xl lg:text-6xl uppercase leading-[0.9] text-white">
+    헤딩 <span className="font-accent italic">강조</span>
+  </h2>
+</div>
+
+// 오렌지 섹션 위
+<div className="mb-16">
+  <span className="text-xs uppercase tracking-[0.2em] text-white/70">SECTION TAG</span>
+  <div className="w-12 h-0.5 bg-white/40 mt-3 mb-6" />
+  <h2 className="font-display font-black text-4xl lg:text-6xl uppercase leading-[0.9] text-white">
+    헤딩 텍스트
   </h2>
 </div>
 ```
@@ -133,15 +173,15 @@
 ### Card (다크 섹션)
 
 ```tsx
-<div className="bg-[#111] border border-white/10 p-8 hover:border-white/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+<div className="bg-[#1a1a1a] border border-white/10 p-8 hover:border-[#FF4500]/40 transition-all duration-300 cursor-pointer">
   ...
 </div>
 ```
 
-### Card (라이트 섹션)
+### Card (오렌지 섹션)
 
 ```tsx
-<div className="bg-[#F5F5F5] border border-black/10 p-8 hover:border-black/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+<div className="bg-[#141414] border border-white/20 p-8 hover:border-white/50 transition-all duration-300 cursor-pointer">
   ...
 </div>
 ```
@@ -150,11 +190,16 @@
 
 ```tsx
 // Primary (다크 섹션 위)
-<button className="bg-white text-black px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-transparent hover:text-white border border-white transition-all duration-300 cursor-pointer">
+<button className="bg-[#FF4500] text-white px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-[#FF4500]/80 border border-[#FF4500] transition-all duration-300 cursor-pointer">
   무료 상담 신청 →
 </button>
 
-// Secondary (다크 섹션 위)
+// Primary (오렌지 섹션 위)
+<button className="bg-[#141414] text-white px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-black transition-all duration-300 cursor-pointer">
+  문의하기
+</button>
+
+// Secondary
 <button className="bg-transparent text-white px-8 py-4 text-sm font-bold uppercase tracking-wider border border-white/30 hover:bg-white/10 transition-all duration-300 cursor-pointer">
   포트폴리오 보기
 </button>
@@ -176,7 +221,20 @@
 - 2줄, 반대 방향
 - `animation-duration: 45s`, `linear`, `infinite`
 - `hover: animation-play-state: paused`
-- 텍스트: `text-sm font-semibold uppercase opacity-50`
+- 오렌지 배경 (`bg-[#FF4500]`), 흰색 텍스트
+- 텍스트: `text-base font-semibold uppercase text-white/80`
+
+---
+
+## 장식 요소 — 딱 3개만
+
+| 요소 | 스펙 | 용도 |
+|------|------|------|
+| **마퀴 텍스트** | 무한 스크롤, 오렌지 배경 | 섹션 구분자, 파트너 리스트 |
+| **액센트 라인** | #FF4500 또는 white/40, 1-2px | 섹션 태그 아래 |
+| **액센트 도트** | #FF4500, 1px 원형 | 리스트 불릿 |
+
+**이 세 가지 외 장식 요소 사용 금지.**
 
 ---
 
@@ -218,10 +276,25 @@
 
 ## Anti-Patterns (절대 금지)
 
+- 화이트(#FFFFFF) 배경 섹션 ❌ → #141414 또는 #FF4500만
 - 이모지를 아이콘으로 사용 ❌ → Lucide SVG 사용
-- 그라데이션 배경 ❌ → 순수 단색 (#000 또는 #FFF)
+- 그라데이션 배경 ❌ → 순수 단색
 - border-radius ❌ → sharp edges (0px)
 - 그리드 패턴, 글로우, radial gradient 배경 ❌
-- 3개 이상 색상 ❌ → 흑백 + 단일 악센트만
+- 3개 이상 색상 ❌ → #141414 + #FF4500 + #FFFFFF만
 - 모든 요소 중앙 정렬 ❌ → 비대칭 그리드 활용
 - 호버 시 scale로 layout shift ❌ → transform + opacity만
+- 차가운 블루톤 ❌
+- 둥근 모서리 (pills, rounded cards) ❌
+
+---
+
+## Quick Reference
+
+```
+컬러:  #141414 / #FF4500 / #FFFFFF (이 3개만)
+폰트:  Barlow Condensed (EN 헤드) + Black Han Sans (KR 헤드) + Playfair Display Italic (강조) + Noto Sans (바디)
+모서리: 0px (전부 sharp)
+장식:  마퀴 + 액센트 라인 + 도트 (이 3개만)
+철학:  적을수록 강하다
+```

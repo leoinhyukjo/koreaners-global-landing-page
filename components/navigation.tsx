@@ -85,7 +85,7 @@ export default function Navigation() {
       ref={navRef}
       className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
-          ? 'bg-black/90 backdrop-blur-md border-b border-white/10'
+          ? 'bg-[#141414]/90 backdrop-blur-md border-b border-white/10'
           : 'bg-transparent border-b border-transparent'
       }`}
       style={{ width: '100%' }}
@@ -173,7 +173,7 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent 
                   side="right" 
-                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-black border-l border-zinc-800 z-50 rounded-none overflow-y-auto"
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-[#141414] border-l border-zinc-800 z-50 rounded-none overflow-y-auto"
                 >
                   <SheetHeader className="border-b border-zinc-800 pb-4 mb-4 z-10 relative">
                     <SheetTitle className="text-left text-xl font-black text-white break-words">

@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Barlow_Condensed, Playfair_Display, Noto_Sans_JP } from "next/font/google";
+import { Barlow_Condensed, Playfair_Display, Noto_Sans_JP, Black_Han_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -29,6 +29,13 @@ const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const blackHanSans = Black_Han_Sans({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-display-kr",
   display: "swap",
 });
 
@@ -117,7 +124,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${barlowCondensed.variable} ${playfairDisplay.variable} ${notoSansJP.variable}`}>
+    <html lang="ko" className={`${barlowCondensed.variable} ${playfairDisplay.variable} ${notoSansJP.variable} ${blackHanSans.variable}`}>
       <body
         className="flex min-h-screen flex-col font-body antialiased bg-black text-base"
       >

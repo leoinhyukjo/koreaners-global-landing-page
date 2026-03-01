@@ -230,19 +230,19 @@ export function FooterCTA() {
   };
 
   return (
-    <section className="bg-[#111] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-[#FF4500] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
           {/* Left: heading + description */}
           <div>
             <h2 className="font-display font-black text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
               LET&apos;S<br />
-              <span className="font-accent italic text-[#FF4500]">TALK</span>
+              <span className="font-accent italic text-[#141414]">TALK</span>
             </h2>
-            <p className="text-base text-white/60 mt-8 leading-relaxed">
+            <p className="text-base text-white/80 mt-8 leading-relaxed">
               {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
             </p>
-            <p className="text-sm text-white/40 mt-4">leo@koreaners.com</p>
+            <p className="text-sm text-white/70 mt-4">leo@koreaners.com</p>
           </div>
 
           {/* Right: form */}
@@ -252,9 +252,9 @@ export function FooterCTA() {
               <div>
                 <label
                   htmlFor="footer-name"
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/70 mb-2"
                 >
-                  {t("formName")} <span className="text-white/60">*</span>
+                  {t("formName")} <span className="text-white/80">*</span>
                 </label>
                 <input
                   type="text"
@@ -263,7 +263,7 @@ export function FooterCTA() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full bg-transparent border-b border-white/20 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/20"
+                  className="w-full bg-transparent border-b border-white/40 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/50"
                   placeholder={t("formPlaceholderName")}
                 />
               </div>
@@ -271,9 +271,9 @@ export function FooterCTA() {
               <div>
                 <label
                   htmlFor="footer-company"
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/70 mb-2"
                 >
-                  {t("formCompany")} <span className="text-white/60">*</span>
+                  {t("formCompany")} <span className="text-white/80">*</span>
                 </label>
                 <input
                   type="text"
@@ -283,7 +283,7 @@ export function FooterCTA() {
                   autoComplete="organization"
                   value={formData.company}
                   onChange={handleChange}
-                  className="w-full bg-transparent border-b border-white/20 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/20"
+                  className="w-full bg-transparent border-b border-white/40 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/50"
                   placeholder={t("formPlaceholderCompany")}
                 />
               </div>
@@ -291,9 +291,9 @@ export function FooterCTA() {
               <div>
                 <label
                   htmlFor="footer-position"
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/70 mb-2"
                 >
-                  {t("formPosition")} <span className="text-white/60">*</span>
+                  {t("formPosition")} <span className="text-white/80">*</span>
                 </label>
                 <input
                   type="text"
@@ -303,7 +303,7 @@ export function FooterCTA() {
                   autoComplete="organization-title"
                   value={formData.position}
                   onChange={handleChange}
-                  className="w-full bg-transparent border-b border-white/20 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/20"
+                  className="w-full bg-transparent border-b border-white/40 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/50"
                   placeholder={t("formPlaceholderPosition")}
                 />
               </div>
@@ -314,9 +314,9 @@ export function FooterCTA() {
               <div>
                 <label
                   htmlFor="footer-email"
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/70 mb-2"
                 >
-                  {t("formEmail")} <span className="text-white/60">*</span>
+                  {t("formEmail")} <span className="text-white/80">*</span>
                 </label>
                 <input
                   type="email"
@@ -326,7 +326,7 @@ export function FooterCTA() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full bg-transparent border-b border-white/20 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/20"
+                  className="w-full bg-transparent border-b border-white/40 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/50"
                   placeholder="example@domain.com"
                 />
               </div>
@@ -334,9 +334,9 @@ export function FooterCTA() {
               <div>
                 <label
                   htmlFor="footer-phone"
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/70 mb-2"
                 >
-                  {t("formPhone")} <span className="text-white/60">*</span>
+                  {t("formPhone")} <span className="text-white/80">*</span>
                 </label>
                 <input
                   type="tel"
@@ -349,10 +349,10 @@ export function FooterCTA() {
                     const value = e.target.value.replace(/[^0-9]/g, "");
                     setFormData({ ...formData, phone: value });
                   }}
-                  className="w-full bg-transparent border-b border-white/20 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/20"
+                  className="w-full bg-transparent border-b border-white/40 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/50"
                   placeholder={t("formPlaceholderPhone")}
                 />
-                <p className="mt-1.5 text-xs text-white/30">
+                <p className="mt-1.5 text-xs text-white/60">
                   {t("formPhoneHint")}
                 </p>
               </div>
@@ -362,9 +362,9 @@ export function FooterCTA() {
             <div>
               <label
                 htmlFor="footer-message"
-                className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                className="block text-xs uppercase tracking-wider text-white/70 mb-2"
               >
-                {t("formMessage")} <span className="text-white/60">*</span>
+                {t("formMessage")} <span className="text-white/80">*</span>
               </label>
               <textarea
                 id="footer-message"
@@ -373,7 +373,7 @@ export function FooterCTA() {
                 rows={4}
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full bg-transparent border-b border-white/20 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/20 resize-none"
+                className="w-full bg-transparent border-b border-white/40 text-white py-3 focus:border-white transition-colors duration-300 outline-none placeholder:text-white/50 resize-none"
                 placeholder={t("formPlaceholderMessage")}
               />
             </div>
@@ -387,7 +387,7 @@ export function FooterCTA() {
                   name="privacyConsent"
                   checked={formData.privacyConsent}
                   onChange={handleChange}
-                  className="w-5 h-5 rounded-none border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
+                  className="w-5 h-5 rounded-none border-2 border-white/50 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
                 />
                 <label
                   htmlFor="footer-privacyConsent"
@@ -404,7 +404,7 @@ export function FooterCTA() {
                     >
                       {t("formPrivacyLabel")}
                     </button>{" "}
-                    <span className="text-white/60">*</span>
+                    <span className="text-white/80">*</span>
                   </span>
                 </label>
               </div>
@@ -416,7 +416,7 @@ export function FooterCTA() {
                   name="marketingConsent"
                   checked={formData.marketingConsent}
                   onChange={handleChange}
-                  className="w-5 h-5 rounded-none border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
+                  className="w-5 h-5 rounded-none border-2 border-white/50 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
                 />
                 <label
                   htmlFor="footer-marketingConsent"
@@ -491,7 +491,7 @@ export function FooterCTA() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#FF4500] text-white py-4 text-sm font-bold uppercase tracking-wider hover:bg-[#FF4500]/80 transition-colors duration-300 cursor-pointer disabled:opacity-50"
+              className="w-full bg-[#141414] text-white py-4 text-sm font-bold uppercase tracking-wider hover:bg-black transition-colors duration-300 cursor-pointer disabled:opacity-50"
             >
               {submitting ? t("formSubmitting") : t("formSubmit")}
             </button>

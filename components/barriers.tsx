@@ -17,7 +17,7 @@ export function Barriers() {
   ]
 
   return (
-    <section className="bg-black py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-[#141414] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <span className="text-xs uppercase tracking-[0.2em] text-white/40">BARRIERS</span>
         <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-6" />

@@ -16,7 +16,7 @@ footer {
 }
 
 :root {
-  --background: #000000;
+  --background: #141414;
   --foreground: #FAFAFA;
   --card: #111111;
   --card-foreground: #FAFAFA;
@@ -145,7 +145,7 @@ footer {
     max-width: 100vw;
   }
   body {
-    @apply bg-zinc-900 text-white;
+    @apply bg-[#141414] text-white;
     word-break: keep-all;
     overflow-wrap: break-word;
     font-family: 'Inter', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
@@ -699,7 +699,7 @@ footer {
 
 /* Font utilities */
 @utility font-display {
-  font-family: var(--font-display), sans-serif;
+  font-family: var(--font-display), var(--font-display-kr), sans-serif;
 }
 
 @utility font-accent {

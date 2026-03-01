@@ -16,11 +16,11 @@ export function SolutionRoadmap() {
   const steps = STEP_KEYS
 
   return (
-    <section id="solution" className="bg-white py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section id="solution" className="bg-[#FF4500] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
-        <span className="text-xs uppercase tracking-[0.2em] text-black/40">OUR PROCESS</span>
-        <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-6" />
-        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase leading-[0.9] text-[#09090B] max-w-2xl">
+        <span className="text-xs uppercase tracking-[0.2em] text-white/70">OUR PROCESS</span>
+        <div className="w-12 h-0.5 bg-white/40 mt-3 mb-6" />
+        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase leading-[0.9] text-white max-w-2xl">
           {t('solutionTitle1')}
           {t('solutionTitle2')}
         </h2>
@@ -30,22 +30,22 @@ export function SolutionRoadmap() {
             <div key={i} className="flex gap-6 md:gap-8 mb-12 last:mb-0">
               {/* Left: line + node */}
               <div className="flex flex-col items-center shrink-0">
-                <div className="w-12 h-12 border-2 border-[#FF4500] flex items-center justify-center font-display font-black text-lg text-[#FF4500]">
+                <div className="w-12 h-12 border-2 border-white flex items-center justify-center font-display font-black text-lg text-white">
                   {String(i + 1).padStart(2, '0')}
                 </div>
-                {i < steps.length - 1 && <div className="w-px bg-black/20 flex-1 mt-2" />}
+                {i < steps.length - 1 && <div className="w-px bg-white/30 flex-1 mt-2" />}
               </div>
               {/* Right: content */}
               <div className="pt-2 pb-8">
-                <span className="inline-block bg-[#FF4500] text-white text-xs uppercase tracking-wider px-3 py-1 mb-3">
+                <span className="inline-block bg-[#141414] text-white text-xs uppercase tracking-wider px-3 py-1 mb-3">
                   {step.tag}
                 </span>
-                <h3 className="text-xl font-bold text-[#09090B] mb-2">{t(step.titleKey)}</h3>
-                <p className="text-black/60 leading-relaxed mb-4">{t(step.descKey)}</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t(step.titleKey)}</h3>
+                <p className="text-white/70 leading-relaxed mb-4">{t(step.descKey)}</p>
                 <ul className="space-y-2">
                   {step.featureKeys.map((f, j) => (
-                    <li key={j} className="text-sm text-black/50 flex items-center gap-2">
-                      <span className="w-1 h-1 bg-black/40 rounded-full shrink-0" />
+                    <li key={j} className="text-sm text-white/60 flex items-center gap-2">
+                      <span className="w-1 h-1 bg-white/50 rounded-full shrink-0" />
                       {t(f)}
                     </li>
                   ))}

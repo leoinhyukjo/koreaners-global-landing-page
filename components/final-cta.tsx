@@ -15,7 +15,7 @@ export function FinalCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <section className="bg-black py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-[#141414] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <span className="text-xs uppercase tracking-[0.2em] text-white/40">RESULTS</span>
