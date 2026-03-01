@@ -40,6 +40,7 @@ footer {
   --chart-3: #555555;
   --chart-4: #333333;
   --chart-5: #111111;
+  --accent-orange: #FF4500;
   --radius: 0px;
   --sidebar: #111111;
   --sidebar-foreground: #FAFAFA;
@@ -708,4 +709,17 @@ footer {
 
 @utility font-body {
   font-family: var(--font-body), sans-serif;
+}
+
+/* Accent color utilities */
+@utility text-accent {
+  color: var(--accent-orange);
+}
+
+@utility bg-accent {
+  background-color: var(--accent-orange);
+}
+
+@utility border-accent {
+  border-color: var(--accent-orange);
 }

@@ -237,7 +237,7 @@ export function FooterCTA() {
           <div>
             <h2 className="font-display font-black text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
               LET&apos;S<br />
-              <span className="font-accent italic">TALK</span>
+              <span className="font-accent italic text-[#FF4500]">TALK</span>
             </h2>
             <p className="text-base text-white/60 mt-8 leading-relaxed">
               {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
@@ -491,7 +491,7 @@ export function FooterCTA() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-white text-black py-4 text-sm font-bold uppercase tracking-wider hover:bg-white/90 transition-colors duration-300 cursor-pointer disabled:opacity-50"
+              className="w-full bg-[#FF4500] text-white py-4 text-sm font-bold uppercase tracking-wider hover:bg-[#FF4500]/80 transition-colors duration-300 cursor-pointer disabled:opacity-50"
             >
               {submitting ? t("formSubmitting") : t("formSubmit")}
             </button>

@@ -134,7 +134,7 @@ export default function Navigation() {
               )
             })}
             <a href="/contact" className="ml-1">
-              <Button size="default" className="px-6 py-2.5 font-black whitespace-nowrap">
+              <Button size="default" className="px-6 py-2.5 font-black whitespace-nowrap bg-[#FF4500] text-white border-[#FF4500] hover:bg-[#FF4500]/80 hover:text-white">
                 {t('contact')}
               </Button>
             </a>

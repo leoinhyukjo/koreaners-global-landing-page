@@ -31,7 +31,7 @@ export function FinalCTA() {
               key={stat.key}
               className={`${index < stats.length - 1 ? 'border-r border-white/10' : ''}`}
             >
-              <div className="font-display font-black text-6xl lg:text-8xl text-white leading-none">
+              <div className="font-display font-black text-6xl lg:text-8xl text-[#FF4500] leading-none">
                 {typeof stat.value === 'function' ? stat.value(locale) : stat.value}
               </div>
               <div className="text-sm text-white/50 mt-3 uppercase tracking-wider">

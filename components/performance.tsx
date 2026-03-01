@@ -43,7 +43,7 @@ export function Performance() {
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <span className="text-xs uppercase tracking-[0.2em] text-black/40">PORTFOLIO</span>
-        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-[#09090B]">
+        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-[#09090B] max-w-md">
           {t('performanceTitle1')}{t('performanceTitle2')}
         </h2>
 
@@ -78,7 +78,7 @@ export function Performance() {
                     )}
                   </div>
                   <div className="mt-4">
-                    <span className="text-xs uppercase tracking-wider text-black/40">
+                    <span className="text-xs uppercase tracking-wider text-[#FF4500]">
                       {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
                     </span>
                     <h3 className="text-xl font-bold text-[#09090B] mt-1">

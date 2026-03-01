@@ -24,7 +24,8 @@ export function MarketOpportunity() {
             <span className="text-xs uppercase tracking-[0.2em] text-black/40">
               MARKET OPPORTUNITY
             </span>
-            <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-[#09090B]">
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-6" />
+            <h2 className="font-display font-black text-5xl lg:text-7xl uppercase leading-[0.9] text-[#09090B] max-w-md">
               <span className="block">{t('marketTitle1')}</span>
               <span className="block">{t('marketTitle2')}</span>
             </h2>
@@ -41,7 +42,7 @@ export function MarketOpportunity() {
                   <div className="text-xs text-black/60 mb-1 font-medium uppercase tracking-wider">
                     {t(stat.titleKey)}
                   </div>
-                  <div className="font-display font-black text-5xl text-[#09090B]">
+                  <div className="font-display font-black text-5xl text-[#FF4500]">
                     {index === 0 ? <><Counter end={500} />{locale === 'ja' ? '万' : '만'}</> :
                      index === 1 ? <><Counter end={25} />%</> :
                      <><Counter end={90} />%</>}

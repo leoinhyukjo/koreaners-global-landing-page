@@ -10,21 +10,30 @@ const PARTNERS_ROW2 = PARTNERS_ALL.slice(HALF)
 
 export function TrustSignals() {
   return (
-    <div className="bg-black border-y border-white/10 py-4 overflow-hidden">
+    <div className="bg-black border-y border-white/10 overflow-hidden">
+      {/* Label */}
+      <div className="py-3 flex items-center justify-center gap-3">
+        <div className="h-px flex-1 bg-white/10" />
+        <span className="text-xs uppercase tracking-[0.3em] text-white/40 font-bold shrink-0">
+          Trusted by 105+ Brands
+        </span>
+        <div className="h-px flex-1 bg-white/10" />
+      </div>
+
       {/* Row 1: left-scrolling */}
-      <div className="flex whitespace-nowrap [animation:marquee-left_45s_linear_infinite] hover:[animation-play-state:paused]">
+      <div className="py-3 flex whitespace-nowrap [animation:marquee-left_45s_linear_infinite] hover:[animation-play-state:paused]">
         {[...PARTNERS_ROW1, ...PARTNERS_ROW1].map((name, i) => (
-          <span key={i} className="mx-4 text-sm font-semibold uppercase text-white/50">
-            {name}
+          <span key={i} className="mx-4 text-base font-semibold uppercase text-white/60">
+            {name}{i < [...PARTNERS_ROW1, ...PARTNERS_ROW1].length - 1 && <span className="ml-4 text-white/30">&middot;</span>}
           </span>
         ))}
       </div>
 
       {/* Row 2: right-scrolling */}
-      <div className="flex whitespace-nowrap [animation:marquee-right_45s_linear_infinite] hover:[animation-play-state:paused] mt-2">
+      <div className="py-3 flex whitespace-nowrap [animation:marquee-right_45s_linear_infinite] hover:[animation-play-state:paused]">
         {[...PARTNERS_ROW2, ...PARTNERS_ROW2].map((name, i) => (
-          <span key={i} className="mx-4 text-sm font-semibold uppercase text-white/50">
-            {name}
+          <span key={i} className="mx-4 text-base font-semibold uppercase text-white/60">
+            {name}{i < [...PARTNERS_ROW2, ...PARTNERS_ROW2].length - 1 && <span className="ml-4 text-white/30">&middot;</span>}
           </span>
         ))}
       </div>
