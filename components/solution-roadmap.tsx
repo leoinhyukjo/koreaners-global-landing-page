@@ -18,39 +18,49 @@ export function SolutionRoadmap() {
   return (
     <section id="solution" className="bg-[#FF4500] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
-        <span className="text-xs uppercase tracking-[0.2em] text-white/70">OUR PROCESS</span>
-        <div className="w-12 h-0.5 bg-white/40 mt-3 mb-6" />
-        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase leading-[0.9] text-white max-w-2xl">
-          {t('solutionTitle1')}
-          {t('solutionTitle2')}
-        </h2>
+        {/* Section tag */}
+        <div className="flex items-center gap-4 mb-16">
+          <span className="text-xs uppercase tracking-[0.3em] text-[#141414]/50 font-bold">OUR PROCESS</span>
+          <div className="h-px flex-1 bg-[#141414]/15" />
+        </div>
 
-        <div className="mt-16">
+        {/* Steps */}
+        <div className="space-y-24 md:space-y-32">
           {steps.map((step, i) => (
-            <div key={i} className="flex gap-6 md:gap-8 mb-12 last:mb-0">
-              {/* Left: line + node */}
-              <div className="flex flex-col items-center shrink-0">
-                <div className="w-12 h-12 border-2 border-white flex items-center justify-center font-display font-black text-lg text-white">
+            <div key={i}>
+              {/* Number + Tag */}
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
+                <span className="font-display font-black text-xl md:text-2xl text-[#141414]">
                   {String(i + 1).padStart(2, '0')}
-                </div>
-                {i < steps.length - 1 && <div className="w-px bg-white/30 flex-1 mt-2" />}
-              </div>
-              {/* Right: content */}
-              <div className="pt-2 pb-8">
-                <span className="inline-block bg-[#141414] text-white text-xs uppercase tracking-wider px-3 py-1 mb-3">
+                </span>
+                <span className="text-xs uppercase tracking-[0.2em] text-[#141414]/50 font-bold">
                   {step.tag}
                 </span>
-                <h3 className="text-xl font-bold text-white mb-2">{t(step.titleKey)}</h3>
-                <p className="text-white/70 leading-relaxed mb-4">{t(step.descKey)}</p>
-                <ul className="space-y-2">
-                  {step.featureKeys.map((f, j) => (
-                    <li key={j} className="text-sm text-white/60 flex items-center gap-2">
-                      <span className="w-1 h-1 bg-white/50 rounded-full shrink-0" />
-                      {t(f)}
-                    </li>
-                  ))}
-                </ul>
               </div>
+
+              {/* MASSIVE title — Forma style */}
+              <h3 className="font-display font-black text-5xl md:text-7xl lg:text-[6rem] xl:text-[8rem] uppercase leading-[0.85] tracking-tight text-[#141414]">
+                {t(step.titleKey)}
+              </h3>
+
+              {/* Description + Features row */}
+              <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 items-start">
+                <p className="text-base md:text-lg text-[#141414]/70 leading-relaxed max-w-xl">
+                  {t(step.descKey)}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {step.featureKeys.map((f, j) => (
+                    <span key={j} className="text-xs text-[#141414]/60 border border-[#141414]/20 px-3 py-1.5 uppercase tracking-wider">
+                      {t(f)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Divider */}
+              {i < steps.length - 1 && (
+                <div className="h-px bg-[#141414]/15 mt-24 md:mt-32" />
+              )}
             </div>
           ))}
         </div>
