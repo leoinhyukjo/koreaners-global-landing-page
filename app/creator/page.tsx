@@ -210,15 +210,24 @@ function CreatorContent() {
 
   return (
     <>
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden relative">
-        <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-balance break-words leading-tight">
-              <span className="text-white">{t("creatorHero1")}</span>
+      {/* ============================================================
+          SECTION 1: Hero + Creator Cards (Dark bg-background)
+          ============================================================ */}
+      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background">
+        <div className="max-w-7xl mx-auto">
+          {/* Hero - Left aligned */}
+          <div className="mb-20 sm:mb-28">
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">
+              CREATOR
+            </span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
+              <span>{t("creatorHero1")}</span>
               <br />
-              <span className="text-white">{t("creatorHero2")}</span>
+              <span>{t("creatorHero2")}</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-3xl mx-auto text-pretty break-words px-2">
+            <p className="text-base md:text-lg text-white/60 max-w-3xl mb-10">
               {t("creatorHeroDesc")}
             </p>
             <Button
@@ -227,27 +236,27 @@ function CreatorContent() {
                   .getElementById("join-us")
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="group mt-10 px-14 py-5 text-xl font-bold bg-white text-black hover:bg-white/90 hover:text-black rounded-none transition-all duration-300"
+              className="group px-8 py-4 text-sm font-bold uppercase tracking-wider bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all duration-300"
             >
               {locale === "ja" ? "合流する" : "합류하기"}
-              <ArrowDown className="ml-2 w-6 h-6 animate-bounce-slow" />
+              <ArrowDown className="ml-2 w-5 h-5 animate-bounce-slow" />
             </Button>
           </div>
 
-          {/* Creator Cards Section - Top of Page */}
+          {/* Creator Cards Grid */}
           <div className="mb-20 sm:mb-28">
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-white">
               {t("creatorPoolTitle1")}
               <span className="text-white">{t("creatorPoolTitle2")}</span>
             </h2>
 
             {loading ? (
               <div className="text-center py-20">
-                <p className="text-white/80">{t("loading")}</p>
+                <p className="text-white/60">{t("loading")}</p>
               </div>
             ) : allCreators.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-white/80 text-lg">{t("creatorEmpty")}</p>
+                <p className="text-white/60 text-lg">{t("creatorEmpty")}</p>
               </div>
             ) : (
               <>
@@ -264,9 +273,9 @@ function CreatorContent() {
                     return (
                       <Card
                         key={creator.id}
-                        className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 min-w-0"
+                        className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 min-w-0"
                       >
-                        {/* Creator Avatar: 3열 시 비율 유지·축소 */}
+                        {/* Creator Avatar */}
                         <div className="aspect-[3/4] min-h-0 bg-card relative overflow-hidden">
                           {creator.profile_image_url ? (
                             <img
@@ -281,7 +290,7 @@ function CreatorContent() {
                           )}
                         </div>
 
-                        {/* Creator Info: 3열 모바일 text-xs·overflow-hidden 고정 */}
+                        {/* Creator Info */}
                         <div className="p-2 md:p-4 min-w-0 overflow-hidden">
                           <div className="mb-1 md:mb-2 flex items-baseline justify-between gap-0.5 min-w-0">
                             <span
@@ -292,7 +301,7 @@ function CreatorContent() {
                             </span>
                           </div>
 
-                          {/* SNS 링크: 3열 시 아이콘·간격 축소 */}
+                          {/* SNS Links */}
                           <div className="flex gap-1 sm:gap-1.5 md:gap-2 flex-wrap overflow-hidden">
                             {creator.instagram_url ? (
                               <a
@@ -371,7 +380,7 @@ function CreatorContent() {
                     [1, 2].map((i) => (
                       <Card
                         key={`placeholder-${i}`}
-                        className="overflow-hidden bg-card/40 border border-dashed border-white/20/60 opacity-60 pointer-events-none min-w-0"
+                        className="overflow-hidden bg-card/40 border border-dashed border-white/20 opacity-60 pointer-events-none min-w-0"
                       >
                         <div className="aspect-[3/4] bg-card/50 relative flex items-center justify-center min-h-0">
                           <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white/30" />
@@ -381,12 +390,11 @@ function CreatorContent() {
                     ))}
                 </div>
 
-                {/* Pagination - 크리에이터 카드 바로 밑으로 이동 */}
+                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mb-12 sm:mb-20">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                       (page) => {
-                        // 현재 페이지 주변 2페이지씩만 표시
                         if (
                           page === 1 ||
                           page === totalPages ||
@@ -403,7 +411,7 @@ function CreatorContent() {
                               }
                               className={`rounded-none min-w-[44px] ${
                                 page === currentPage
-                                  ? "bg-white text-black hover:bg-white"
+                                  ? "bg-[#FF4500] text-white hover:bg-[#E03E00]"
                                   : "border-border bg-card text-white hover:bg-white hover:text-black hover:border-white"
                               }`}
                             >
@@ -425,434 +433,451 @@ function CreatorContent() {
                     )}
                   </div>
                 )}
-                {/* 하단 멘트 및 그라데이션 - 마지막 페이지에만 노출 */}
+                {/* 하단 멘트 - 마지막 페이지에만 노출 */}
                 {currentPage === totalPages && (
                   <div className="text-center py-12 mt-8 sm:mt-12">
                     <p className="text-white/30 text-sm sm:text-base italic">
                       {t("creatorUpdating")}
                     </p>
-                    <div
-                      className="mt-4 h-12 bg-gradient-to-b from-transparent to-background/80 pointer-events-none"
-                      aria-hidden
-                    />
                   </div>
                 )}
               </>
             )}
           </div>
-
-          {/* Creator Categories */}
-          <div className="mb-20">
-            <h2 className="text-3xl font-bold text-center mb-12 text-white">
-              <span className="text-white">{t("creatorPoolTitle1")}</span>
-              <span className="text-white">{t("creatorPoolTitle2")}</span>
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-8 bg-card border-border hover:border-white transition-all duration-300">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  {t("creatorPlatformExpertise")}
-                </h3>
-                <ul className="space-y-3 text-white/80">
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">Instagram:</span>{" "}
-                      {t("creatorPlatformIg")}
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">TikTok:</span>{" "}
-                      {t("creatorPlatformTiktok")}
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">YouTube:</span>{" "}
-                      {t("creatorPlatformYoutube")}
-                    </span>
-                  </li>
-                </ul>
-              </Card>
-
-              <Card className="p-8 bg-card border-border hover:border-white transition-all duration-300">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  {t("creatorDemographicTitle")}
-                </h3>
-                <ul className="space-y-3 text-white/80">
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">
-                        {t("creatorDemographicLabel10s")}:
-                      </span>{" "}
-                      {t("creatorDemographic10s")}
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">
-                        {t("creatorDemographicLabel20s")}:
-                      </span>{" "}
-                      {t("creatorDemographic20s")}
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">
-                        {t("creatorDemographicLabel30s")}:
-                      </span>{" "}
-                      {t("creatorDemographic30s")}
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-white mt-1">•</span>
-                    <span>
-                      <span className="font-medium text-white">
-                        {t("creatorDemographicLabelMale")}:
-                      </span>{" "}
-                      {t("creatorDemographicMale")}
-                    </span>
-                  </li>
-                </ul>
-              </Card>
-            </div>
-          </div>
-
-          <div className="mb-20">
-            <h2 className="text-3xl font-bold text-center mb-12 text-white">
-              <span className="text-white">
-                {t("creatorDifferentiatorTitle1")}
-              </span>
-              <span className="text-white">
-                {t("creatorDifferentiatorTitle2")}
-              </span>
-            </h2>
-
-            <div className="space-y-6">
-              <Card className="p-8 bg-card border-border">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-white/10 rounded-none">
-                    <Award className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-3">
-                      {t("creatorQualityTitle")}
-                    </h3>
-                    <p className="text-white/80 leading-relaxed">
-                      {t("creatorQualityDesc")}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-8 bg-card border-border">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-white/10 rounded-none">
-                    <Target className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-3">
-                      {t("creatorExplainTitle")}
-                    </h3>
-                    <p className="text-white/80 leading-relaxed">
-                      {t("creatorExplainDesc")}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-8 bg-card border-border">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-white/10 rounded-none">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-3">
-                      {t("creatorLocalTitle")}
-                    </h3>
-                    <p className="text-white/80 leading-relaxed">
-                      {t("creatorLocalDesc")}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-
-          {/* Creator Track Selection Section - Bottom */}
-          <CreatorTrackSection onSelectTrack={handleSelectTrack} />
-
-          {/* Creator Application Form Modal */}
-          <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border rounded-none p-0">
-              <div className="p-8 sm:p-10">
-                <DialogHeader className="mb-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="px-4 py-2 bg-white/10 rounded-none text-sm font-bold text-white">
-                      {formData.track_type === "exclusive"
-                        ? locale === "ja"
-                          ? "専属クリエイター"
-                          : "전속 크리에이터"
-                        : locale === "ja"
-                          ? "パートナー"
-                          : "파트너"}
-                    </div>
-                  </div>
-                  <DialogTitle className="text-3xl font-bold text-white text-left">
-                    {formData.track_type === "exclusive"
-                      ? locale === "ja"
-                        ? "専属クリエイター合流申し込み"
-                        : "전속 크리에이터 합류 신청"
-                      : locale === "ja"
-                        ? "パートナー合流申し込み"
-                        : "파트너 합류 신청"}
-                  </DialogTitle>
-                  <DialogDescription className="pt-4 text-base text-white/80 text-left">
-                    <span className="inline-block">
-                      {t("creatorApplyDesc1")}
-                    </span>{" "}
-                    <span className="inline-block">
-                      {t("creatorApplyDesc2")}
-                    </span>
-                  </DialogDescription>
-                </DialogHeader>
-
-                <form onSubmit={handleFormSubmit} className="space-y-6">
-                  {/* Name and Phone */}
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="creator-name"
-                        className="block text-sm font-bold text-white mb-2"
-                      >
-                        {t("formName")} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="creator-name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder={t("creatorPlaceholderName")}
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="creator-phone"
-                        className="block text-sm font-bold text-white mb-2"
-                      >
-                        {t("formPhone")}
-                      </label>
-                      <input
-                        type="tel"
-                        id="creator-phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, "");
-                          setFormData({ ...formData, phone: value });
-                        }}
-                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder="01000000000"
-                      />
-                      <p className="mt-1.5 text-xs text-white/40">
-                        {locale === "ja"
-                          ? "ハイフン(-)なしで入力してください"
-                          : "- 없이 숫자만 입력해주세요"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label
-                      htmlFor="creator-email"
-                      className="block text-sm font-bold text-white mb-2"
-                    >
-                      {t("formEmail")} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="creator-email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                      placeholder="example@email.com"
-                    />
-                  </div>
-
-                  {/* SNS Links */}
-                  <div className="grid md:grid-cols-4 gap-4">
-                    <div>
-                      <label
-                        htmlFor="creator-instagram"
-                        className="block text-sm font-bold text-white mb-2"
-                      >
-                        {t("creatorLabelInstagram")}{" "}
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="url"
-                        id="creator-instagram"
-                        name="instagram_url"
-                        value={formData.instagram_url}
-                        onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder="https://instagram.com/..."
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="creator-youtube"
-                        className="block text-sm font-bold text-white mb-2"
-                      >
-                        {t("creatorLabelYoutube")}
-                      </label>
-                      <input
-                        type="url"
-                        id="creator-youtube"
-                        name="youtube_url"
-                        value={formData.youtube_url}
-                        onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder="https://youtube.com/..."
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="creator-tiktok"
-                        className="block text-sm font-bold text-white mb-2"
-                      >
-                        {t("creatorLabelTiktok")}
-                      </label>
-                      <input
-                        type="url"
-                        id="creator-tiktok"
-                        name="tiktok_url"
-                        value={formData.tiktok_url}
-                        onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder="https://tiktok.com/..."
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="creator-x"
-                        className="block text-sm font-bold text-white mb-2"
-                      >
-                        {t("creatorLabelX")}
-                      </label>
-                      <input
-                        type="url"
-                        id="creator-x"
-                        name="x_url"
-                        value={formData.x_url}
-                        onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
-                        placeholder="https://x.com/..."
-                      />
-                    </div>
-                  </div>
-
-                  {/* Message */}
-                  <div>
-                    <label
-                      htmlFor="creator-message"
-                      className="block text-sm font-bold text-white mb-2"
-                    >
-                      {t("creatorMessage")}
-                    </label>
-                    <textarea
-                      id="creator-message"
-                      name="message"
-                      rows={4}
-                      value={formData.message}
-                      onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
-                      placeholder={t("creatorPlaceholderMessage")}
-                    />
-                  </div>
-
-                  <div className="flex gap-3 pt-6">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setApplyModalOpen(false)}
-                      className="flex-1 border-border text-white hover:bg-card rounded-none"
-                    >
-                      {t("dialogCancel") || "취소"}
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={submitting}
-                      className="flex-1 bg-white text-black hover:bg-white/90 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {submitting
-                        ? t("formSubmitting")
-                        : t("creatorSubmitButton")}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Success Dialog */}
-          <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-            <DialogContent className="sm:max-w-md bg-card border-border rounded-none">
-              <DialogHeader className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
-                  <CheckCircle2 className="h-10 w-10 text-white" />
-                </div>
-                <DialogTitle className="text-2xl font-bold text-white">
-                  {locale === "ja"
-                    ? "合流申し込み完了！"
-                    : "합류 신청이 완료되었습니다!"}
-                </DialogTitle>
-                <DialogDescription className="pt-4 text-base leading-relaxed text-white/80">
-                  {locale === "ja"
-                    ? "申し込みを受け付けました。内容を確認後、担当者より1〜2営業日以内にご連絡いたします。ありがとうございます！"
-                    : "신청이 정상적으로 접수되었습니다. 내용 확인 후 담당자가 1~2 영업일 내로 연락드리겠습니다. 감사합니다!"}
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter className="sm:justify-center">
-                <Button
-                  onClick={() => {
-                    setSuccessDialogOpen(false);
-                    setApplyModalOpen(false);
-                    setFormData({
-                      name: "",
-                      phone: "",
-                      email: "",
-                      instagram_url: "",
-                      youtube_url: "",
-                      tiktok_url: "",
-                      x_url: "",
-                      message: "",
-                      track_type: "exclusive",
-                    });
-                  }}
-                  className="w-full sm:w-auto px-8 font-bold rounded-none"
-                >
-                  {t("dialogConfirm")}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
       </section>
+
+      {/* ============================================================
+          SECTION 2: Creator Categories (White bg-white)
+          ============================================================ */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-16">
+            <span className="text-xs uppercase tracking-[0.3em] text-black/40">
+              OUR CREATORS
+            </span>
+            <div className="h-px flex-1 bg-black/10" />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+              <h3 className="text-2xl font-bold text-[#141414] mb-4">
+                {t("creatorPlatformExpertise")}
+              </h3>
+              <ul className="space-y-3 text-black/60">
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">Instagram:</span>{" "}
+                    {t("creatorPlatformIg")}
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">TikTok:</span>{" "}
+                    {t("creatorPlatformTiktok")}
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">YouTube:</span>{" "}
+                    {t("creatorPlatformYoutube")}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+              <h3 className="text-2xl font-bold text-[#141414] mb-4">
+                {t("creatorDemographicTitle")}
+              </h3>
+              <ul className="space-y-3 text-black/60">
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">
+                      {t("creatorDemographicLabel10s")}:
+                    </span>{" "}
+                    {t("creatorDemographic10s")}
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">
+                      {t("creatorDemographicLabel20s")}:
+                    </span>{" "}
+                    {t("creatorDemographic20s")}
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">
+                      {t("creatorDemographicLabel30s")}:
+                    </span>{" "}
+                    {t("creatorDemographic30s")}
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4500] mt-1">•</span>
+                  <span>
+                    <span className="font-medium text-[#141414]">
+                      {t("creatorDemographicLabelMale")}:
+                    </span>{" "}
+                    {t("creatorDemographicMale")}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          SECTION 3: Differentiators (Dark bg-background)
+          ============================================================ */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-xs uppercase tracking-[0.2em] text-white/40">
+            WHY KOREANERS
+          </span>
+          <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16">
+            <span>{t("creatorDifferentiatorTitle1")}</span>
+            <span>{t("creatorDifferentiatorTitle2")}</span>
+          </h2>
+
+          <div className="space-y-6">
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-card border border-border rounded-none">
+                  <Award className="w-6 h-6 text-[#FF4500]/70" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-3">
+                    {t("creatorQualityTitle")}
+                  </h3>
+                  <p className="text-white/60 leading-relaxed">
+                    {t("creatorQualityDesc")}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-card border border-border rounded-none">
+                  <Target className="w-6 h-6 text-[#FF4500]/70" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-3">
+                    {t("creatorExplainTitle")}
+                  </h3>
+                  <p className="text-white/60 leading-relaxed">
+                    {t("creatorExplainDesc")}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-card border border-border rounded-none">
+                  <Users className="w-6 h-6 text-[#FF4500]/70" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-3">
+                    {t("creatorLocalTitle")}
+                  </h3>
+                  <p className="text-white/60 leading-relaxed">
+                    {t("creatorLocalDesc")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          SECTION 4: Track Selection (separate component)
+          ============================================================ */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <CreatorTrackSection onSelectTrack={handleSelectTrack} />
+        </div>
+      </section>
+
+      {/* ============================================================
+          DIALOGS
+          ============================================================ */}
+      {/* Creator Application Form Modal */}
+      <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border rounded-none p-0">
+          <div className="p-8 sm:p-10">
+            <DialogHeader className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="px-4 py-2 bg-[#FF4500]/10 border border-[#FF4500]/20 rounded-none text-sm font-bold text-[#FF4500]">
+                  {formData.track_type === "exclusive"
+                    ? locale === "ja"
+                      ? "専属クリエイター"
+                      : "전속 크리에이터"
+                    : locale === "ja"
+                      ? "パートナー"
+                      : "파트너"}
+                </div>
+              </div>
+              <DialogTitle className="text-3xl font-bold text-white text-left">
+                {formData.track_type === "exclusive"
+                  ? locale === "ja"
+                    ? "専属クリエイター合流申し込み"
+                    : "전속 크리에이터 합류 신청"
+                  : locale === "ja"
+                    ? "パートナー合流申し込み"
+                    : "파트너 합류 신청"}
+              </DialogTitle>
+              <DialogDescription className="pt-4 text-base text-white/60 text-left">
+                <span className="inline-block">
+                  {t("creatorApplyDesc1")}
+                </span>{" "}
+                <span className="inline-block">
+                  {t("creatorApplyDesc2")}
+                </span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleFormSubmit} className="space-y-6">
+              {/* Name and Phone */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="creator-name"
+                    className="block text-sm font-bold text-white mb-2"
+                  >
+                    {t("formName")} <span className="text-[#FF4500]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="creator-name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    placeholder={t("creatorPlaceholderName")}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="creator-phone"
+                    className="block text-sm font-bold text-white mb-2"
+                  >
+                    {t("formPhone")}
+                  </label>
+                  <input
+                    type="tel"
+                    id="creator-phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData({ ...formData, phone: value });
+                    }}
+                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    placeholder="01000000000"
+                  />
+                  <p className="mt-1.5 text-xs text-white/40">
+                    {locale === "ja"
+                      ? "ハイフン(-)なしで入力してください"
+                      : "- 없이 숫자만 입력해주세요"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div>
+                <label
+                  htmlFor="creator-email"
+                  className="block text-sm font-bold text-white mb-2"
+                >
+                  {t("formEmail")} <span className="text-[#FF4500]">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="creator-email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                  placeholder="example@email.com"
+                />
+              </div>
+
+              {/* SNS Links */}
+              <div className="grid md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    htmlFor="creator-instagram"
+                    className="block text-sm font-bold text-white mb-2"
+                  >
+                    {t("creatorLabelInstagram")}{" "}
+                    <span className="text-[#FF4500]">*</span>
+                  </label>
+                  <input
+                    type="url"
+                    id="creator-instagram"
+                    name="instagram_url"
+                    value={formData.instagram_url}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    placeholder="https://instagram.com/..."
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="creator-youtube"
+                    className="block text-sm font-bold text-white mb-2"
+                  >
+                    {t("creatorLabelYoutube")}
+                  </label>
+                  <input
+                    type="url"
+                    id="creator-youtube"
+                    name="youtube_url"
+                    value={formData.youtube_url}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    placeholder="https://youtube.com/..."
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="creator-tiktok"
+                    className="block text-sm font-bold text-white mb-2"
+                  >
+                    {t("creatorLabelTiktok")}
+                  </label>
+                  <input
+                    type="url"
+                    id="creator-tiktok"
+                    name="tiktok_url"
+                    value={formData.tiktok_url}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    placeholder="https://tiktok.com/..."
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="creator-x"
+                    className="block text-sm font-bold text-white mb-2"
+                  >
+                    {t("creatorLabelX")}
+                  </label>
+                  <input
+                    type="url"
+                    id="creator-x"
+                    name="x_url"
+                    value={formData.x_url}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    placeholder="https://x.com/..."
+                  />
+                </div>
+              </div>
+
+              {/* Message */}
+              <div>
+                <label
+                  htmlFor="creator-message"
+                  className="block text-sm font-bold text-white mb-2"
+                >
+                  {t("creatorMessage")}
+                </label>
+                <textarea
+                  id="creator-message"
+                  name="message"
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all resize-none"
+                  placeholder={t("creatorPlaceholderMessage")}
+                />
+              </div>
+
+              <div className="flex gap-3 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setApplyModalOpen(false)}
+                  className="flex-1 border-border text-white hover:bg-card rounded-none"
+                >
+                  {t("dialogCancel") || "취소"}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1 bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting
+                    ? t("formSubmitting")
+                    : t("creatorSubmitButton")}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-md bg-card border-border rounded-none">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-[#FF4500]/10 border border-[#FF4500]/20 rounded-none">
+              <CheckCircle2 className="h-10 w-10 text-[#FF4500]" />
+            </div>
+            <DialogTitle className="text-2xl font-bold text-white">
+              {locale === "ja"
+                ? "合流申し込み完了！"
+                : "합류 신청이 완료되었습니다!"}
+            </DialogTitle>
+            <DialogDescription className="pt-4 text-base leading-relaxed text-white/60">
+              {locale === "ja"
+                ? "申し込みを受け付けました。内容を確認後、担当者より1〜2営業日以内にご連絡いたします。ありがとうございます！"
+                : "신청이 정상적으로 접수되었습니다. 내용 확인 후 담당자가 1~2 영업일 내로 연락드리겠습니다. 감사합니다!"}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <Button
+              onClick={() => {
+                setSuccessDialogOpen(false);
+                setApplyModalOpen(false);
+                setFormData({
+                  name: "",
+                  phone: "",
+                  email: "",
+                  instagram_url: "",
+                  youtube_url: "",
+                  tiktok_url: "",
+                  x_url: "",
+                  message: "",
+                  track_type: "exclusive",
+                });
+              }}
+              className="w-full sm:w-auto px-8 font-bold rounded-none bg-[#FF4500] text-white hover:bg-[#E03E00]"
+            >
+              {t("dialogConfirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
@@ -861,11 +886,11 @@ function CreatorContent() {
 function CreatorFallback() {
   return (
     <div
-      className="min-h-screen flex items-center justify-center pt-24 px-4 sm:px-6 lg:px-24"
+      className="min-h-screen flex items-center justify-center pt-32 sm:pt-40 px-6 lg:px-24"
       aria-hidden="true"
     >
-      <div className="container mx-auto max-w-7xl">
-        <div className="h-32 w-full max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="h-32 w-full max-w-2xl bg-card/50 animate-pulse" />
       </div>
     </div>
   );

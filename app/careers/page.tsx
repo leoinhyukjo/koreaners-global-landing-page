@@ -119,64 +119,61 @@ export default function CareersPage() {
       <Navigation />
       <SafeHydration fallback={<CareersSkeleton />}>
 
-        {/* Hero Section */}
-        <section className="pt-24 sm:pt-32 pb-4 sm:pb-6 px-4 sm:px-6 lg:px-24 relative overflow-hidden w-full max-w-full">
+        {/* ── Hero Section (Dark) ── */}
+        <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full">
+          <div className="max-w-7xl mx-auto relative z-10">
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">CAREERS</span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <h1 className="font-display font-bold text-6xl md:text-7xl lg:text-8xl uppercase text-white leading-[0.85] mb-6">
+              JOIN KOREANERS
+            </h1>
+            <p className="text-xl sm:text-2xl md:text-3xl text-white/60 max-w-4xl break-keep font-semibold mb-4">
+              {t('careersHeroSubtitle')}
+            </p>
+            <p className="text-lg sm:text-xl text-white/40 max-w-2xl break-keep">
+              {t('careersHeroTitle')}
+            </p>
+          </div>
+        </section>
 
-          <div className="container mx-auto max-w-7xl relative z-10">
-            <div className="text-center space-y-4 sm:space-y-6">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep">
-                JOIN KOREANERS
-              </h1>
-              <div className="w-24 h-px mx-auto bg-white/10" />
-              <p className="text-xl sm:text-2xl md:text-3xl text-white/80 max-w-7xl mx-auto break-keep font-semibold">
-                {t('careersHeroSubtitle')}
+        {/* ── About Section (White) ── */}
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white w-full max-w-full">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-4 mb-16">
+              <span className="text-xs uppercase tracking-[0.3em] text-black/40">ABOUT US</span>
+              <div className="h-px flex-1 bg-black/10" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#141414] mb-8 break-keep">
+              {t('careersAboutTitle')}
+            </h2>
+            <div className="max-w-3xl space-y-4">
+              <p className="text-lg sm:text-xl text-[#141414] font-semibold leading-relaxed break-keep">
+                {t('careersAboutDesc1')}
               </p>
-              <p className="text-lg sm:text-xl text-white/40 max-w-2xl mx-auto break-keep">
-                {t('careersHeroTitle')}
+              <p className="text-lg sm:text-xl text-black/60 leading-relaxed break-keep">
+                {t('careersAboutDesc2')}
               </p>
-              <div className="pt-2">
-                <ChevronDown className="w-6 h-6 text-white/50 mx-auto motion-safe:animate-bounce" />
-              </div>
             </div>
           </div>
         </section>
 
-        {/* About Section */}
-        <section className="pt-4 sm:pt-6 pb-8 sm:pb-14 px-4 sm:px-6 lg:px-24 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <div className="text-center mb-12 sm:mb-16">
-              <p className="text-sm tracking-widest text-white/50 uppercase mb-4">About Us</p>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 break-keep">
-                {t('careersAboutTitle')}
-              </h2>
-              <div className="max-w-3xl mx-auto space-y-4">
-                <p className="text-lg sm:text-xl text-white font-semibold leading-relaxed break-keep">
-                  {t('careersAboutDesc1')}
-                </p>
-                <p className="text-lg sm:text-xl text-white/40 leading-relaxed break-keep">
-                  {t('careersAboutDesc2')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Core Business Areas */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-card/30 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <p className="text-xs tracking-widest text-white/50 uppercase text-center mb-4">Business</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-12 break-keep">
+        {/* ── Core Business Areas (Dark) ── */}
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background w-full max-w-full">
+          <div className="max-w-7xl mx-auto">
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">BUSINESS</span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16 break-keep">
               {t('careersBizTitle')}
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {bizAreas.map((area, index) => (
                 <Card
                   key={index}
-                  className="p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group min-w-0 overflow-hidden"
+                  className="p-8 bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
                 >
-                  <p className="text-xs text-white/30 font-mono mb-4">{String(index + 1).padStart(2, '0')}</p>
-                  <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-300 shrink-0">
-                    <area.icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-300" />
+                  <p className="text-xs font-mono mb-4 text-[#FF4500]">{String(index + 1).padStart(2, '0')}</p>
+                  <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 shrink-0">
+                    <area.icon className="w-8 h-8 text-[#FF4500]/70" />
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
                     {t(area.titleKey)}
@@ -186,7 +183,7 @@ export default function CareersPage() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {area.subKeys.map((subKey, subIdx) => (
-                      <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-white/20 text-sm text-white/60 font-medium">
+                      <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-white/10 text-sm text-white/60 font-medium">
                         {t(subKey)}
                       </span>
                     ))}
@@ -197,27 +194,30 @@ export default function CareersPage() {
           </div>
         </section>
 
-        {/* Core Strengths */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-card/30 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <p className="text-xs tracking-widest text-white/50 uppercase text-center mb-4">Strengths</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-12 break-keep">
+        {/* ── Core Strengths (White) ── */}
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white w-full max-w-full">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-4 mb-16">
+              <span className="text-xs uppercase tracking-[0.3em] text-black/40">STRENGTHS</span>
+              <div className="h-px flex-1 bg-black/10" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#141414] mb-16 break-keep">
               {t('careersStrengthTitle')}
             </h2>
             <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
               {strengthItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 p-5 sm:p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group"
+                  className="flex items-start gap-4 p-8 bg-[#F5F5F5] border border-black/5 hover:border-[#FF4500]/40 transition-all duration-300 group"
                 >
-                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
-                    <item.icon className="w-6 h-6 text-white group-hover:text-black transition-colors duration-300" />
+                  <div className="w-12 h-12 bg-white flex items-center justify-center shrink-0">
+                    <item.icon className="w-6 h-6 text-[#FF4500]/70" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 break-keep">
+                    <h3 className="text-lg sm:text-xl font-bold text-[#141414] mb-1 break-keep">
                       {t(item.titleKey)}
                     </h3>
-                    <p className="text-sm sm:text-base text-white/40 leading-relaxed break-words">
+                    <p className="text-sm sm:text-base text-black/60 leading-relaxed break-words">
                       {t(item.descKey)}
                     </p>
                   </div>
@@ -227,14 +227,15 @@ export default function CareersPage() {
           </div>
         </section>
 
-        {/* Vision Section */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <p className="text-xs tracking-widest text-white/50 uppercase text-center mb-4">Vision</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-6 break-keep">
+        {/* ── Vision Section (Dark) ── */}
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background w-full max-w-full">
+          <div className="max-w-7xl mx-auto">
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">VISION</span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 break-keep">
               {t('careersVisionTitle')}
             </h2>
-            <p className="text-lg sm:text-xl text-white/40 text-center max-w-3xl mx-auto mb-12 break-keep">
+            <p className="text-lg sm:text-xl text-white/60 max-w-3xl mb-16 break-keep">
               {t('careersVisionDesc')}
             </p>
             <div className="grid md:grid-cols-3 gap-6">
@@ -244,15 +245,15 @@ export default function CareersPage() {
                 return (
                   <Card
                     key={index}
-                    className="p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group text-center"
+                    className="p-8 bg-card border border-border hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
                   >
-                    <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
-                      <Icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-300" />
+                    <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mx-auto mb-6">
+                      <Icon className="w-8 h-8 text-[#FF4500]/70" />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
                       {t(item.titleKey)}
                     </h3>
-                    <p className="text-base sm:text-lg text-white/40 leading-relaxed break-words">
+                    <p className="text-base sm:text-lg text-white/60 leading-relaxed break-words">
                       {t(item.descKey)}
                     </p>
                   </Card>
@@ -262,11 +263,14 @@ export default function CareersPage() {
           </div>
         </section>
 
-        {/* Culture / Talent Section — Alternating Layout */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <p className="text-xs tracking-widest text-white/50 uppercase text-center mb-4">Culture</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-16 break-keep">
+        {/* ── Culture / Talent Section (White) ── */}
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white w-full max-w-full">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-4 mb-16">
+              <span className="text-xs uppercase tracking-[0.3em] text-black/40">CULTURE</span>
+              <div className="h-px flex-1 bg-black/10" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#141414] mb-16 break-keep">
               {t('careersCultureTitle')}
             </h2>
             <div className="space-y-4 sm:space-y-6">
@@ -275,25 +279,25 @@ export default function CareersPage() {
                 return (
                   <div
                     key={index}
-                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 group ${
+                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-[#F5F5F5] border border-black/5 hover:border-[#FF4500]/40 transition-all duration-300 group ${
                       !isEven ? 'sm:flex-row-reverse' : ''
                     }`}
                   >
                     {/* Number + Icon */}
                     <div className="flex items-center gap-4 shrink-0">
-                      <span className="text-4xl sm:text-5xl font-bold text-white/30 select-none leading-none">
+                      <span className="font-display font-bold text-4xl text-[#FF4500] select-none leading-none">
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <div className="w-14 h-14 bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all duration-300">
-                        <val.icon className="w-7 h-7 text-white group-hover:text-black transition-colors duration-300" />
+                      <div className="w-14 h-14 bg-white flex items-center justify-center">
+                        <val.icon className="w-7 h-7 text-[#FF4500]/70" />
                       </div>
                     </div>
                     {/* Content */}
                     <div className={`flex-1 ${!isEven ? 'sm:text-right' : ''}`}>
-                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 break-keep">
+                      <h3 className="text-xl sm:text-2xl font-bold text-[#141414] mb-2 break-keep">
                         {t(val.titleKey)}
                       </h3>
-                      <p className="text-base sm:text-lg text-white/40 leading-relaxed break-words">
+                      <p className="text-base sm:text-lg text-black/60 leading-relaxed break-words">
                         {t(val.descKey)}
                       </p>
                     </div>
@@ -304,24 +308,23 @@ export default function CareersPage() {
           </div>
         </section>
 
-        {/* Job Openings Section */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 bg-card/30 w-full max-w-full">
-          <div className="container mx-auto max-w-7xl">
-            <div className="text-center mb-12">
-              <p className="text-xs tracking-widest text-white/50 uppercase mb-4">Openings</p>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 break-keep">
-                {t('careersOpeningsTitle')}
-              </h2>
-              <p className="text-lg sm:text-xl text-white/40 break-keep">
-                {t('careersOpeningsSubtitle')}
-              </p>
-            </div>
+        {/* ── Job Openings Section (Dark) ── */}
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background w-full max-w-full">
+          <div className="max-w-7xl mx-auto">
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">OPENINGS</span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 break-keep">
+              {t('careersOpeningsTitle')}
+            </h2>
+            <p className="text-lg sm:text-xl text-white/60 mb-16 break-keep">
+              {t('careersOpeningsSubtitle')}
+            </p>
 
             {/* Loading State */}
             {loading && (
               <div className="space-y-4 max-w-7xl mx-auto">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-32 bg-card/50 animate-pulse border border-border" />
+                  <div key={i} className="h-32 bg-card animate-pulse border border-border" />
                 ))}
                 <p className="text-center text-white/40 text-base mt-4">{t('careersLoading')}</p>
               </div>
@@ -330,7 +333,7 @@ export default function CareersPage() {
             {/* Error State */}
             {error && !loading && (
               <div className="text-center py-12">
-                <p className="text-white/40 text-lg">{t('error')}</p>
+                <p className="text-white/60 text-lg">{t('error')}</p>
               </div>
             )}
 
@@ -340,7 +343,7 @@ export default function CareersPage() {
                 <div className="w-16 h-16 rounded-none bg-card flex items-center justify-center mx-auto mb-6">
                   <FileText className="w-8 h-8 text-white/50" />
                 </div>
-                <p className="text-white/40 text-lg">{t('careersNoOpenings')}</p>
+                <p className="text-white/60 text-lg">{t('careersNoOpenings')}</p>
               </div>
             )}
 
@@ -352,7 +355,7 @@ export default function CareersPage() {
                   return (
                     <Card
                       key={job.id}
-                      className={`p-6 sm:p-8 bg-card border-2 border-border hover:border-white hover:-translate-y-1 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                      className={`p-6 sm:p-8 bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="min-w-0 flex-1">
@@ -363,7 +366,7 @@ export default function CareersPage() {
                             <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-none shrink-0 ${
                               isClosed
                                 ? 'bg-white/20 text-white/60'
-                                : 'bg-white text-black'
+                                : 'bg-[#FF4500] text-white'
                             }`}>
                               {isClosed ? t('careersClosed') : t('careersHiring')}
                             </span>
@@ -390,13 +393,13 @@ export default function CareersPage() {
                           <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 shrink-0 w-full sm:w-auto">
                             {job.jdUrl && (
                               <a href={job.jdUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border-white/20 text-white hover:bg-white/10 hover:text-white">
+                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border border-white/30 text-white hover:bg-white/10 hover:text-white">
                                   {t('careersDetail')}
                                 </Button>
                               </a>
                             )}
                             <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                              <Button size="lg" className="w-full sm:w-auto px-8 font-bold">
+                              <Button size="lg" className="w-full sm:w-auto px-8 font-bold bg-[#FF4500] text-white hover:bg-[#E03E00]">
                                 {t('careersApply')}
                               </Button>
                             </a>
@@ -410,15 +413,15 @@ export default function CareersPage() {
             )}
 
             {/* Fallback CTA */}
-            <div className="text-center mt-12 pt-8 border-t border-border">
+            <div className="text-center mt-16 pt-8 border-t border-border">
               <p className="text-white text-lg font-semibold mb-2">{t('careersNoPositionQuestion')}</p>
-              <p className="text-white/40 text-base mb-4">{t('careersNoPositionDesc')}</p>
+              <p className="text-white/60 text-base mb-4">{t('careersNoPositionDesc')}</p>
               <a
                 href="https://descriptive-wallflower-afd.notion.site/30601ca3e480805196f0dda3f1b0778c?pvs=105"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button size="lg" className="px-8 font-bold">
+                <Button size="lg" className="px-8 font-bold bg-[#FF4500] text-white hover:bg-[#E03E00]">
                   {t('careersNoPositionCta')}
                 </Button>
               </a>

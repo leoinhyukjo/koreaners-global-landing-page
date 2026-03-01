@@ -12,11 +12,13 @@ import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-conte
 import { getTranslation } from '@/lib/translations'
 
 const PortfolioSkeleton = () => (
-<section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 min-h-screen" aria-hidden="true">
-  <div className="container mx-auto max-w-7xl">
-      <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-        <div className="h-12 sm:h-14 max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
-        <div className="h-5 max-w-3xl mx-auto bg-card/50 rounded animate-pulse" />
+<section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
+  <div className="max-w-7xl mx-auto">
+      <div className="mb-12 sm:mb-16">
+        <div className="h-4 w-24 bg-card/50 rounded animate-pulse mb-3" />
+        <div className="w-12 h-0.5 bg-[#FF4500] mb-8" />
+        <div className="h-12 sm:h-14 max-w-2xl bg-card/50 rounded animate-pulse" />
+        <div className="h-5 max-w-xl bg-card/50 rounded animate-pulse mt-6" />
       </div>
       <div className="text-center py-20">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
@@ -55,8 +57,8 @@ export default function PortfolioPage() {
   }
 
   // 카테고리 필터링 (대소문자 구분)
-  const filteredItems = activeTab === 'all' 
-    ? portfolios 
+  const filteredItems = activeTab === 'all'
+    ? portfolios
     : portfolios.filter(item => {
         if (!item.category || !Array.isArray(item.category)) return false
         return item.category.some(cat => {
@@ -97,28 +99,30 @@ export default function PortfolioPage() {
       <Navigation />
       <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
-<section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 relative overflow-hidden">
-      <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight">
-              <span className="text-white">{t('portfolioPageHero1')}</span>
+<section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
+          <div className="mb-12 sm:mb-16">
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">PORTFOLIO</span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+              <span>{t('portfolioPageHero1')}</span>
               <br />
-              <span className="text-white">{t('portfolioPageHero2')}</span>
+              <span>{t('portfolioPageHero2')}</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-3xl mx-auto text-pretty px-2">
+            <p className="text-lg text-white/60 max-w-2xl mt-6">
               {t('portfolioPageHeroSub')}
             </p>
           </div>
 
           {/* Category Tabs */}
-          <div className="flex gap-2 mb-8 sm:mb-12 justify-center flex-wrap px-2">
+          <div className="flex gap-2 mb-8 sm:mb-12 flex-wrap px-0">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 sm:px-6 py-2 sm:py-3 rounded-none font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
-                    ? 'bg-white text-black'
+                    ? 'bg-[#FF4500] text-white'
                     : 'bg-card text-white/80 hover:bg-white/10 border border-border'
                 }`}
               >
@@ -142,8 +146,8 @@ export default function PortfolioPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-20">
               {filteredItems.map(item => (
                 <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
-                  <Card 
-                    className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col"
+                  <Card
+                    className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                   >
                     {/* Image */}
                     {item.thumbnail_url ? (

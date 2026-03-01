@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Zap, Users, Sparkles, Award, Target, TrendingUp } from "lucide-react";
 import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
@@ -29,30 +28,32 @@ export function CreatorTrackSection({
     getTranslation(locale, key);
 
   return (
-    <div id="join-us" className="mb-20 scroll-mt-24">
-      {/* Recruitment Intro */}
-      <div className="text-center mb-12 sm:mb-16">
-        <p className="text-sm tracking-widest text-white/50 uppercase mb-4">
-          Join Us
-        </p>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 break-words">
+    <div id="join-us" className="scroll-mt-24">
+      {/* Join Us Intro - Left aligned */}
+      <div className="mb-16 sm:mb-20">
+        <span className="text-xs uppercase tracking-[0.2em] text-white/40">
+          JOIN US
+        </span>
+        <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
           {locale === "ja"
-            ? "コリアナースと共に成長するクリエイターを募集しています"
-            : "코리너스와 함께 성장할 크리에이터를 모집합니다"}
+            ? "コリアナースと共に成長する\nクリエイターを募集しています"
+            : "코리너스와 함께 성장할\n크리에이터를 모집합니다"}
         </h2>
-        <p className="text-base sm:text-lg text-white/40 max-w-3xl mx-auto break-words px-2">
+        <p className="text-base md:text-lg text-white/60 max-w-3xl">
           {locale === "ja"
             ? "K-ブランドと日本市場をつなぐクリエイターとして、あなたの影響力をさらに拡大してみませんか？"
             : "K-브랜드와 일본 시장을 잇는 크리에이터로서, 당신의 영향력을 더 넓혀보세요."}
         </p>
       </div>
 
-      {/* Track Selection */}
-      <div className="text-center space-y-4 sm:space-y-6 mb-16 sm:mb-20">
-        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white break-words">
+      {/* Track Selection Heading */}
+      <div className="mb-12 sm:mb-16">
+        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
           {locale === "ja" ? "2つの合流ジャーニー" : "두 가지 합류 여정"}
         </h3>
-        <p className="text-sm sm:text-base md:text-lg text-white/60 max-w-3xl mx-auto break-words px-2">
+        <p className="text-sm sm:text-base md:text-lg text-white/60 max-w-3xl">
           {locale === "ja"
             ? "あなたのキャリアと目標に合わせて、最適なパスを選択してください"
             : "당신의 커리어와 목표에 맞는 최적의 경로를 선택하세요"}
@@ -61,11 +62,11 @@ export function CreatorTrackSection({
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Exclusive Creator Track */}
-        <Card className="overflow-hidden bg-card border-border hover:border-white transition-all duration-300">
+        <div className="overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300">
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-white/10 rounded-none">
-                <Zap className="w-7 h-7 text-white" />
+              <div className="p-3 bg-card border border-border rounded-none">
+                <Zap className="w-7 h-7 text-[#FF4500]/70" />
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white">
                 {locale === "ja" ? "専属クリエイター" : "전속 크리에이터"}
@@ -80,7 +81,7 @@ export function CreatorTrackSection({
 
             <div className="space-y-4 mb-10">
               <div className="flex gap-3">
-                <Users className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Users className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja"
@@ -96,7 +97,7 @@ export function CreatorTrackSection({
               </div>
 
               <div className="flex gap-3">
-                <Award className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Award className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja" ? "専門サポート" : "전문가 지원"}
@@ -110,7 +111,7 @@ export function CreatorTrackSection({
               </div>
 
               <div className="flex gap-3">
-                <TrendingUp className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <TrendingUp className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja" ? "継続的な成長" : "지속적 성장"}
@@ -124,7 +125,7 @@ export function CreatorTrackSection({
               </div>
 
               <div className="flex gap-3">
-                <Sparkles className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Sparkles className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja"
@@ -151,7 +152,7 @@ export function CreatorTrackSection({
                   href={TRACK_LINKS.exclusive[locale]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full px-8 py-3 text-base font-semibold text-center border border-white/40 text-white/80 hover:border-white hover:text-white rounded-none transition-all"
+                  className="w-full px-8 py-3 text-base font-semibold text-center border border-white/30 text-white hover:bg-white/10 rounded-none transition-all"
                 >
                   {locale === "ja"
                     ? "専属クリエイター詳細案内"
@@ -159,21 +160,21 @@ export function CreatorTrackSection({
                 </a>
                 <Button
                   onClick={() => onSelectTrack("exclusive")}
-                  className="w-full px-8 py-3 text-base font-bold bg-white text-black hover:bg-white/90 rounded-none transition-all"
+                  className="w-full px-8 py-3 text-base font-bold bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all"
                 >
                   {locale === "ja" ? "合流申し込む" : "합류 신청하기"}
                 </Button>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Partner Track */}
-        <Card className="overflow-hidden bg-card border-border hover:border-white transition-all duration-300">
+        <div className="overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300">
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-white/10 rounded-none">
-                <Target className="w-7 h-7 text-white" />
+              <div className="p-3 bg-card border border-border rounded-none">
+                <Target className="w-7 h-7 text-[#FF4500]/70" />
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white">
                 {locale === "ja" ? "パートナー" : "파트너"}
@@ -188,7 +189,7 @@ export function CreatorTrackSection({
 
             <div className="space-y-4 mb-10">
               <div className="flex gap-3">
-                <Sparkles className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Sparkles className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja" ? "カスタマイズ機会" : "맞춤형 기회"}
@@ -202,7 +203,7 @@ export function CreatorTrackSection({
               </div>
 
               <div className="flex gap-3">
-                <Users className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Users className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja" ? "フレキシブル協力" : "자유로운 협업"}
@@ -216,7 +217,7 @@ export function CreatorTrackSection({
               </div>
 
               <div className="flex gap-3">
-                <Award className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Award className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja" ? "ブランド体験" : "다양한 브랜드 경험"}
@@ -230,7 +231,7 @@ export function CreatorTrackSection({
               </div>
 
               <div className="flex gap-3">
-                <TrendingUp className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <TrendingUp className="w-5 h-5 text-[#FF4500] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white mb-1">
                     {locale === "ja" ? "スポット報酬" : "프로젝트 수당"}
@@ -255,20 +256,20 @@ export function CreatorTrackSection({
                   href={TRACK_LINKS.partner[locale]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full px-8 py-3 text-base font-semibold text-center border border-white/40 text-white/80 hover:border-white hover:text-white rounded-none transition-all"
+                  className="w-full px-8 py-3 text-base font-semibold text-center border border-white/30 text-white hover:bg-white/10 rounded-none transition-all"
                 >
                   {locale === "ja" ? "パートナー詳細案内" : "파트너 상세 안내"}
                 </a>
                 <Button
                   onClick={() => onSelectTrack("partner")}
-                  className="w-full px-8 py-3 text-base font-bold bg-white text-black hover:bg-white/90 rounded-none transition-all"
+                  className="w-full px-8 py-3 text-base font-bold bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all"
                 >
                   {locale === "ja" ? "合流申し込む" : "합류 신청하기"}
                 </Button>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

@@ -29,8 +29,8 @@ const BlogDetailSkeleton = () => (
     className="min-h-screen relative overflow-hidden bg-background"
     aria-hidden="true"
   >
-    <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24">
-      <div className="container mx-auto max-w-7xl">
+    <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24">
+      <div className="max-w-7xl mx-auto">
         <div className="h-10 w-48 bg-card/50 rounded animate-pulse mb-8" />
         <div className="aspect-video bg-card/50 rounded animate-pulse mb-6" />
         <div className="h-8 max-w-2xl bg-card/50 rounded animate-pulse" />
@@ -60,13 +60,17 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
   return (
     <SafeHydration fallback={<BlogDetailSkeleton />}>
       <main className="min-h-screen relative overflow-hidden bg-background">
-        <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 relative z-10">
-          <div className="container mx-auto max-w-7xl">
+        <article className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 relative z-10">
+          <div className="max-w-7xl mx-auto">
             <header className="mb-8 sm:mb-12">
+              {/* Section tag */}
+              <span className="text-xs uppercase tracking-[0.2em] text-white/40">BLOG</span>
+              <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
               <Link href="/blog">
                 <Button
                   variant="ghost"
-                  className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card border-0"
+                  className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card hover:text-[#FF4500] border-0"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("backToList")}
@@ -87,8 +91,8 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-card">
                         <div className="text-center px-4">
-                          <div className="text-4xl mb-2">📝</div>
-                          <p className="text-sm text-white/40">
+                          <span className="text-4xl font-bold text-white/20 tracking-widest">BLOG</span>
+                          <p className="text-sm text-white/40 mt-2">
                             {t("performanceNoImage")}
                           </p>
                         </div>
@@ -114,7 +118,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                       )}
                     </time>
                   </div>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight break-keep text-white">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight break-keep text-white">
                     {displayTitle}
                   </h1>
                 </div>

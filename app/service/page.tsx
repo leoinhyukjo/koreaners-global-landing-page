@@ -50,88 +50,88 @@ export default function ServicePage() {
     <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<ServiceSkeleton />}>
-      
-      {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden w-full max-w-full">
-        <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center space-y-4 sm:space-y-6">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight break-keep break-words">
-              <div className="flex flex-col items-center gap-2">
-                <span className="inline-block">{t('serviceHero1')}</span>
-                <span className="inline-block">
-                  <span className="text-white">{t('serviceHero2')}</span>
-                  <span className="text-white">{t('serviceHero3')}</span>
-                </span>
-              </div>
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 max-w-prose mx-auto text-balance break-keep break-words px-2">
-              {t('serviceHeroDesc')}
-            </p>
-          </div>
+
+      {/* Hero Section — Dark */}
+      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-xs uppercase tracking-[0.2em] text-white/40">SERVICE</span>
+          <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep max-w-4xl">
+            <span>{t('serviceHero1')}</span>{' '}
+            <span>{t('serviceHero2')}</span>
+            <span>{t('serviceHero3')}</span>
+          </h1>
+          <p className="text-lg md:text-xl text-white/60 max-w-2xl mt-6 leading-relaxed break-keep">
+            {t('serviceHeroDesc')}
+          </p>
         </div>
       </section>
 
-      {/* Problem & Insight Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 break-keep break-words">
+      {/* Pain Points — White */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-16">
+            <span className="text-xs uppercase tracking-[0.3em] text-black/40">CHALLENGES</span>
+            <div className="h-px flex-1 bg-black/10" />
+          </div>
+
+          <div className="mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#141414] leading-tight break-keep max-w-3xl">
               {t('serviceProblemTitle')}
             </h2>
-            <p className="text-base sm:text-lg text-white/80 break-keep break-words max-w-prose mx-auto px-4 sm:px-6 lg:px-24">
+            <p className="text-lg text-black/60 mt-4 max-w-2xl break-keep">
               {t('serviceProblemSubtitle')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {painPoints.map((point, index) => (
-              <Card 
+              <div
                 key={index}
-                className="p-6 sm:p-8 bg-card border-border hover:border-white hover:-translate-y-1 transition-all duration-500 group min-w-0 overflow-hidden"
+                className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300 group"
               >
-                <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:scale-110 transition-all duration-500 shrink-0">
-                  <point.icon className="w-8 h-8 text-white group-hover:text-black transition-colors duration-500" />
+                <div className="w-12 h-12 flex items-center justify-center mb-6">
+                  <point.icon className="w-7 h-7 text-[#FF4500]/70" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 break-keep break-words pr-1">
+                <h3 className="text-xl font-bold text-[#141414] mb-3 break-keep">
                   {point.title}
                 </h3>
-                <p className="text-white/80 leading-relaxed break-words pr-1 min-w-0">
+                <p className="text-black/60 leading-relaxed break-words">
                   {t(point.descKey)}
                 </p>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Service 01: Influencer Marketing */}
-      <section className="py-20 px-4 sm:px-6 lg:px-24 bg-card/30">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      {/* Service 01: Influencer Marketing — Dark */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-xs uppercase tracking-[0.2em] text-white/40">SERVICE 01</span>
+          <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
+          <div className="grid md:grid-cols-[2fr_1fr] gap-16 items-start">
+            {/* Left: Content */}
             <div>
-              <div className="inline-block px-4 py-2 bg-white/10 rounded-none mb-6">
-                <span className="text-white font-bold">Service 01</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 break-keep">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight break-keep">
                 {t('serviceInfluencerTitle')}
               </h2>
-              <p className="text-2xl text-white font-bold mb-8 break-keep">
+              <p className="text-xl md:text-2xl text-white/60 font-bold mt-4 mb-12 break-keep">
                 {t('serviceInfluencerSubtitle')}
               </p>
-              
-              <div className="space-y-6">
+
+              <div className="space-y-8">
                 {influencerFeatures.map((feature, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-none bg-white/10 flex items-center justify-center">
-                        <CheckCircle2 className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="flex-shrink-0 mt-1">
+                      <CheckCircle2 className="w-5 h-5 text-[#FF4500]/70" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-lg font-bold text-white mb-2 break-words pr-1">
+                      <h4 className="text-lg font-bold text-white mb-1 break-words">
                         {feature.title}
                       </h4>
-                      <p className="text-white/80 break-words pr-1">
+                      <p className="text-white/60 break-words leading-relaxed">
                         {feature.description}
                       </p>
                     </div>
@@ -140,93 +140,70 @@ export default function ServicePage() {
               </div>
             </div>
 
-            <div className="relative min-w-0">
-              <Card className="p-6 sm:p-8 bg-card border-border min-w-0 overflow-hidden">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <Users className="w-12 h-12 text-white shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-4xl font-bold text-white">105</div>
-                      <div className="text-sm text-white/80 break-words pr-1">{t('serviceInfluencerStat1')}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <Target className="w-12 h-12 text-white shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-4xl font-bold text-white">0%</div>
-                      <div className="text-sm text-white/80 break-words pr-1">{t('serviceInfluencerStat2')}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <TrendingUp className="w-12 h-12 text-white shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-4xl font-bold text-white">3</div>
-                      <div className="text-sm text-white/80 break-words pr-1">{t('serviceInfluencerStat3')}</div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+            {/* Right: Stat cards stacked */}
+            <div className="space-y-4">
+              <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+                <div className="text-xs text-white/40 mb-2">{t('serviceInfluencerStat1')}</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">105</div>
+              </div>
+              <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+                <div className="text-xs text-white/40 mb-2">{t('serviceInfluencerStat2')}</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">0%</div>
+              </div>
+              <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+                <div className="text-xs text-white/40 mb-2">{t('serviceInfluencerStat3')}</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">3</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Service 02: Seeding */}
-      <section className="py-20 px-4 sm:px-6 lg:px-24">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1 min-w-0">
-              <Card className="p-6 sm:p-8 bg-card border-border min-w-0 overflow-hidden">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <Globe className="w-12 h-12 text-white shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-4xl font-bold text-white">5,000</div>
-                      <div className="text-sm text-white/80 break-words pr-1">{t('serviceSeedingStat1')}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <MessageSquare className="w-12 h-12 text-white shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-4xl font-bold text-white">—</div>
-                      <div className="text-sm text-white/80 break-words pr-1">{t('serviceSeedingStat2')}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <CheckCircle2 className="w-12 h-12 text-white shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-4xl font-bold text-white">—</div>
-                      <div className="text-sm text-white/80 break-words pr-1">{t('serviceSeedingStat3')}</div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+      {/* Service 02: Seeding — White */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-16">
+            <span className="text-xs uppercase tracking-[0.3em] text-black/40">SERVICE 02</span>
+            <div className="h-px flex-1 bg-black/10" />
+          </div>
+
+          <div className="grid md:grid-cols-[1fr_2fr] gap-16 items-start">
+            {/* Left: Stat cards */}
+            <div className="space-y-4">
+              <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+                <div className="text-xs text-black/40 mb-2">{t('serviceSeedingStat1')}</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">5,000</div>
+              </div>
+              <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+                <div className="text-xs text-black/40 mb-2">{t('serviceSeedingStat2')}</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">&mdash;</div>
+              </div>
+              <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+                <div className="text-xs text-black/40 mb-2">{t('serviceSeedingStat3')}</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">&mdash;</div>
+              </div>
             </div>
 
-            <div className="order-1 md:order-2">
-              <div className="inline-block px-4 py-2 bg-white/10 rounded-none mb-6">
-                <span className="text-white font-bold">Service 02</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 break-keep">
+            {/* Right: Content */}
+            <div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#141414] leading-tight break-keep">
                 {t('serviceSeedingTitle')}
               </h2>
-              <p className="text-2xl text-white font-bold mb-8 break-keep">
+              <p className="text-xl md:text-2xl text-black/60 font-bold mt-4 mb-12 break-keep">
                 {t('serviceSeedingSubtitle')}
               </p>
-              
-              <div className="space-y-6">
+
+              <div className="space-y-8">
                 {seedingFeatures.map((feature, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-none bg-white/10 flex items-center justify-center">
-                        <CheckCircle2 className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="flex-shrink-0 mt-1">
+                      <CheckCircle2 className="w-5 h-5 text-[#FF4500]/70" />
                     </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-white mb-2 break-keep">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-lg font-bold text-[#141414] mb-1 break-words">
                         {feature.title}
                       </h4>
-                      <p className="text-white/80 break-keep">
+                      <p className="text-black/60 break-words leading-relaxed">
                         {feature.description}
                       </p>
                     </div>
@@ -238,257 +215,258 @@ export default function ServicePage() {
         </div>
       </section>
 
-      {/* Data & Reporting Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-24 relative overflow-hidden bg-background">
-        
-        <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 break-keep">
-              <span className="inline-block">{t('serviceReportTitle1')}</span>{' '}
-              <span className="text-white inline-block">{t('serviceReportTitle2')}</span>{' '}
-              <span className="inline-block">{t('serviceReportTitle3')}</span>
-            </h2>
-            <p className="text-lg text-white/80 max-w-prose mx-auto leading-relaxed break-keep">
-              {t('serviceReportDesc')}
-            </p>
+      {/* Data & Reporting — Dark */}
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-xs uppercase tracking-[0.2em] text-white/40">DATA & REPORTING</span>
+          <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight break-keep max-w-4xl">
+            <span>{t('serviceReportTitle1')}</span>{' '}
+            <span>{t('serviceReportTitle2')}</span>{' '}
+            <span>{t('serviceReportTitle3')}</span>
+          </h2>
+          <p className="text-lg text-white/60 max-w-2xl mt-4 leading-relaxed break-keep mb-20">
+            {t('serviceReportDesc')}
+          </p>
+
+          {/* Report Sub-section */}
+          <div className="mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 break-keep">
+              {t('serviceReportSectionTitle')}<span>{t('serviceReportSectionTitle2')}</span>
+            </h3>
+            <p className="text-white/60 break-keep">{t('serviceReportSectionDesc')}</p>
           </div>
 
-          <div className="mb-20">
-            <div className="text-center mb-10">
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 break-keep">
-                {t('serviceReportSectionTitle')}<span className="text-white">{t('serviceReportSectionTitle2')}</span>
-              </h3>
-              <p className="text-white/80 break-keep">{t('serviceReportSectionDesc')}</p>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Card 1: Efficiency */}
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="text-lg font-bold text-white">{t('serviceMetricEfficiency')}</h4>
+                  <p className="text-xs text-white/40">{t('serviceMetricEfficiencySub')}</p>
+                </div>
+                <TrendingUp className="w-5 h-5 text-[#FF4500]/70" />
+              </div>
+              <div className="space-y-4">
+                <div className="p-3 bg-white/5 border border-border">
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    <span className="font-semibold text-[#FF4500]">{t('serviceReportRoasIntro')}</span> {t('serviceReportRoasDesc')}
+                  </p>
+                </div>
+
+                <div className="p-4 bg-white/5 border border-[#FF4500]/20">
+                  <div className="text-xs text-white/40 mb-1">{t('serviceCampaignRoas')}</div>
+                  <div className="flex items-end gap-2">
+                    <div className="font-display font-bold text-3xl text-[#FF4500]">450%</div>
+                    <div className="text-sm text-[#FF4500]/70 mb-1">+150% ↑</div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="text-xs text-white/40">{t('serviceCvrLabel')}</div>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs text-white">{t('serviceQoo10')}</span>
+                      <span className="text-sm font-bold text-[#FF4500]">8.5%</span>
+                    </div>
+                    <div className="h-2 bg-white/10 overflow-hidden">
+                      <div className="h-full bg-[#FF4500]" style={{ width: '85%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs text-white">{t('serviceAmazon')}</span>
+                      <span className="text-sm font-bold text-[#FF4500]/80">7.2%</span>
+                    </div>
+                    <div className="h-2 bg-white/10 overflow-hidden">
+                      <div className="h-full bg-[#FF4500]/80" style={{ width: '72%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs text-white">{t('serviceRakuten')}</span>
+                      <span className="text-sm font-bold text-[#FF4500]/60">6.8%</span>
+                    </div>
+                    <div className="h-2 bg-white/10 overflow-hidden">
+                      <div className="h-full bg-[#FF4500]/60" style={{ width: '68%' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
-                <div className="flex items-center justify-between mb-6">
+
+            {/* Card 2: Inflow */}
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="text-lg font-bold text-white">{t('serviceMetricInflow')}</h4>
+                  <p className="text-xs text-white/40">{t('serviceMetricInflowSub')}</p>
+                </div>
+                <Clock className="w-5 h-5 text-[#FF4500]/70" />
+              </div>
+              <div className="space-y-4">
+                <div className="p-3 bg-white/5 border border-border">
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    <span className="font-semibold text-[#FF4500]">{t('serviceMetricInflow')}:</span> {t('serviceReportSectionDesc')}
+                  </p>
+                </div>
+
+                <div className="p-4 bg-white/5 border border-[#FF4500]/20">
+                  <div className="text-xs text-white/40 mb-1">{t('serviceAvgDwell')}</div>
+                  <div className="flex items-end gap-2">
+                    <div className="font-display font-bold text-3xl text-[#FF4500]">4m 32s</div>
+                    <div className="text-sm text-[#FF4500]/70 mb-1">+85% ↑</div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="text-xs text-white/40">{t('serviceBounceBySection')}</div>
                   <div>
-                    <h4 className="text-lg font-bold text-foreground">{t('serviceMetricEfficiency')}</h4>
-                    <p className="text-xs text-muted-foreground">{t('serviceMetricEfficiencySub')}</p>
-                  </div>
-                  <TrendingUp className="w-5 h-5 text-[#FF4500]" />
-                </div>
-                <div className="space-y-4">
-                  {/* 분석 설명 */}
-                  <div className="p-3 bg-white/5 rounded-none border border-border">
-                    <p className="text-xs text-foreground leading-relaxed">
-                      <span className="font-semibold text-[#FF4500]">{t('serviceReportRoasIntro')}</span> {t('serviceReportRoasDesc')}
-                    </p>
-                  </div>
-
-                  {/* ROAS Metric */}
-                  <div className="p-4 bg-white/5 rounded-none border border-[#FF4500]/20">
-                    <div className="text-xs text-muted-foreground mb-1">{t('serviceCampaignRoas')}</div>
-                    <div className="flex items-end gap-2">
-                      <div className="text-3xl font-bold text-[#FF4500]">450%</div>
-                      <div className="text-sm text-[#FF4500]/70 mb-1">+150% ↑</div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs text-white">{t('serviceLandingPage')}</span>
+                      <span className="text-sm font-bold text-red-400">28%</span>
+                    </div>
+                    <div className="h-2 bg-white/10 overflow-hidden">
+                      <div className="h-full bg-red-400/60" style={{ width: '28%' }} />
                     </div>
                   </div>
-
-                  <div className="space-y-3">
-                    <div className="text-xs text-muted-foreground">{t('serviceCvrLabel')}</div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs text-foreground">{t('serviceQoo10')}</span>
-                        <span className="text-sm font-bold text-[#FF4500]">8.5%</span>
-                      </div>
-                      <div className="h-2 bg-muted/30 rounded-none overflow-hidden">
-                        <div className="h-full bg-[#FF4500] rounded-none" style={{ width: '85%' }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs text-foreground">{t('serviceAmazon')}</span>
-                        <span className="text-sm font-bold text-[#FF4500]/80">7.2%</span>
-                      </div>
-                      <div className="h-2 bg-muted/30 rounded-none overflow-hidden">
-                        <div className="h-full bg-[#FF4500]/80 rounded-none" style={{ width: '72%' }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs text-foreground">{t('serviceRakuten')}</span>
-                        <span className="text-sm font-bold text-[#FF4500]/60">6.8%</span>
-                      </div>
-                      <div className="h-2 bg-muted/30 rounded-none overflow-hidden">
-                        <div className="h-full bg-[#FF4500]/60 rounded-none" style={{ width: '68%' }} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
-                <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h4 className="text-lg font-bold text-foreground">{t('serviceMetricInflow')}</h4>
-                    <p className="text-xs text-muted-foreground">{t('serviceMetricInflowSub')}</p>
-                  </div>
-                  <Clock className="w-5 h-5 text-[#FF4500]" />
-                </div>
-                <div className="space-y-4">
-                  <div className="p-3 bg-white/5 rounded-none border border-border">
-                    <p className="text-xs text-foreground leading-relaxed">
-                      <span className="font-semibold text-[#FF4500]">{t('serviceMetricInflow')}:</span> {t('serviceReportSectionDesc')}
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-white/5 rounded-none border border-[#FF4500]/20">
-                    <div className="text-xs text-muted-foreground mb-1">{t('serviceAvgDwell')}</div>
-                    <div className="flex items-end gap-2">
-                      <div className="text-3xl font-bold text-[#FF4500]">4m 32s</div>
-                      <div className="text-sm text-[#FF4500]/70 mb-1">+85% ↑</div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs text-white">{t('serviceDetailPage')}</span>
+                      <span className="text-sm font-bold text-orange-400">18%</span>
+                    </div>
+                    <div className="h-2 bg-white/10 overflow-hidden">
+                      <div className="h-full bg-orange-400/60" style={{ width: '18%' }} />
                     </div>
                   </div>
-
-                  <div className="space-y-3">
-                    <div className="text-xs text-muted-foreground">{t('serviceBounceBySection')}</div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs text-foreground">{t('serviceLandingPage')}</span>
-                        <span className="text-sm font-bold text-red-400">28%</span>
-                      </div>
-                      <div className="h-2 bg-muted/30 rounded-none overflow-hidden">
-                        <div className="h-full bg-red-400/60 rounded-none" style={{ width: '28%' }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs text-foreground">{t('serviceDetailPage')}</span>
-                        <span className="text-sm font-bold text-orange-400">18%</span>
-                      </div>
-                      <div className="h-2 bg-muted/30 rounded-none overflow-hidden">
-                        <div className="h-full bg-orange-400/60 rounded-none" style={{ width: '18%' }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs text-foreground">{t('servicePaymentPage')}</span>
-                        <span className="text-sm font-bold text-[#FF4500]">8%</span>
-                      </div>
-                      <div className="h-2 bg-muted/30 rounded-none overflow-hidden">
-                        <div className="h-full bg-[#FF4500] rounded-none" style={{ width: '8%' }} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
-                <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h4 className="text-lg font-bold text-foreground">{t('serviceMetricSpread')}</h4>
-                    <p className="text-xs text-muted-foreground">{t('serviceMetricSpreadSub')}</p>
-                  </div>
-                  <Share2 className="w-5 h-5 text-[#FF4500]" />
-                </div>
-                <div className="space-y-4">
-                  <div className="p-3 bg-white/5 rounded-none border border-border">
-                    <p className="text-xs text-foreground leading-relaxed">
-                      <span className="font-semibold text-[#FF4500]">{t('serviceSave')}/{t('serviceShare')}:</span> {t('serviceReportSectionDesc')}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-white/5 rounded-none border border-[#FF4500]/20">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Bookmark className="w-4 h-4 text-[#FF4500]" />
-                        <span className="text-xs text-muted-foreground">{t('serviceSave')}</span>
-                      </div>
-                      <div className="text-2xl font-bold text-[#FF4500]">24.5K</div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs text-white">{t('servicePaymentPage')}</span>
+                      <span className="text-sm font-bold text-[#FF4500]">8%</span>
                     </div>
-                    <div className="p-3 bg-white/5 rounded-none border border-[#FF4500]/20">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Share2 className="w-4 h-4 text-[#FF4500]" />
-                        <span className="text-xs text-muted-foreground">{t('serviceShare')}</span>
-                      </div>
-                      <div className="text-2xl font-bold text-[#FF4500]">18.2K</div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-white/10 rounded-none border border-[#FF4500]/20">
-                    <div className="text-xs text-muted-foreground mb-2">{t('serviceEstimatedRemarketing')}</div>
-                    <div className="flex items-end gap-2">
-                      <div className="text-3xl font-bold text-[#FF4500]">¥8.2M</div>
-                      <div className="text-sm text-muted-foreground mb-1">(약 ₩72M)</div>
-                    </div>
-                    <div className="mt-3 pt-3 border-t border-[#FF4500]/20">
-                      <div className="flex items-center gap-2 text-xs text-[#FF4500]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#FF4500]" />
-                        <span>{t('serviceRemarketingNote')}</span>
-                      </div>
+                    <div className="h-2 bg-white/10 overflow-hidden">
+                      <div className="h-full bg-[#FF4500]" style={{ width: '8%' }} />
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
+            </div>
 
-              <Card className="p-6 bg-card border-2 border-border hover:border-white hover:-translate-y-2 transition-all duration-300">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h4 className="text-lg font-bold text-foreground">{t('serviceMetricQualitative')}</h4>
-                    <p className="text-xs text-muted-foreground">{t('serviceMetricQualitativeSub')}</p>
-                  </div>
-                  <MessageSquare className="w-5 h-5 text-[#FF4500]" />
+            {/* Card 3: Spread */}
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="text-lg font-bold text-white">{t('serviceMetricSpread')}</h4>
+                  <p className="text-xs text-white/40">{t('serviceMetricSpreadSub')}</p>
                 </div>
-                <div className="space-y-4">
-                  <div className="p-3 bg-white/5 rounded-none border border-border">
-                    <p className="text-xs text-foreground leading-relaxed">
-                      <span className="font-semibold text-[#FF4500]">{t('serviceMetricQualitative')}:</span> {t('serviceReportSectionDesc')}
-                    </p>
-                  </div>
+                <Share2 className="w-5 h-5 text-[#FF4500]/70" />
+              </div>
+              <div className="space-y-4">
+                <div className="p-3 bg-white/5 border border-border">
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    <span className="font-semibold text-[#FF4500]">{t('serviceSave')}/{t('serviceShare')}:</span> {t('serviceReportSectionDesc')}
+                  </p>
+                </div>
 
-                  <div>
-                    <div className="text-xs text-muted-foreground mb-4 flex items-center gap-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-white/5 border border-[#FF4500]/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bookmark className="w-4 h-4 text-[#FF4500]/70" />
+                      <span className="text-xs text-white/40">{t('serviceSave')}</span>
+                    </div>
+                    <div className="font-display font-bold text-2xl text-[#FF4500]">24.5K</div>
+                  </div>
+                  <div className="p-3 bg-white/5 border border-[#FF4500]/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Share2 className="w-4 h-4 text-[#FF4500]/70" />
+                      <span className="text-xs text-white/40">{t('serviceShare')}</span>
+                    </div>
+                    <div className="font-display font-bold text-2xl text-[#FF4500]">18.2K</div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white/5 border border-[#FF4500]/20">
+                  <div className="text-xs text-white/40 mb-2">{t('serviceEstimatedRemarketing')}</div>
+                  <div className="flex items-end gap-2">
+                    <div className="font-display font-bold text-3xl text-[#FF4500]">¥8.2M</div>
+                    <div className="text-sm text-white/40 mb-1">(약 ₩72M)</div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-white/10">
+                    <div className="flex items-center gap-2 text-xs text-[#FF4500]/70">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#FF4500]" />
-                      <span>{t('serviceTrustCommunity')}: {locale === 'ja' ? '30万+' : '30만+'}</span>
-                    </div>
-                    
-                    <div className="mb-4">
-                      <div className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-[#FF4500]/20 text-[#FF4500] rounded text-[10px]">{t('serviceIntentKeyword')}</span>
-                        <span>{t('serviceTop5Keywords')}</span>
-                      </div>
-                      <div className="flex gap-2 flex-wrap">
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordBought')}</span>
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordRepurchase')}</span>
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordRecommend')}</span>
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordSatisfaction')}</span>
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordEffective')}</span>
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-[#FF4500]/20 text-[#FF4500] rounded text-[10px]">{t('serviceBrandImage')}</span>
-                        <span>{t('serviceTop5Keywords')}</span>
-                      </div>
-                      <div className="flex gap-2 flex-wrap">
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordTrust')}</span>
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordPremium')}</span>
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordInnovative')}</span>
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordQuality')}</span>
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">{t('serviceKeywordTrendy')}</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-[#FF4500]/20 text-[#FF4500] rounded text-[10px]">{t('serviceLocalSentiment')}</span>
-                        <span>{t('serviceJapanReaction')}</span>
-                      </div>
-                      <div className="flex gap-2 flex-wrap">
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">コスパ良い</span>
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">使いやすい</span>
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">リピ決定</span>
-                        <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">買ってよかった</span>
-                        <span className="px-3 py-1.5 bg-white/10 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold rounded-none">おすすめ</span>
-                      </div>
+                      <span>{t('serviceRemarketingNote')}</span>
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
+            </div>
+
+            {/* Card 4: Qualitative */}
+            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="text-lg font-bold text-white">{t('serviceMetricQualitative')}</h4>
+                  <p className="text-xs text-white/40">{t('serviceMetricQualitativeSub')}</p>
+                </div>
+                <MessageSquare className="w-5 h-5 text-[#FF4500]/70" />
+              </div>
+              <div className="space-y-4">
+                <div className="p-3 bg-white/5 border border-border">
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    <span className="font-semibold text-[#FF4500]">{t('serviceMetricQualitative')}:</span> {t('serviceReportSectionDesc')}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="text-xs text-white/40 mb-4 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#FF4500]" />
+                    <span>{t('serviceTrustCommunity')}: {locale === 'ja' ? '30万+' : '30만+'}</span>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="text-xs font-semibold text-white mb-2 flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-[#FF4500]/20 text-[#FF4500] text-[10px]">{t('serviceIntentKeyword')}</span>
+                      <span>{t('serviceTop5Keywords')}</span>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordBought')}</span>
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordRepurchase')}</span>
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordRecommend')}</span>
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordSatisfaction')}</span>
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordEffective')}</span>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="text-xs font-semibold text-white mb-2 flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-[#FF4500]/20 text-[#FF4500] text-[10px]">{t('serviceBrandImage')}</span>
+                      <span>{t('serviceTop5Keywords')}</span>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordTrust')}</span>
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordPremium')}</span>
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordInnovative')}</span>
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordQuality')}</span>
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">{t('serviceKeywordTrendy')}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="text-xs font-semibold text-white mb-2 flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-[#FF4500]/20 text-[#FF4500] text-[10px]">{t('serviceLocalSentiment')}</span>
+                      <span>{t('serviceJapanReaction')}</span>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">コスパ良い</span>
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">使いやすい</span>
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">リピ決定</span>
+                      <span className="px-3 py-1.5 bg-[#FF4500]/20 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">買ってよかった</span>
+                      <span className="px-3 py-1.5 bg-white/5 border border-[#FF4500]/20 text-[#FF4500] text-xs font-semibold">おすすめ</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

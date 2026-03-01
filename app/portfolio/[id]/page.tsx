@@ -16,8 +16,8 @@ import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-conte
 import { getTranslation } from '@/lib/translations'
 
 const PortfolioDetailSkeleton = () => (
-  <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 min-h-screen" aria-hidden="true">
-    <div className="container mx-auto max-w-7xl">
+  <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
+    <div className="max-w-7xl mx-auto">
       <div className="h-10 w-48 bg-card/50 rounded animate-pulse mb-8" />
       <div className="aspect-video bg-card/50 rounded animate-pulse mb-6" />
       <div className="h-8 max-w-2xl bg-card/50 rounded animate-pulse" />
@@ -98,8 +98,8 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-background">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24">
-            <div className="container mx-auto max-w-7xl text-center">
+          <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24">
+            <div className="max-w-7xl mx-auto text-center">
               <p className="text-white/80">{t('loading')}</p>
             </div>
           </div>
@@ -113,11 +113,11 @@ export default function PortfolioDetailPage() {
       <main className="min-h-screen relative overflow-hidden bg-background">
         <Navigation />
         <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-          <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24">
-            <div className="container mx-auto max-w-7xl text-center">
+          <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24">
+            <div className="max-w-7xl mx-auto text-center">
               <p className="text-white/80 mb-6">{t('portfolioNotFound')}</p>
               <Link href="/portfolio">
-                <Button variant="ghost" className="min-h-[44px] text-white hover:bg-card border-0">
+                <Button variant="ghost" className="min-h-[44px] text-white hover:bg-card hover:text-[#FF4500] border-0">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t('backToList')}
                 </Button>
@@ -140,11 +140,15 @@ export default function PortfolioDetailPage() {
     <main className="min-h-screen relative overflow-hidden bg-background">
       <Navigation />
       <SafeHydration fallback={<PortfolioDetailSkeleton />}>
-      <article className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-12 lg:px-24 relative z-10">
-        <div className="container mx-auto max-w-7xl">
+      <article className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 relative z-10">
+        <div className="max-w-7xl mx-auto">
           <header className="mb-8 sm:mb-12">
+            {/* Section tag */}
+            <span className="text-xs uppercase tracking-[0.2em] text-white/40">PORTFOLIO</span>
+            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
             <Link href="/portfolio">
-              <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card border-0">
+              <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card hover:text-[#FF4500] border-0">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t('backToList')}
               </Button>
@@ -162,8 +166,8 @@ export default function PortfolioDetailPage() {
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-card">
                       <div className="text-center px-4">
-                        <div className="text-4xl mb-2">📁</div>
-                        <p className="text-sm text-white/40">{t('performanceNoImage')}</p>
+                        <span className="text-4xl font-bold text-white/20 tracking-widest">PORTFOLIO</span>
+                        <p className="text-sm text-white/40 mt-2">{t('performanceNoImage')}</p>
                       </div>
                     </div>
                   )}
@@ -172,7 +176,7 @@ export default function PortfolioDetailPage() {
 
               {/* 타이틀 섹션: 제목 + 제작 날짜만 */}
               <div className="w-full">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight break-keep text-white">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight break-keep text-white">
                   {displayTitle}
                 </h1>
                 <time className="text-xs sm:text-sm text-white/40 flex items-center gap-1.5 break-keep" dateTime={portfolio.created_at}>
@@ -201,12 +205,16 @@ export default function PortfolioDetailPage() {
           <MarketingCTA />
 
           {otherPortfolios.length > 0 && (
-            <section className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-border">
+            <section className="mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-border">
+              {/* Section header */}
+              <span className="text-xs uppercase tracking-[0.2em] text-white/40">MORE WORK</span>
+              <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">{t('portfolioOther')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {otherPortfolios.map((item) => (
                   <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
-                    <Card className="group overflow-hidden bg-card border-border hover:border-white transition-all duration-300 cursor-pointer h-full flex flex-col">
+                    <Card className="group overflow-hidden bg-card border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col">
                       <div className="aspect-video relative overflow-hidden bg-card">
                         {item.thumbnail_url ? (
                           <img
@@ -232,10 +240,10 @@ export default function PortfolioDetailPage() {
                   </Link>
                 ))}
               </div>
-              <div className="mt-6 text-center">
+              <div className="mt-8 text-center">
                 <Link href="/portfolio" className="inline-block">
                   <Button
-                    className="px-12 py-6 text-lg font-bold rounded-none transition-colors duration-300"
+                    className="px-12 py-6 text-lg font-bold rounded-none transition-colors duration-300 bg-[#FF4500] text-white hover:bg-[#E03E00]"
                   >
                     {t('portfolioViewAll')}
                   </Button>
