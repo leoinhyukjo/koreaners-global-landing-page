@@ -134,7 +134,35 @@ function getFileOrUrl(
   return null;
 }
 
+function getRelation(properties: any, key: string): string[] {
+  const prop = properties[key];
+  if (!prop || prop.type !== "relation") return [];
+  return (prop.relation ?? []).map((r: any) => r.id as string);
+}
+
 /* eslint-enable @typescript-eslint/no-explicit-any */
+
+// ─── Relation Title Cache ────────────────────────────────────
+
+const relationTitleCache = new Map<string, string>();
+
+async function fetchRelationTitle(pageId: string): Promise<string> {
+  const cached = relationTitleCache.get(pageId);
+  if (cached !== undefined) return cached;
+
+  try {
+    const page = await notion.pages.retrieve({ page_id: pageId }) as any;
+    const props = page.properties ?? {};
+    // 전사 Project Board의 title 속성은 "프로젝트 이름"
+    const title = getTitle(props, "프로젝트 이름");
+    relationTitleCache.set(pageId, title);
+    return title;
+  } catch (err) {
+    console.error(`[sync/portfolio] Failed to fetch relation page ${pageId}:`, err);
+    relationTitleCache.set(pageId, "");
+    return "";
+  }
+}
 
 // ─── Fetch All Blocks (with pagination + recursive children) ──
 
@@ -213,11 +241,12 @@ export async function POST(request: NextRequest) {
     const allPages = await fetchAllPages();
     console.log(`[sync/portfolio] Found ${allPages.length} pages in Notion DB`);
 
-    // 2. Filter: 게시 체크박스가 true인 것만
-    const publicPages = allPages.filter((page: any) =>
-      getCheckbox(page.properties, "게시"),
-    );
-    console.log(`[sync/portfolio] ${publicPages.length} portfolios marked as public`);
+    // 2. Filter: 상태가 "발행"인 것만 동기화
+    const publicPages = allPages.filter((page: any) => {
+      const status = getSelect(page.properties, "상태");
+      return status === "발행";
+    });
+    console.log(`[sync/portfolio] ${publicPages.length} portfolios with status "발행"`);
 
     // 3. Create Supabase admin client
     const supabase = createAdminClient();
@@ -243,7 +272,14 @@ export async function POST(request: NextRequest) {
 
         // Extract other properties
         const title = getTitle(page.properties, "이름");
-        const clientName = getRichText(page.properties, "클라이언트명");
+
+        // 클라이언트/브랜드명: relation → 프로젝트 이름 추출
+        const relationIds = getRelation(page.properties, "클라이언트/브랜드명");
+        const clientNames = await Promise.all(
+          relationIds.map((id) => fetchRelationTitle(id)),
+        );
+        const clientName = clientNames.filter(Boolean).join(", ") || "";
+
         const category = getSelect(page.properties, "카테고리");
         const link = getUrl(page.properties, "링크");
         const summary = getRichText(page.properties, "요약");

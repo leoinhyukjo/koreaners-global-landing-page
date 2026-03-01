@@ -8,11 +8,14 @@
 CREATE TABLE IF NOT EXISTS portfolios (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
-  client_name TEXT NOT NULL,
+  client_name TEXT NOT NULL DEFAULT '',
   thumbnail_url TEXT,
   category TEXT[] DEFAULT '{}',
   link TEXT,
   content JSONB DEFAULT '{}',
+  summary TEXT,
+  notion_id TEXT UNIQUE,
+  published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
