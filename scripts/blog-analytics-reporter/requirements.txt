@@ -1,0 +1,10 @@
+# Google APIs
+google-analytics-data>=0.18.0
+google-api-python-client>=2.100.0
+google-auth>=2.23.0
+
+# Notion API
+notion-client==2.2.1
+
+# Environment
+python-dotenv==1.0.0
