@@ -104,6 +104,12 @@ function getUrl(properties: any, key: string): string | null {
   return prop.url ?? null;
 }
 
+function getDate(properties: any, key: string): string | null {
+  const prop = properties[key];
+  if (!prop || prop.type !== "date") return null;
+  return prop.date?.start ?? null;
+}
+
 function getFileOrUrl(
   properties: any,
   key: string,
@@ -241,6 +247,7 @@ export async function POST(request: NextRequest) {
         const category = getSelect(page.properties, "카테고리");
         const link = getUrl(page.properties, "링크");
         const summary = getRichText(page.properties, "요약");
+        const publishedAt = getDate(page.properties, "발행일");
 
         // Fetch blocks and convert to HTML
         const blocks = await fetchAllBlocks(page.id);
@@ -259,6 +266,7 @@ export async function POST(request: NextRequest) {
               link,
               summary,
               content,
+              published_at: publishedAt,
             },
             { onConflict: "notion_id" },
           );
