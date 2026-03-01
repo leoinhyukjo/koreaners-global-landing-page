@@ -1,6 +1,5 @@
 'use client'
 
-import { Card } from '@/components/ui/card'
 import { Database, Shield, Target, AlertTriangle } from 'lucide-react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
@@ -18,42 +17,26 @@ export function Barriers() {
   ]
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 block">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight min-h-[2.4em] block">
-              <span className="text-white block">{t('barriersTitle1')}</span>
-              <span className="text-white block">{t('barriersTitle2')}</span>
-            </h2>
-            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
-              {t('barriersSubtitle')}
-            </p>
-          </div>
+    <section className="bg-black py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+      <div className="max-w-7xl mx-auto">
+        <span className="text-xs uppercase tracking-[0.2em] text-white/40">BARRIERS</span>
+        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-white">
+          {t('barriersTitle1')}
+          {t('barriersTitle2')}
+        </h2>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            {barriers.map((barrier, index) => (
-              <Card
-                key={index}
-                className="p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group rounded-none"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-14 h-14 bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all duration-200 rounded-none">
-                      <barrier.icon className="w-7 h-7 text-white group-hover:text-black transition-colors duration-200" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black text-white mb-2 break-keep">
-                      {barrier.title}
-                    </h3>
-                    <p className="text-zinc-200 leading-[1.5] tracking-tight break-keep break-words text-sm block">
-                      {t(barrier.descKey)}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16">
+          {barriers.map((barrier, index) => (
+            <div
+              key={index}
+              className="bg-[#111] border border-white/10 p-8 hover:border-white/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            >
+              <barrier.icon className="w-10 h-10 text-white/60 mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">{barrier.title}</h3>
+              <p className="text-sm text-white/60 leading-relaxed">{t(barrier.descKey)}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

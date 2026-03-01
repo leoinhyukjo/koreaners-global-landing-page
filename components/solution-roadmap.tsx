@@ -1,15 +1,13 @@
 'use client'
 
-import { Card } from '@/components/ui/card'
-import { Activity, Sprout, Zap, Settings } from 'lucide-react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 
 const STEP_KEYS = [
-  { number: '01', icon: Activity, tag: 'Diagnostic', titleKey: 'solutionStep1Title' as const, descKey: 'solutionStep1Desc' as const, featureKeys: ['solutionStep1F1', 'solutionStep1F2', 'solutionStep1F3'] as const },
-  { number: '02', icon: Sprout, tag: 'Seeding', titleKey: 'solutionStep2Title' as const, descKey: 'solutionStep2Desc' as const, featureKeys: ['solutionStep2F1', 'solutionStep2F2', 'solutionStep2F3'] as const },
-  { number: '03', icon: Zap, tag: 'Impact', titleKey: 'solutionStep3Title' as const, descKey: 'solutionStep3Desc' as const, featureKeys: ['solutionStep3F1', 'solutionStep3F2', 'solutionStep3F3'] as const },
-  { number: '04', icon: Settings, tag: 'Management', titleKey: 'solutionStep4Title' as const, descKey: 'solutionStep4Desc' as const, featureKeys: ['solutionStep4F1', 'solutionStep4F2', 'solutionStep4F3'] as const },
+  { tag: 'Diagnostic', titleKey: 'solutionStep1Title' as const, descKey: 'solutionStep1Desc' as const, featureKeys: ['solutionStep1F1', 'solutionStep1F2', 'solutionStep1F3'] as const },
+  { tag: 'Seeding', titleKey: 'solutionStep2Title' as const, descKey: 'solutionStep2Desc' as const, featureKeys: ['solutionStep2F1', 'solutionStep2F2', 'solutionStep2F3'] as const },
+  { tag: 'Impact', titleKey: 'solutionStep3Title' as const, descKey: 'solutionStep3Desc' as const, featureKeys: ['solutionStep3F1', 'solutionStep3F2', 'solutionStep3F3'] as const },
+  { tag: 'Management', titleKey: 'solutionStep4Title' as const, descKey: 'solutionStep4Desc' as const, featureKeys: ['solutionStep4F1', 'solutionStep4F2', 'solutionStep4F3'] as const },
 ]
 
 export function SolutionRoadmap() {
@@ -18,58 +16,43 @@ export function SolutionRoadmap() {
   const steps = STEP_KEYS
 
   return (
-    <section id="solution" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-24 relative bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 w-full max-w-full overflow-hidden">
-      <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 block">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-balance break-keep break-words leading-[1.2] tracking-tight min-h-[2.4em] block">
-              <span className="text-white block">{t('solutionTitle1')}</span>
-              <span className="text-white block">{t('solutionTitle2')}</span>
-            </h2>
-            <p className="text-lg text-zinc-200 break-keep max-w-prose mx-auto leading-[1.5] tracking-tight block min-h-[1.5em]">
-              {t('solutionSubtitle')}
-            </p>
-          </div>
+    <section id="solution" className="bg-white py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+      <div className="max-w-7xl mx-auto">
+        <span className="text-xs uppercase tracking-[0.2em] text-black/40">OUR PROCESS</span>
+        <h2 className="font-display font-black text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-[#09090B]">
+          {t('solutionTitle1')}
+          {t('solutionTitle2')}
+        </h2>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            {steps.map((step, index) => (
-              <Card
-                key={index}
-                className="relative p-6 bg-zinc-800 border-zinc-700/50 hover:border-white hover:-translate-y-1 transition-all duration-200 group overflow-hidden rounded-none"
-              >
-                <div className="absolute top-4 right-4 text-7xl font-black text-zinc-800 group-hover:text-zinc-700 transition-all duration-200">
-                  {step.number}
+        <div className="mt-16">
+          {steps.map((step, i) => (
+            <div key={i} className="flex gap-6 md:gap-8 mb-12 last:mb-0">
+              {/* Left: line + node */}
+              <div className="flex flex-col items-center shrink-0">
+                <div className="w-12 h-12 border-2 border-black flex items-center justify-center font-display font-bold text-sm">
+                  {String(i + 1).padStart(2, '0')}
                 </div>
-                
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all duration-200 rounded-none">
-                      <step.icon className="w-6 h-6 text-white group-hover:text-black transition-colors duration-200" />
-                    </div>
-                    <div className="px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-none">
-                      {step.tag}
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-black text-white mb-2 break-keep leading-[1.2] tracking-tight block">
-                    {t(step.titleKey)}
-                  </h3>
-
-                  <p className="text-white font-bold mb-4 break-keep text-sm leading-[1.5] tracking-tight block">
-                    {t(step.descKey)}
-                  </p>
-
-                  <ul className="space-y-1.5">
-                    {step.featureKeys.map((key, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-zinc-200 break-keep text-sm">
-                        <div className="w-1 h-1 bg-white" />
-                        {t(key)}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Card>
-            ))}
-          </div>
+                {i < steps.length - 1 && <div className="w-px bg-black/20 flex-1 mt-2" />}
+              </div>
+              {/* Right: content */}
+              <div className="pt-2 pb-8">
+                <span className="inline-block bg-black text-white text-xs uppercase tracking-wider px-3 py-1 mb-3">
+                  {step.tag}
+                </span>
+                <h3 className="text-xl font-bold text-[#09090B] mb-2">{t(step.titleKey)}</h3>
+                <p className="text-black/60 leading-relaxed mb-4">{t(step.descKey)}</p>
+                <ul className="space-y-2">
+                  {step.featureKeys.map((f, j) => (
+                    <li key={j} className="text-sm text-black/50 flex items-center gap-2">
+                      <span className="w-1 h-1 bg-black/40 rounded-full shrink-0" />
+                      {t(f)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
