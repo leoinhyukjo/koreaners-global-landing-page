@@ -91,6 +91,12 @@ function getUrl(properties: any, key: string): string | null {
   return prop.url ?? null;
 }
 
+function getNumber(properties: any, key: string): number | null {
+  const prop = properties[key];
+  if (!prop || prop.type !== "number") return null;
+  return prop.number ?? null;
+}
+
 function getCheckbox(properties: any, key: string): boolean {
   const prop = properties[key];
   if (!prop || prop.type !== "checkbox") return false;
@@ -223,6 +229,7 @@ export async function POST(request: NextRequest) {
         const youtubeUrl = getUrl(page.properties, "유튜브");
         const tiktokUrl = getUrl(page.properties, "틱톡");
         const xUrl = getUrl(page.properties, "X");
+        const instagramFollowers = getNumber(page.properties, "인스타_구독자수");
 
         // Upsert to Supabase
         const { error: upsertError } = await supabase
@@ -236,6 +243,7 @@ export async function POST(request: NextRequest) {
               youtube_url: youtubeUrl,
               tiktok_url: tiktokUrl,
               x_url: xUrl,
+              instagram_followers: instagramFollowers ?? 0,
             },
             { onConflict: "notion_id" },
           );

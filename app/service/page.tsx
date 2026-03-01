@@ -52,7 +52,7 @@ export default function ServicePage() {
       <SafeHydration fallback={<ServiceSkeleton />}>
 
       {/* Hero Section — Dark */}
-      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background">
+      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
         <div className="max-w-7xl mx-auto">
           <span className="text-xs uppercase tracking-[0.2em] text-white/40">SERVICE</span>
           <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />

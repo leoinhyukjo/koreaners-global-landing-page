@@ -120,7 +120,7 @@ export default function CareersPage() {
       <SafeHydration fallback={<CareersSkeleton />}>
 
         {/* ── Hero Section (Dark) ── */}
-        <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full">
+        <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full hero-glow">
           <div className="max-w-7xl mx-auto relative z-10">
             <span className="text-xs uppercase tracking-[0.2em] text-white/40">CAREERS</span>
             <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />

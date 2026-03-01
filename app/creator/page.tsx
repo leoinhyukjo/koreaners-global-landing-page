@@ -76,7 +76,7 @@ function CreatorContent() {
       const { data, error } = await supabase
         .from("creators")
         .select("*")
-        .order("created_at", { ascending: true });
+        .order("instagram_followers", { ascending: false });
 
       if (error) throw error;
       setAllCreators(data || []);
@@ -213,7 +213,7 @@ function CreatorContent() {
       {/* ============================================================
           SECTION 1: Hero + Creator Cards (Dark bg-background)
           ============================================================ */}
-      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background">
+      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
         <div className="max-w-7xl mx-auto">
           {/* Hero - Left aligned */}
           <div className="mb-20 sm:mb-28">
@@ -236,10 +236,10 @@ function CreatorContent() {
                   .getElementById("join-us")
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="group px-8 py-4 text-sm font-bold uppercase tracking-wider bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all duration-300"
+              className="group px-12 py-5 text-lg font-bold uppercase tracking-wider bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all duration-300 shadow-[0_0_30px_rgba(255,69,0,0.4)] hover:shadow-[0_0_50px_rgba(255,69,0,0.6)]"
             >
               {locale === "ja" ? "合流する" : "합류하기"}
-              <ArrowDown className="ml-2 w-5 h-5 animate-bounce-slow" />
+              <ArrowDown className="ml-3 w-6 h-6 animate-bounce-slow" />
             </Button>
           </div>
 

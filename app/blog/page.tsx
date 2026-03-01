@@ -88,7 +88,7 @@ function BlogContent() {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 w-full max-w-full overflow-hidden relative">
+      <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 w-full max-w-full overflow-hidden relative hero-glow">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
             <span className="text-xs uppercase tracking-[0.2em] text-white/40">BLOG</span>
