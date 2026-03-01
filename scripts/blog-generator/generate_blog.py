@@ -124,12 +124,13 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
     import anthropic
 
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    prompt = template.replace("{keyword}", keyword).replace("{pillar}", pillar)
+    current_year = str(datetime.now().year)
+    prompt = template.replace("{keyword}", keyword).replace("{pillar}", pillar).replace("{year}", current_year)
 
     log(f"Calling Claude API for: {keyword}")
     response = client.messages.create(
         model="claude-sonnet-4-20250514",
-        max_tokens=4096,
+        max_tokens=8192,
         messages=[{"role": "user", "content": prompt}],
     )
 
@@ -367,9 +368,6 @@ def create_notion_page(article: dict) -> str:
         },
         "카테고리": {
             "multi_select": [{"name": article["category"]}],
-        },
-        "요약": {
-            "rich_text": [{"text": {"content": article["summary"][:NOTION_MAX_RICH_TEXT_LENGTH]}}],
         },
         "Meta Title": {
             "rich_text": [{"text": {"content": article["meta_title"][:NOTION_MAX_RICH_TEXT_LENGTH]}}],
