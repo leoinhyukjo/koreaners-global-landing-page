@@ -100,18 +100,18 @@ export default function Navigation() {
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 flex-shrink-0">
-            <div className="flex items-center gap-1 rounded-md border border-zinc-600 bg-zinc-800/50 p-0.5">
+            <div className="flex items-center gap-1 rounded-none border border-white/20 bg-[#111]/50 p-0.5">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
-                className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${locale === 'ko' ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'}`}
+                className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${locale === 'ko' ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`}
               >
                 KR
               </button>
               <button
                 type="button"
                 onClick={() => setLocale('ja')}
-                className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${locale === 'ja' ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'}`}
+                className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${locale === 'ja' ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`}
               >
                 JP
               </button>
@@ -123,7 +123,7 @@ export default function Navigation() {
                   key={item.href}
                   href={item.href}
                   className={`relative py-2 font-bold text-sm group whitespace-nowrap transition-all duration-200 ${
-                    isActive ? 'text-white' : 'text-zinc-200 hover:text-white'
+                    isActive ? 'text-white' : 'text-white/80 hover:text-white'
                   }`}
                 >
                   {item.label}
@@ -134,7 +134,7 @@ export default function Navigation() {
               )
             })}
             <a href="/contact" className="ml-1">
-              <Button size="default" className="px-6 py-2.5 font-black whitespace-nowrap bg-[#FF4500] text-white border-[#FF4500] hover:bg-[#FF4500]/80 hover:text-white">
+              <Button size="default" className="px-6 py-2.5 font-bold whitespace-nowrap bg-[#FF4500] text-white border-[#FF4500] hover:bg-[#FF4500]/80 hover:text-white">
                 {t('contact')}
               </Button>
             </a>
@@ -143,18 +143,18 @@ export default function Navigation() {
           {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 — 하이드레이션 가드로 Sheet는 클라이언트 마운트 후에만 렌더 */}
           <div className="flex md:hidden items-center gap-2 flex-shrink-0 min-w-0">
             {/* 언어 토글: 화면 크기와 관계없이 항상 헤더 우측(햄버거 옆)에 노출 */}
-            <div className="flex items-center gap-0.5 rounded border border-zinc-600 bg-zinc-800/50 p-0.5 flex-shrink-0">
+            <div className="flex items-center gap-0.5 rounded-none border border-white/20 bg-[#111]/50 p-0.5 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
-                className={`rounded px-2 py-1 text-xs font-bold transition-colors ${locale === 'ko' ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'}`}
+                className={`rounded px-2 py-1 text-xs font-bold transition-colors ${locale === 'ko' ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`}
               >
                 KR
               </button>
               <button
                 type="button"
                 onClick={() => setLocale('ja')}
-                className={`rounded px-2 py-1 text-xs font-bold transition-colors ${locale === 'ja' ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'}`}
+                className={`rounded px-2 py-1 text-xs font-bold transition-colors ${locale === 'ja' ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`}
               >
                 JP
               </button>
@@ -165,7 +165,7 @@ export default function Navigation() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 min-w-[2.25rem] hover:bg-zinc-800 border-0 flex-shrink-0"
+                    className="h-9 w-9 min-w-[2.25rem] hover:bg-[#111] border-0 flex-shrink-0"
                     aria-label="메뉴 열기"
                   >
                     <Menu className="h-5 w-5 text-white" />
@@ -173,10 +173,10 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent 
                   side="right" 
-                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-[#141414] border-l border-zinc-800 z-50 rounded-none overflow-y-auto"
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-[#141414] border-l border-white/10 z-50 rounded-none overflow-y-auto"
                 >
-                  <SheetHeader className="border-b border-zinc-800 pb-4 mb-4 z-10 relative">
-                    <SheetTitle className="text-left text-xl font-black text-white break-words">
+                  <SheetHeader className="border-b border-white/10 pb-4 mb-4 z-10 relative">
+                    <SheetTitle className="text-left text-xl font-bold text-white break-words">
                       {t('menu')}
                     </SheetTitle>
                   </SheetHeader>
@@ -186,8 +186,8 @@ export default function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`group flex items-center justify-between hover:bg-zinc-900 active:bg-zinc-800 transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-zinc-800 break-words ${
-                          pathname === item.href ? 'text-white border-l-2 border-l-white bg-zinc-900' : 'text-white'
+                        className={`group flex items-center justify-between hover:bg-[#141414] active:bg-[#111] transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-white/10 break-words ${
+                          pathname === item.href ? 'text-white border-l-2 border-l-white bg-[#141414]' : 'text-white'
                         }`}
                         style={{
                           animation: `fadeInSlide 0.3s ease-out ${index * 60}ms both`,
@@ -196,14 +196,14 @@ export default function Navigation() {
                         <span className="text-white transition-colors duration-200 font-bold break-words min-w-0">
                           {'labelKey' in item && item.labelKey ? t(item.labelKey) : item.label}
                         </span>
-                        <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
+                        <ChevronRight className="h-4 w-4 text-white/40 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
                       </a>
                     ))}
                     {/* 문의하기: 데스크탑 버튼과 동일한 Solid CTA 스타일, 하단 격리 */}
                     <a
                       href="/contact"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="mt-6 flex w-full items-center justify-center rounded-lg bg-white py-4 px-5 font-black text-black transition-all duration-200 hover:bg-zinc-200 active:bg-zinc-300 active:scale-[0.98]"
+                      className="mt-6 flex w-full items-center justify-center rounded-none bg-white py-4 px-5 font-bold text-black transition-all duration-200 hover:bg-white/90 active:bg-white/80 active:scale-[0.98]"
                       style={{
                         animation: `fadeInSlide 0.3s ease-out ${menuItems.filter((m) => m.href !== '/contact').length * 60}ms both`,
                       }}

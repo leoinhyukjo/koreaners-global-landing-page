@@ -7,7 +7,7 @@ import { FooterCTA } from '@/components/footer-cta'
 
 const ContactSkeleton = () => (
   <div className="min-h-[60vh] flex items-center justify-center pt-24 sm:pt-28" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto rounded-none animate-pulse bg-zinc-800/50" />
+    <div className="h-32 w-full max-w-2xl mx-auto rounded-none animate-pulse bg-[#111]/50" />
   </div>
 )
 
@@ -17,7 +17,7 @@ const ContactSkeleton = () => (
  */
 export default function ContactPage() {
   return (
-    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-zinc-900">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#141414]">
       <Navigation />
       <SafeHydration fallback={<ContactSkeleton />}>
         <div className="pt-24 sm:pt-28 pb-12 sm:pb-20">

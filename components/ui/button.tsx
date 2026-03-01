@@ -11,13 +11,13 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-white text-black hover:bg-black hover:text-white border-2 border-white',
         destructive:
-          'bg-zinc-600 text-white hover:bg-zinc-700 border-2 border-zinc-600',
+          'bg-white/20 text-white hover:bg-white/10 border-2 border-white/20',
         outline:
           'border-2 border-white bg-transparent text-white hover:bg-white hover:text-black',
         secondary:
-          'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border-2 border-zinc-800',
+          'bg-[#141414] text-white/60 hover:bg-[#111] border-2 border-white/10',
         ghost:
-          'bg-transparent text-white hover:bg-zinc-900 border-2 border-transparent',
+          'bg-transparent text-white hover:bg-[#141414] border-2 border-transparent',
         link: 'text-white underline-offset-4 hover:underline bg-transparent',
       },
       size: {

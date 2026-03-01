@@ -25,27 +25,27 @@ export function Footer() {
               <Logo variant="footer" />
               <span className="font-display font-bold text-lg uppercase tracking-tight text-white">KOREANERS</span>
             </Link>
-            <div className="text-xs sm:text-sm text-zinc-200 font-semibold break-keep">
+            <div className="text-xs sm:text-sm text-white/80 font-semibold break-keep">
               {t("companyName")}
             </div>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-zinc-300 break-keep">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-white/60 break-keep">
               <span className="break-keep">
                 {t("ceo")}: {t("ceoName")}
               </span>
-              <span className="text-zinc-600">|</span>
+              <span className="text-white/30">|</span>
               <span className="break-keep">
                 {t("bizNo")}: {t("bizNoValue")}
               </span>
-              <span className="text-zinc-600">|</span>
+              <span className="text-white/30">|</span>
               <span className="break-keep">
                 {t("address")}: {t("addressValue")}
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-zinc-300 break-keep">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-white/60 break-keep">
               <span>{t("copyright")}</span>
               <Link
                 href="/privacy"
-                className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                className="text-white/50 hover:text-white/60 transition-colors"
               >
                 {locale === "ja" ? "プライバシーポリシー" : "개인정보처리방침"}
               </Link>

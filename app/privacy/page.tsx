@@ -7,13 +7,13 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="min-h-screen bg-zinc-900 text-zinc-300">
+    <main className="min-h-screen bg-[#141414] text-white/60">
       <div className="mx-auto max-w-3xl px-6 py-20">
         <h1 className="mb-10 text-3xl font-bold text-white">
           개인정보처리방침
         </h1>
 
-        <p className="mb-8 text-sm text-zinc-500">최종 수정일: 2026년 2월 27일</p>
+        <p className="mb-8 text-sm text-white/50">최종 수정일: 2026년 2월 27일</p>
 
         <div className="space-y-8 text-sm leading-relaxed">
           <section>
@@ -40,11 +40,11 @@ export default function PrivacyPolicyPage() {
             </h2>
             <ul className="list-disc space-y-1 pl-5">
               <li>
-                <strong className="text-zinc-200">문의 폼:</strong> 이름, 이메일,
+                <strong className="text-white/80">문의 폼:</strong> 이름, 이메일,
                 회사명, 문의 내용
               </li>
               <li>
-                <strong className="text-zinc-200">자동 수집:</strong> IP 주소,
+                <strong className="text-white/80">자동 수집:</strong> IP 주소,
                 브라우저 유형, 방문 페이지, 쿠키
               </li>
             </ul>
@@ -104,10 +104,10 @@ export default function PrivacyPolicyPage() {
             </h2>
             <ul className="list-disc space-y-1 pl-5">
               <li>
-                <strong className="text-zinc-200">책임자:</strong> 조인혁
+                <strong className="text-white/80">책임자:</strong> 조인혁
               </li>
               <li>
-                <strong className="text-zinc-200">이메일:</strong>{" "}
+                <strong className="text-white/80">이메일:</strong>{" "}
                 <a
                   href="mailto:leo@koreaners.com"
                   className="text-blue-400 hover:underline"

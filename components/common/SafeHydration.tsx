@@ -12,7 +12,7 @@ export interface SafeHydrationProps {
 
 const DEFAULT_FALLBACK = (
   <div className="min-h-screen flex items-center justify-center pt-24" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+    <div className="h-32 w-full max-w-2xl mx-auto bg-[#111]/50 animate-pulse" />
   </div>
 )
 

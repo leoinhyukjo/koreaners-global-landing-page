@@ -91,23 +91,23 @@ export function WelcomePopup() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md"
           >
-            <div className="bg-zinc-900 border border-zinc-700 rounded-none p-8 relative">
+            <div className="bg-[#141414] border border-white/10 rounded-none p-8 relative">
               {/* Close Button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors"
+                className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-black text-white mb-2">
+                <h3 className="text-2xl font-bold text-white mb-2">
                   {t('welcomePopupTitle1')}
                 </h3>
-                <h2 className="text-3xl font-black text-white mb-4">
+                <h2 className="text-3xl font-bold text-white mb-4">
                   {t('welcomePopupTitle2')}
                 </h2>
-                <p className="text-zinc-300 text-sm">
+                <p className="text-white/60 text-sm">
                   {t('welcomePopupDesc')}
                 </p>
               </div>
@@ -118,19 +118,19 @@ export function WelcomePopup() {
                   placeholder={t('welcomePopupPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-zinc-800 border-zinc-700 text-white rounded-none"
+                  className="bg-[#111] border-white/10 text-white rounded-none"
                   required
                 />
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-white text-black hover:bg-zinc-200 rounded-none font-black"
+                  className="w-full bg-white text-black hover:bg-white/90 rounded-none font-bold"
                 >
                   {submitting ? t('welcomePopupSubmitting') : t('welcomePopupSubmit')}
                 </Button>
               </form>
 
-              <p className="text-xs text-zinc-500 text-center mt-4">
+              <p className="text-xs text-white/50 text-center mt-4">
                 {t('welcomePopupConsent')}
               </p>
             </div>

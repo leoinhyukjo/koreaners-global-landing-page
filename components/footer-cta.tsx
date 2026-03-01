@@ -451,12 +451,12 @@ export function FooterCTA() {
 
             {/* Success Dialog */}
             <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-              <DialogContent className="sm:max-w-md bg-[#111] backdrop-blur-md border border-white/10 rounded-none shadow-xl [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:text-zinc-200">
+              <DialogContent className="sm:max-w-md bg-[#111] backdrop-blur-md border border-white/10 rounded-none shadow-xl [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:text-white/80">
                 <DialogHeader className="text-center">
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
                     <CheckCircle2 className="h-10 w-10 text-white" />
                   </div>
-                  <DialogTitle className="text-2xl font-black text-white">
+                  <DialogTitle className="text-2xl font-bold text-white">
                     {t("dialogSuccessTitle")}
                   </DialogTitle>
                   <DialogDescription className="pt-4 text-base leading-relaxed text-white/60">
@@ -478,7 +478,7 @@ export function FooterCTA() {
                         marketingConsent: false,
                       });
                     }}
-                    className="w-full sm:w-auto px-8 font-black rounded-none bg-white text-black hover:bg-zinc-200 hover:text-black"
+                    className="w-full sm:w-auto px-8 font-bold rounded-none bg-white text-black hover:bg-white/90 hover:text-black"
                   >
                     {t("dialogConfirm")}
                   </Button>
