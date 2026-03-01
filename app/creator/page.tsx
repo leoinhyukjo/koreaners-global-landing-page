@@ -211,15 +211,14 @@ function CreatorContent() {
   return (
     <>
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-24 w-full max-w-full overflow-hidden relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,_rgba(255,255,255,0.04)_0%,_transparent_70%)]" />
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-balance break-words leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-balance break-words leading-tight">
               <span className="text-white">{t("creatorHero1")}</span>
               <br />
               <span className="text-white">{t("creatorHero2")}</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-zinc-200 max-w-3xl mx-auto text-pretty break-words px-2">
+            <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-3xl mx-auto text-pretty break-words px-2">
               {t("creatorHeroDesc")}
             </p>
             <Button
@@ -228,7 +227,7 @@ function CreatorContent() {
                   .getElementById("join-us")
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="group mt-10 px-14 py-5 text-xl font-black bg-white text-black hover:bg-zinc-100 hover:text-black rounded-none shadow-[0_0_24px_rgba(255,255,255,0.35)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] hover:scale-105 transition-all duration-300 animate-pulse-subtle"
+              className="group mt-10 px-14 py-5 text-xl font-bold bg-white text-black hover:bg-white/90 hover:text-black rounded-none transition-all duration-300"
             >
               {locale === "ja" ? "合流する" : "합류하기"}
               <ArrowDown className="ml-2 w-6 h-6 animate-bounce-slow" />
@@ -237,18 +236,18 @@ function CreatorContent() {
 
           {/* Creator Cards Section - Top of Page */}
           <div className="mb-20 sm:mb-28">
-            <h2 className="text-3xl sm:text-4xl font-black text-center mb-12 text-white">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">
               {t("creatorPoolTitle1")}
               <span className="text-white">{t("creatorPoolTitle2")}</span>
             </h2>
 
             {loading ? (
               <div className="text-center py-20">
-                <p className="text-zinc-200">{t("loading")}</p>
+                <p className="text-white/80">{t("loading")}</p>
               </div>
             ) : allCreators.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-zinc-200 text-lg">{t("creatorEmpty")}</p>
+                <p className="text-white/80 text-lg">{t("creatorEmpty")}</p>
               </div>
             ) : (
               <>
@@ -265,10 +264,10 @@ function CreatorContent() {
                     return (
                       <Card
                         key={creator.id}
-                        className="group overflow-hidden bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300 min-w-0"
+                        className="group overflow-hidden bg-[#111] border-white/10 hover:border-white transition-all duration-300 min-w-0"
                       >
                         {/* Creator Avatar: 3열 시 비율 유지·축소 */}
-                        <div className="aspect-[3/4] min-h-0 bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                        <div className="aspect-[3/4] min-h-0 bg-[#111] relative overflow-hidden">
                           {creator.profile_image_url ? (
                             <img
                               src={creator.profile_image_url}
@@ -277,7 +276,7 @@ function CreatorContent() {
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <Users className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 text-primary/30" />
+                              <Users className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 text-[#FF4500]/30" />
                             </div>
                           )}
                         </div>
@@ -300,14 +299,14 @@ function CreatorContent() {
                                 href={creator.instagram_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="Instagram"
                               >
                                 <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                                <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
+                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
                               </div>
                             )}
 
@@ -316,14 +315,14 @@ function CreatorContent() {
                                 href={creator.youtube_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="YouTube"
                               >
                                 <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                                <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
+                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
                               </div>
                             )}
 
@@ -332,14 +331,14 @@ function CreatorContent() {
                                 href={creator.tiktok_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="TikTok"
                               >
                                 <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                                <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
+                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
                               </div>
                             )}
 
@@ -352,14 +351,14 @@ function CreatorContent() {
                                 }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="X (Twitter)"
                               >
                                 <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-zinc-700/50 opacity-30 pointer-events-none shrink-0">
-                                <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-zinc-400" />
+                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
                               </div>
                             )}
                           </div>
@@ -372,10 +371,10 @@ function CreatorContent() {
                     [1, 2].map((i) => (
                       <Card
                         key={`placeholder-${i}`}
-                        className="overflow-hidden bg-zinc-800/40 border border-dashed border-zinc-600/60 opacity-60 pointer-events-none min-w-0"
+                        className="overflow-hidden bg-[#111]/40 border border-dashed border-white/20/60 opacity-60 pointer-events-none min-w-0"
                       >
-                        <div className="aspect-[3/4] bg-zinc-800/50 relative flex items-center justify-center min-h-0">
-                          <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-zinc-500" />
+                        <div className="aspect-[3/4] bg-[#111]/50 relative flex items-center justify-center min-h-0">
+                          <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white/30" />
                         </div>
                         <div className="p-2 md:p-4 h-[64px] sm:h-[72px] md:h-[88px]" />
                       </Card>
@@ -405,7 +404,7 @@ function CreatorContent() {
                               className={`rounded-none min-w-[44px] ${
                                 page === currentPage
                                   ? "bg-white text-black hover:bg-white"
-                                  : "border-zinc-700/50 bg-zinc-800 text-white hover:bg-white hover:text-black hover:border-white"
+                                  : "border-white/10 bg-[#111] text-white hover:bg-white hover:text-black hover:border-white"
                               }`}
                             >
                               {page}
@@ -416,7 +415,7 @@ function CreatorContent() {
                           page === currentPage + 3
                         ) {
                           return (
-                            <span key={page} className="px-2 text-zinc-400">
+                            <span key={page} className="px-2 text-white/40">
                               ...
                             </span>
                           );
@@ -429,11 +428,11 @@ function CreatorContent() {
                 {/* 하단 멘트 및 그라데이션 - 마지막 페이지에만 노출 */}
                 {currentPage === totalPages && (
                   <div className="text-center py-12 mt-8 sm:mt-12">
-                    <p className="text-zinc-500 text-sm sm:text-base italic">
+                    <p className="text-white/30 text-sm sm:text-base italic">
                       {t("creatorUpdating")}
                     </p>
                     <div
-                      className="mt-4 h-12 bg-gradient-to-b from-transparent to-zinc-900/80 pointer-events-none"
+                      className="mt-4 h-12 bg-gradient-to-b from-transparent to-[#141414]/80 pointer-events-none"
                       aria-hidden
                     />
                   </div>
@@ -444,17 +443,17 @@ function CreatorContent() {
 
           {/* Creator Categories */}
           <div className="mb-20">
-            <h2 className="text-3xl font-black text-center mb-12 text-white">
+            <h2 className="text-3xl font-bold text-center mb-12 text-white">
               <span className="text-white">{t("creatorPoolTitle1")}</span>
               <span className="text-white">{t("creatorPoolTitle2")}</span>
             </h2>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300">
+              <Card className="p-8 bg-[#111] border-white/10 hover:border-white transition-all duration-300">
                 <h3 className="text-2xl font-bold text-white mb-4">
                   {t("creatorPlatformExpertise")}
                 </h3>
-                <ul className="space-y-3 text-zinc-200">
+                <ul className="space-y-3 text-white/80">
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
                     <span>
@@ -479,11 +478,11 @@ function CreatorContent() {
                 </ul>
               </Card>
 
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50 hover:border-white transition-all duration-300">
+              <Card className="p-8 bg-[#111] border-white/10 hover:border-white transition-all duration-300">
                 <h3 className="text-2xl font-bold text-white mb-4">
                   {t("creatorDemographicTitle")}
                 </h3>
-                <ul className="space-y-3 text-zinc-200">
+                <ul className="space-y-3 text-white/80">
                   <li className="flex gap-2">
                     <span className="text-white mt-1">•</span>
                     <span>
@@ -526,7 +525,7 @@ function CreatorContent() {
           </div>
 
           <div className="mb-20">
-            <h2 className="text-3xl font-black text-center mb-12 text-white">
+            <h2 className="text-3xl font-bold text-center mb-12 text-white">
               <span className="text-white">
                 {t("creatorDifferentiatorTitle1")}
               </span>
@@ -536,7 +535,7 @@ function CreatorContent() {
             </h2>
 
             <div className="space-y-6">
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50">
+              <Card className="p-8 bg-[#111] border-white/10">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-none">
                     <Award className="w-6 h-6 text-white" />
@@ -545,14 +544,14 @@ function CreatorContent() {
                     <h3 className="text-xl font-bold text-white mb-3">
                       {t("creatorQualityTitle")}
                     </h3>
-                    <p className="text-zinc-200 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed">
                       {t("creatorQualityDesc")}
                     </p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50">
+              <Card className="p-8 bg-[#111] border-white/10">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-none">
                     <Target className="w-6 h-6 text-white" />
@@ -561,14 +560,14 @@ function CreatorContent() {
                     <h3 className="text-xl font-bold text-white mb-3">
                       {t("creatorExplainTitle")}
                     </h3>
-                    <p className="text-zinc-200 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed">
                       {t("creatorExplainDesc")}
                     </p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-8 bg-zinc-800 border-zinc-700/50">
+              <Card className="p-8 bg-[#111] border-white/10">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-none">
                     <Users className="w-6 h-6 text-white" />
@@ -577,7 +576,7 @@ function CreatorContent() {
                     <h3 className="text-xl font-bold text-white mb-3">
                       {t("creatorLocalTitle")}
                     </h3>
-                    <p className="text-zinc-200 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed">
                       {t("creatorLocalDesc")}
                     </p>
                   </div>
@@ -591,11 +590,11 @@ function CreatorContent() {
 
           {/* Creator Application Form Modal */}
           <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-zinc-900 border-zinc-700/50 rounded-none p-0">
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-[#141414] border-white/10 rounded-none p-0">
               <div className="p-8 sm:p-10">
                 <DialogHeader className="mb-8">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="px-4 py-2 bg-white/10 rounded-full text-sm font-bold text-white">
+                    <div className="px-4 py-2 bg-white/10 rounded-none text-sm font-bold text-white">
                       {formData.track_type === "exclusive"
                         ? locale === "ja"
                           ? "専属クリエイター"
@@ -605,7 +604,7 @@ function CreatorContent() {
                           : "파트너"}
                     </div>
                   </div>
-                  <DialogTitle className="text-3xl font-black text-white text-left">
+                  <DialogTitle className="text-3xl font-bold text-white text-left">
                     {formData.track_type === "exclusive"
                       ? locale === "ja"
                         ? "専属クリエイター合流申し込み"
@@ -614,7 +613,7 @@ function CreatorContent() {
                         ? "パートナー合流申し込み"
                         : "파트너 합류 신청"}
                   </DialogTitle>
-                  <DialogDescription className="pt-4 text-base text-zinc-200 text-left">
+                  <DialogDescription className="pt-4 text-base text-white/80 text-left">
                     <span className="inline-block">
                       {t("creatorApplyDesc1")}
                     </span>{" "}
@@ -640,7 +639,7 @@ function CreatorContent() {
                         name="name"
                         value={formData.name}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder={t("creatorPlaceholderName")}
                       />
                     </div>
@@ -661,10 +660,10 @@ function CreatorContent() {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setFormData({ ...formData, phone: value });
                         }}
-                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="01000000000"
                       />
-                      <p className="mt-1.5 text-xs text-zinc-400">
+                      <p className="mt-1.5 text-xs text-white/40">
                         {locale === "ja"
                           ? "ハイフン(-)なしで入力してください"
                           : "- 없이 숫자만 입력해주세요"}
@@ -686,7 +685,7 @@ function CreatorContent() {
                       name="email"
                       value={formData.email}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                      className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                       placeholder="example@email.com"
                     />
                   </div>
@@ -707,7 +706,7 @@ function CreatorContent() {
                         name="instagram_url"
                         value={formData.instagram_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://instagram.com/..."
                       />
                     </div>
@@ -725,7 +724,7 @@ function CreatorContent() {
                         name="youtube_url"
                         value={formData.youtube_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://youtube.com/..."
                       />
                     </div>
@@ -743,7 +742,7 @@ function CreatorContent() {
                         name="tiktok_url"
                         value={formData.tiktok_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://tiktok.com/..."
                       />
                     </div>
@@ -761,7 +760,7 @@ function CreatorContent() {
                         name="x_url"
                         value={formData.x_url}
                         onChange={handleFormChange}
-                        className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
+                        className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all"
                         placeholder="https://x.com/..."
                       />
                     </div>
@@ -781,7 +780,7 @@ function CreatorContent() {
                       rows={4}
                       value={formData.message}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-3.5 bg-zinc-800 border border-zinc-700/50 rounded-none text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
+                      className="w-full px-4 py-3.5 bg-[#111] border border-white/10 rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all resize-none"
                       placeholder={t("creatorPlaceholderMessage")}
                     />
                   </div>
@@ -791,14 +790,14 @@ function CreatorContent() {
                       type="button"
                       variant="outline"
                       onClick={() => setApplyModalOpen(false)}
-                      className="flex-1 border-zinc-700/50 text-white hover:bg-zinc-800 rounded-none"
+                      className="flex-1 border-white/10 text-white hover:bg-[#111] rounded-none"
                     >
                       {t("dialogCancel") || "취소"}
                     </Button>
                     <Button
                       type="submit"
                       disabled={submitting}
-                      className="flex-1 bg-white text-black hover:bg-zinc-200 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 bg-white text-black hover:bg-white/90 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {submitting
                         ? t("formSubmitting")
@@ -812,17 +811,17 @@ function CreatorContent() {
 
           {/* Success Dialog */}
           <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-            <DialogContent className="sm:max-w-md bg-zinc-800 border-zinc-700/50 rounded-none">
+            <DialogContent className="sm:max-w-md bg-[#111] border-white/10 rounded-none">
               <DialogHeader className="text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
                   <CheckCircle2 className="h-10 w-10 text-white" />
                 </div>
-                <DialogTitle className="text-2xl font-black text-white">
+                <DialogTitle className="text-2xl font-bold text-white">
                   {locale === "ja"
                     ? "合流申し込み完了！"
                     : "합류 신청이 완료되었습니다!"}
                 </DialogTitle>
-                <DialogDescription className="pt-4 text-base leading-relaxed text-zinc-200">
+                <DialogDescription className="pt-4 text-base leading-relaxed text-white/80">
                   {locale === "ja"
                     ? "申し込みを受け付けました。内容を確認後、担当者より1〜2営業日以内にご連絡いたします。ありがとうございます！"
                     : "신청이 정상적으로 접수되었습니다. 내용 확인 후 담당자가 1~2 영업일 내로 연락드리겠습니다. 감사합니다!"}
@@ -845,7 +844,7 @@ function CreatorContent() {
                       track_type: "exclusive",
                     });
                   }}
-                  className="w-full sm:w-auto px-8 font-black rounded-none"
+                  className="w-full sm:w-auto px-8 font-bold rounded-none"
                 >
                   {t("dialogConfirm")}
                 </Button>
@@ -866,7 +865,7 @@ function CreatorFallback() {
       aria-hidden="true"
     >
       <div className="container mx-auto max-w-7xl">
-        <div className="h-32 w-full max-w-2xl mx-auto bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-32 w-full max-w-2xl mx-auto bg-[#111]/50 rounded animate-pulse" />
       </div>
     </div>
   );
@@ -874,7 +873,7 @@ function CreatorFallback() {
 
 export default function CreatorPage() {
   return (
-    <main className="min-h-screen bg-zinc-900 w-full max-w-full overflow-x-hidden">
+    <main className="min-h-screen bg-[#141414] w-full max-w-full overflow-x-hidden">
       <Navigation />
       <SafeHydration fallback={<CreatorFallback />}>
         <Suspense fallback={<CreatorFallback />}>
