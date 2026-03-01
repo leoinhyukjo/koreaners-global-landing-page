@@ -699,7 +699,7 @@ footer {
 
 /* Font utilities */
 @utility font-display {
-  font-family: var(--font-display), var(--font-display-kr), sans-serif;
+  font-family: var(--font-display), var(--font-body), sans-serif;
 }
 
 @utility font-accent {

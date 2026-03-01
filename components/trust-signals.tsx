@@ -12,18 +12,25 @@ const REPEAT = 10
 
 export function TrustSignals() {
   const items = Array.from({ length: REPEAT }, (_, i) => i)
+  const duplicated = items.flatMap((setIdx) =>
+    PHRASES.map((phrase, phraseIdx) => ({ key: `${setIdx}-${phraseIdx}`, phrase }))
+  )
+  // 원본 + 복제 = 끊김 없는 루프
+  const all = [...duplicated, ...duplicated]
 
   return (
     <div className="bg-[#141414] overflow-hidden">
-      {/* Single-row marquee — fast + smooth */}
-      <div className="py-4 flex whitespace-nowrap [animation:marquee-left_4s_linear_infinite] hover:[animation-play-state:paused]">
-        {items.map((setIdx) =>
-          PHRASES.map((phrase, phraseIdx) => (
-            <span key={`${setIdx}-${phraseIdx}`} className="mx-6 text-sm font-bold uppercase tracking-[0.15em] text-[#FF4500]">
-              {phrase} ✦
+      <div className="overflow-hidden py-4" aria-hidden>
+        <div
+          className="flex gap-6 w-max"
+          style={{ animation: 'marquee-left 15s linear infinite' }}
+        >
+          {all.map((item, i) => (
+            <span key={`${item.key}-${i}`} className="text-sm font-bold uppercase tracking-[0.15em] text-[#FF4500] whitespace-nowrap">
+              {item.phrase} ✦
             </span>
-          ))
-        )}
+          ))}
+        </div>
       </div>
 
       {/* Orange accent line */}

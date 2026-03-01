@@ -18,24 +18,27 @@ const CLIENTS_ROW2 = [
   "d'Alba", 'Dr. Althea', 'Dr. G',
 ]
 
-function MarqueeRow({ clients, direction }: { clients: string[]; direction: 'left' | 'right' }) {
-  const duplicated = [...clients, ...clients, ...clients]
-  const anim = direction === 'left'
-    ? '[animation:marquee-left_5s_linear_infinite]'
-    : '[animation:marquee-right_5s_linear_infinite]'
+function MarqueeRow({ clients, direction, duration }: { clients: string[]; direction: 'left' | 'right'; duration: string }) {
+  const duplicated = [...clients, ...clients]
+  const animName = direction === 'left' ? 'marquee-left' : 'marquee-right'
 
   return (
-    <div className={`flex whitespace-nowrap ${anim} hover:[animation-play-state:paused]`}>
-      {duplicated.map((name, i) => (
-        <div
-          key={`${name}-${i}`}
-          className="shrink-0 mx-2 bg-[#111] border border-white/10 px-6 py-3 hover:border-[#FF4500]/40 transition-colors duration-300"
-        >
-          <span className="font-display font-bold text-sm text-white uppercase tracking-wider whitespace-nowrap">
-            {name}
-          </span>
-        </div>
-      ))}
+    <div className="overflow-hidden py-2" aria-hidden>
+      <div
+        className="flex gap-3 w-max"
+        style={{ animation: `${animName} ${duration} linear infinite` }}
+      >
+        {duplicated.map((name, i) => (
+          <div
+            key={`${name}-${i}`}
+            className="flex-shrink-0 bg-[#111] border border-white/10 px-6 py-3 hover:border-[#FF4500]/40 transition-colors duration-300"
+          >
+            <span className="text-sm font-semibold text-white uppercase tracking-wider whitespace-nowrap">
+              {name}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -49,9 +52,9 @@ export function ClientShowcase() {
         </span>
       </div>
 
-      <div className="space-y-3">
-        <MarqueeRow clients={CLIENTS_ROW1} direction="left" />
-        <MarqueeRow clients={CLIENTS_ROW2} direction="right" />
+      <div className="space-y-1">
+        <MarqueeRow clients={CLIENTS_ROW1} direction="left" duration="25s" />
+        <MarqueeRow clients={CLIENTS_ROW2} direction="right" duration="28s" />
       </div>
     </section>
   )
