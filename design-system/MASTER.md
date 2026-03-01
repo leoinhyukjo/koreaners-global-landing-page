@@ -13,7 +13,8 @@
 - 오버사이즈 condensed 타이포그래피 — 타이포가 곧 디자인
 - 극단적 여백 (negative space)
 - 에디토리얼/매거진 그리드 (비대칭 허용)
-- 장식 요소 최소화 (그라데이션, 그리드 패턴, 글로우 금지)
+- 장식 요소 최소화 (그리드 패턴, 글로우 금지)
+- 예외: hero-glow (상단 radial-gradient `rgba(255,69,0,0.18)`, 고정 500px) — 히어로 섹션 분위기용으로 허용
 
 ---
 
@@ -32,7 +33,7 @@
 
 - 배경은 #141414 또는 #FFFFFF만 사용
 - #FF4500은 배경으로 절대 사용 금지 — 포인트 요소에만
-- 그라데이션 사용 금지 — 플랫 컬러만
+- 그라데이션 사용 금지 — 플랫 컬러만 (예외: hero-glow)
 - "이거 써도 되나?" 싶으면 쓰지 않는 게 맞음
 
 ### 다크 섹션 (bg-[#141414])
@@ -67,7 +68,7 @@
 [#FFFFFF] 솔루션 로드맵 — 오버사이즈 타이포, step 번호
 [#141414] 실적(Results) — 오렌지 숫자
 [#FFFFFF] 포트폴리오 — 케이스 그리드
-[#141414] CTA — "LET'S TALK" + 문의 폼
+[#141414] CTA — "CONTACT US" + 문의 폼
 [#141414] 푸터
 ```
 
@@ -84,7 +85,7 @@
 | 역할 | 폰트 | Weight | CSS Variable | 용도 |
 |------|------|--------|-------------|------|
 | Display EN | Barlow Condensed | 700 | `--font-display` | 영문 섹션 헤딩, 대형 숫자, 로고 |
-| Display KR | Black Han Sans | 400 | `--font-display-kr` | 한글 섹션 헤딩 (font-display fallback) |
+| Display KR | (Barlow Condensed → Noto Sans JP fallback) | — | `--font-display` | 한글 헤딩은 Barlow가 렌더 못하면 Noto Sans JP로 자동 fallback |
 | Accent | Playfair Display Italic | 400, 700 | `--font-accent` | 헤딩 내 강조 단어 (섹션당 1개) |
 | Body | Noto Sans KR / Noto Sans JP | 300-700 | `--font-body` | 본문, 설명, UI, 폼 |
 
@@ -92,11 +93,11 @@
 
 ```css
 @utility font-display {
-  font-family: var(--font-display), var(--font-display-kr), sans-serif;
+  font-family: var(--font-display), var(--font-body), sans-serif;
 }
 ```
 
-영문 → Barlow Condensed, 한글 → Black Han Sans (자동 fallback)
+영문 → Barlow Condensed, 한글 → Noto Sans JP (자동 fallback)
 
 ### Heading Hierarchy
 
@@ -275,9 +276,9 @@
 
 - 오렌지(#FF4500) 배경 섹션 ❌ → 포인트 요소에만 사용
 - 이모지를 아이콘으로 사용 ❌ → Lucide SVG 사용
-- 그라데이션 배경 ❌ → 순수 단색
+- 그라데이션 배경 ❌ → 순수 단색 (예외: hero-glow 상단 radial-gradient)
 - border-radius ❌ → sharp edges (0px)
-- 그리드 패턴, 글로우, radial gradient 배경 ❌
+- 그리드 패턴, 글로우 ❌ (예외: hero-glow는 허용)
 - font-black(900) 대형 헤딩 ❌ → font-bold(700) 사용
 - 모든 요소 중앙 정렬 ❌ → 비대칭 그리드 활용
 - 호버 시 scale로 layout shift ❌ → transform + opacity만
@@ -291,7 +292,7 @@
 ```
 배경:  #141414(다크) / #FFFFFF(라이트) 교차 — 오렌지 배경 금지
 포인트: #FF4500 — CTA 버튼, 숫자, 태그, 장식 라인에만
-폰트:  Barlow Condensed (EN) + Black Han Sans (KR) + Playfair Italic (강조) + Noto Sans (바디)
+폰트:  Barlow Condensed (Display) + Playfair Display Italic (강조) + Noto Sans JP (바디/한글 fallback)
 굵기:  font-bold(700) — font-black(900) 금지
 모서리: 0px (전부 sharp)
 장식:  마퀴 + 액센트 라인 + 도트 (이 3개만)
