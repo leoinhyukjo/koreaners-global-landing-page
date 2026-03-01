@@ -237,12 +237,11 @@ export function FooterCTA() {
           <div>
             <h2 className="font-display font-bold text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
               LET&apos;S<br />
-              <span className="font-accent italic text-[#FF4500]">TALK</span>
+              <span className="italic text-[#FF4500]">TALK</span>
             </h2>
             <p className="text-base text-white/60 mt-8 leading-relaxed">
               {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
             </p>
-            <p className="text-sm text-white/40 mt-4">leo@koreaners.com</p>
           </div>
 
           {/* Right: form */}

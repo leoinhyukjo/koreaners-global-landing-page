@@ -31,7 +31,7 @@ export default function HeroSection() {
 
         {/* Main heading */}
         <h1 className="leading-[0.85]">
-          <span className="block font-accent text-8xl md:text-9xl lg:text-[12rem] text-white">
+          <span className="block font-display font-bold italic text-8xl md:text-9xl lg:text-[12rem] text-[#FF4500] uppercase">
             BEYOND
           </span>
           <span className="block font-display font-bold text-6xl md:text-7xl lg:text-[8rem] uppercase text-white">

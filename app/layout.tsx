@@ -13,6 +13,7 @@ import ClarityProvider from "./ClarityProvider";
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["700", "900"],
+  style: ["normal", "italic"],
   variable: "--font-display",
   display: "swap",
 });
