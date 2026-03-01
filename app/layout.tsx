@@ -129,26 +129,86 @@ export default function RootLayout({
           type="application/ld+json"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "코리너스",
-              alternateName: "KOREANERS",
-              url: "https://www.koreaners.co",
-              logo: "https://www.koreaners.co/images/logo.png",
-              description:
-                "일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지. 크로스보더 마케팅 전문 에이전시.",
-              foundingDate: "2022",
-              areaServed: ["KR", "JP"],
-              knowsLanguage: ["ko", "ja"],
-              sameAs: ["https://www.instagram.com/koreaners_global"],
-              contactPoint: {
-                "@type": "ContactPoint",
-                email: "leo@koreaners.com",
-                contactType: "sales",
-                availableLanguage: ["Korean", "Japanese"],
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "코리너스",
+                alternateName: "KOREANERS",
+                url: "https://www.koreaners.co",
+                logo: "https://www.koreaners.co/images/logo.png",
+                description:
+                  "일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지. 크로스보더 마케팅 전문 에이전시.",
+                foundingDate: "2022",
+                areaServed: ["KR", "JP"],
+                knowsLanguage: ["ko", "ja"],
+                sameAs: ["https://www.instagram.com/koreaners_global"],
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  email: "leo@koreaners.com",
+                  contactType: "sales",
+                  availableLanguage: ["Korean", "Japanese"],
+                },
               },
-            }),
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "코리너스",
+                alternateName: "KOREANERS",
+                url: "https://www.koreaners.co",
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "ProfessionalService",
+                name: "코리너스",
+                alternateName: "KOREANERS",
+                url: "https://www.koreaners.co",
+                logo: "https://www.koreaners.co/images/logo.png",
+                priceRange: "$$",
+                areaServed: [
+                  { "@type": "Country", name: "South Korea" },
+                  { "@type": "Country", name: "Japan" },
+                ],
+                hasOfferCatalog: {
+                  "@type": "OfferCatalog",
+                  name: "크로스보더 마케팅 서비스",
+                  itemListElement: [
+                    {
+                      "@type": "Offer",
+                      itemOffered: {
+                        "@type": "Service",
+                        name: "일본 인플루언서 마케팅",
+                        description: "일본 현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영",
+                      },
+                    },
+                    {
+                      "@type": "Offer",
+                      itemOffered: {
+                        "@type": "Service",
+                        name: "대량 시딩",
+                        description: "일본 크리에이터 네트워크를 통한 제품 체험 및 리뷰 콘텐츠 확산",
+                      },
+                    },
+                    {
+                      "@type": "Offer",
+                      itemOffered: {
+                        "@type": "Service",
+                        name: "콘텐츠 제작",
+                        description: "일본 시장 맞춤 마케팅 콘텐츠 기획 및 제작",
+                      },
+                    },
+                    {
+                      "@type": "Offer",
+                      itemOffered: {
+                        "@type": "Service",
+                        name: "데이터 리포팅",
+                        description: "캠페인 성과 분석 및 데이터 기반 인사이트 리포트 제공",
+                      },
+                    },
+                  ],
+                },
+              },
+            ]),
           }}
         />
         <LocaleProvider>

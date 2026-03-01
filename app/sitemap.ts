@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/inquiry`,
+      url: `${baseUrl}/contact`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -70,12 +70,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 블로그 포스트 페이지 추가
     const { data: blogPosts } = await supabase
       .from('blog_posts')
-      .select('id, updated_at, published')
+      .select('slug, updated_at, published')
       .eq('published', true)
       .order('updated_at', { ascending: false })
 
     const blogPages: MetadataRoute.Sitemap = blogPosts?.map((post) => ({
-      url: `${baseUrl}/blog/${post.id}`,
+      url: `${baseUrl}/blog/${post.slug}`,
       lastModified: post.updated_at || currentDate,
       changeFrequency: 'weekly',
       priority: 0.7,

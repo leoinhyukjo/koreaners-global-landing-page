@@ -1,11 +1,21 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: '포트폴리오 - 일본 마케팅 캠페인 성과',
-  description: '코리너스가 운영한 일본 마케팅 캠페인 포트폴리오. K-뷰티, K-푸드, 라이프스타일 등 다양한 브랜드의 일본 시장 진출 성공 사례를 확인하세요.',
-  alternates: { canonical: '/portfolio' },
-}
+  title: "포트폴리오 | 일본 마케팅 캠페인 실적",
+  description:
+    "코리너스가 수행한 일본 인플루언서 마케팅 캠페인 포트폴리오. K-뷰티, K-패션, K-푸드 등 다양한 브랜드의 일본 진출 성공 사례를 확인하세요.",
+  alternates: { canonical: "/portfolio" },
+  openGraph: {
+    title: "포트폴리오 | 코리너스 KOREANERS",
+    description:
+      "일본 인플루언서 마케팅 캠페인 성공 사례. K-뷰티, K-패션, K-푸드 브랜드의 일본 진출 실적.",
+  },
+};
 
-export default function PortfolioLayout({ children }: { children: React.ReactNode }) {
-  return children
+export default function PortfolioLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return children;
 }
