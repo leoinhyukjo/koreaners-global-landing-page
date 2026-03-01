@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/logo'
 import { Menu, ChevronRight } from 'lucide-react'
@@ -93,10 +94,10 @@ export default function Navigation() {
       <div className="w-full max-w-full px-6 md:px-12 lg:px-24">
         <div className="container mx-auto max-w-7xl h-16 sm:h-20 flex items-center">
         <div className="flex items-center justify-between min-w-0 w-full">
-          <a href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">
+          <Link href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">
             <Logo variant="header" />
             <span className="font-display font-bold text-lg uppercase tracking-tight text-white">KOREANERS</span>
-          </a>
+          </Link>
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 flex-shrink-0">
@@ -119,7 +120,7 @@ export default function Navigation() {
             {menuItems.filter((m) => m.href !== '/contact').map((item) => {
               const isActive = pathname === item.href
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   className={`relative py-2 font-bold text-sm group whitespace-nowrap transition-all duration-200 ${
@@ -130,14 +131,14 @@ export default function Navigation() {
                   <span className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-200 ${
                     isActive ? 'w-full' : 'w-0 group-hover:w-full'
                   }`} />
-                </a>
+                </Link>
               )
             })}
-            <a href="/contact" className="ml-1">
+            <Link href="/contact" className="ml-1">
               <Button size="default" className="px-6 py-2.5 font-bold whitespace-nowrap bg-[#FF4500] text-white border-[#FF4500] hover:bg-[#FF4500]/80 hover:text-white">
                 {t('contact')}
               </Button>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 — 하이드레이션 가드로 Sheet는 클라이언트 마운트 후에만 렌더 */}
@@ -182,7 +183,7 @@ export default function Navigation() {
                   </SheetHeader>
                   <nav className="flex flex-col gap-0 relative z-10">
                     {menuItems.filter((m) => m.href !== '/contact').map((item, index) => (
-                      <a
+                      <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
@@ -197,10 +198,10 @@ export default function Navigation() {
                           {'labelKey' in item && item.labelKey ? t(item.labelKey) : item.label}
                         </span>
                         <ChevronRight className="h-4 w-4 text-white/40 flex-shrink-0 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
-                      </a>
+                      </Link>
                     ))}
                     {/* 문의하기: 데스크탑 버튼과 동일한 Solid CTA 스타일, 하단 격리 */}
-                    <a
+                    <Link
                       href="/contact"
                       onClick={() => setMobileMenuOpen(false)}
                       className="mt-6 flex w-full items-center justify-center rounded-none bg-white py-4 px-5 font-bold text-black transition-all duration-200 hover:bg-white/90 active:bg-white/80 active:scale-[0.98]"
@@ -209,7 +210,7 @@ export default function Navigation() {
                       }}
                     >
                       {t('contact')}
-                    </a>
+                    </Link>
                   </nav>
                   
                   <style jsx>{`

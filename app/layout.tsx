@@ -64,6 +64,7 @@ export const metadata: Metadata = {
     "cross-border marketing",
   ],
   verification: {
+    google: "TevxoNyzDOk6ZIWhhkwYSrGTNwj3Y1T9TYGUnsBYlZU",
     other: {
       "naver-site-verification": "223270d36646f19566b9451e5f6775ac2996dbf2",
     },

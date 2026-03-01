@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: '어드민',
+  robots: { index: false, follow: false },
 }
 
 /**
