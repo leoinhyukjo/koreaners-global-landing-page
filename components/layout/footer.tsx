@@ -14,7 +14,7 @@ export function Footer() {
     getTranslation(locale, key);
 
   return (
-    <footer className="py-8 border-t border-zinc-700/50 bg-zinc-900 w-full max-w-full overflow-visible">
+    <footer className="py-8 border-t border-white/10 bg-black w-full max-w-full overflow-visible">
       <div className="w-full max-w-full px-6 md:px-12 lg:px-24 overflow-visible">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-start gap-4 leading-relaxed">
@@ -23,7 +23,7 @@ export function Footer() {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
               <Logo variant="footer" />
-              <span className="text-2xl font-black text-white">KOREANERS</span>
+              <span className="font-display font-bold text-lg uppercase tracking-tight text-white">KOREANERS</span>
             </Link>
             <div className="text-xs sm:text-sm text-zinc-200 font-semibold break-keep">
               {t("companyName")}
