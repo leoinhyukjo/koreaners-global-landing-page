@@ -72,10 +72,10 @@ export function DashboardPage() {
     )
   }
 
-  const statCards = [
-    { label: '블로그 포스트', value: stats.blogCount, icon: FileText, color: 'text-neutral-50' },
-    { label: '포트폴리오', value: stats.portfolioCount, icon: Briefcase, color: 'text-blue-400' },
-    { label: '크리에이터', value: stats.creatorCount, icon: Users, color: 'text-green-400' },
+  const sections = [
+    { label: '블로그 포스트', value: stats.blogCount, icon: FileText, color: 'text-neutral-50', syncType: 'blog' as const, syncing: blogSyncing },
+    { label: '포트폴리오', value: stats.portfolioCount, icon: Briefcase, color: 'text-blue-400', syncType: 'portfolio' as const, syncing: portfolioSyncing },
+    { label: '크리에이터', value: stats.creatorCount, icon: Users, color: 'text-green-400', syncType: 'creator' as const, syncing: creatorSyncing },
   ]
 
   return (
@@ -86,58 +86,37 @@ export function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {statCards.map((card) => {
-          const Icon = card.icon
+        {sections.map((section) => {
+          const Icon = section.icon
           return (
-            <div key={card.label} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition-colors hover:border-neutral-700">
+            <div key={section.label} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition-colors hover:border-neutral-700">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-neutral-400">{card.label}</span>
-                <Icon className={`h-4 w-4 ${card.color}`} />
+                <span className="text-sm text-neutral-400">{section.label}</span>
+                <Icon className={`h-4 w-4 ${section.color}`} />
               </div>
-              <p className="mt-2 text-2xl font-semibold text-neutral-50">{card.value}</p>
+              <p className="mt-2 text-2xl font-semibold text-neutral-50">{section.value}</p>
+              <button
+                onClick={() => handleSync(section.syncType)}
+                disabled={section.syncing}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-xs text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-700 disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3 w-3 ${section.syncing ? 'animate-spin' : ''}`} />
+                {section.syncing ? '동기화 중...' : 'Notion 동기화'}
+              </button>
             </div>
           )
         })}
       </div>
 
-      <div>
-        <h2 className="mb-4 text-sm font-medium text-neutral-50">Notion 동기화</h2>
-        <div className="grid grid-cols-3 gap-4">
-          <button
-            onClick={() => handleSync('blog')}
-            disabled={blogSyncing}
-            className="flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-50 transition-colors hover:border-neutral-700 hover:bg-neutral-800 disabled:opacity-50"
-          >
-            <RefreshCw className={`h-4 w-4 ${blogSyncing ? 'animate-spin' : ''}`} />
-            {blogSyncing ? '동기화 중...' : '블로그 동기화'}
-          </button>
-          <button
-            onClick={() => handleSync('creator')}
-            disabled={creatorSyncing}
-            className="flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-50 transition-colors hover:border-neutral-700 hover:bg-neutral-800 disabled:opacity-50"
-          >
-            <Users className={`h-4 w-4 ${creatorSyncing ? 'animate-spin' : ''}`} />
-            {creatorSyncing ? '동기화 중...' : '크리에이터 동기화'}
-          </button>
-          <button
-            onClick={() => handleSync('portfolio')}
-            disabled={portfolioSyncing}
-            className="flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-50 transition-colors hover:border-neutral-700 hover:bg-neutral-800 disabled:opacity-50"
-          >
-            <Briefcase className={`h-4 w-4 ${portfolioSyncing ? 'animate-spin' : ''}`} />
-            {portfolioSyncing ? '동기화 중...' : '포트폴리오 동기화'}
-          </button>
+      {syncResult && (
+        <div className={`rounded-lg border px-4 py-2.5 text-sm ${
+          syncResult.success
+            ? 'border-green-500/30 bg-green-500/10 text-green-400'
+            : 'border-red-500/30 bg-red-500/10 text-red-400'
+        }`}>
+          {syncResult.message}
         </div>
-        {syncResult && (
-          <div className={`mt-3 rounded-lg border px-4 py-2.5 text-sm ${
-            syncResult.success
-              ? 'border-green-500/30 bg-green-500/10 text-green-400'
-              : 'border-red-500/30 bg-red-500/10 text-red-400'
-          }`}>
-            {syncResult.message}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 }
