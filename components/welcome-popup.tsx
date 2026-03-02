@@ -124,7 +124,7 @@ export function WelcomePopup() {
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-white text-black hover:bg-white/90 rounded-none font-bold"
+                  className="w-full bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none font-bold"
                 >
                   {submitting ? t('welcomePopupSubmitting') : t('welcomePopupSubmit')}
                 </Button>

@@ -49,7 +49,7 @@ export default function HeroSection() {
           <Link href="/contact" className="bg-[#FF4500] text-white px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-[#FF4500]/80 border border-[#FF4500] transition-all duration-300 cursor-pointer text-center">
             {t('heroCtaFreeConsult')}
           </Link>
-          <Link href="/portfolio" className="bg-transparent text-white px-8 py-4 text-sm font-bold uppercase tracking-wider border border-white/30 hover:bg-white/10 transition-all duration-300 cursor-pointer text-center">
+          <Link href="/portfolio" className="bg-transparent text-white px-8 py-4 text-sm font-bold uppercase tracking-wider border border-[#FF4500]/60 hover:bg-[#FF4500] hover:text-white transition-all duration-300 cursor-pointer text-center">
             {t('heroCtaViewCases')}
           </Link>
         </div>

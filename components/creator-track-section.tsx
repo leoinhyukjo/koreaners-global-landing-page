@@ -152,7 +152,7 @@ export function CreatorTrackSection({
                   href={TRACK_LINKS.exclusive[locale]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full px-8 py-3 text-base font-semibold text-center border border-white/30 text-white hover:bg-white/10 rounded-none transition-all"
+                  className="w-full h-12 px-8 text-base font-semibold text-center inline-flex items-center justify-center border border-[#FF4500]/60 text-white hover:bg-[#FF4500] hover:text-white rounded-none transition-all"
                 >
                   {locale === "ja"
                     ? "専属クリエイター詳細案内"
@@ -160,7 +160,7 @@ export function CreatorTrackSection({
                 </a>
                 <Button
                   onClick={() => onSelectTrack("exclusive")}
-                  className="w-full px-8 py-3 text-base font-bold bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all"
+                  className="w-full h-12 px-8 text-base font-bold bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all"
                 >
                   {locale === "ja" ? "合流申し込む" : "합류 신청하기"}
                 </Button>
@@ -256,13 +256,13 @@ export function CreatorTrackSection({
                   href={TRACK_LINKS.partner[locale]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full px-8 py-3 text-base font-semibold text-center border border-white/30 text-white hover:bg-white/10 rounded-none transition-all"
+                  className="w-full h-12 px-8 text-base font-semibold text-center inline-flex items-center justify-center border border-[#FF4500]/60 text-white hover:bg-[#FF4500] hover:text-white rounded-none transition-all"
                 >
                   {locale === "ja" ? "パートナー詳細案内" : "파트너 상세 안내"}
                 </a>
                 <Button
                   onClick={() => onSelectTrack("partner")}
-                  className="w-full px-8 py-3 text-base font-bold bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all"
+                  className="w-full h-12 px-8 text-base font-bold bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all"
                 >
                   {locale === "ja" ? "合流申し込む" : "합류 신청하기"}
                 </Button>

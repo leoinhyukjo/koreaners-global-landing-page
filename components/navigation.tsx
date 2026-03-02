@@ -204,7 +204,7 @@ export default function Navigation() {
                     <Link
                       href="/contact"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="mt-6 flex w-full items-center justify-center rounded-none bg-white py-4 px-5 font-bold text-black transition-all duration-200 hover:bg-white/90 active:bg-white/80 active:scale-[0.98]"
+                      className="mt-6 flex w-full items-center justify-center rounded-none bg-[#FF4500] py-4 px-5 font-bold text-white transition-all duration-200 hover:bg-[#E03E00] active:bg-[#E03E00]/80 active:scale-[0.98]"
                       style={{
                         animation: `fadeInSlide 0.3s ease-out ${menuItems.filter((m) => m.href !== '/contact').length * 60}ms both`,
                       }}

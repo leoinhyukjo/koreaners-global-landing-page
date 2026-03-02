@@ -478,7 +478,7 @@ export function FooterCTA() {
                         marketingConsent: false,
                       });
                     }}
-                    className="w-full sm:w-auto px-8 font-bold rounded-none bg-white text-black hover:bg-white/90 hover:text-black"
+                    className="w-full sm:w-auto px-8 font-bold rounded-none bg-[#FF4500] text-white hover:bg-[#E03E00]"
                   >
                     {t("dialogConfirm")}
                   </Button>

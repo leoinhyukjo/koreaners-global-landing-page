@@ -393,7 +393,7 @@ export default function CareersPage() {
                           <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 shrink-0 w-full sm:w-auto">
                             {job.jdUrl && (
                               <a href={job.jdUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border border-white/30 text-white hover:bg-white/10 hover:text-white">
+                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border border-[#FF4500]/60 text-white hover:bg-[#FF4500] hover:text-white">
                                   {t('careersDetail')}
                                 </Button>
                               </a>
