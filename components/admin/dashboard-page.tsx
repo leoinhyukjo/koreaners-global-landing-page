@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
-import { FileText, Globe, FilePen, RefreshCw, Users, Briefcase } from 'lucide-react'
+import { FileText, RefreshCw, Users, Briefcase } from 'lucide-react'
 
 export function DashboardPage() {
-  const [stats, setStats] = useState({ total: 0, published: 0, draft: 0, portfolioCount: 0 })
+  const [stats, setStats] = useState({ blogCount: 0, portfolioCount: 0, creatorCount: 0 })
   const [loading, setLoading] = useState(true)
   const [blogSyncing, setBlogSyncing] = useState(false)
   const [creatorSyncing, setCreatorSyncing] = useState(false)
@@ -15,16 +15,15 @@ export function DashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [allRes, publishedRes, portfolioRes] = await Promise.all([
+        const [blogRes, portfolioRes, creatorRes] = await Promise.all([
           supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
-          supabase.from('blog_posts').select('id', { count: 'exact', head: true }).eq('published', true),
           supabase.from('portfolios').select('id', { count: 'exact', head: true }),
+          supabase.from('creators').select('id', { count: 'exact', head: true }),
         ])
         setStats({
-          total: allRes.count || 0,
-          published: publishedRes.count || 0,
-          draft: (allRes.count || 0) - (publishedRes.count || 0),
+          blogCount: blogRes.count || 0,
           portfolioCount: portfolioRes.count || 0,
+          creatorCount: creatorRes.count || 0,
         })
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
@@ -63,8 +62,8 @@ export function DashboardPage() {
     return (
       <div className="space-y-6">
         <div className="h-8 w-32 animate-pulse rounded-md bg-neutral-800" />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
             <div key={i} className="h-24 animate-pulse rounded-lg bg-neutral-800" />
           ))}
         </div>
@@ -74,10 +73,9 @@ export function DashboardPage() {
   }
 
   const statCards = [
-    { label: '전체 포스트', value: stats.total, icon: FileText, color: 'text-neutral-50' },
-    { label: '발행됨', value: stats.published, icon: Globe, color: 'text-green-400' },
-    { label: '임시저장', value: stats.draft, icon: FilePen, color: 'text-yellow-400' },
+    { label: '블로그 포스트', value: stats.blogCount, icon: FileText, color: 'text-neutral-50' },
     { label: '포트폴리오', value: stats.portfolioCount, icon: Briefcase, color: 'text-blue-400' },
+    { label: '크리에이터', value: stats.creatorCount, icon: Users, color: 'text-green-400' },
   ]
 
   return (
@@ -87,7 +85,7 @@ export function DashboardPage() {
         <p className="mt-1 text-sm text-neutral-400">사이트 현황 요약</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
