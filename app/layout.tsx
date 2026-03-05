@@ -9,6 +9,7 @@ import { FooterWrapper } from "@/components/layout/footer-wrapper";
 import { LocaleProvider } from "@/contexts/locale-context";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import ClarityProvider from "./ClarityProvider";
+import AgentationProvider from "./AgentationProvider";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -67,6 +68,7 @@ export const metadata: Metadata = {
     google: "TevxoNyzDOk6ZIWhhkwYSrGTNwj3Y1T9TYGUnsBYlZU",
     other: {
       "naver-site-verification": "223270d36646f19566b9451e5f6775ac2996dbf2",
+      "facebook-domain-verification": "zvee90i9i5809r573p525pqm6ekuta",
     },
   },
   icons: {
@@ -218,6 +220,7 @@ export default function RootLayout({
           <FooterWrapper />
         </LocaleProvider>
         <Toaster />
+        <AgentationProvider />
         <Analytics />
         {/* GA4 - 환경변수로 관리 */}
         {process.env.NEXT_PUBLIC_GA_ID && (
