@@ -7,6 +7,7 @@ import {
   addRateLimitHeaders,
 } from "@/lib/rate-limit";
 import { sendSlackInquiry } from "@/lib/slack";
+import { sendCAPIEvent } from "@/lib/meta-capi";
 
 // 허용 Origin (도메인 변경 시 여기 추가)
 const ALLOWED_ORIGINS = [
@@ -240,6 +241,18 @@ export async function POST(request: NextRequest) {
       phone: safePhone || undefined,
       message: safeMessage,
     });
+
+    // Meta CAPI: Lead 이벤트 서버사이드 전송 (non-blocking)
+    sendCAPIEvent({
+      eventName: "Lead",
+      email: safeEmail,
+      phone: safePhone || undefined,
+      sourceUrl: request.headers.get("referer") || "https://koreaners.co",
+      clientIp: clientIp,
+      userAgent: request.headers.get("user-agent") || undefined,
+      fbc: request.cookies.get("_fbc")?.value,
+      fbp: request.cookies.get("_fbp")?.value,
+    }).catch(() => {});
 
     const successResponse = withCors(
       NextResponse.json(

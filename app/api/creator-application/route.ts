@@ -6,6 +6,7 @@ import {
   addRateLimitHeaders,
 } from "@/lib/rate-limit";
 import { sendSlackCreatorApplication } from "@/lib/slack";
+import { sendCAPIEvent } from "@/lib/meta-capi";
 
 const ALLOWED_ORIGINS = [
   "https://koreaners.co",
@@ -177,6 +178,18 @@ export async function POST(request: NextRequest) {
       track_type: safeTrackType,
       locale: safeLocale,
     });
+
+    // Meta CAPI: CompleteRegistration 이벤트 서버사이드 전송 (non-blocking)
+    sendCAPIEvent({
+      eventName: "CompleteRegistration",
+      email: safeEmail,
+      phone: safePhone || undefined,
+      sourceUrl: request.headers.get("referer") || "https://koreaners.co/creator",
+      clientIp: clientIp,
+      userAgent: request.headers.get("user-agent") || undefined,
+      fbc: request.cookies.get("_fbc")?.value,
+      fbp: request.cookies.get("_fbp")?.value,
+    }).catch(() => {});
 
     return addRateLimitHeaders(
       withCors(
