@@ -2,6 +2,8 @@
 
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
+import { SectionTag } from '@/components/ui/section-tag'
 
 const stats = [
   { value: '300+', key: 'finalCtaStat1' as const },
@@ -15,31 +17,31 @@ export function FinalCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <section className="bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-[var(--kn-dark)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <span className="text-xs uppercase tracking-[0.2em] text-white/40">RESULTS</span>
-        <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase mt-4 leading-[0.9] text-white">
-          {t('finalCtaTitle1')}<br />
-          {t('finalCtaTitle2')}
-        </h2>
+        <FadeIn>
+          <SectionTag variant="dark">RESULTS</SectionTag>
+          <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase mt-6 leading-[0.9] text-[var(--foreground)]">
+            {t('finalCtaTitle1')}<br />
+            {t('finalCtaTitle2')}
+          </h2>
+        </FadeIn>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
           {stats.map((stat, index) => (
-            <div
-              key={stat.key}
-              className={`${index < stats.length - 1 ? 'border-r border-border' : ''}`}
-            >
-              <div className="font-display font-bold text-6xl lg:text-8xl text-[#FF4500] leading-none">
-                {typeof stat.value === 'function' ? stat.value(locale) : stat.value}
+            <StaggerItem key={stat.key}>
+              <div className={`${index < stats.length - 1 ? 'border-r border-[var(--border)]' : ''}`}>
+                <div className="font-display font-bold text-6xl lg:text-8xl gradient-warm-text leading-none">
+                  {typeof stat.value === 'function' ? stat.value(locale) : stat.value}
+                </div>
+                <div className="text-sm text-[#A8A29E] mt-3 uppercase tracking-wider">
+                  {t(stat.key)}
+                </div>
               </div>
-              <div className="text-sm text-white/50 mt-3 uppercase tracking-wider">
-                {t(stat.key)}
-              </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   )

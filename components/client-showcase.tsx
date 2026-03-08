@@ -1,5 +1,7 @@
 'use client'
 
+import { SectionTag } from '@/components/ui/section-tag'
+
 const CLIENTS_ROW1 = [
   'BBIA', 'FOODOLOGY', 'INGA', 'Matin Kim', 'medicube', 'MEDI-PEEL', 'MENTHOLOGY',
   '미쟝센', 'moev', 'OVMENT', 'TREEMINGBIRD', 'WHIPPED', '강남언니', '녹십자웰빙',
@@ -34,9 +36,9 @@ function MarqueeRow({ clients, direction, duration }: { clients: string[]; direc
         {duplicated.map((name, i) => (
           <div
             key={`${name}-${i}`}
-            className="flex-shrink-0 bg-card border border-border px-6 py-3 hover:border-[#FF4500]/40 transition-colors duration-300"
+            className="flex-shrink-0 bg-card border border-[var(--border)] px-6 py-3 rounded-full hover:border-[#FF4500]/40 transition-colors duration-300"
           >
-            <span className="text-sm font-semibold text-white uppercase tracking-wider whitespace-nowrap">
+            <span className="text-sm font-semibold text-[var(--foreground)] uppercase tracking-wider whitespace-nowrap">
               {name}
             </span>
           </div>
@@ -48,11 +50,11 @@ function MarqueeRow({ clients, direction, duration }: { clients: string[]; direc
 
 export function ClientShowcase() {
   return (
-    <section className="bg-background py-16 md:py-20 overflow-hidden">
+    <section className="bg-[var(--kn-dark)] py-16 md:py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-24 mb-8">
-        <span className="text-xs uppercase tracking-[0.3em] text-white/40 font-bold">
-          TRUSTED BY {CLIENTS_ROW1.length + CLIENTS_ROW2.length + CLIENTS_ROW3.length}+ BRANDS
-        </span>
+        <SectionTag variant="dark">
+          {`TRUSTED BY ${CLIENTS_ROW1.length + CLIENTS_ROW2.length + CLIENTS_ROW3.length}+ BRANDS`}
+        </SectionTag>
       </div>
 
       <div className="space-y-1">

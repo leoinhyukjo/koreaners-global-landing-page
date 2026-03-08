@@ -101,7 +101,7 @@ export default function Navigation() {
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 flex-shrink-0">
-            <div className="flex items-center gap-1 rounded-none border border-white/20 bg-card/50 p-0.5">
+            <div className="flex items-center gap-1 border border-white/20 bg-card/50 p-0.5">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
@@ -128,7 +128,7 @@ export default function Navigation() {
                   }`}
                 >
                   {item.label}
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-200 ${
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-[#FF4500] transition-all duration-200 ${
                     isActive ? 'w-full' : 'w-0 group-hover:w-full'
                   }`} />
                 </Link>
@@ -144,7 +144,7 @@ export default function Navigation() {
           {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 — 하이드레이션 가드로 Sheet는 클라이언트 마운트 후에만 렌더 */}
           <div className="flex md:hidden items-center gap-2 flex-shrink-0 min-w-0">
             {/* 언어 토글: 화면 크기와 관계없이 항상 헤더 우측(햄버거 옆)에 노출 */}
-            <div className="flex items-center gap-0.5 rounded-none border border-white/20 bg-card/50 p-0.5 flex-shrink-0">
+            <div className="flex items-center gap-0.5 border border-white/20 bg-card/50 p-0.5 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
