@@ -78,7 +78,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
               </Link>
               <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
                 <div className="w-full max-w-none lg:max-w-4xl mx-auto">
-                  <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-border relative bg-card w-full flex items-center justify-center">
+                  <div className="aspect-video rounded-[var(--radius-lg)] overflow-hidden border border-[var(--border)] relative bg-card w-full flex items-center justify-center">
                     {blogPost.thumbnail_url ? (
                       <SafeImage
                         src={thumbnailSrc}
@@ -104,7 +104,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                   <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap break-keep">
                     <Badge
                       variant="secondary"
-                      className="text-xs break-keep bg-card text-white/80 border-border rounded-none"
+                      className="text-xs break-keep bg-card text-white/80 border-[var(--border)] rounded-full"
                     >
                       {blogPost.category}
                     </Badge>
@@ -125,7 +125,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
               </div>
             </header>
             <div
-              className="mt-10 sm:mt-12 border border-border bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper"
+              className="mt-10 sm:mt-12 border border-[var(--border)] bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-[var(--radius)] blog-content-wrapper"
             >
               <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-white/80 leading-relaxed text-base lg:text-lg blog-content-prose">
                 {hasContent ? (

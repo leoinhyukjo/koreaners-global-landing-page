@@ -13,6 +13,8 @@ import {
   X,
   Plus,
   ArrowDown,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,8 +34,9 @@ import { CheckCircle2 } from "lucide-react";
 import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
 import { CreatorTrackSection } from "@/components/creator-track-section";
+import { SectionTag } from "@/components/ui/section-tag";
 
-const CREATORS_PER_PAGE = 12;
+const CREATORS_PER_PAGE = 9;
 
 function CreatorContent() {
   const { locale } = useLocale();
@@ -217,17 +220,15 @@ function CreatorContent() {
         <div className="max-w-7xl mx-auto">
           {/* Hero - Left aligned */}
           <div className="mb-20 sm:mb-28">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">
-              CREATOR
-            </span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">CREATOR</SectionTag>
+            <div className="mb-8" />
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
               <span>{t("creatorHero1")}</span>
               <br />
               <span>{t("creatorHero2")}</span>
             </h1>
-            <p className="text-base md:text-lg text-white/60 max-w-3xl mb-10">
+            <p className="text-base md:text-lg text-[#A8A29E] max-w-3xl mb-10">
               {t("creatorHeroDesc")}
             </p>
             <Button
@@ -236,7 +237,7 @@ function CreatorContent() {
                   .getElementById("join-us")
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="group px-12 py-5 text-lg font-bold uppercase tracking-wider bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none transition-all duration-300 shadow-[0_0_30px_rgba(255,69,0,0.4)] hover:shadow-[0_0_50px_rgba(255,69,0,0.6)]"
+              className="group px-12 py-5 text-lg font-bold uppercase tracking-wider gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300"
             >
               {locale === "ja" ? "合流する" : "합류하기"}
               <ArrowDown className="ml-3 w-6 h-6 animate-bounce-slow" />
@@ -252,11 +253,11 @@ function CreatorContent() {
 
             {loading ? (
               <div className="text-center py-20">
-                <p className="text-white/60">{t("loading")}</p>
+                <p className="text-[#A8A29E]">{t("loading")}</p>
               </div>
             ) : allCreators.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-white/60 text-lg">{t("creatorEmpty")}</p>
+                <p className="text-[#A8A29E] text-lg">{t("creatorEmpty")}</p>
               </div>
             ) : (
               <>
@@ -273,7 +274,7 @@ function CreatorContent() {
                     return (
                       <Card
                         key={creator.id}
-                        className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 min-w-0"
+                        className="group overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0"
                       >
                         {/* Creator Avatar */}
                         <div className="aspect-[3/4] min-h-0 bg-card relative overflow-hidden">
@@ -308,14 +309,14 @@ function CreatorContent() {
                                 href={creator.instagram_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="Instagram"
                               >
                                 <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
-                                <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
+                              <div className="p-1 sm:p-1.5 md:p-2 bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <Instagram className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-[#A8A29E]" />
                               </div>
                             )}
 
@@ -324,14 +325,14 @@ function CreatorContent() {
                                 href={creator.youtube_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="YouTube"
                               >
                                 <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
-                                <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
+                              <div className="p-1 sm:p-1.5 md:p-2 bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <Youtube className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-[#A8A29E]" />
                               </div>
                             )}
 
@@ -340,14 +341,14 @@ function CreatorContent() {
                                 href={creator.tiktok_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="TikTok"
                               >
                                 <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
-                                <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
+                              <div className="p-1 sm:p-1.5 md:p-2 bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <Music className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-[#A8A29E]" />
                               </div>
                             )}
 
@@ -360,14 +361,14 @@ function CreatorContent() {
                                 }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
+                                className="p-1 sm:p-1.5 md:p-2 bg-white/10 text-white hover:bg-white hover:text-black transition-colors shrink-0"
                                 aria-label="X (Twitter)"
                               >
                                 <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                               </a>
                             ) : (
-                              <div className="p-1 sm:p-1.5 md:p-2 rounded-none bg-white/10 opacity-30 pointer-events-none shrink-0">
-                                <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-white/40" />
+                              <div className="p-1 sm:p-1.5 md:p-2 bg-white/10 opacity-30 pointer-events-none shrink-0">
+                                <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-[#A8A29E]" />
                               </div>
                             )}
                           </div>
@@ -380,10 +381,10 @@ function CreatorContent() {
                     [1, 2].map((i) => (
                       <Card
                         key={`placeholder-${i}`}
-                        className="overflow-hidden bg-card/40 border border-dashed border-white/20 opacity-60 pointer-events-none min-w-0"
+                        className="overflow-hidden bg-card/40 rounded-[var(--radius)] border border-dashed border-white/20 opacity-60 pointer-events-none min-w-0"
                       >
                         <div className="aspect-[3/4] bg-card/50 relative flex items-center justify-center min-h-0">
-                          <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white/30" />
+                          <Plus className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-[#A8A29E]" />
                         </div>
                         <div className="p-2 md:p-4 h-[64px] sm:h-[72px] md:h-[88px]" />
                       </Card>
@@ -393,50 +394,72 @@ function CreatorContent() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mb-12 sm:mb-20">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => {
-                        if (
-                          page === 1 ||
-                          page === totalPages ||
-                          (page >= currentPage - 2 && page <= currentPage + 2)
-                        ) {
-                          return (
-                            <Button
-                              key={page}
-                              variant={
-                                page === currentPage ? "default" : "outline"
-                              }
-                              onClick={() =>
-                                router.push(`/creator?page=${page}`)
-                              }
-                              className={`rounded-none min-w-[44px] ${
-                                page === currentPage
-                                  ? "bg-[#FF4500] text-white hover:bg-[#E03E00]"
-                                  : "border-border bg-card text-white hover:bg-white hover:text-black hover:border-white"
-                              }`}
-                            >
-                              {page}
-                            </Button>
-                          );
-                        } else if (
-                          page === currentPage - 3 ||
-                          page === currentPage + 3
-                        ) {
-                          return (
-                            <span key={page} className="px-2 text-white/40">
-                              ...
-                            </span>
-                          );
-                        }
-                        return null;
-                      },
-                    )}
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (currentPage > 1) router.push(`/creator?page=${currentPage - 1}`)
+                      }}
+                      disabled={currentPage === 1}
+                      className="border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      {t("prev")}
+                    </Button>
+
+                    <div className="flex gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (page) => {
+                          if (
+                            page === 1 ||
+                            page === totalPages ||
+                            (page >= currentPage - 2 && page <= currentPage + 2)
+                          ) {
+                            return (
+                              <Button
+                                key={page}
+                                variant={page === currentPage ? "default" : "outline"}
+                                onClick={() => router.push(`/creator?page=${page}`)}
+                                className={`min-w-[44px] ${
+                                  page === currentPage
+                                    ? "gradient-warm text-white hover:opacity-90"
+                                    : "border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border"
+                                }`}
+                              >
+                                {page}
+                              </Button>
+                            );
+                          } else if (
+                            page === currentPage - 3 ||
+                            page === currentPage + 3
+                          ) {
+                            return (
+                              <span key={page} className="px-2 text-[#A8A29E]">
+                                ...
+                              </span>
+                            );
+                          }
+                          return null;
+                        },
+                      )}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (currentPage < totalPages) router.push(`/creator?page=${currentPage + 1}`)
+                      }}
+                      disabled={currentPage === totalPages}
+                      className="border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {t("next")}
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
                   </div>
                 )}
                 {/* 하단 멘트 - 마지막 페이지에만 노출 */}
                 {currentPage === totalPages && (
                   <div className="text-center py-12 mt-8 sm:mt-12">
-                    <p className="text-white/30 text-sm sm:text-base italic">
+                    <p className="text-[#A8A29E] text-sm sm:text-base italic">
                       {t("creatorUpdating")}
                     </p>
                   </div>
@@ -448,56 +471,54 @@ function CreatorContent() {
       </section>
 
       {/* ============================================================
-          SECTION 2: Creator Categories (White bg-white)
+          SECTION 2: Creator Categories (Light bg-kn-light)
           ============================================================ */}
-      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white">
+      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-[var(--kn-light)]">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-16">
-            <span className="text-xs uppercase tracking-[0.3em] text-black/40">
-              OUR CREATORS
-            </span>
-            <div className="h-px flex-1 bg-black/10" />
+            <SectionTag variant="light">OUR CREATORS</SectionTag>
+            <div className="h-px flex-1 bg-[#78716C]/20" />
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
-              <h3 className="text-2xl font-bold text-[#141414] mb-4">
+            <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+              <h3 className="text-2xl font-bold text-[var(--kn-dark)] mb-4">
                 {t("creatorPlatformExpertise")}
               </h3>
-              <ul className="space-y-3 text-black/60">
+              <ul className="space-y-3 text-[#78716C]">
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">Instagram:</span>{" "}
+                    <span className="font-medium text-[var(--kn-dark)]">Instagram:</span>{" "}
                     {t("creatorPlatformIg")}
                   </span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">TikTok:</span>{" "}
+                    <span className="font-medium text-[var(--kn-dark)]">TikTok:</span>{" "}
                     {t("creatorPlatformTiktok")}
                   </span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">YouTube:</span>{" "}
+                    <span className="font-medium text-[var(--kn-dark)]">YouTube:</span>{" "}
                     {t("creatorPlatformYoutube")}
                   </span>
                 </li>
               </ul>
             </div>
 
-            <div className="bg-[#F5F5F5] border border-black/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
-              <h3 className="text-2xl font-bold text-[#141414] mb-4">
+            <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
+              <h3 className="text-2xl font-bold text-[var(--kn-dark)] mb-4">
                 {t("creatorDemographicTitle")}
               </h3>
-              <ul className="space-y-3 text-black/60">
+              <ul className="space-y-3 text-[#78716C]">
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">
+                    <span className="font-medium text-[var(--kn-dark)]">
                       {t("creatorDemographicLabel10s")}:
                     </span>{" "}
                     {t("creatorDemographic10s")}
@@ -506,7 +527,7 @@ function CreatorContent() {
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">
+                    <span className="font-medium text-[var(--kn-dark)]">
                       {t("creatorDemographicLabel20s")}:
                     </span>{" "}
                     {t("creatorDemographic20s")}
@@ -515,7 +536,7 @@ function CreatorContent() {
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">
+                    <span className="font-medium text-[var(--kn-dark)]">
                       {t("creatorDemographicLabel30s")}:
                     </span>{" "}
                     {t("creatorDemographic30s")}
@@ -524,7 +545,7 @@ function CreatorContent() {
                 <li className="flex gap-2">
                   <span className="text-[#FF4500] mt-1">•</span>
                   <span>
-                    <span className="font-medium text-[#141414]">
+                    <span className="font-medium text-[var(--kn-dark)]">
                       {t("creatorDemographicLabelMale")}:
                     </span>{" "}
                     {t("creatorDemographicMale")}
@@ -541,10 +562,8 @@ function CreatorContent() {
           ============================================================ */}
       <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
         <div className="max-w-7xl mx-auto">
-          <span className="text-xs uppercase tracking-[0.2em] text-white/40">
-            WHY KOREANERS
-          </span>
-          <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+          <SectionTag variant="dark">WHY KOREANERS</SectionTag>
+          <div className="mb-8" />
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16">
             <span>{t("creatorDifferentiatorTitle1")}</span>
@@ -552,48 +571,48 @@ function CreatorContent() {
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-card border border-border rounded-none">
+                <div className="p-3 bg-card rounded-[var(--radius-sm)] border border-[var(--border)]">
                   <Award className="w-6 h-6 text-[#FF4500]/70" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-3">
                     {t("creatorQualityTitle")}
                   </h3>
-                  <p className="text-white/60 leading-relaxed">
+                  <p className="text-[#A8A29E] leading-relaxed">
                     {t("creatorQualityDesc")}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-card border border-border rounded-none">
+                <div className="p-3 bg-card rounded-[var(--radius-sm)] border border-[var(--border)]">
                   <Target className="w-6 h-6 text-[#FF4500]/70" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-3">
                     {t("creatorExplainTitle")}
                   </h3>
-                  <p className="text-white/60 leading-relaxed">
+                  <p className="text-[#A8A29E] leading-relaxed">
                     {t("creatorExplainDesc")}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-card border border-border rounded-none">
+                <div className="p-3 bg-card rounded-[var(--radius-sm)] border border-[var(--border)]">
                   <Users className="w-6 h-6 text-[#FF4500]/70" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-3">
                     {t("creatorLocalTitle")}
                   </h3>
-                  <p className="text-white/60 leading-relaxed">
+                  <p className="text-[#A8A29E] leading-relaxed">
                     {t("creatorLocalDesc")}
                   </p>
                 </div>
@@ -606,7 +625,7 @@ function CreatorContent() {
       {/* ============================================================
           SECTION 4: Track Selection (separate component)
           ============================================================ */}
-      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+      <section className="pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background">
         <div className="max-w-7xl mx-auto">
           <CreatorTrackSection onSelectTrack={handleSelectTrack} />
         </div>
@@ -617,11 +636,11 @@ function CreatorContent() {
           ============================================================ */}
       {/* Creator Application Form Modal */}
       <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border rounded-none p-0">
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-[var(--border)] p-0">
           <div className="p-8 sm:p-10">
             <DialogHeader className="mb-8">
               <div className="flex items-center gap-3 mb-4">
-                <div className="px-4 py-2 bg-[#FF4500]/10 border border-[#FF4500]/20 rounded-none text-sm font-bold text-[#FF4500]">
+                <div className="px-4 py-2 bg-[#FF4500]/10 border border-[#FF4500]/20 text-sm font-bold text-[#FF4500]">
                   {formData.track_type === "exclusive"
                     ? locale === "ja"
                       ? "専属クリエイター"
@@ -640,7 +659,7 @@ function CreatorContent() {
                     ? "パートナー合流申し込み"
                     : "파트너 합류 신청"}
               </DialogTitle>
-              <DialogDescription className="pt-4 text-base text-white/60 text-left">
+              <DialogDescription className="pt-4 text-base text-[#A8A29E] text-left">
                 <span className="inline-block">
                   {t("creatorApplyDesc1")}
                 </span>{" "}
@@ -666,7 +685,7 @@ function CreatorContent() {
                     name="name"
                     value={formData.name}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder={t("creatorPlaceholderName")}
                   />
                 </div>
@@ -687,10 +706,10 @@ function CreatorContent() {
                       const value = e.target.value.replace(/[^0-9]/g, "");
                       setFormData({ ...formData, phone: value });
                     }}
-                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="01000000000"
                   />
-                  <p className="mt-1.5 text-xs text-white/40">
+                  <p className="mt-1.5 text-xs text-[#A8A29E]">
                     {locale === "ja"
                       ? "ハイフン(-)なしで入力してください"
                       : "- 없이 숫자만 입력해주세요"}
@@ -712,7 +731,7 @@ function CreatorContent() {
                   name="email"
                   value={formData.email}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                  className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                   placeholder="example@email.com"
                 />
               </div>
@@ -733,7 +752,7 @@ function CreatorContent() {
                     name="instagram_url"
                     value={formData.instagram_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://instagram.com/..."
                   />
                 </div>
@@ -751,7 +770,7 @@ function CreatorContent() {
                     name="youtube_url"
                     value={formData.youtube_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://youtube.com/..."
                   />
                 </div>
@@ -769,7 +788,7 @@ function CreatorContent() {
                     name="tiktok_url"
                     value={formData.tiktok_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://tiktok.com/..."
                   />
                 </div>
@@ -787,7 +806,7 @@ function CreatorContent() {
                     name="x_url"
                     value={formData.x_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://x.com/..."
                   />
                 </div>
@@ -807,7 +826,7 @@ function CreatorContent() {
                   rows={4}
                   value={formData.message}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-3.5 bg-card border border-border rounded-none text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all resize-none"
                   placeholder={t("creatorPlaceholderMessage")}
                 />
               </div>
@@ -817,14 +836,14 @@ function CreatorContent() {
                   type="button"
                   variant="outline"
                   onClick={() => setApplyModalOpen(false)}
-                  className="flex-1 border-border text-white hover:bg-card rounded-none"
+                  className="flex-1 border-[var(--border)] text-white hover:bg-card"
                 >
                   {t("dialogCancel") || "취소"}
                 </Button>
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting
                     ? t("formSubmitting")
@@ -838,9 +857,9 @@ function CreatorContent() {
 
       {/* Success Dialog */}
       <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-card border-border rounded-none">
+        <DialogContent className="sm:max-w-md bg-card border-[var(--border)]">
           <DialogHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-[#FF4500]/10 border border-[#FF4500]/20 rounded-none">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-[#FF4500]/10 border border-[#FF4500]/20">
               <CheckCircle2 className="h-10 w-10 text-[#FF4500]" />
             </div>
             <DialogTitle className="text-2xl font-bold text-white">
@@ -848,7 +867,7 @@ function CreatorContent() {
                 ? "合流申し込み完了！"
                 : "합류 신청이 완료되었습니다!"}
             </DialogTitle>
-            <DialogDescription className="pt-4 text-base leading-relaxed text-white/60">
+            <DialogDescription className="pt-4 text-base leading-relaxed text-[#A8A29E]">
               {locale === "ja"
                 ? "申し込みを受け付けました。内容を確認後、担当者より1〜2営業日以内にご連絡いたします。ありがとうございます！"
                 : "신청이 정상적으로 접수되었습니다. 내용 확인 후 담당자가 1~2 영업일 내로 연락드리겠습니다. 감사합니다!"}
@@ -871,7 +890,7 @@ function CreatorContent() {
                   track_type: "exclusive",
                 });
               }}
-              className="w-full sm:w-auto px-8 font-bold rounded-none bg-[#FF4500] text-white hover:bg-[#E03E00]"
+              className="w-full sm:w-auto px-8 font-bold gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300"
             >
               {t("dialogConfirm")}
             </Button>

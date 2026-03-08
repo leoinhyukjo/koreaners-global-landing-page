@@ -25,6 +25,7 @@ import {
   Network,
   ArrowUpRight,
 } from 'lucide-react'
+import { SectionTag } from '@/components/ui/section-tag'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 
@@ -122,35 +123,33 @@ export default function CareersPage() {
         {/* ── Hero Section (Dark) ── */}
         <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full hero-glow">
           <div className="max-w-7xl mx-auto relative z-10">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">CAREERS</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">CAREERS</SectionTag>
+            <div className="mt-6 mb-8" />
             <h1 className="font-display font-bold text-6xl md:text-7xl lg:text-8xl uppercase text-white leading-[0.85] mb-6">
               JOIN KOREANERS
             </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl text-white/60 max-w-4xl break-keep font-semibold mb-4">
+            <p className="text-xl sm:text-2xl md:text-3xl text-[#A8A29E] max-w-4xl break-keep font-semibold mb-4">
               {t('careersHeroSubtitle')}
             </p>
-            <p className="text-lg sm:text-xl text-white/40 max-w-2xl break-keep">
+            <p className="text-lg sm:text-xl text-[#A8A29E] max-w-2xl break-keep">
               {t('careersHeroTitle')}
             </p>
           </div>
         </section>
 
         {/* ── About Section (White) ── */}
-        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white w-full max-w-full">
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-[var(--kn-light)] w-full max-w-full">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-16">
-              <span className="text-xs uppercase tracking-[0.3em] text-black/40">ABOUT US</span>
-              <div className="h-px flex-1 bg-black/10" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#141414] mb-8 break-keep">
+            <SectionTag variant="light">ABOUT US</SectionTag>
+            <div className="mb-16" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-8 break-keep">
               {t('careersAboutTitle')}
             </h2>
             <div className="max-w-3xl space-y-4">
-              <p className="text-lg sm:text-xl text-[#141414] font-semibold leading-relaxed break-keep">
+              <p className="text-lg sm:text-xl text-[var(--kn-dark)] font-semibold leading-relaxed break-keep">
                 {t('careersAboutDesc1')}
               </p>
-              <p className="text-lg sm:text-xl text-black/60 leading-relaxed break-keep">
+              <p className="text-lg sm:text-xl text-[#78716C] leading-relaxed break-keep">
                 {t('careersAboutDesc2')}
               </p>
             </div>
@@ -160,8 +159,8 @@ export default function CareersPage() {
         {/* ── Core Business Areas (Dark) ── */}
         <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background w-full max-w-full">
           <div className="max-w-7xl mx-auto">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">BUSINESS</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">BUSINESS</SectionTag>
+            <div className="mt-6 mb-8" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16 break-keep">
               {t('careersBizTitle')}
             </h2>
@@ -169,21 +168,21 @@ export default function CareersPage() {
               {bizAreas.map((area, index) => (
                 <Card
                   key={index}
-                  className="p-8 bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
+                  className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
                 >
                   <p className="text-xs font-mono mb-4 text-[#FF4500]">{String(index + 1).padStart(2, '0')}</p>
-                  <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mb-6 shrink-0">
+                  <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mb-6 shrink-0">
                     <area.icon className="w-8 h-8 text-[#FF4500]/70" />
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
                     {t(area.titleKey)}
                   </h3>
-                  <p className="text-base sm:text-lg text-white/60 leading-relaxed break-words mb-5">
+                  <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed break-words mb-5">
                     {t(area.descKey)}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {area.subKeys.map((subKey, subIdx) => (
-                      <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-white/10 text-sm text-white/60 font-medium">
+                      <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-white/10 rounded-[var(--radius-sm)] text-sm text-[#A8A29E] font-medium">
                         {t(subKey)}
                       </span>
                     ))}
@@ -195,29 +194,27 @@ export default function CareersPage() {
         </section>
 
         {/* ── Core Strengths (White) ── */}
-        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white w-full max-w-full">
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-[var(--kn-light)] w-full max-w-full">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-16">
-              <span className="text-xs uppercase tracking-[0.3em] text-black/40">STRENGTHS</span>
-              <div className="h-px flex-1 bg-black/10" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#141414] mb-16 break-keep">
+            <SectionTag variant="light">STRENGTHS</SectionTag>
+            <div className="mb-16" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
               {t('careersStrengthTitle')}
             </h2>
             <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
               {strengthItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 p-8 bg-[#F5F5F5] border border-black/5 hover:border-[#FF4500]/40 transition-all duration-300 group"
+                  className="flex items-start gap-4 p-8 bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 hover:border-[#FF4500]/40 transition-all duration-300 group"
                 >
-                  <div className="w-12 h-12 bg-white flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 bg-[var(--kn-light)] rounded-[var(--radius-sm)] flex items-center justify-center shrink-0">
                     <item.icon className="w-6 h-6 text-[#FF4500]/70" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg sm:text-xl font-bold text-[#141414] mb-1 break-keep">
+                    <h3 className="text-lg sm:text-xl font-bold text-[var(--kn-dark)] mb-1 break-keep">
                       {t(item.titleKey)}
                     </h3>
-                    <p className="text-sm sm:text-base text-black/60 leading-relaxed break-words">
+                    <p className="text-sm sm:text-base text-[#78716C] leading-relaxed break-words">
                       {t(item.descKey)}
                     </p>
                   </div>
@@ -230,12 +227,12 @@ export default function CareersPage() {
         {/* ── Vision Section (Dark) ── */}
         <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background w-full max-w-full">
           <div className="max-w-7xl mx-auto">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">VISION</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">VISION</SectionTag>
+            <div className="mt-6 mb-8" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 break-keep">
               {t('careersVisionTitle')}
             </h2>
-            <p className="text-lg sm:text-xl text-white/60 max-w-3xl mb-16 break-keep">
+            <p className="text-lg sm:text-xl text-[#A8A29E] max-w-3xl mb-16 break-keep">
               {t('careersVisionDesc')}
             </p>
             <div className="grid md:grid-cols-3 gap-6">
@@ -245,15 +242,15 @@ export default function CareersPage() {
                 return (
                   <Card
                     key={index}
-                    className="p-8 bg-card border border-border hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
+                    className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
                   >
-                    <div className="w-16 h-16 rounded-none bg-white/10 flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mx-auto mb-6">
                       <Icon className="w-8 h-8 text-[#FF4500]/70" />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
                       {t(item.titleKey)}
                     </h3>
-                    <p className="text-base sm:text-lg text-white/60 leading-relaxed break-words">
+                    <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed break-words">
                       {t(item.descKey)}
                     </p>
                   </Card>
@@ -264,13 +261,11 @@ export default function CareersPage() {
         </section>
 
         {/* ── Culture / Talent Section (White) ── */}
-        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-white w-full max-w-full">
+        <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-[var(--kn-light)] w-full max-w-full">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-16">
-              <span className="text-xs uppercase tracking-[0.3em] text-black/40">CULTURE</span>
-              <div className="h-px flex-1 bg-black/10" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#141414] mb-16 break-keep">
+            <SectionTag variant="light">CULTURE</SectionTag>
+            <div className="mb-16" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
               {t('careersCultureTitle')}
             </h2>
             <div className="space-y-4 sm:space-y-6">
@@ -279,7 +274,7 @@ export default function CareersPage() {
                 return (
                   <div
                     key={index}
-                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-[#F5F5F5] border border-black/5 hover:border-[#FF4500]/40 transition-all duration-300 group ${
+                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 hover:border-[#FF4500]/40 transition-all duration-300 group ${
                       !isEven ? 'sm:flex-row-reverse' : ''
                     }`}
                   >
@@ -288,16 +283,16 @@ export default function CareersPage() {
                       <span className="font-display font-bold text-4xl text-[#FF4500] select-none leading-none">
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <div className="w-14 h-14 bg-white flex items-center justify-center">
+                      <div className="w-14 h-14 bg-[var(--kn-light)] rounded-[var(--radius-sm)] flex items-center justify-center">
                         <val.icon className="w-7 h-7 text-[#FF4500]/70" />
                       </div>
                     </div>
                     {/* Content */}
                     <div className={`flex-1 ${!isEven ? 'sm:text-right' : ''}`}>
-                      <h3 className="text-xl sm:text-2xl font-bold text-[#141414] mb-2 break-keep">
+                      <h3 className="text-xl sm:text-2xl font-bold text-[var(--kn-dark)] mb-2 break-keep">
                         {t(val.titleKey)}
                       </h3>
-                      <p className="text-base sm:text-lg text-black/60 leading-relaxed break-words">
+                      <p className="text-base sm:text-lg text-[#78716C] leading-relaxed break-words">
                         {t(val.descKey)}
                       </p>
                     </div>
@@ -311,12 +306,12 @@ export default function CareersPage() {
         {/* ── Job Openings Section (Dark) ── */}
         <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background w-full max-w-full">
           <div className="max-w-7xl mx-auto">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">OPENINGS</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">OPENINGS</SectionTag>
+            <div className="mt-6 mb-8" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 break-keep">
               {t('careersOpeningsTitle')}
             </h2>
-            <p className="text-lg sm:text-xl text-white/60 mb-16 break-keep">
+            <p className="text-lg sm:text-xl text-[#A8A29E] mb-16 break-keep">
               {t('careersOpeningsSubtitle')}
             </p>
 
@@ -324,26 +319,26 @@ export default function CareersPage() {
             {loading && (
               <div className="space-y-4 max-w-7xl mx-auto">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-32 bg-card animate-pulse border border-border" />
+                  <div key={i} className="h-32 bg-card animate-pulse rounded-[var(--radius)] border border-[var(--border)]" />
                 ))}
-                <p className="text-center text-white/40 text-base mt-4">{t('careersLoading')}</p>
+                <p className="text-center text-[#A8A29E] text-base mt-4">{t('careersLoading')}</p>
               </div>
             )}
 
             {/* Error State */}
             {error && !loading && (
               <div className="text-center py-12">
-                <p className="text-white/60 text-lg">{t('error')}</p>
+                <p className="text-[#A8A29E] text-lg">{t('error')}</p>
               </div>
             )}
 
             {/* Empty State */}
             {!loading && !error && jobs.length === 0 && (
               <div className="text-center py-16">
-                <div className="w-16 h-16 rounded-none bg-card flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-card flex items-center justify-center mx-auto mb-6">
                   <FileText className="w-8 h-8 text-white/50" />
                 </div>
-                <p className="text-white/60 text-lg">{t('careersNoOpenings')}</p>
+                <p className="text-[#A8A29E] text-lg">{t('careersNoOpenings')}</p>
               </div>
             )}
 
@@ -355,7 +350,7 @@ export default function CareersPage() {
                   return (
                     <Card
                       key={job.id}
-                      className={`p-6 sm:p-8 bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                      className={`p-6 sm:p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="min-w-0 flex-1">
@@ -363,22 +358,22 @@ export default function CareersPage() {
                             <h3 className="text-xl sm:text-2xl font-bold text-white break-keep">
                               {job.title}
                             </h3>
-                            <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-none shrink-0 ${
+                            <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-[var(--radius-sm)] shrink-0 ${
                               isClosed
-                                ? 'bg-white/20 text-white/60'
+                                ? 'bg-white/20 text-[#A8A29E]'
                                 : 'bg-[#FF4500] text-white'
                             }`}>
                               {isClosed ? t('careersClosed') : t('careersHiring')}
                             </span>
                           </div>
                           {job.startDate && (
-                            <div className="flex items-center gap-2 text-sm text-white/40 mb-1">
+                            <div className="flex items-center gap-2 text-sm text-[#A8A29E] mb-1">
                               <Calendar className="w-4 h-4 shrink-0" />
                               <span>{job.startDate}</span>
                             </div>
                           )}
                           {job.note && (
-                            <p className="text-base text-white/60 mt-2 break-words">
+                            <p className="text-base text-[#A8A29E] mt-2 break-words">
                               {job.note}
                             </p>
                           )}
@@ -393,13 +388,13 @@ export default function CareersPage() {
                           <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 shrink-0 w-full sm:w-auto">
                             {job.jdUrl && (
                               <a href={job.jdUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold border border-[#FF4500]/60 text-white hover:bg-[#FF4500] hover:text-white">
+                                <Button variant="outline" size="lg" className="w-full sm:w-auto px-6 font-bold">
                                   {t('careersDetail')}
                                 </Button>
                               </a>
                             )}
                             <a href={job.applyUrl || 'mailto:leo@koreaners.com'} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                              <Button size="lg" className="w-full sm:w-auto px-8 font-bold bg-[#FF4500] text-white hover:bg-[#E03E00]">
+                              <Button size="lg" className="w-full sm:w-auto px-8 font-bold gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300">
                                 {t('careersApply')}
                               </Button>
                             </a>
@@ -415,13 +410,13 @@ export default function CareersPage() {
             {/* Fallback CTA */}
             <div className="text-center mt-16 pt-8 border-t border-border">
               <p className="text-white text-lg font-semibold mb-2">{t('careersNoPositionQuestion')}</p>
-              <p className="text-white/60 text-base mb-4">{t('careersNoPositionDesc')}</p>
+              <p className="text-[#A8A29E] text-base mb-4">{t('careersNoPositionDesc')}</p>
               <a
                 href="https://descriptive-wallflower-afd.notion.site/30601ca3e480805196f0dda3f1b0778c?pvs=105"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button size="lg" className="px-8 font-bold bg-[#FF4500] text-white hover:bg-[#E03E00]">
+                <Button size="lg" className="px-8 font-bold gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300">
                   {t('careersNoPositionCta')}
                 </Button>
               </a>

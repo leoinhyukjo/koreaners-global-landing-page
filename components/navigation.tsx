@@ -135,7 +135,7 @@ export default function Navigation() {
               )
             })}
             <Link href="/contact" className="ml-1">
-              <Button size="default" className="px-6 py-2.5 font-bold whitespace-nowrap bg-[#FF4500] text-white border-[#FF4500] hover:bg-[#FF4500]/80 hover:text-white">
+              <Button size="default" className="px-6 py-2.5 font-bold whitespace-nowrap gradient-warm text-white border-0 hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300">
                 {t('contact')}
               </Button>
             </Link>
@@ -174,7 +174,7 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent 
                   side="right" 
-                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-background border-l border-border z-50 rounded-none overflow-y-auto"
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-background border-l border-border z-50 overflow-y-auto"
                 >
                   <SheetHeader className="border-b border-border pb-4 mb-4 z-10 relative">
                     <SheetTitle className="text-left text-xl font-bold text-white break-words">
@@ -187,7 +187,7 @@ export default function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`group flex items-center justify-between hover:bg-background active:bg-card transition-all duration-200 py-4 px-5 rounded-none text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-border break-words ${
+                        className={`group flex items-center justify-between hover:bg-background active:bg-card transition-all duration-200 py-4 px-5 rounded-[var(--radius-sm)] text-base sm:text-sm font-bold tracking-tight relative z-10 border-b border-border break-words ${
                           pathname === item.href ? 'text-white border-l-2 border-l-white bg-background' : 'text-white'
                         }`}
                         style={{
@@ -204,7 +204,7 @@ export default function Navigation() {
                     <Link
                       href="/contact"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="mt-6 flex w-full items-center justify-center rounded-none bg-[#FF4500] py-4 px-5 font-bold text-white transition-all duration-200 hover:bg-[#E03E00] active:bg-[#E03E00]/80 active:scale-[0.98]"
+                      className="mt-6 flex w-full items-center justify-center rounded-[var(--radius-sm)] gradient-warm py-4 px-5 font-bold text-white transition-all duration-200 hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 active:scale-[0.98]"
                       style={{
                         animation: `fadeInSlide 0.3s ease-out ${menuItems.filter((m) => m.href !== '/contact').length * 60}ms both`,
                       }}

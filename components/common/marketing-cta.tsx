@@ -10,7 +10,7 @@ export function MarketingCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
     <section
-      className="mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-none border border-border bg-card"
+      className="mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-[var(--radius)] border border-[var(--border)] bg-card"
       aria-label={t('marketingCtaButton')}
     >
       <div className="container mx-auto max-w-7xl">
@@ -18,7 +18,7 @@ export function MarketingCTA() {
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight break-keep">
           {t('marketingCtaTitle')}
         </h2>
-        <div className="text-sm sm:text-base text-white/60 leading-relaxed break-keep space-y-3">
+        <div className="text-sm sm:text-base text-[#A8A29E] leading-relaxed break-keep space-y-3">
           <p className="font-semibold text-white">
             {t('marketingCtaP1')}
           </p>
@@ -29,7 +29,7 @@ export function MarketingCTA() {
         <div className="pt-2 text-center">
           <Link href="/contact" className="inline-block">
             <Button
-              className="px-12 py-6 text-lg font-bold rounded-none transition-colors duration-300"
+              className="px-12 py-6 text-lg font-bold gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300"
             >
               {t('marketingCtaButton')}
             </Button>

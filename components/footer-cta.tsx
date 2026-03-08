@@ -386,7 +386,7 @@ export function FooterCTA() {
                   name="privacyConsent"
                   checked={formData.privacyConsent}
                   onChange={handleChange}
-                  className="w-5 h-5 rounded-none border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
+                  className="w-5 h-5 rounded-[var(--radius-sm)] border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
                 />
                 <label
                   htmlFor="footer-privacyConsent"
@@ -415,7 +415,7 @@ export function FooterCTA() {
                   name="marketingConsent"
                   checked={formData.marketingConsent}
                   onChange={handleChange}
-                  className="w-5 h-5 rounded-none border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
+                  className="w-5 h-5 rounded-[var(--radius-sm)] border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
                 />
                 <label
                   htmlFor="footer-marketingConsent"
@@ -451,9 +451,9 @@ export function FooterCTA() {
 
             {/* Success Dialog */}
             <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
-              <DialogContent className="sm:max-w-md bg-card backdrop-blur-md border border-border rounded-none shadow-xl [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:text-white/80">
+              <DialogContent className="sm:max-w-md bg-card backdrop-blur-md border border-border rounded-[var(--radius)] shadow-xl [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:text-white/80">
                 <DialogHeader className="text-center">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-none">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-white/10 rounded-[var(--radius)]">
                     <CheckCircle2 className="h-10 w-10 text-white" />
                   </div>
                   <DialogTitle className="text-2xl font-bold text-white">
@@ -478,7 +478,7 @@ export function FooterCTA() {
                         marketingConsent: false,
                       });
                     }}
-                    className="w-full sm:w-auto px-8 font-bold rounded-none bg-[#FF4500] text-white hover:bg-[#E03E00]"
+                    className="w-full sm:w-auto px-8 font-bold rounded-[var(--radius-sm)] gradient-warm text-white hover:opacity-90"
                   >
                     {t("dialogConfirm")}
                   </Button>
@@ -490,7 +490,7 @@ export function FooterCTA() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#FF4500] text-white py-4 text-sm font-bold uppercase tracking-wider hover:bg-[#E03E00] transition-colors duration-300 cursor-pointer disabled:opacity-50"
+              className="w-full gradient-warm text-white py-4 text-sm font-bold uppercase tracking-wider rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300 cursor-pointer disabled:opacity-50"
             >
               {submitting ? t("formSubmitting") : t("formSubmit")}
             </button>

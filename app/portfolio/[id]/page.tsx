@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { useLocale } from '@/contexts/locale-context'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 import { getTranslation } from '@/lib/translations'
+import { SectionTag } from '@/components/ui/section-tag'
 
 const PortfolioDetailSkeleton = () => (
   <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
@@ -145,8 +146,8 @@ export default function PortfolioDetailPage() {
         <div className="max-w-7xl mx-auto">
           <header className="mb-8 sm:mb-12">
             {/* Section tag */}
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">PORTFOLIO</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">PORTFOLIO</SectionTag>
+            <div className="mt-6" />
 
             <Link href="/portfolio">
               <Button variant="ghost" className="mb-4 sm:mb-6 min-h-[44px] break-keep text-white hover:bg-card hover:text-[#FF4500] border-0">
@@ -157,7 +158,7 @@ export default function PortfolioDetailPage() {
 
             <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
               <div className="w-full max-w-none lg:max-w-4xl mx-auto">
-                <div className="aspect-video rounded-none overflow-hidden border-0 border-y border-border relative bg-card w-full">
+                <div className="aspect-video rounded-[var(--radius-lg)] overflow-hidden border border-[var(--border)] relative bg-card w-full">
                   {portfolio.thumbnail_url ? (
                     <img
                       src={portfolio.thumbnail_url}
@@ -168,7 +169,7 @@ export default function PortfolioDetailPage() {
                     <div className="absolute inset-0 flex items-center justify-center bg-card">
                       <div className="text-center px-4">
                         <span className="text-4xl font-bold text-white/20 tracking-widest">PORTFOLIO</span>
-                        <p className="text-sm text-white/40 mt-2">{t('performanceNoImage')}</p>
+                        <p className="text-sm text-[#A8A29E] mt-2">{t('performanceNoImage')}</p>
                       </div>
                     </div>
                   )}
@@ -180,7 +181,7 @@ export default function PortfolioDetailPage() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight break-keep text-white">
                   {displayTitle}
                 </h1>
-                <time className="text-xs sm:text-sm text-white/40 flex items-center gap-1.5 break-keep" dateTime={portfolio.published_at ?? portfolio.created_at}>
+                <time className="text-xs sm:text-sm text-[#A8A29E] flex items-center gap-1.5 break-keep" dateTime={portfolio.published_at ?? portfolio.created_at}>
                   <Calendar className="h-3.5 w-3.5" />
                   {new Date(portfolio.published_at ?? portfolio.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                 </time>
@@ -192,14 +193,14 @@ export default function PortfolioDetailPage() {
           <div className="border-t border-border mt-8 sm:mt-10 mb-8 sm:mb-10" />
 
           {/* 본문 - 블로그와 동일한 박스 + prose */}
-          <div className="border border-border bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-none blog-content-wrapper">
+          <div className="border border-[var(--border)] bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-[var(--radius)] blog-content-wrapper">
             {hasContent ? (
               <div
                 className="prose prose-lg dark:prose-invert max-w-none break-keep text-white/80 leading-relaxed text-base lg:text-lg blog-content-prose"
                 dangerouslySetInnerHTML={{ __html: contentHtml }}
               />
             ) : (
-              <p className="text-white/40">{t('portfolioNoContent')}</p>
+              <p className="text-[#A8A29E]">{t('portfolioNoContent')}</p>
             )}
           </div>
 
@@ -208,8 +209,8 @@ export default function PortfolioDetailPage() {
           {otherPortfolios.length > 0 && (
             <section className="mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-border">
               {/* Section header */}
-              <span className="text-xs uppercase tracking-[0.2em] text-white/40">MORE WORK</span>
-              <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+              <SectionTag variant="dark">MORE WORK</SectionTag>
+              <div className="mt-6" />
 
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">{t('portfolioOther')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -235,7 +236,7 @@ export default function PortfolioDetailPage() {
                         <h3 className="font-bold text-white group-hover:text-white transition-colors line-clamp-2">
                           {getPortfolioTitle(item, locale)}
                         </h3>
-                        <p className="text-sm text-white/40 mt-1">{getPortfolioClientName(item, locale)}</p>
+                        <p className="text-sm text-[#A8A29E] mt-1">{getPortfolioClientName(item, locale)}</p>
                       </div>
                     </Card>
                   </Link>
@@ -244,7 +245,7 @@ export default function PortfolioDetailPage() {
               <div className="mt-8 text-center">
                 <Link href="/portfolio" className="inline-block">
                   <Button
-                    className="px-12 py-6 text-lg font-bold rounded-none transition-colors duration-300 bg-[#FF4500] text-white hover:bg-[#E03E00]"
+                    className="px-12 py-6 text-lg font-bold rounded-[var(--radius-sm)] gradient-warm text-white hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300"
                   >
                     {t('portfolioViewAll')}
                   </Button>

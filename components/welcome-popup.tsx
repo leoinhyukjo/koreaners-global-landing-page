@@ -91,11 +91,11 @@ export function WelcomePopup() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md"
           >
-            <div className="bg-background border border-border rounded-none p-8 relative">
+            <div className="bg-background border border-border rounded-[var(--radius)] p-8 relative">
               {/* Close Button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
+                className="absolute top-4 right-4 text-[#A8A29E] hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -107,7 +107,7 @@ export function WelcomePopup() {
                 <h2 className="text-3xl font-bold text-white mb-4">
                   {t('welcomePopupTitle2')}
                 </h2>
-                <p className="text-white/60 text-sm">
+                <p className="text-[#A8A29E] text-sm">
                   {t('welcomePopupDesc')}
                 </p>
               </div>
@@ -118,19 +118,19 @@ export function WelcomePopup() {
                   placeholder={t('welcomePopupPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-card border-border text-white rounded-none"
+                  className="bg-card border-border text-white"
                   required
                 />
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-[#FF4500] text-white hover:bg-[#E03E00] rounded-none font-bold"
+                  className="w-full gradient-warm text-white rounded-[var(--radius-sm)] hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300 font-bold"
                 >
                   {submitting ? t('welcomePopupSubmitting') : t('welcomePopupSubmit')}
                 </Button>
               </form>
 
-              <p className="text-xs text-white/50 text-center mt-4">
+              <p className="text-xs text-[#A8A29E] text-center mt-4">
                 {t('welcomePopupConsent')}
               </p>
             </div>

@@ -10,13 +10,13 @@ import Link from 'next/link'
 import { useLocale } from '@/contexts/locale-context'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 import { getTranslation } from '@/lib/translations'
+import { SectionTag } from '@/components/ui/section-tag'
 
 const PortfolioSkeleton = () => (
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
   <div className="max-w-7xl mx-auto">
       <div className="mb-12 sm:mb-16">
-        <div className="h-4 w-24 bg-card/50 rounded animate-pulse mb-3" />
-        <div className="w-12 h-0.5 bg-[#FF4500] mb-8" />
+        <div className="h-7 w-28 bg-card/50 rounded-full animate-pulse mb-6" />
         <div className="h-12 sm:h-14 max-w-2xl bg-card/50 rounded animate-pulse" />
         <div className="h-5 max-w-xl bg-card/50 rounded animate-pulse mt-6" />
       </div>
@@ -103,14 +103,14 @@ export default function PortfolioPage() {
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 relative overflow-hidden hero-glow">
       <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">PORTFOLIO</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">PORTFOLIO</SectionTag>
+            <div className="mt-6" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('portfolioPageHero1')}</span>
               <br />
               <span>{t('portfolioPageHero2')}</span>
             </h1>
-            <p className="text-lg text-white/60 max-w-2xl mt-6">
+            <p className="text-lg text-[#A8A29E] max-w-2xl mt-6">
               {t('portfolioPageHeroSub')}
             </p>
           </div>
@@ -121,10 +121,10 @@ export default function PortfolioPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-none font-bold transition-all text-sm sm:text-base min-h-[44px] ${
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-[var(--radius-sm)] font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
-                    ? 'bg-[#FF4500] text-white'
-                    : 'bg-card text-white/80 hover:bg-white/10 border border-border'
+                    ? 'gradient-warm text-white'
+                    : 'bg-card text-[#A8A29E] hover:bg-white/10 border border-[var(--border)]'
                 }`}
               >
                 {tab.label}
@@ -170,7 +170,7 @@ export default function PortfolioPage() {
                                   <div class="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
                                     ${getCategoryInitial(item.category)}
                                   </div>
-                                  <p class="text-xs text-white/40">${noImageText}</p>
+                                  <p class="text-xs text-[#A8A29E]">${noImageText}</p>
                                 </div>
                               `
                               parent.appendChild(placeholder)
@@ -178,7 +178,7 @@ export default function PortfolioPage() {
                           }}
                         />
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <span className="px-2 sm:px-3 py-1 bg-white text-black text-xs font-bold rounded-none uppercase">
+                          <span className="px-2 sm:px-3 py-1 bg-[#FF4500]/10 text-[#FF4500] text-xs font-bold rounded-full uppercase">
                             {getCategoryDisplay(item.category)}
                           </span>
                         </div>
@@ -190,11 +190,11 @@ export default function PortfolioPage() {
                             <div className="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
                               {getCategoryInitial(item.category)}
                             </div>
-                            <p className="text-xs text-white/40">{noImageText}</p>
+                            <p className="text-xs text-[#A8A29E]">{noImageText}</p>
                           </div>
                         </div>
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <span className="px-2 sm:px-3 py-1 bg-white text-black text-xs font-bold rounded-none uppercase">
+                          <span className="px-2 sm:px-3 py-1 bg-[#FF4500]/10 text-[#FF4500] text-xs font-bold rounded-full uppercase">
                             {getCategoryDisplay(item.category)}
                           </span>
                         </div>
@@ -206,7 +206,7 @@ export default function PortfolioPage() {
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-white transition-colors">
                         {getPortfolioTitle(item, locale)}
                       </h3>
-                      <p className="text-xs sm:text-sm text-white/80 mb-4 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-[#A8A29E] mb-4 leading-relaxed">
                         {getPortfolioClientName(item, locale)}
                       </p>
 
@@ -216,7 +216,7 @@ export default function PortfolioPage() {
                           {item.category.map((cat, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-1 text-xs rounded-none bg-white/10 text-white border border-border"
+                              className="px-2 py-1 text-xs rounded-full bg-white/10 text-[#A8A29E] border border-[var(--border)]"
                             >
                               {cat}
                             </span>

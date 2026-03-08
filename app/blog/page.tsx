@@ -14,13 +14,14 @@ import type { BlogPost } from '@/lib/supabase'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { SectionTag } from '@/components/ui/section-tag'
 import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { getBlogTitle } from '@/lib/localized-content'
 
-const POSTS_PER_PAGE = 12
+const POSTS_PER_PAGE = 9
 
 function BlogContent() {
   const { locale } = useLocale()
@@ -91,13 +92,13 @@ function BlogContent() {
       <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 w-full max-w-full overflow-hidden relative hero-glow">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
-            <span className="text-xs uppercase tracking-[0.2em] text-white/40">BLOG</span>
-            <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
+            <SectionTag variant="dark">BLOG</SectionTag>
+            <div className="mb-8" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('blogHeroTitle')}</span>
               <span>{t('blogHeroTitle2')}</span>
             </h1>
-            <p className="text-lg text-white/60 max-w-2xl mt-6">
+            <p className="text-lg text-[#A8A29E] max-w-2xl mt-6">
               {t('blogHeroDesc')}
             </p>
           </div>
@@ -138,7 +139,7 @@ function BlogContent() {
                 <article key={post.id} className="h-full">
                   <Link href={`/blog/${post.slug}`} className="block h-full">
                     <Card
-                      className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                      className="group overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
                       {/* Image */}
                       <div className="aspect-video relative overflow-hidden bg-card">
@@ -154,12 +155,12 @@ function BlogContent() {
                           <div className="absolute inset-0 flex items-center justify-center bg-card">
                             <div className="text-center px-4">
                               <div className="text-4xl mb-2">📝</div>
-                              <p className="text-sm text-white/40">{t('performanceNoImage')}</p>
+                              <p className="text-sm text-[#A8A29E]">{t('performanceNoImage')}</p>
                             </div>
                           </div>
                         )}
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <Badge variant="secondary" className="text-xs bg-card text-white/80 border-border rounded-none">{post.category}</Badge>
+                          <Badge variant="secondary" className="text-xs bg-card text-white/80 border-border">{post.category}</Badge>
                         </div>
                       </div>
 
@@ -169,7 +170,7 @@ function BlogContent() {
                           {getBlogTitle(post, locale)}
                         </h2>
                         <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex items-center justify-between">
-                          <time className="text-xs text-white/60 flex items-center gap-1" dateTime={post.created_at}>
+                          <time className="text-xs text-[#A8A29E] flex items-center gap-1" dateTime={post.created_at}>
                             <Calendar className="h-3 w-3" />
                             {new Date(post.created_at).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'ko-KR')}
                           </time>
@@ -196,7 +197,7 @@ function BlogContent() {
                       }
                     }}
                     disabled={currentPage === 1}
-                    className="rounded-none border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     {t('prev')}
@@ -215,9 +216,9 @@ function BlogContent() {
                             key={page}
                             variant={page === currentPage ? 'default' : 'outline'}
                             onClick={() => router.push(`/blog?page=${page}`)}
-                            className={`rounded-none min-w-[44px] ${
+                            className={`min-w-[44px] ${
                               page === currentPage
-                                ? 'bg-[#FF4500] text-white hover:bg-[#FF4500]/90'
+                                ? 'gradient-warm text-white hover:opacity-90'
                                 : 'border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border'
                             }`}
                           >
@@ -229,7 +230,7 @@ function BlogContent() {
                         page === currentPage + 3
                       ) {
                         return (
-                          <span key={page} className="px-2 text-white/40">
+                          <span key={page} className="px-2 text-[#A8A29E]">
                             ...
                           </span>
                         )
@@ -246,7 +247,7 @@ function BlogContent() {
                       }
                     }}
                     disabled={currentPage === totalPages}
-                    className="rounded-none border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -265,8 +266,8 @@ const BlogSkeleton = () => (
   <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
     <div className="max-w-7xl mx-auto">
       <div className="mb-12 sm:mb-16">
-        <div className="h-4 w-16 bg-card/50 rounded animate-pulse mb-3" />
-        <div className="w-12 h-0.5 bg-[#FF4500] mb-8" />
+        <div className="h-7 w-20 bg-card/50 rounded-full animate-pulse mb-3" />
+        <div className="mb-8" />
         <div className="h-12 sm:h-14 max-w-2xl bg-card/50 rounded animate-pulse" />
         <div className="h-5 max-w-xl bg-card/50 rounded animate-pulse mt-6" />
       </div>

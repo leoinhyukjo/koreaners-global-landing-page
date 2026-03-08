@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card'
 
 export function SkeletonCard() {
   return (
-    <Card className="overflow-hidden bg-card border-border rounded-none animate-pulse">
+    <Card className="overflow-hidden bg-card border-[var(--border)] animate-pulse">
       {/* Image Skeleton */}
       <div className="aspect-video bg-white/10" />
       
