@@ -712,8 +712,8 @@ footer {
   top: 0;
   left: 0;
   right: 0;
-  height: 500px;
-  background: radial-gradient(ellipse 900px 400px at 50% 0%, rgba(255,69,0,0.18) 0%, transparent 70%);
+  height: 600px;
+  background: radial-gradient(ellipse 1000px 500px at 50% 0%, rgba(255,69,0,0.12) 0%, rgba(245,158,11,0.06) 40%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -749,4 +749,37 @@ footer {
 
 @utility border-accent {
   border-color: var(--accent-orange);
+}
+
+/* Gradient utilities */
+@utility gradient-warm {
+  background: linear-gradient(135deg, #FF4500, #F59E0B);
+}
+
+@utility gradient-sunset {
+  background: linear-gradient(135deg, #FF4500 0%, #F59E0B 50%, #0D9488 100%);
+}
+
+@utility gradient-soft {
+  background: linear-gradient(135deg, #F3EDE4, #FAF7F2);
+}
+
+@utility gradient-dark {
+  background: linear-gradient(135deg, #292524, #1C1917);
+}
+
+@utility gradient-warm-text {
+  background: linear-gradient(135deg, #FF4500, #F59E0B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
