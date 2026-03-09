@@ -16,7 +16,7 @@ export function DashboardPage() {
     async function fetchData() {
       try {
         const [blogRes, portfolioRes, creatorRes] = await Promise.all([
-          supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
+          supabase.from('blog_posts').select('id', { count: 'exact', head: true }).eq('published', true),
           supabase.from('portfolios').select('id', { count: 'exact', head: true }),
           supabase.from('creators').select('id', { count: 'exact', head: true }),
         ])
