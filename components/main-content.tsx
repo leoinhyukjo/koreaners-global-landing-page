@@ -43,10 +43,10 @@ export function MainContent() {
       <HeroSection />
       <TrustSignals />
       <MarketOpportunity />
+      <Performance />
       <Barriers />
       <SolutionRoadmap />
       <FinalCTA />
-      <Performance />
       <ClientShowcase />
       <FooterCTA />
     </SafeHydration>
