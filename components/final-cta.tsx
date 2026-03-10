@@ -17,11 +17,11 @@ export function FinalCTA() {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
   return (
-    <section className="bg-[var(--kn-dark)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className="bg-[var(--kn-light)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <FadeIn>
-          <SectionTag variant="dark">RESULTS</SectionTag>
-          <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase mt-6 leading-[0.9] text-[var(--foreground)]">
+          <SectionTag variant="light">RESULTS</SectionTag>
+          <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase mt-6 leading-[0.9] text-[var(--kn-dark)]">
             {t('finalCtaTitle1')}<br />
             {t('finalCtaTitle2')}
           </h2>
@@ -31,11 +31,11 @@ export function FinalCTA() {
         <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
           {stats.map((stat, index) => (
             <StaggerItem key={stat.key}>
-              <div className={`${index < stats.length - 1 ? 'border-r border-[var(--border)]' : ''}`}>
+              <div className={`${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
                 <div className="font-display font-bold text-6xl lg:text-8xl gradient-warm-text leading-none">
                   {typeof stat.value === 'function' ? stat.value(locale) : stat.value}
                 </div>
-                <div className="text-sm text-[#A8A29E] mt-3 uppercase tracking-wider">
+                <div className="text-sm text-[#78716C] mt-3 uppercase tracking-wider">
                   {t(stat.key)}
                 </div>
               </div>

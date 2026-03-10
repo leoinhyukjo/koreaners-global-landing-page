@@ -41,11 +41,11 @@ export function Performance() {
   }
 
   return (
-    <section id="performance" className="bg-[var(--kn-light)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section id="performance" className="bg-[var(--kn-dark)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <FadeIn>
-          <SectionTag variant="light">PORTFOLIO</SectionTag>
-          <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase mt-6 leading-[0.9] text-[var(--kn-dark)] max-w-md">
+          <SectionTag variant="dark">PORTFOLIO</SectionTag>
+          <h2 className="font-display font-bold text-4xl lg:text-6xl uppercase mt-6 leading-[0.9] text-[var(--kn-light)] max-w-md">
             {t('performanceTitle1')}{t('performanceTitle2')}
           </h2>
         </FadeIn>
@@ -66,7 +66,7 @@ export function Performance() {
               {portfolios.slice(0, 3).map((item) => (
                 <StaggerItem key={item.id}>
                   <Link href={`/portfolio/${item.id}`} className="group cursor-pointer block">
-                    <div className="aspect-video bg-[var(--kn-card-light)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-dark)]/5">
+                    <div className="aspect-video bg-[var(--kn-card-dark)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-light)]/10">
                       {item.thumbnail_url ? (
                         <img
                           src={item.thumbnail_url}
@@ -75,7 +75,7 @@ export function Performance() {
                           loading="lazy"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[var(--kn-dark)]/20 font-display font-bold text-4xl">
+                        <div className="w-full h-full flex items-center justify-center text-[var(--kn-light)]/20 font-display font-bold text-4xl">
                           {item.category?.[0]?.charAt(0) || 'P'}
                         </div>
                       )}
@@ -84,7 +84,7 @@ export function Performance() {
                       <span className="text-xs uppercase tracking-wider text-[#FF4500]">
                         {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
                       </span>
-                      <h3 className="text-xl font-bold text-[var(--kn-dark)] mt-1 group-hover:text-[#FF4500] transition-colors duration-300">
+                      <h3 className="text-xl font-bold text-[var(--kn-light)] mt-1 group-hover:text-[#FF4500] transition-colors duration-300">
                         {getPortfolioTitle(item, locale)}
                       </h3>
                       <p className="text-sm text-[#78716C] mt-1">
@@ -100,7 +100,7 @@ export function Performance() {
               <div className="mt-12 text-center">
                 <Link
                   href="/portfolio"
-                  className="text-sm uppercase tracking-wider font-bold text-[var(--kn-dark)] border-b border-[var(--kn-dark)]/30 hover:border-[#FF4500] hover:text-[#FF4500] pb-1 transition-colors duration-300"
+                  className="text-sm uppercase tracking-wider font-bold text-[var(--kn-light)] border-b border-[var(--kn-light)]/30 hover:border-[#FF4500] hover:text-[#FF4500] pb-1 transition-colors duration-300"
                 >
                   {t('performanceViewAll')} →
                 </Link>

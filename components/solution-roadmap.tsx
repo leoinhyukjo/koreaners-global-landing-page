@@ -18,13 +18,13 @@ export function SolutionRoadmap() {
   const steps = STEP_KEYS
 
   return (
-    <section id="solution" className="bg-[var(--kn-light)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section id="solution" className="bg-[var(--kn-dark)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section tag */}
         <FadeIn>
           <div className="flex items-center gap-4 mb-16">
-            <SectionTag variant="light">OUR PROCESS</SectionTag>
-            <div className="h-px flex-1 bg-[var(--kn-dark)]/10" />
+            <SectionTag variant="dark">OUR PROCESS</SectionTag>
+            <div className="h-px flex-1 bg-[var(--kn-light)]/10" />
           </div>
         </FadeIn>
 
@@ -38,24 +38,24 @@ export function SolutionRoadmap() {
                   <span className="font-display font-bold text-xl md:text-2xl gradient-warm-text">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-xs uppercase tracking-[0.2em] text-[#78716C] font-bold">
+                  <span className="text-xs uppercase tracking-[0.2em] text-[#A8A29E] font-bold">
                     {step.tag}
                   </span>
                 </div>
 
                 {/* MASSIVE title */}
-                <h3 className="font-display font-bold text-5xl md:text-7xl lg:text-[6rem] xl:text-[8rem] uppercase leading-[0.85] tracking-tight text-[var(--kn-dark)]">
+                <h3 className="font-display font-bold text-5xl md:text-7xl lg:text-[6rem] xl:text-[8rem] uppercase leading-[0.85] tracking-tight text-[var(--kn-light)]">
                   {t(step.titleKey)}
                 </h3>
 
                 {/* Description + Features row */}
                 <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 items-start">
-                  <p className="text-base md:text-lg text-[#78716C] leading-relaxed max-w-xl">
+                  <p className="text-base md:text-lg text-[#A8A29E] leading-relaxed max-w-xl">
                     {t(step.descKey)}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {step.featureKeys.map((f, j) => (
-                      <span key={j} className="text-xs text-[#78716C] border border-[var(--kn-dark)]/10 px-3 py-1.5 uppercase tracking-wider rounded-full">
+                      <span key={j} className="text-xs text-[#A8A29E] border border-[var(--kn-light)]/10 px-3 py-1.5 uppercase tracking-wider rounded-full">
                         {t(f)}
                       </span>
                     ))}
@@ -64,7 +64,7 @@ export function SolutionRoadmap() {
 
                 {/* Divider */}
                 {i < steps.length - 1 && (
-                  <div className="h-px bg-[var(--kn-dark)]/10 mt-24 md:mt-32" />
+                  <div className="h-px bg-[var(--kn-light)]/10 mt-24 md:mt-32" />
                 )}
               </div>
             </FadeIn>
