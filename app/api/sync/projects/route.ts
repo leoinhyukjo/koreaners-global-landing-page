@@ -42,8 +42,8 @@ async function fetchAllPages(): Promise<any[]> {
   let cursor: string | undefined = undefined;
 
   do {
-    const response = await notion.databases.query({
-      database_id: process.env.NOTION_PROJECT_DB_ID!,
+    const response = await notion.dataSources.query({
+      data_source_id: process.env.NOTION_PROJECT_DB_ID!,
       ...(cursor ? { start_cursor: cursor } : {}),
     });
 
