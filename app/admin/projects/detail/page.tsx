@@ -151,38 +151,28 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm table-fixed">
+      <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <th className="w-[14%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('brand')}>
-              <span className="inline-flex items-center gap-1">브랜드 <ArrowUpDown className={`h-3 w-3 ${sortField === 'brand' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[28%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('name')}>
-              <span className="inline-flex items-center gap-1">프로젝트명 <ArrowUpDown className={`h-3 w-3 ${sortField === 'name' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[12%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('status')}>
-              <span className="inline-flex items-center gap-1">상태 <ArrowUpDown className={`h-3 w-3 ${sortField === 'status' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[16%] px-2 py-2.5 text-left text-xs font-medium text-neutral-400">담당자</th>
-            <th className="w-[12%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('startDate')}>
-              <span className="inline-flex items-center gap-1">시작일 <ArrowUpDown className={`h-3 w-3 ${sortField === 'startDate' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[18%] cursor-pointer select-none px-2 py-2.5 text-right text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('contract')}>
-              <span className="inline-flex items-center gap-1 justify-end">계약금액 <ArrowUpDown className={`h-3 w-3 ${sortField === 'contract' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
+            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="상태" field="status" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">담당자</th>
+            <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="계약금액" field="contract" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
           </tr>
         </thead>
         <tbody>
           {sorted.map((p) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-              <td className="px-2 py-2.5 text-neutral-400 truncate">{p.brand_name ?? '—'}</td>
-              <td className="px-2 py-2.5 text-neutral-100 truncate">{p.name}</td>
-              <td className="px-2 py-2.5"><StatusBadge status={p.status} /></td>
-              <td className="px-2 py-2.5 text-neutral-400 truncate text-xs">
+              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.brand_name ?? '—'}</td>
+              <td className="px-3 py-2.5 text-neutral-100 max-w-[200px] truncate">{p.name}</td>
+              <td className="px-3 py-2.5 whitespace-nowrap"><StatusBadge status={p.status} /></td>
+              <td className="px-3 py-2.5 text-neutral-400 text-xs max-w-[120px] truncate">
                 {p.assignee_names.length > 0 ? p.assignee_names.join(', ') : '—'}
               </td>
-              <td className="px-2 py-2.5 text-neutral-500 tabular-nums text-xs">{fmtDate(p.start_date)}</td>
-              <td className="px-2 py-2.5 text-right font-medium text-neutral-200 tabular-nums">{fmtKrw(totalContractKrw(p, rate))}</td>
+              <td className="px-3 py-2.5 text-neutral-500 tabular-nums text-xs whitespace-nowrap">{fmtDate(p.start_date)}</td>
+              <td className="px-3 py-2.5 text-right font-medium text-neutral-200 tabular-nums whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
             </tr>
           ))}
         </tbody>
@@ -245,38 +235,28 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm table-fixed">
+      <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <th className="w-[14%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('brand')}>
-              <span className="inline-flex items-center gap-1">브랜드 <ArrowUpDown className={`h-3 w-3 ${sortField === 'brand' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[28%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('name')}>
-              <span className="inline-flex items-center gap-1">프로젝트명 <ArrowUpDown className={`h-3 w-3 ${sortField === 'name' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[12%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('status')}>
-              <span className="inline-flex items-center gap-1">상태 <ArrowUpDown className={`h-3 w-3 ${sortField === 'status' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[16%] px-2 py-2.5 text-left text-xs font-medium text-neutral-400">담당자</th>
-            <th className="w-[12%] cursor-pointer select-none px-2 py-2.5 text-left text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('startDate')}>
-              <span className="inline-flex items-center gap-1">시작일 <ArrowUpDown className={`h-3 w-3 ${sortField === 'startDate' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
-            <th className="w-[18%] cursor-pointer select-none px-2 py-2.5 text-right text-xs font-medium text-neutral-400 hover:text-neutral-200" onClick={() => handleSort('contract')}>
-              <span className="inline-flex items-center gap-1 justify-end">계약금액 <ArrowUpDown className={`h-3 w-3 ${sortField === 'contract' ? 'text-orange-500' : 'text-neutral-600'}`} /></span>
-            </th>
+            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="상태" field="status" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">담당자</th>
+            <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="계약금액" field="contract" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
           </tr>
         </thead>
         <tbody>
           {sorted.map((p) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-              <td className="px-2 py-2.5 text-neutral-400 truncate">{p.brand_name ?? '—'}</td>
-              <td className="px-2 py-2.5 text-neutral-100 truncate">{p.name}</td>
-              <td className="px-2 py-2.5"><StatusBadge status={p.status} /></td>
-              <td className="px-2 py-2.5 text-neutral-400 truncate text-xs">
+              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.brand_name ?? '—'}</td>
+              <td className="px-3 py-2.5 text-neutral-100 max-w-[200px] truncate">{p.name}</td>
+              <td className="px-3 py-2.5 whitespace-nowrap"><StatusBadge status={p.status} /></td>
+              <td className="px-3 py-2.5 text-neutral-400 text-xs max-w-[120px] truncate">
                 {p.assignee_names.length > 0 ? p.assignee_names.join(', ') : '—'}
               </td>
-              <td className="px-2 py-2.5 text-neutral-500 tabular-nums text-xs">{fmtDate(p.start_date)}</td>
-              <td className="px-2 py-2.5 text-right font-medium text-neutral-200 tabular-nums">{fmtKrw(totalContractKrw(p, rate))}</td>
+              <td className="px-3 py-2.5 text-neutral-500 tabular-nums text-xs whitespace-nowrap">{fmtDate(p.start_date)}</td>
+              <td className="px-3 py-2.5 text-right font-medium text-neutral-200 tabular-nums whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
             </tr>
           ))}
         </tbody>
@@ -344,20 +324,22 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
           <tr className="border-b border-neutral-800">
             <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">계약(KRW)</th>
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">계약(JPY)</th>
             <SortableHeader label="합산(KRW)" field="contract" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-            <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-            <SortableHeader label="상태" field="status" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
           </tr>
         </thead>
         <tbody>
           {sorted.map((p) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-              <td className="px-3 py-2.5 text-neutral-400 whitespace-nowrap">
+              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">
                 {p.brand_name ?? '—'}
               </td>
-              <td className="px-3 py-2.5 text-neutral-100 max-w-xs truncate">{p.name}</td>
+              <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
+              <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">
+                {fmtDate(p.start_date)}
+              </td>
               <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">
                 {p.contract_krw > 0 ? fmtKrw(p.contract_krw) : '—'}
               </td>
@@ -366,12 +348,6 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
               </td>
               <td className="px-3 py-2.5 text-right font-semibold text-neutral-100 whitespace-nowrap">
                 {fmtKrw(totalContractKrw(p, rate))}
-              </td>
-              <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums">
-                {fmtDate(p.start_date)}
-              </td>
-              <td className="px-3 py-2.5">
-                <StatusBadge status={p.status} />
               </td>
             </tr>
           ))}
@@ -384,7 +360,6 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
             <td className="px-3 py-3 text-right font-bold text-orange-400 whitespace-nowrap">
               {fmtKrw(grandTotal)}
             </td>
-            <td colSpan={2} />
           </tr>
         </tfoot>
       </table>
@@ -412,20 +387,23 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
           <tr className="border-b border-neutral-800">
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400">브랜드</th>
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400">프로젝트명</th>
+            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">시작일</th>
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">계약금액</th>
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">선금</th>
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">미수금</th>
-            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">시작일</th>
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">정산상태</th>
           </tr>
         </thead>
         <tbody>
           {withReceivable.map(({ p, recv }) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-              <td className="px-3 py-2.5 text-neutral-400 whitespace-nowrap">
+              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">
                 {p.brand_name ?? '—'}
               </td>
-              <td className="px-3 py-2.5 text-neutral-100 max-w-xs truncate">{p.name}</td>
+              <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
+              <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">
+                {fmtDate(p.start_date)}
+              </td>
               <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">
                 {fmtKrw(totalContractKrw(p, rate))}
               </td>
@@ -434,9 +412,6 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
               </td>
               <td className="px-3 py-2.5 text-right font-semibold text-orange-400 whitespace-nowrap">
                 {fmtKrw(recv)}
-              </td>
-              <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums">
-                {fmtDate(p.start_date)}
               </td>
               <td className="px-3 py-2.5">
                 {p.client_settlement ? (
@@ -450,13 +425,13 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
         </tbody>
         <tfoot>
           <tr className="border-t-2 border-neutral-700">
-            <td colSpan={4} className="px-3 py-3 text-right text-sm font-medium text-neutral-400">
+            <td colSpan={5} className="px-3 py-3 text-right text-sm font-medium text-neutral-400">
               미수금 합계
             </td>
             <td className="px-3 py-3 text-right font-bold text-orange-400 whitespace-nowrap">
               {fmtKrw(grandTotal)}
             </td>
-            <td colSpan={2} />
+            <td />
           </tr>
         </tfoot>
       </table>
