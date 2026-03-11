@@ -49,6 +49,23 @@ export function receivableKrw(p: Project, jpyRate: number): number {
   return Math.max(0, total - advance)
 }
 
+/** 크리에이터 정산금 총액을 KRW로 환산 */
+export function totalCreatorSettlementKrw(p: Project, jpyRate: number): number {
+  return p.creator_settlement_krw + p.creator_settlement_jpy * jpyRate
+}
+
+/** 마진 (KRW 기준) = 계약금액 - 크리에이터 정산금 */
+export function marginKrw(p: Project, jpyRate: number): number {
+  return totalContractKrw(p, jpyRate) - totalCreatorSettlementKrw(p, jpyRate)
+}
+
+/** 마진율 (%). 계약금액이 0이면 0 반환 */
+export function marginRate(p: Project, jpyRate: number): number {
+  const contract = totalContractKrw(p, jpyRate)
+  if (contract === 0) return 0
+  return (marginKrw(p, jpyRate) / contract) * 100
+}
+
 /** 프로젝트 기간 (일수). start_date 또는 end_date가 없으면 null */
 export function projectDurationDays(p: Project): number | null {
   if (!p.start_date || !p.end_date) return null

@@ -8,6 +8,9 @@ import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queri
 import {
   totalContractKrw,
   totalAdvanceKrw,
+  totalCreatorSettlementKrw,
+  marginKrw,
+  marginRate,
   receivableKrw,
   type Project,
 } from '@/lib/dashboard/calculations'
@@ -443,15 +446,137 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
 }
 
 // ─────────────────────────────────────────────
+// view=margin — 프로젝트별 마진
+// ─────────────────────────────────────────────
+function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
+  const sub = getSubProjects(projects)
+    .filter((p) => totalContractKrw(p, rate) > 0 || totalCreatorSettlementKrw(p, rate) > 0)
+  const [sortField, setSortField] = useState<string | null>('margin')
+  const [sortDir, setSortDir] = useState<SortDir>('desc')
+
+  const handleSort = useCallback(
+    (field: string) => {
+      if (sortField === field) {
+        setSortDir((d) => (d === 'asc' ? 'desc' : d === 'desc' ? null : 'asc'))
+        if (sortDir === 'desc') setSortField(null)
+      } else {
+        setSortField(field)
+        setSortDir('asc')
+      }
+    },
+    [sortField, sortDir]
+  )
+
+  const sorted = [...sub].sort((a, b) => {
+    if (!sortField || !sortDir) return 0
+    if (sortField === 'brand') {
+      return sortDir === 'asc'
+        ? (a.brand_name ?? '').localeCompare(b.brand_name ?? '')
+        : (b.brand_name ?? '').localeCompare(a.brand_name ?? '')
+    }
+    if (sortField === 'name') {
+      return sortDir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
+    }
+    if (sortField === 'startDate') {
+      return sortDir === 'asc'
+        ? (a.start_date ?? '').localeCompare(b.start_date ?? '')
+        : (b.start_date ?? '').localeCompare(a.start_date ?? '')
+    }
+    if (sortField === 'contract') {
+      return sortDir === 'asc'
+        ? totalContractKrw(a, rate) - totalContractKrw(b, rate)
+        : totalContractKrw(b, rate) - totalContractKrw(a, rate)
+    }
+    if (sortField === 'creator') {
+      return sortDir === 'asc'
+        ? totalCreatorSettlementKrw(a, rate) - totalCreatorSettlementKrw(b, rate)
+        : totalCreatorSettlementKrw(b, rate) - totalCreatorSettlementKrw(a, rate)
+    }
+    if (sortField === 'margin') {
+      return sortDir === 'asc'
+        ? marginKrw(a, rate) - marginKrw(b, rate)
+        : marginKrw(b, rate) - marginKrw(a, rate)
+    }
+    if (sortField === 'marginRate') {
+      return sortDir === 'asc'
+        ? marginRate(a, rate) - marginRate(b, rate)
+        : marginRate(b, rate) - marginRate(a, rate)
+    }
+    return 0
+  })
+
+  const totalContract = sub.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
+  const totalCreator = sub.reduce((acc, p) => acc + totalCreatorSettlementKrw(p, rate), 0)
+  const totalMarginAmt = totalContract - totalCreator
+  const avgMarginPct = sub.length > 0
+    ? sub.reduce((acc, p) => acc + marginRate(p, rate), 0) / sub.length
+    : 0
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-neutral-800">
+            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="계약금액" field="contract" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="크리에이터 정산" field="creator" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="마진" field="margin" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="마진율" field="marginRate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.map((p) => {
+            const m = marginKrw(p, rate)
+            const mr = marginRate(p, rate)
+            return (
+              <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
+                <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.brand_name ?? '—'}</td>
+                <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
+                <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">{fmtDate(p.start_date)}</td>
+                <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
+                <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalCreatorSettlementKrw(p, rate))}</td>
+                <td className={`px-3 py-2.5 text-right font-semibold whitespace-nowrap ${m < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                  {fmtKrw(m)}
+                </td>
+                <td className={`px-3 py-2.5 text-right whitespace-nowrap tabular-nums ${mr < 0 ? 'text-red-400' : mr < 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
+                  {mr.toFixed(1)}%
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+        <tfoot>
+          <tr className="border-t-2 border-neutral-700">
+            <td colSpan={3} className="px-3 py-3 text-right text-sm font-medium text-neutral-400">합계 / 평균</td>
+            <td className="px-3 py-3 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContract)}</td>
+            <td className="px-3 py-3 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalCreator)}</td>
+            <td className={`px-3 py-3 text-right font-bold whitespace-nowrap ${totalMarginAmt < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+              {fmtKrw(totalMarginAmt)}
+            </td>
+            <td className={`px-3 py-3 text-right font-bold whitespace-nowrap ${avgMarginPct < 0 ? 'text-red-400' : avgMarginPct < 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
+              {avgMarginPct.toFixed(1)}%
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+      <p className="mt-1 text-right text-xs text-neutral-500">{sub.length}건 · 환율 ¥1 = ₩{rate}</p>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────
 // Page config map
 // ─────────────────────────────────────────────
-type ViewType = 'total' | 'active' | 'contract' | 'receivable'
+type ViewType = 'total' | 'active' | 'contract' | 'receivable' | 'margin'
 
 const VIEW_CONFIG: Record<ViewType, { title: string; description: string }> = {
   total: { title: '총 프로젝트', description: '전체 서브 프로젝트 목록입니다.' },
   active: { title: '진행 중 프로젝트', description: '현재 진행 중인 프로젝트 목록입니다.' },
   contract: { title: '총 계약금액', description: '계약금액 기준 전체 프로젝트 내역입니다.' },
   receivable: { title: '미수금 현황', description: '미수금이 남아 있는 프로젝트 목록입니다.' },
+  margin: { title: '마진 분석', description: '프로젝트별 마진(계약금액 - 크리에이터 정산금) 분석입니다.' },
 }
 
 // ─────────────────────────────────────────────
@@ -518,6 +643,7 @@ function DetailContent() {
             {view === 'active' && <ActiveView projects={projects} rate={rate} />}
             {view === 'contract' && <ContractView projects={projects} rate={rate} />}
             {view === 'receivable' && <ReceivableView projects={projects} rate={rate} />}
+            {view === 'margin' && <MarginView projects={projects} rate={rate} />}
           </>
         )}
       </div>

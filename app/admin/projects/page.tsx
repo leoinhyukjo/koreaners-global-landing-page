@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queries'
-import { totalContractKrw, receivableKrw, type Project } from '@/lib/dashboard/calculations'
+import { totalContractKrw, totalCreatorSettlementKrw, marginKrw, marginRate, receivableKrw, type Project } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   StatusBarChart,
@@ -71,8 +71,8 @@ export default function ProjectsPage() {
         </div>
         <h1 className="text-lg font-semibold text-neutral-50">프로젝트 현황</h1>
         <DashboardTabs />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          {[...Array(5)].map((_, i) => (
             <div key={i} className="h-24 animate-pulse rounded-lg bg-neutral-800" />
           ))}
         </div>
@@ -92,6 +92,13 @@ export default function ProjectsPage() {
   const inProgress = sub.filter((p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)).length
   const totalContract = sub.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
   const totalReceivable = sub.reduce((acc, p) => acc + receivableKrw(p, rate), 0)
+
+  // 마진 — 계약금액 또는 크리에이터 정산금이 있는 프로젝트만
+  const marginProjects = sub.filter((p) => totalContractKrw(p, rate) > 0 || totalCreatorSettlementKrw(p, rate) > 0)
+  const avgMarginRate = marginProjects.length > 0
+    ? marginProjects.reduce((acc, p) => acc + marginRate(p, rate), 0) / marginProjects.length
+    : 0
+  const totalMargin = sub.reduce((acc, p) => acc + marginKrw(p, rate), 0)
 
   // Status pipeline — collapse active statuses into "진행중", keep "완료", exclude others
   const pipelineMap = new Map<string, number>()
@@ -166,7 +173,7 @@ export default function ProjectsPage() {
       <DashboardTabs />
 
       {/* KPI 카드 */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
         <KpiCard title="총 프로젝트" value={`${totalProjects}개`} href="/admin/projects/detail?view=total" />
         <KpiCard title="진행 중" value={`${inProgress}개`} href="/admin/projects/detail?view=active" />
         <KpiCard title="총 계약금액" value={fmtKrw(totalContract)} href="/admin/projects/detail?view=contract" />
@@ -175,6 +182,12 @@ export default function ProjectsPage() {
           value={fmtKrw(totalReceivable)}
           subtitle={`환율: ¥1 = ₩${rate}`}
           href="/admin/projects/detail?view=receivable"
+        />
+        <KpiCard
+          title="평균 마진"
+          value={`${avgMarginRate.toFixed(1)}%`}
+          subtitle={`총 ${fmtKrw(totalMargin)}`}
+          href="/admin/projects/detail?view=margin"
         />
       </div>
 

@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const TABS = [
-  { label: '보고', href: '/admin/projects' },
-  { label: '경영', href: '/admin/projects/report' },
+  { label: '마스터', href: '/admin/projects' },
+  { label: '미수금관리', href: '/admin/projects/report' },
 ]
 
 export function DashboardTabs() {

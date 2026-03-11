@@ -53,7 +53,7 @@ export default function AdminLandingPage() {
                 프로젝트 현황
               </h2>
               <p className="mt-1 text-xs text-neutral-500 leading-relaxed">
-                프로젝트 보드 경영·보고 대시보드
+                KPI·마진 분석·미수금 관리 대시보드
               </p>
             </div>
             <span className="inline-flex items-center gap-1 text-xs text-sky-500 opacity-0 group-hover:opacity-100 transition-opacity">
