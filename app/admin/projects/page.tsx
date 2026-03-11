@@ -199,7 +199,7 @@ export default function ProjectsPage() {
             className="flex items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-1.5 text-xs text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-700 disabled:opacity-50"
           >
             <RefreshCw className={`h-3 w-3 ${syncing ? 'animate-spin' : ''}`} />
-            {syncing ? '동기화 중...' : '동기화'}
+            {syncing ? '동기화 중...' : 'Notion 동기화'}
           </button>
         </div>
       </div>
