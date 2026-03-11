@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queries'
 import { totalContractKrw, totalCreatorSettlementKrw, marginKrw, marginRate, receivableKrw, type Project } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
@@ -49,16 +49,37 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [rate, setRate] = useState<number>(9.0)
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
+  const [syncMsg, setSyncMsg] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function load() {
-      const [all, r] = await Promise.all([fetchAllProjects(), fetchLatestExchangeRate()])
-      setProjects(all)
-      setRate(r)
-      setLoading(false)
+  async function loadData() {
+    const [all, r] = await Promise.all([fetchAllProjects(), fetchLatestExchangeRate()])
+    setProjects(all)
+    setRate(r)
+    setLoading(false)
+  }
+
+  useEffect(() => { loadData() }, [])
+
+  const handleSync = async () => {
+    setSyncing(true)
+    setSyncMsg(null)
+    try {
+      const res = await fetch('/api/sync/projects', { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        setSyncMsg(`${data.synced}건 동기화 완료`)
+        await loadData()
+      } else {
+        setSyncMsg(data.error || '동기화 실패')
+      }
+    } catch {
+      setSyncMsg('네트워크 오류')
+    } finally {
+      setSyncing(false)
+      setTimeout(() => setSyncMsg(null), 4000)
     }
-    load()
-  }, [])
+  }
 
   if (loading) {
     return (
@@ -168,6 +189,19 @@ export default function ProjectsPage() {
 
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-neutral-50">프로젝트 현황</h1>
+        <div className="flex items-center gap-2">
+          {syncMsg && (
+            <span className="text-xs text-neutral-400">{syncMsg}</span>
+          )}
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className="flex items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-1.5 text-xs text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-700 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-3 w-3 ${syncing ? 'animate-spin' : ''}`} />
+            {syncing ? '동기화 중...' : '동기화'}
+          </button>
+        </div>
       </div>
 
       <DashboardTabs />

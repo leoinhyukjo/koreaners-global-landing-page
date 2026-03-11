@@ -112,100 +112,67 @@ export async function POST(request: NextRequest) {
     // 4. Create Supabase admin client
     const supabase = createAdminClient();
 
-    // 5. 2차 패스: 각 페이지 처리 및 upsert
+    // 5. 2차 패스: 레코드 변환
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const records: any[] = [];
     for (const page of allPages) {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const props = (page as any).properties;
       const projectName = getTitle(props, "프로젝트 이름") || page.id;
 
       try {
-        console.log(`[sync/projects] Processing: "${projectName}"`);
-
-        const notionId = page.id;
-
-        // 상위 항목 relation → parent_notion_id (첫 번째만)
         const parentRelationIds = getRelationIds(props, "상위 항목");
         const parentNotionId =
           parentRelationIds.length > 0 ? parentRelationIds[0] : null;
-
-        // 상위 항목 이름으로 brand_name 매핑
         const brandName = parentNotionId
           ? (idToName.get(parentNotionId) ?? null)
           : null;
 
-        // Upsert to Supabase
-        const { error: upsertError } = await supabase
-          .from("projects")
-          .upsert(
-            {
-              notion_id: notionId,
-              name: getTitle(props, "프로젝트 이름"),
-              parent_notion_id: parentNotionId,
-              brand_name: brandName,
-              status: getStatus(props, "상태"),
-              priority: getSelect(props, "우선순위"),
-              team: getMultiSelect(props, "팀"),
-              project_type: getMultiSelect(props, "종류"),
-              assignee_names: getPeople(props, "담당자"),
-              contract_krw: getNumberOrNull(
-                props,
-                "계약 금액 (KRW, VAT 제외)",
-              ),
-              contract_jpy: getNumberOrNull(
-                props,
-                "계약 금액 (JPY, VAT 제외)",
-              ),
-              advance_payment_krw: getNumberOrNull(
-                props,
-                "선금 입금액 (KRW)",
-              ),
-              advance_payment_jpy: getNumberOrNull(
-                props,
-                "선금 입금액 (JPY)",
-              ),
-              creator_settlement_krw: getNumberOrNull(
-                props,
-                "크리에이터 정산 금액 (KRW)",
-              ),
-              creator_settlement_jpy: getNumberOrNull(
-                props,
-                "크리에이터 정산 금액 (JPY)",
-              ),
-              client_settlement: getSelect(props, "정산_클라이언트"),
-              creator_settlement_status: getSelect(
-                props,
-                "정산_크리에이터",
-              ),
-              contract_status: getSelect(props, "계약서"),
-              estimate_status: getSelect(props, "견적서"),
-              tax_invoice_status: getSelect(props, "세금계산서 발행"),
-              start_date: getDate(props, "시작일"),
-              end_date: getDate(props, "종료일"),
-              note: getRichText(props, "비고"),
-              influencer_info: getRichText(props, "진행 인플루언서"),
-              settlement_progress: getRichText(props, "정산 진행률"),
-            },
-            { onConflict: "notion_id" },
-          );
-
-        if (upsertError) {
-          console.error(
-            `[sync/projects] Upsert failed for "${projectName}":`,
-            upsertError.message,
-          );
-          result.errors.push(`"${projectName}": ${upsertError.message}`);
-          continue;
-        }
-
-        result.synced++;
-        console.log(`[sync/projects] Synced: "${projectName}"`);
+        records.push({
+          notion_id: page.id,
+          name: getTitle(props, "프로젝트 이름"),
+          parent_notion_id: parentNotionId,
+          brand_name: brandName,
+          status: getStatus(props, "상태"),
+          priority: getSelect(props, "우선순위"),
+          team: getMultiSelect(props, "팀"),
+          project_type: getMultiSelect(props, "종류"),
+          assignee_names: getPeople(props, "담당자"),
+          contract_krw: getNumberOrNull(props, "계약 금액 (KRW, VAT 제외)"),
+          contract_jpy: getNumberOrNull(props, "계약 금액 (JPY, VAT 제외)"),
+          advance_payment_krw: getNumberOrNull(props, "선금 입금액 (KRW)"),
+          advance_payment_jpy: getNumberOrNull(props, "선금 입금액 (JPY)"),
+          creator_settlement_krw: getNumberOrNull(props, "크리에이터 정산 금액 (KRW)"),
+          creator_settlement_jpy: getNumberOrNull(props, "크리에이터 정산 금액 (JPY)"),
+          client_settlement: getSelect(props, "정산_클라이언트"),
+          creator_settlement_status: getSelect(props, "정산_크리에이터"),
+          contract_status: getSelect(props, "계약서"),
+          estimate_status: getSelect(props, "견적서"),
+          tax_invoice_status: getSelect(props, "세금계산서 발행"),
+          start_date: getDate(props, "시작일"),
+          end_date: getDate(props, "종료일"),
+          note: getRichText(props, "비고"),
+          influencer_info: getRichText(props, "진행 인플루언서"),
+          settlement_progress: getRichText(props, "정산 진행률"),
+        });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        console.error(
-          `[sync/projects] Error processing "${projectName}":`,
-          message,
-        );
         result.errors.push(`"${projectName}": ${message}`);
+      }
+    }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+
+    // 6. 배치 upsert (50건 단위)
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < records.length; i += BATCH_SIZE) {
+      const batch = records.slice(i, i + BATCH_SIZE);
+      const { error: upsertError } = await supabase
+        .from("projects")
+        .upsert(batch, { onConflict: "notion_id" });
+
+      if (upsertError) {
+        result.errors.push(`Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${upsertError.message}`);
+      } else {
+        result.synced += batch.length;
       }
     }
 
