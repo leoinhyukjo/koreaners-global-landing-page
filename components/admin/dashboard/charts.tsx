@@ -14,9 +14,16 @@ import {
   LineChart,
   Line,
   Legend,
+  Label,
 } from 'recharts'
 
 const COLORS = ['#FF4500', '#141414', '#666666', '#999999', '#CCCCCC', '#FF6B35']
+
+const TOOLTIP_STYLE = {
+  contentStyle: { backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: 8 },
+  labelStyle: { color: '#fff', fontWeight: 600, marginBottom: 4 },
+  itemStyle: { color: '#ccc' },
+}
 
 // ────────────────────────────────────────────────────────────
 // StatusBarChart — 가로 바차트, 상태별 프로젝트 수
@@ -32,7 +39,7 @@ export function StatusBarChart({ data }: StatusBarChartProps) {
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         <XAxis type="number" allowDecimals={false} />
         <YAxis type="category" dataKey="status" width={80} tick={{ fontSize: 12 }} />
-        <Tooltip formatter={(value: number) => [`${value}개`, '프로젝트']} />
+        <Tooltip {...TOOLTIP_STYLE} formatter={(value: number) => [`${value}개`, '프로젝트']} />
         <Bar dataKey="count" fill={COLORS[0]} radius={[0, 4, 4, 0]} />
       </BarChart>
     </ResponsiveContainer>
@@ -85,11 +92,17 @@ const krwFormatter = (value: number) =>
 export function MonthlyLineChart({ data }: MonthlyLineChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data} margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
+      <LineChart data={data} margin={{ left: 16, right: 24, top: 8, bottom: 24 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-        <YAxis tickFormatter={krwFormatter} tick={{ fontSize: 12 }} />
+        <XAxis dataKey="month" tick={{ fontSize: 12 }}>
+          <Label value="월" offset={-8} position="insideBottom" style={{ fontSize: 11, fill: '#888' }} />
+        </XAxis>
+        <YAxis tickFormatter={krwFormatter} tick={{ fontSize: 12 }}>
+          <Label value="금액(만원)" angle={-90} position="insideLeft" offset={8} style={{ fontSize: 11, fill: '#888' }} />
+        </YAxis>
         <Tooltip
+          {...TOOLTIP_STYLE}
+          labelFormatter={(label: string) => `${label}월`}
           formatter={(value: number) => [
             `₩${value.toLocaleString('ko-KR')}`,
             '계약 금액',
@@ -122,7 +135,7 @@ export function TrendLineChart({ data }: TrendLineChartProps) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="month" tick={{ fontSize: 12 }} />
         <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-        <Tooltip />
+        <Tooltip {...TOOLTIP_STYLE} labelFormatter={(label: string) => `${label}월`} />
         <Legend />
         <Line
           type="monotone"
@@ -161,7 +174,7 @@ export function WorkloadBarChart({ data }: WorkloadBarChartProps) {
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="assignee" tick={{ fontSize: 12 }} />
         <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-        <Tooltip formatter={(value: number) => [`${value}개`, '프로젝트']} />
+        <Tooltip {...TOOLTIP_STYLE} formatter={(value: number) => [`${value}개`, '프로젝트']} />
         <Bar dataKey="count" fill={COLORS[0]} radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>

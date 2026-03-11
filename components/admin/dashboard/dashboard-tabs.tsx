@@ -4,9 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const TABS = [
-  { label: '경영', href: '/admin/dashboard' },
-  { label: '팀원', href: '/admin/dashboard/team' },
-  { label: '보고', href: '/admin/dashboard/report' },
+  { label: '보고', href: '/admin/projects' },
+  { label: '경영', href: '/admin/projects/report' },
 ]
 
 export function DashboardTabs() {

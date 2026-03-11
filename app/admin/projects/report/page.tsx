@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   WorkloadBarChart,
@@ -10,6 +12,7 @@ import {
   BrandAccordion,
   type BrandGroup,
 } from '@/components/admin/dashboard/brand-accordion'
+import { DashboardTabs } from '@/components/admin/dashboard/dashboard-tabs'
 import {
   fetchAllProjects,
   fetchLatestExchangeRate,
@@ -36,12 +39,10 @@ function formatKrw(value: number): string {
   return `₩${value.toLocaleString('ko-KR')}`
 }
 
-/** YYYY-MM 형식 반환 */
 function toYearMonth(dateStr: string): string {
   return dateStr.slice(0, 7)
 }
 
-/** 최근 N개월 YYYY-MM 배열 (오름차순) */
 function recentMonths(n: number): string[] {
   const months: string[] = []
   const now = new Date()
@@ -59,34 +60,32 @@ function recentMonths(n: number): string[] {
 
 function useDerivedData(projects: Project[], jpyRate: number) {
   return useMemo(() => {
-    // 하위 프로젝트만 (parent_notion_id 있는 것)
     const subProjects = projects.filter((p) => !!p.parent_notion_id)
 
-    // ── KPI ──────────────────────────────────────────────────
     const totalContract = subProjects.reduce(
       (sum, p) => sum + totalContractKrw(p, jpyRate),
       0,
     )
-
     const totalReceivable = subProjects.reduce(
       (sum, p) => sum + receivableKrw(p, jpyRate),
       0,
     )
-
     const completedCount = subProjects.filter(
       (p) => p.status === '완료',
     ).length
 
-    const durations = subProjects
+    // Fix: avgDuration only counts completed projects with both dates
+    const completedWithDates = subProjects.filter(
+      (p) => p.status === '완료' && p.start_date && p.end_date,
+    )
+    const durations = completedWithDates
       .map((p) => projectDurationDays(p))
       .filter((d): d is number => d !== null)
-
     const avgDuration =
       durations.length > 0
         ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
         : null
 
-    // ── 브랜드별 그룹핑 ───────────────────────────────────────
     const brandMap = new Map<string, Project[]>()
     for (const p of subProjects) {
       const key = p.brand_name ?? '(브랜드 미정)'
@@ -94,7 +93,6 @@ function useDerivedData(projects: Project[], jpyRate: number) {
       list.push(p)
       brandMap.set(key, list)
     }
-
     const brandGroups: BrandGroup[] = Array.from(brandMap.entries())
       .map(([brandName, projs]) => ({
         brandName,
@@ -110,34 +108,28 @@ function useDerivedData(projects: Project[], jpyRate: number) {
       }))
       .sort((a, b) => b.totalContract - a.totalContract)
 
-    // ── 담당자별 업무량 ───────────────────────────────────────
     const assigneeMap = new Map<string, number>()
     for (const p of subProjects) {
       for (const name of p.assignee_names) {
         assigneeMap.set(name, (assigneeMap.get(name) ?? 0) + 1)
       }
     }
-
     const workloadData = Array.from(assigneeMap.entries())
       .map(([assignee, count]) => ({ assignee, count }))
       .sort((a, b) => b.count - a.count)
 
-    // ── 월간 트렌드 (최근 6개월) ──────────────────────────────
     const months = recentMonths(6)
     const newCountMap = new Map<string, number>(months.map((m) => [m, 0]))
     const completedCountMap = new Map<string, number>(
       months.map((m) => [m, 0]),
     )
-
     for (const p of subProjects) {
-      // 신규: start_date 기준
       if (p.start_date) {
         const ym = toYearMonth(p.start_date)
         if (newCountMap.has(ym)) {
           newCountMap.set(ym, (newCountMap.get(ym) ?? 0) + 1)
         }
       }
-      // 완료: end_date + 상태 '완료' 기준
       if (p.status === '완료' && p.end_date) {
         const ym = toYearMonth(p.end_date)
         if (completedCountMap.has(ym)) {
@@ -145,7 +137,6 @@ function useDerivedData(projects: Project[], jpyRate: number) {
         }
       }
     }
-
     const trendData = months.map((month) => ({
       month,
       new: newCountMap.get(month) ?? 0,
@@ -169,7 +160,7 @@ function useDerivedData(projects: Project[], jpyRate: number) {
 // Page
 // ────────────────────────────────────────────────────────────
 
-export default function ReportDashboardPage() {
+export default function ProjectsReportPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [jpyRate, setJpyRate] = useState<number>(9.0)
   const [loading, setLoading] = useState(true)
@@ -207,89 +198,127 @@ export default function ReportDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-muted-foreground text-sm">
-        데이터를 불러오는 중...
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Link href="/admin" className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors">
+            <ArrowLeft className="h-3.5 w-3.5" />
+            어드민
+          </Link>
+        </div>
+        <h1 className="text-lg font-semibold text-neutral-50">프로젝트 현황</h1>
+        <DashboardTabs />
+        <div className="flex items-center justify-center py-20 text-muted-foreground text-sm">
+          데이터를 불러오는 중...
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center py-20 text-red-400 text-sm">
-        {error}
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Link href="/admin" className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors">
+            <ArrowLeft className="h-3.5 w-3.5" />
+            어드민
+          </Link>
+        </div>
+        <h1 className="text-lg font-semibold text-neutral-50">프로젝트 현황</h1>
+        <DashboardTabs />
+        <div className="flex items-center justify-center py-20 text-red-400 text-sm">
+          {error}
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Back link */}
+      <div className="flex items-center gap-3">
+        <Link
+          href="/admin"
+          className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          어드민
+        </Link>
+      </div>
 
-      {/* ── KPI 카드 4개 ─────────────────────────────────────── */}
-      <section>
-        <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-          핵심 지표
-        </h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <KpiCard
-            title="전체 계약금액"
-            value={formatKrw(totalContract)}
-            subtitle={`하위 프로젝트 ${subProjects.length}건`}
-          />
-          <KpiCard
-            title="미수금"
-            value={formatKrw(totalReceivable)}
-            subtitle={totalReceivable > 0 ? '입금 대기 중' : '전액 입금 완료'}
-          />
-          <KpiCard
-            title="완료 프로젝트"
-            value={`${completedCount}건`}
-            subtitle={
-              subProjects.length > 0
-                ? `전체의 ${Math.round((completedCount / subProjects.length) * 100)}%`
-                : undefined
-            }
-          />
-          <KpiCard
-            title="평균 기간"
-            value={avgDuration !== null ? `${avgDuration}일` : '—'}
-            subtitle="시작~종료 기준"
-          />
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold text-neutral-50">프로젝트 현황</h1>
+      </div>
+
+      <DashboardTabs />
+
+      <div className="space-y-8">
+        {/* KPI 카드 */}
+        <section>
+          <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
+            핵심 지표
+          </h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <KpiCard
+              title="전체 계약금액"
+              value={formatKrw(totalContract)}
+              subtitle={`하위 프로젝트 ${subProjects.length}건`}
+            />
+            <KpiCard
+              title="미수금"
+              value={formatKrw(totalReceivable)}
+              subtitle={totalReceivable > 0 ? '입금 대기 중' : '전액 입금 완료'}
+            />
+            <KpiCard
+              title="완료 프로젝트"
+              value={`${completedCount}건`}
+              subtitle={
+                subProjects.length > 0
+                  ? `전체의 ${Math.round((completedCount / subProjects.length) * 100)}%`
+                  : undefined
+              }
+            />
+            <KpiCard
+              title="평균 기간"
+              value={avgDuration !== null ? `${avgDuration}일` : '—'}
+              subtitle="완료 프로젝트 기준"
+            />
+          </div>
+        </section>
+
+        {/* 브랜드별 아코디언 */}
+        <section>
+          <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
+            브랜드별 프로젝트 현황
+          </h2>
+          <BrandAccordion groups={brandGroups} jpyRate={jpyRate} />
+        </section>
+
+        {/* 담당자별 업무량 + 월간 트렌드 */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <section>
+            <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
+              담당자별 업무량
+            </h2>
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+              {workloadData.length > 0 ? (
+                <WorkloadBarChart data={workloadData} />
+              ) : (
+                <p className="text-sm text-muted-foreground py-8 text-center">
+                  담당자 데이터가 없습니다.
+                </p>
+              )}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
+              월간 트렌드 (최근 6개월)
+            </h2>
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+              <TrendLineChart data={trendData} />
+            </div>
+          </section>
         </div>
-      </section>
-
-      {/* ── 브랜드별 아코디언 ─────────────────────────────────── */}
-      <section>
-        <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-          브랜드별 프로젝트 현황
-        </h2>
-        <BrandAccordion groups={brandGroups} jpyRate={jpyRate} />
-      </section>
-
-      {/* ── 담당자별 업무량 + 월간 트렌드 ────────────────────── */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section>
-          <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-            담당자별 업무량
-          </h2>
-          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-            {workloadData.length > 0 ? (
-              <WorkloadBarChart data={workloadData} />
-            ) : (
-              <p className="text-sm text-muted-foreground py-8 text-center">
-                담당자 데이터가 없습니다.
-              </p>
-            )}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-            월간 트렌드 (최근 6개월)
-          </h2>
-          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-            <TrendLineChart data={trendData} />
-          </div>
-        </section>
       </div>
     </div>
   )
