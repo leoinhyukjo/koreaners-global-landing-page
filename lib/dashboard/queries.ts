@@ -15,37 +15,44 @@ export async function fetchAllProjects(): Promise<Project[]> {
 
   return (data ?? []).map((row) => ({
     id: row.id ?? '',
-    notion_id: row.notion_id ?? '',
-    name: row.name ?? '',
-    parent_notion_id: row.parent_notion_id ?? null,
+    row_code: row.row_code ?? '',
+    name: row.brand_name || row.company_name || row.row_code || '',
+    entry_date: row.entry_date ?? null,
+    week_code: row.week_code ?? null,
+    company_name: row.company_name ?? null,
     brand_name: row.brand_name ?? null,
     status: row.status ?? null,
-    priority: row.priority ?? null,
-    team: Array.isArray(row.team) ? row.team : [],
-    project_type: Array.isArray(row.project_type) ? row.project_type : [],
+    project_type: row.project_type ?? null,
+    media: row.media ?? null,
     assignee_names: Array.isArray(row.assignee_names) ? row.assignee_names : [],
-    contract_krw: Number(row.contract_krw ?? 0),
-    contract_jpy: Number(row.contract_jpy ?? 0),
-    advance_payment_krw: Number(row.advance_payment_krw ?? 0),
-    advance_payment_jpy: Number(row.advance_payment_jpy ?? 0),
-    creator_settlement_krw: Number(row.creator_settlement_krw ?? 0),
-    creator_settlement_jpy: Number(row.creator_settlement_jpy ?? 0),
-    client_settlement: row.client_settlement ?? null,
-    creator_settlement_status: row.creator_settlement_status ?? null,
-    contract_status: row.contract_status ?? null,
-    estimate_status: row.estimate_status ?? null,
-    tax_invoice_status: row.tax_invoice_status ?? null,
+    assignee_sub: Array.isArray(row.assignee_sub) ? row.assignee_sub : [],
     start_date: row.start_date ?? null,
     end_date: row.end_date ?? null,
     note: row.note ?? null,
-    influencer_info: row.influencer_info ?? null,
-    settlement_progress: row.settlement_progress ?? null,
+    contract_krw: Number(row.contract_krw ?? 0),
+    contract_jpy: Number(row.contract_jpy ?? 0),
+    collab_fee: Number(row.collab_fee ?? 0),
+    expense_krw: Number(row.expense_krw ?? 0),
+    expense_jpy: Number(row.expense_jpy ?? 0),
+    margin_krw: Number(row.margin_krw ?? 0),
+    margin_jpy: Number(row.margin_jpy ?? 0),
+    estimate_status: row.estimate_status ?? null,
+    contract_status: row.contract_status ?? null,
+    contract_date: row.contract_date ?? null,
+    settlement_due_date: row.settlement_due_date ?? null,
+    advance_paid_date: row.advance_paid_date ?? null,
+    balance_paid_date: row.balance_paid_date ?? null,
+    contract_cost: Number(row.contract_cost ?? 0),
+    tax_invoice_date: row.tax_invoice_date ?? null,
+    payment_status: row.payment_status ?? null,
+    remittance_status: row.remittance_status ?? null,
+    creator_settlement_note: row.creator_settlement_note ?? null,
   })) as Project[]
 }
 
 /**
  * 최신 JPY/KRW 환율 조회
- * exchange_rates 테이블의 가장 최근 레코드 사용.
+ * exchange_rates 테이블에서 가장 최근 레코드 사용.
  * 실패 시 폴백: 9.0
  */
 export async function fetchLatestExchangeRate(): Promise<number> {
@@ -54,17 +61,18 @@ export async function fetchLatestExchangeRate(): Promise<number> {
   try {
     const { data, error } = await supabase
       .from('exchange_rates')
-      .select('jpy_to_krw')
-      .order('recorded_at', { ascending: false })
+      .select('rate')
+      .eq('currency_pair', 'JPY/KRW')
+      .order('rate_date', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
 
     if (error || !data) {
       console.warn('[fetchLatestExchangeRate] 조회 실패, 폴백 사용:', error?.message)
       return FALLBACK_RATE
     }
 
-    const rate = Number(data.jpy_to_krw)
+    const rate = Number(data.rate)
     return isNaN(rate) || rate <= 0 ? FALLBACK_RATE : rate
   } catch (err) {
     console.warn('[fetchLatestExchangeRate] 예외 발생, 폴백 사용:', err)
