@@ -4,6 +4,27 @@
 
 set -euo pipefail
 
+wait_for_network() {
+    local deadline=$(date -v23H -v50M -v0S +%s)
+    local attempt=0
+    while [ $(date +%s) -lt $deadline ]; do
+        if host dns.google >/dev/null 2>&1; then
+            [ $attempt -gt 0 ] && echo "[NET] 네트워크 연결 확인 (${attempt}회 재시도)"
+            return 0
+        fi
+        attempt=$((attempt + 1))
+        if [ $attempt -le 5 ]; then
+            sleep $((attempt * 2))
+        else
+            sleep 600
+        fi
+    done
+    echo "[FATAL] 당일 자정까지 네트워크 미연결 — 종료"
+    exit 1
+}
+
+wait_for_network
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 

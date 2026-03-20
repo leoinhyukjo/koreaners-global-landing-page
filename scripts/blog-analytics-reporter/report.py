@@ -17,9 +17,12 @@ from __future__ import annotations
 
 import os
 import sys
-import urllib.request
+import time
 import traceback
 from pathlib import Path
+
+sys.path.insert(0, str(Path.home() / ".config/shared-env"))
+from krns_automation import wait_for_network, notify_slack, ping_healthcheck
 
 # ── Early healthcheck (stdlib only) ──────────────────────────
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -35,20 +38,6 @@ if _dotenv_path.is_file():
             _val = _val.strip().strip('"').strip("'")
             if _key and _key not in os.environ:
                 os.environ[_key] = _val
-
-
-def _ping_healthcheck(status: str = "success", body: str = "") -> None:
-    url = os.environ.get("HEALTHCHECK_PING_URL", "")
-    if not url:
-        return
-    try:
-        suffix = {"fail": "/fail", "start": "/start"}.get(status, "")
-        req = urllib.request.Request(
-            url + suffix, data=body.encode()[:10_000] if body else None
-        )
-        urllib.request.urlopen(req, timeout=10)
-    except Exception as e:
-        print(f"[WARN] Healthcheck ping failed: {e}")
 
 
 # ── Imports (after healthcheck setup) ────────────────────────
@@ -544,12 +533,28 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    _ping_healthcheck("start")
+    from datetime import datetime as _dt
+
+    # 수(2)만 실행
+    if _dt.now().weekday() != 2:
+        print("[SKIP] 해당 요일 아님 — 실행 안 함")
+        raise SystemExit(0)
+
+    # 오늘 이미 실행했으면 스킵
+    _lock = Path("/tmp/blog_analytics_done_" + _dt.now().strftime("%Y-%m-%d"))
+    if _lock.exists():
+        print("[SKIP] 오늘 이미 실행 완료 — 스킵")
+        raise SystemExit(0)
+
+    wait_for_network()
+    ping_healthcheck("start")
     try:
         main()
-        _ping_healthcheck("success")
+        _lock.touch()
+        ping_healthcheck("success")
     except Exception as e:
         tb = traceback.format_exc()
         print(f"[FATAL] {e}\n{tb}")
-        _ping_healthcheck("fail", f"{e}\n{tb}")
+        ping_healthcheck("fail", f"{e}\n{tb}")
+        notify_slack("블로그 애널리틱스 리포트", "fail", f"{e}")
         sys.exit(1)

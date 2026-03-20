@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     const records: any[] = []
     for (const row of rows) {
       try {
-        const parsed = parseSheetRow(row, exchangeRate)
+        const parsed = parseSheetRow(row)
         if (parsed == null) continue
         records.push(parsed)
       } catch (err) {

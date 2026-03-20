@@ -169,7 +169,7 @@ export function BrandAccordion({ groups, jpyRate }: BrandAccordionProps) {
                             {formatKrw(contractKrw)}
                           </td>
                           <td className="px-4 py-2.5 text-neutral-500 text-xs">
-                            {project.client_settlement ?? '—'}
+                            {project.payment_status ?? '—'}
                           </td>
                         </tr>
                       )

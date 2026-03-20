@@ -17,11 +17,16 @@ import os
 import re
 import sys
 import tempfile
+import time
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
+
+sys.path.insert(0, str(Path.home() / ".config/shared-env"))
+from krns_automation import wait_for_network, notify_slack, ping_healthcheck
 
 # Max limits for Notion API
 NOTION_MAX_CHILDREN = 100
@@ -481,4 +486,18 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    wait_for_network()
+    ping_healthcheck("start")
+    try:
+        exit_code = main()
+        ping_healthcheck("success")
+        if exit_code == 0:
+        else:
+            notify_slack("블로그 자동 생성", "fail", f"exit code: {exit_code}")
+        sys.exit(exit_code)
+    except Exception as e:
+        tb = traceback.format_exc()
+        log(f"[FATAL] {e}\n{tb}")
+        ping_healthcheck("fail", f"{e}\n{tb}")
+        notify_slack("블로그 자동 생성", "fail", f"{e}")
+        sys.exit(1)

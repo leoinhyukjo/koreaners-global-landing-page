@@ -60,7 +60,7 @@ function recentMonths(n: number): string[] {
 
 function useDerivedData(projects: Project[], jpyRate: number) {
   return useMemo(() => {
-    const subProjects = projects.filter((p) => !!p.parent_notion_id)
+    const subProjects = projects
 
     const totalContract = subProjects.reduce(
       (sum, p) => sum + totalContractKrw(p, jpyRate),

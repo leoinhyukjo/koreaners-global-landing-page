@@ -8,6 +8,7 @@ interface InquiryData {
   email: string;
   phone?: string;
   message: string;
+  notionPageId?: string;
 }
 
 interface CreatorApplicationData {
@@ -55,7 +56,11 @@ export async function sendSlackInquiry(data: InquiryData): Promise<void> {
     .filter(Boolean)
     .join("\n");
 
-  const blocks = [
+  const notionUrl = data.notionPageId
+    ? `https://www.notion.so/${data.notionPageId.replace(/-/g, "")}`
+    : null;
+
+  const blocks: Record<string, unknown>[] = [
     {
       type: "header",
       text: {
@@ -70,6 +75,13 @@ export async function sendSlackInquiry(data: InquiryData): Promise<void> {
       text: { type: "mrkdwn", text: `*💬 문의 내용*\n${data.message}` },
     },
   ];
+
+  if (notionUrl) {
+    blocks.push({
+      type: "section",
+      text: { type: "mrkdwn", text: `📋 <${notionUrl}|Notion에서 확인>` },
+    });
+  }
 
   await sendSlackWebhook(webhookUrl, blocks);
 }

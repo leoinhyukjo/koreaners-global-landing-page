@@ -240,6 +240,7 @@ export async function POST(request: NextRequest) {
       position: safePosition || undefined,
       phone: safePhone || undefined,
       message: safeMessage,
+      notionPageId: response.id,
     });
 
     // Meta CAPI: Lead 이벤트 서버사이드 전송 (non-blocking)
