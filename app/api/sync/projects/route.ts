@@ -1,69 +1,40 @@
-import { NextRequest, NextResponse } from "next/server";
-import { notion } from "@/lib/notion/client";
-import {
-  getTitle,
-  getRichText,
-  getSelect,
-  getMultiSelect,
-  getStatus,
-  getPeople,
-  getRelationIds,
-  getDate,
-} from "@/lib/notion/extractors";
-import { getJpyToKrwRate } from "@/lib/exchange-rate";
-import { authenticateSync } from "@/lib/sync-auth";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { NextRequest, NextResponse } from 'next/server'
+import { google } from 'googleapis'
+import { readFileSync } from 'fs'
+import { parseSheetRow } from '@/lib/sheets/parsers'
+import { getJpyToKrwRate } from '@/lib/exchange-rate'
+import { authenticateSync } from '@/lib/sync-auth'
+import { createAdminClient } from '@/lib/supabase/admin'
 
-export const maxDuration = 60;
+export const maxDuration = 60
 
 // ─── Types ────────────────────────────────────────────────────
 
 interface SyncResult {
-  synced: number;
-  errors: string[];
-  exchangeRate: number;
+  synced: number
+  errors: string[]
+  exchangeRate: number
 }
 
-// ─── Notion property helpers (number — null 허용) ──────────────
+// ─── Google Auth ───────────────────────────────────────────────
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function getNumberOrNull(props: any, key: string): number | null {
-  const prop = props?.[key];
-  if (!prop || prop.type !== "number") return null;
-  return prop.number ?? null;
+function getGoogleAuth() {
+  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON!
+  const credentialsJson = raw.startsWith('{') ? raw : readFileSync(raw, 'utf8')
+  const credentials = JSON.parse(credentialsJson)
+  return new google.auth.GoogleAuth({
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+  })
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
-// ─── Fetch All Pages from Notion DB (cursor pagination) ────────
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-async function fetchAllPages(): Promise<any[]> {
-  const allPages: any[] = [];
-  let cursor: string | undefined = undefined;
-
-  do {
-    const response = await notion.dataSources.query({
-      data_source_id: process.env.NOTION_PROJECT_DB_ID!,
-      ...(cursor ? { start_cursor: cursor } : {}),
-    });
-
-    allPages.push(...(response.results ?? []));
-    cursor = response.has_more
-      ? (response.next_cursor ?? undefined)
-      : undefined;
-  } while (cursor);
-
-  return allPages;
-}
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 // ─── POST Handler ─────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
   // Parse body
-  let body: Record<string, unknown> = {};
+  let body: Record<string, unknown> = {}
   try {
-    body = await request.json();
+    body = await request.json()
   } catch {
     // Body might be empty (auth via header only) — that's fine
   }
@@ -71,119 +42,90 @@ export async function POST(request: NextRequest) {
   // Authenticate
   const auth = authenticateSync(
     request,
-    typeof body?.secret === "string" ? body.secret : undefined,
-  );
+    typeof body?.secret === 'string' ? body.secret : undefined,
+  )
   if (!auth.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // Validate environment
-  if (!process.env.NOTION_PROJECT_DB_ID) {
+  if (!process.env.GOOGLE_SHEETS_PROJECT_ID) {
     return NextResponse.json(
-      { error: "NOTION_PROJECT_DB_ID is not configured" },
+      { error: 'GOOGLE_SHEETS_PROJECT_ID is not configured' },
       { status: 500 },
-    );
+    )
   }
 
-  const result: SyncResult = { synced: 0, errors: [], exchangeRate: 0 };
+  const result: SyncResult = { synced: 0, errors: [], exchangeRate: 0 }
 
   try {
-    console.log("[sync/projects] Starting project sync...");
+    console.log('[sync/projects] Starting project sync from Google Sheets...')
 
     // 1. 환율 조회
-    const exchangeRate = await getJpyToKrwRate();
-    result.exchangeRate = exchangeRate;
-    console.log(`[sync/projects] JPY→KRW rate: ${exchangeRate}`);
+    const exchangeRate = await getJpyToKrwRate()
+    result.exchangeRate = exchangeRate
+    console.log(`[sync/projects] JPY→KRW rate: ${exchangeRate}`)
 
-    // 2. Fetch all pages from Notion DB
-    const allPages = await fetchAllPages();
-    console.log(
-      `[sync/projects] Found ${allPages.length} pages in Notion DB`,
-    );
+    // 2. Google Sheets 데이터 조회
+    const googleAuth = getGoogleAuth()
+    const sheets = google.sheets({ version: 'v4', auth: googleAuth })
 
-    // 3. 1차 패스: id→name Map 구축 (상위 항목 이름 매핑용)
-    const idToName = new Map<string, string>();
-    for (const page of allPages) {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const name = getTitle((page as any).properties, "프로젝트 이름");
-      idToName.set(page.id, name);
-    }
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
+      range: '시트1!A:AI',
+      valueRenderOption: 'FORMATTED_VALUE',
+    })
 
-    // 4. Create Supabase admin client
-    const supabase = createAdminClient();
+    const values = response.data.values ?? []
+    // Skip header row
+    const rows = values.slice(1)
+    console.log(`[sync/projects] Fetched ${rows.length} rows from Google Sheets`)
 
-    // 5. 2차 패스: 레코드 변환
+    // 3. Supabase admin client
+    const supabase = createAdminClient()
+
+    // 4. 레코드 변환
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    const records: any[] = [];
-    for (const page of allPages) {
-      const props = (page as any).properties;
-      const projectName = getTitle(props, "프로젝트 이름") || page.id;
-
+    const records: any[] = []
+    for (const row of rows) {
       try {
-        const parentRelationIds = getRelationIds(props, "상위 항목");
-        const parentNotionId =
-          parentRelationIds.length > 0 ? parentRelationIds[0] : null;
-        const brandName = parentNotionId
-          ? (idToName.get(parentNotionId) ?? null)
-          : null;
-
-        records.push({
-          notion_id: page.id,
-          name: getTitle(props, "프로젝트 이름"),
-          parent_notion_id: parentNotionId,
-          brand_name: brandName,
-          status: getStatus(props, "상태"),
-          priority: getSelect(props, "우선순위"),
-          team: getMultiSelect(props, "팀"),
-          project_type: getMultiSelect(props, "종류"),
-          assignee_names: getPeople(props, "담당자"),
-          contract_krw: getNumberOrNull(props, "계약 금액 (KRW, VAT 제외)"),
-          contract_jpy: getNumberOrNull(props, "계약 금액 (JPY, VAT 제외)"),
-          advance_payment_krw: getNumberOrNull(props, "선금 입금액 (KRW)"),
-          advance_payment_jpy: getNumberOrNull(props, "선금 입금액 (JPY)"),
-          creator_settlement_krw: getNumberOrNull(props, "크리에이터 정산 금액 (KRW)"),
-          creator_settlement_jpy: getNumberOrNull(props, "크리에이터 정산 금액 (JPY)"),
-          client_settlement: getSelect(props, "정산_클라이언트"),
-          creator_settlement_status: getSelect(props, "정산_크리에이터"),
-          contract_status: getSelect(props, "계약서"),
-          estimate_status: getSelect(props, "견적서"),
-          tax_invoice_status: getSelect(props, "세금계산서 발행"),
-          start_date: getDate(props, "시작일"),
-          end_date: getDate(props, "종료일"),
-          note: getRichText(props, "비고"),
-          influencer_info: getRichText(props, "진행 인플루언서"),
-          settlement_progress: getRichText(props, "정산 진행률"),
-        });
+        const parsed = parseSheetRow(row, exchangeRate)
+        if (parsed == null) continue
+        records.push(parsed)
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        result.errors.push(`"${projectName}": ${message}`);
+        const message = err instanceof Error ? err.message : String(err)
+        result.errors.push(`Row parse error: ${message}`)
       }
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
-    // 6. 배치 upsert (50건 단위)
-    const BATCH_SIZE = 50;
+    console.log(`[sync/projects] Parsed ${records.length} valid records`)
+
+    // 5. 배치 upsert (50건 단위)
+    const BATCH_SIZE = 50
     for (let i = 0; i < records.length; i += BATCH_SIZE) {
-      const batch = records.slice(i, i + BATCH_SIZE);
+      const batch = records.slice(i, i + BATCH_SIZE)
       const { error: upsertError } = await supabase
-        .from("projects")
-        .upsert(batch, { onConflict: "notion_id" });
+        .from('projects')
+        .upsert(batch, { onConflict: 'row_code' })
 
       if (upsertError) {
-        result.errors.push(`Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${upsertError.message}`);
+        result.errors.push(
+          `Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${upsertError.message}`,
+        )
       } else {
-        result.synced += batch.length;
+        result.synced += batch.length
       }
     }
 
     console.log(
       `[sync/projects] Sync complete. Synced: ${result.synced}, Errors: ${result.errors.length}, Rate: ${result.exchangeRate}`,
-    );
+    )
 
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json(result, { status: 200 })
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("[sync/projects] Fatal error:", message);
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[sync/projects] Fatal error:', message)
     return NextResponse.json(
       {
         synced: result.synced,
@@ -191,6 +133,6 @@ export async function POST(request: NextRequest) {
         exchangeRate: result.exchangeRate,
       },
       { status: 500 },
-    );
+    )
   }
 }
