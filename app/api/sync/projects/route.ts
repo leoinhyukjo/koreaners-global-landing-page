@@ -84,22 +84,23 @@ export async function POST(request: NextRequest) {
     // 3. Supabase admin client
     const supabase = createAdminClient()
 
-    // 4. 레코드 변환
+    // 4. 레코드 변환 (row_code 중복 시 마지막 행 우선)
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    const records: any[] = []
+    const recordMap = new Map<string, any>()
     for (const row of rows) {
       try {
         const parsed = parseSheetRow(row)
         if (parsed == null) continue
-        records.push(parsed)
+        recordMap.set(parsed.row_code as string, parsed)
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         result.errors.push(`Row parse error: ${message}`)
       }
     }
+    const records = [...recordMap.values()]
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
-    console.log(`[sync/projects] Parsed ${records.length} valid records`)
+    console.log(`[sync/projects] Parsed ${records.length} unique records`)
 
     // 5. 배치 upsert (50건 단위)
     const BATCH_SIZE = 50

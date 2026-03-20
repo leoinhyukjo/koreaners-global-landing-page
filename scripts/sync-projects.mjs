@@ -332,14 +332,14 @@ async function main() {
   const rows = await fetchSheetRows()
   console.log(`[sync-projects] Found ${rows.length} rows in Google Sheets`)
 
-  // 3. 레코드 변환
-  const records = []
+  // 3. 레코드 변환 (row_code 중복 시 마지막 행 우선)
+  const recordMap = new Map()
   const parseErrors = []
 
   for (let i = 0; i < rows.length; i++) {
     try {
       const parsed = parseSheetRow(rows[i])
-      if (parsed) records.push(parsed)
+      if (parsed) recordMap.set(parsed.row_code, parsed)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       console.error(`[sync-projects] Parse error at row ${i + 2}: ${message}`)
@@ -347,7 +347,8 @@ async function main() {
     }
   }
 
-  console.log(`[sync-projects] Parsed ${records.length} records (${parseErrors.length} parse errors)`)
+  const records = [...recordMap.values()]
+  console.log(`[sync-projects] Parsed ${records.length} unique records (${parseErrors.length} parse errors)`)
 
   // 4. 배치 upsert
   const { upserted, errors: upsertErrors } = await batchUpsert(records)
