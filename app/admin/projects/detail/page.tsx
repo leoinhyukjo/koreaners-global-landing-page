@@ -7,9 +7,8 @@ import { ArrowLeft, ArrowUpDown } from 'lucide-react'
 import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queries'
 import {
   totalContractKrw,
-  totalAdvanceKrw,
-  totalCreatorSettlementKrw,
-  marginKrw,
+  totalExpenseKrw,
+  totalMarginKrw,
   marginRate,
   receivableKrw,
   type Project,
@@ -18,11 +17,7 @@ import {
 // ─────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────
-const NON_ACTIVE_STATUSES = new Set(['완료', 'Drop', '시작 전', '보류'])
-
-function getSubProjects(projects: Project[]) {
-  return projects.filter((p) => p.parent_notion_id !== null && p.parent_notion_id !== '')
-}
+const NON_ACTIVE_STATUSES = new Set(['완료', 'Drop', '진행 전', '보류'])
 
 const fmtKrw = (n: number) => `₩${Math.round(n).toLocaleString('ko-KR')}`
 const fmtJpy = (n: number) => `¥${Math.round(n).toLocaleString('ja-JP')}`
@@ -107,7 +102,6 @@ function StatusBadge({ status }: { status: string | null }) {
 // view=total — 전체 프로젝트
 // ─────────────────────────────────────────────
 function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
-  const sub = getSubProjects(projects)
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDir, setSortDir] = useState<SortDir>(null)
 
@@ -124,15 +118,15 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
     [sortField, sortDir]
   )
 
-  const sorted = [...sub].sort((a, b) => {
+  const sorted = [...projects].sort((a, b) => {
     if (!sortField || !sortDir) return 0
     if (sortField === 'name') {
       return sortDir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
     }
     if (sortField === 'brand') {
       return sortDir === 'asc'
-        ? (a.brand_name ?? '').localeCompare(b.brand_name ?? '')
-        : (b.brand_name ?? '').localeCompare(a.brand_name ?? '')
+        ? (a.company_name ?? '').localeCompare(b.company_name ?? '')
+        : (b.company_name ?? '').localeCompare(a.company_name ?? '')
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
@@ -157,7 +151,7 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="법인명" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="상태" field="status" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">담당자</th>
@@ -168,7 +162,7 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
         <tbody>
           {sorted.map((p) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.brand_name ?? '—'}</td>
+              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.company_name ?? '—'}</td>
               <td className="px-3 py-2.5 text-neutral-100 max-w-[200px] truncate">{p.name}</td>
               <td className="px-3 py-2.5 whitespace-nowrap"><StatusBadge status={p.status} /></td>
               <td className="px-3 py-2.5 text-neutral-400 text-xs max-w-[120px] truncate">
@@ -180,7 +174,7 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
           ))}
         </tbody>
       </table>
-      <p className="mt-3 text-right text-xs text-neutral-500">총 {sub.length}건</p>
+      <p className="mt-3 text-right text-xs text-neutral-500">총 {projects.length}건</p>
     </div>
   )
 }
@@ -189,7 +183,7 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
 // view=active — 진행 중
 // ─────────────────────────────────────────────
 function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
-  const active = getSubProjects(projects).filter(
+  const active = projects.filter(
     (p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)
   )
   const [sortField, setSortField] = useState<string | null>('status')
@@ -215,8 +209,8 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
     }
     if (sortField === 'brand') {
       return sortDir === 'asc'
-        ? (a.brand_name ?? '').localeCompare(b.brand_name ?? '')
-        : (b.brand_name ?? '').localeCompare(a.brand_name ?? '')
+        ? (a.company_name ?? '').localeCompare(b.company_name ?? '')
+        : (b.company_name ?? '').localeCompare(a.company_name ?? '')
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
@@ -241,7 +235,7 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="법인명" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="상태" field="status" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">담당자</th>
@@ -252,7 +246,7 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
         <tbody>
           {sorted.map((p) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.brand_name ?? '—'}</td>
+              <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.company_name ?? '—'}</td>
               <td className="px-3 py-2.5 text-neutral-100 max-w-[200px] truncate">{p.name}</td>
               <td className="px-3 py-2.5 whitespace-nowrap"><StatusBadge status={p.status} /></td>
               <td className="px-3 py-2.5 text-neutral-400 text-xs max-w-[120px] truncate">
@@ -273,7 +267,6 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
 // view=contract — 총 계약금액
 // ─────────────────────────────────────────────
 function ContractView({ projects, rate }: { projects: Project[]; rate: number }) {
-  const sub = getSubProjects(projects)
   const [sortField, setSortField] = useState<string | null>('contract')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -290,15 +283,15 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
     [sortField, sortDir]
   )
 
-  const sorted = [...sub].sort((a, b) => {
+  const sorted = [...projects].sort((a, b) => {
     if (!sortField || !sortDir) return 0
     if (sortField === 'name') {
       return sortDir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
     }
     if (sortField === 'brand') {
       return sortDir === 'asc'
-        ? (a.brand_name ?? '').localeCompare(b.brand_name ?? '')
-        : (b.brand_name ?? '').localeCompare(a.brand_name ?? '')
+        ? (a.company_name ?? '').localeCompare(b.company_name ?? '')
+        : (b.company_name ?? '').localeCompare(a.company_name ?? '')
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
@@ -318,14 +311,14 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
     return 0
   })
 
-  const grandTotal = sub.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
+  const grandTotal = projects.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="법인명" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">계약(KRW)</th>
@@ -337,7 +330,7 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
           {sorted.map((p) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
               <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">
-                {p.brand_name ?? '—'}
+                {p.company_name ?? '—'}
               </td>
               <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
               <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">
@@ -366,7 +359,7 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
           </tr>
         </tfoot>
       </table>
-      <p className="mt-1 text-right text-xs text-neutral-500">총 {sub.length}건 · 환율 ¥1 = ₩{rate}</p>
+      <p className="mt-1 text-right text-xs text-neutral-500">총 {projects.length}건 · 환율 ¥1 = ₩{rate}</p>
     </div>
   )
 }
@@ -375,8 +368,7 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
 // view=receivable — 미수금
 // ─────────────────────────────────────────────
 function ReceivableView({ projects, rate }: { projects: Project[]; rate: number }) {
-  const sub = getSubProjects(projects)
-  const withReceivable = sub
+  const withReceivable = projects
     .map((p) => ({ p, recv: receivableKrw(p, rate) }))
     .filter(({ recv }) => recv > 0)
     .sort((a, b) => b.recv - a.recv)
@@ -388,11 +380,11 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400">브랜드</th>
+            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400">법인명</th>
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400">프로젝트명</th>
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">시작일</th>
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">계약금액</th>
-            <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">선금</th>
+            <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">입금상태</th>
             <th className="px-3 py-2.5 text-right text-xs font-medium text-neutral-400 whitespace-nowrap">미수금</th>
             <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-400 whitespace-nowrap">정산상태</th>
           </tr>
@@ -401,7 +393,7 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
           {withReceivable.map(({ p, recv }) => (
             <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
               <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">
-                {p.brand_name ?? '—'}
+                {p.company_name ?? '—'}
               </td>
               <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
               <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">
@@ -410,15 +402,15 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
               <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">
                 {fmtKrw(totalContractKrw(p, rate))}
               </td>
-              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">
-                {fmtKrw(totalAdvanceKrw(p, rate))}
+              <td className="px-3 py-2.5 text-neutral-400 whitespace-nowrap">
+                {p.payment_status || '—'}
               </td>
               <td className="px-3 py-2.5 text-right font-semibold text-orange-400 whitespace-nowrap">
                 {fmtKrw(recv)}
               </td>
               <td className="px-3 py-2.5">
-                {p.client_settlement ? (
-                  <span className="text-xs text-neutral-300">{p.client_settlement}</span>
+                {p.payment_status ? (
+                  <span className="text-xs text-neutral-300">{p.payment_status}</span>
                 ) : (
                   <span className="text-xs text-neutral-600">—</span>
                 )}
@@ -449,8 +441,8 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
 // view=margin — 프로젝트별 마진
 // ─────────────────────────────────────────────
 function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
-  const sub = getSubProjects(projects)
-    .filter((p) => totalContractKrw(p, rate) > 0 || totalCreatorSettlementKrw(p, rate) > 0)
+  const filtered = projects
+    .filter((p) => totalContractKrw(p, rate) > 0 || totalExpenseKrw(p, rate) > 0)
   const [sortField, setSortField] = useState<string | null>('margin')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -467,12 +459,12 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
     [sortField, sortDir]
   )
 
-  const sorted = [...sub].sort((a, b) => {
+  const sorted = [...filtered].sort((a, b) => {
     if (!sortField || !sortDir) return 0
     if (sortField === 'brand') {
       return sortDir === 'asc'
-        ? (a.brand_name ?? '').localeCompare(b.brand_name ?? '')
-        : (b.brand_name ?? '').localeCompare(a.brand_name ?? '')
+        ? (a.company_name ?? '').localeCompare(b.company_name ?? '')
+        : (b.company_name ?? '').localeCompare(a.company_name ?? '')
     }
     if (sortField === 'name') {
       return sortDir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
@@ -489,13 +481,13 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
     }
     if (sortField === 'creator') {
       return sortDir === 'asc'
-        ? totalCreatorSettlementKrw(a, rate) - totalCreatorSettlementKrw(b, rate)
-        : totalCreatorSettlementKrw(b, rate) - totalCreatorSettlementKrw(a, rate)
+        ? totalExpenseKrw(a, rate) - totalExpenseKrw(b, rate)
+        : totalExpenseKrw(b, rate) - totalExpenseKrw(a, rate)
     }
     if (sortField === 'margin') {
       return sortDir === 'asc'
-        ? marginKrw(a, rate) - marginKrw(b, rate)
-        : marginKrw(b, rate) - marginKrw(a, rate)
+        ? totalMarginKrw(a, rate) - totalMarginKrw(b, rate)
+        : totalMarginKrw(b, rate) - totalMarginKrw(a, rate)
     }
     if (sortField === 'marginRate') {
       return sortDir === 'asc'
@@ -505,11 +497,11 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
     return 0
   })
 
-  const totalContract = sub.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
-  const totalCreator = sub.reduce((acc, p) => acc + totalCreatorSettlementKrw(p, rate), 0)
-  const totalMarginAmt = totalContract - totalCreator
-  const avgMarginPct = sub.length > 0
-    ? sub.reduce((acc, p) => acc + marginRate(p, rate), 0) / sub.length
+  const totalContract = filtered.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
+  const totalExpense = filtered.reduce((acc, p) => acc + totalExpenseKrw(p, rate), 0)
+  const totalMarginAmt = filtered.reduce((acc, p) => acc + totalMarginKrw(p, rate), 0)
+  const avgMarginPct = filtered.length > 0
+    ? filtered.reduce((acc, p) => acc + marginRate(p, rate), 0) / filtered.length
     : 0
 
   return (
@@ -517,26 +509,26 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-neutral-800">
-            <SortableHeader label="브랜드" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="법인명" field="brand" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="프로젝트명" field="name" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="시작일" field="startDate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="계약금액" field="contract" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-            <SortableHeader label="크리에이터 정산" field="creator" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+            <SortableHeader label="지출액(섭외비)" field="creator" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="마진" field="margin" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
             <SortableHeader label="마진율" field="marginRate" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
           </tr>
         </thead>
         <tbody>
           {sorted.map((p) => {
-            const m = marginKrw(p, rate)
+            const m = totalMarginKrw(p, rate)
             const mr = marginRate(p, rate)
             return (
               <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
-                <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.brand_name ?? '—'}</td>
+                <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.company_name ?? '—'}</td>
                 <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
                 <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">{fmtDate(p.start_date)}</td>
                 <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
-                <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalCreatorSettlementKrw(p, rate))}</td>
+                <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalExpenseKrw(p, rate))}</td>
                 <td className={`px-3 py-2.5 text-right font-semibold whitespace-nowrap ${m < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                   {fmtKrw(m)}
                 </td>
@@ -551,7 +543,7 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
           <tr className="border-t-2 border-neutral-700">
             <td colSpan={3} className="px-3 py-3 text-right text-sm font-medium text-neutral-400">합계 / 평균</td>
             <td className="px-3 py-3 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContract)}</td>
-            <td className="px-3 py-3 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalCreator)}</td>
+            <td className="px-3 py-3 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalExpense)}</td>
             <td className={`px-3 py-3 text-right font-bold whitespace-nowrap ${totalMarginAmt < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
               {fmtKrw(totalMarginAmt)}
             </td>
@@ -561,7 +553,7 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
           </tr>
         </tfoot>
       </table>
-      <p className="mt-1 text-right text-xs text-neutral-500">{sub.length}건 · 환율 ¥1 = ₩{rate}</p>
+      <p className="mt-1 text-right text-xs text-neutral-500">{filtered.length}건 · 환율 ¥1 = ₩{rate}</p>
     </div>
   )
 }
@@ -572,11 +564,11 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
 type ViewType = 'total' | 'active' | 'contract' | 'receivable' | 'margin'
 
 const VIEW_CONFIG: Record<ViewType, { title: string; description: string }> = {
-  total: { title: '총 프로젝트', description: '전체 서브 프로젝트 목록입니다.' },
+  total: { title: '총 프로젝트', description: '전체 프로젝트 목록입니다.' },
   active: { title: '진행 중 프로젝트', description: '현재 진행 중인 프로젝트 목록입니다.' },
   contract: { title: '총 계약금액', description: '계약금액 기준 전체 프로젝트 내역입니다.' },
   receivable: { title: '미수금 현황', description: '미수금이 남아 있는 프로젝트 목록입니다.' },
-  margin: { title: '마진 분석', description: '프로젝트별 마진(계약금액 - 크리에이터 정산금) 분석입니다.' },
+  margin: { title: '마진 분석', description: '프로젝트별 마진(계약금액 - 지출액) 분석입니다.' },
 }
 
 // ─────────────────────────────────────────────
