@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queries'
-import { totalContractKrw, totalCreatorSettlementKrw, marginKrw, marginRate, receivableKrw, type Project } from '@/lib/dashboard/calculations'
+import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, type Project } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   StatusBarChart,
@@ -22,16 +22,13 @@ const ACTIVE_STATUSES = new Set([
   '리스트업 중',
   '인플루언서 섭외',
   '리스트 전달',
+  '섭외 중',
 ])
 
 // Statuses to exclude from pipeline chart entirely
-const EXCLUDE_STATUSES = new Set(['Drop', '보류', '시작 전', '(미설정)'])
+const EXCLUDE_STATUSES = new Set(['Drop', '보류', '진행 전', '(미설정)'])
 
-const NON_ACTIVE_STATUSES = new Set(['완료', 'Drop', '시작 전', '보류'])
-
-function getSubProjects(projects: Project[]) {
-  return projects.filter((p) => p.parent_notion_id !== null && p.parent_notion_id !== '')
-}
+const NON_ACTIVE_STATUSES = new Set(['완료', 'Drop', '진행 전', '보류'])
 
 function getLast6Months(): string[] {
   const result: string[] = []
@@ -106,24 +103,22 @@ export default function ProjectsPage() {
     )
   }
 
-  const sub = getSubProjects(projects)
-
   // KPI
-  const totalProjects = sub.length
-  const inProgress = sub.filter((p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)).length
-  const totalContract = sub.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
-  const totalReceivable = sub.reduce((acc, p) => acc + receivableKrw(p, rate), 0)
+  const totalProjects = projects.length
+  const inProgress = projects.filter((p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)).length
+  const totalContract = projects.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
+  const totalReceivable = projects.reduce((acc, p) => acc + receivableKrw(p, rate), 0)
 
-  // 마진 — 계약금액 또는 크리에이터 정산금이 있는 프로젝트만
-  const marginProjects = sub.filter((p) => totalContractKrw(p, rate) > 0 || totalCreatorSettlementKrw(p, rate) > 0)
+  // 마진 — 계약금액 또는 지출액이 있는 프로젝트만
+  const marginProjects = projects.filter((p) => totalContractKrw(p, rate) > 0 || totalExpenseKrw(p, rate) > 0)
   const avgMarginRate = marginProjects.length > 0
     ? marginProjects.reduce((acc, p) => acc + marginRate(p, rate), 0) / marginProjects.length
     : 0
-  const totalMargin = sub.reduce((acc, p) => acc + marginKrw(p, rate), 0)
+  const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p, rate), 0)
 
   // Status pipeline — collapse active statuses into "진행중", keep "완료", exclude others
   const pipelineMap = new Map<string, number>()
-  for (const p of sub) {
+  for (const p of projects) {
     const s = p.status ?? '(미설정)'
     if (EXCLUDE_STATUSES.has(s)) continue
     if (ACTIVE_STATUSES.has(s)) {
@@ -136,7 +131,7 @@ export default function ProjectsPage() {
 
   // Assignee workload
   const assigneeMap = new Map<string, number>()
-  for (const p of sub) {
+  for (const p of projects) {
     for (const name of p.assignee_names) {
       assigneeMap.set(name, (assigneeMap.get(name) ?? 0) + 1)
     }
@@ -148,7 +143,7 @@ export default function ProjectsPage() {
   // Monthly
   const last6 = getLast6Months()
   const monthlyMap = new Map<string, number>(last6.map((m) => [m, 0]))
-  for (const p of sub) {
+  for (const p of projects) {
     if (!p.start_date) continue
     const month = p.start_date.slice(0, 7)
     if (monthlyMap.has(month)) {
@@ -161,7 +156,7 @@ export default function ProjectsPage() {
   }))
 
   // Receivable TOP 10
-  const receivableList = sub
+  const receivableList = projects
     .map((p) => ({
       id: p.id,
       name: p.name,
@@ -199,7 +194,7 @@ export default function ProjectsPage() {
             className="flex items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-1.5 text-xs text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-700 disabled:opacity-50"
           >
             <RefreshCw className={`h-3 w-3 ${syncing ? 'animate-spin' : ''}`} />
-            {syncing ? '동기화 중...' : 'Notion 동기화'}
+            {syncing ? '동기화 중...' : '시트 동기화'}
           </button>
         </div>
       </div>
