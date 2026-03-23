@@ -35,6 +35,7 @@ import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
 import { CreatorTrackSection } from "@/components/creator-track-section";
 import { SectionTag } from "@/components/ui/section-tag";
+import Image from "next/image";
 
 const CREATORS_PER_PAGE = 9;
 
@@ -279,10 +280,13 @@ function CreatorContent() {
                         {/* Creator Avatar */}
                         <div className="aspect-[3/4] min-h-0 bg-card relative overflow-hidden">
                           {creator.profile_image_url ? (
-                            <img
+                            <Image
                               src={creator.profile_image_url}
                               alt={creator.name}
-                              className="w-full h-full object-cover object-center"
+                              fill
+                              sizes="(max-width: 768px) 33vw, 25vw"
+                              className="object-cover object-center"
+                              loading="lazy"
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center">

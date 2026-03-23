@@ -32,7 +32,6 @@ export function Logo({ variant }: { variant: 'header' | 'footer' }) {
       height={40}
       className={isHeader ? 'h-8 sm:h-10 w-auto object-contain flex-shrink-0' : 'h-8 w-auto object-contain'}
       priority={isHeader}
-      unoptimized
       onError={() => setFailed(true)}
     />
   )

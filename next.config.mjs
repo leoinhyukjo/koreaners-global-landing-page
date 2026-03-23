@@ -7,6 +7,11 @@ const nextConfig = {
         destination: 'https://linktr.ee/koreanersglobal',
         permanent: false,
       },
+      {
+        source: '/creators',
+        destination: '/creator',
+        permanent: true,
+      },
     ]
   },
   // 메타데이터(탭 제목 등)를 스트리밍 대신 초기 HTML에 포함시켜 'browser tab' 현상 방지

@@ -102,6 +102,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: baseUrl,
+    languages: {
+      'ko': baseUrl,
+      'x-default': baseUrl,
+    },
   },
   robots: {
     index: true,
@@ -135,16 +139,31 @@ export default function RootLayout({
               {
                 "@context": "https://schema.org",
                 "@type": "Organization",
+                "@id": "https://www.koreaners.co/#organization",
                 name: "코리너스",
                 alternateName: "KOREANERS",
                 url: "https://www.koreaners.co",
-                logo: "https://www.koreaners.co/images/logo.png",
+                logo: {
+                  "@type": "ImageObject",
+                  url: "https://www.koreaners.co/images/logo.png",
+                  width: 800,
+                  height: 400,
+                },
+                image: "https://www.koreaners.co/images/logo.png",
                 description:
                   "일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지. 크로스보더 마케팅 전문 에이전시.",
                 foundingDate: "2022",
-                areaServed: ["KR", "JP"],
+                areaServed: [
+                  { "@type": "Country", name: "South Korea" },
+                  { "@type": "Country", name: "Japan" },
+                ],
                 knowsLanguage: ["ko", "ja"],
                 sameAs: ["https://www.instagram.com/koreaners_global"],
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: "Seoul",
+                  addressCountry: "KR",
+                },
                 contactPoint: {
                   "@type": "ContactPoint",
                   email: "leo@koreaners.com",
@@ -155,9 +174,20 @@ export default function RootLayout({
               {
                 "@context": "https://schema.org",
                 "@type": "WebSite",
+                "@id": "https://www.koreaners.co/#website",
                 name: "코리너스",
                 alternateName: "KOREANERS",
                 url: "https://www.koreaners.co",
+                publisher: { "@id": "https://www.koreaners.co/#organization" },
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: "https://www.koreaners.co/blog?q={search_term_string}",
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+                inLanguage: ["ko", "ja"],
               },
               {
                 "@context": "https://schema.org",

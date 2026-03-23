@@ -11,6 +11,7 @@ import { useLocale } from '@/contexts/locale-context'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
+import Image from 'next/image'
 
 const PortfolioSkeleton = () => (
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
@@ -153,29 +154,13 @@ export default function PortfolioPage() {
                     {/* Image */}
                     {item.thumbnail_url ? (
                       <div className="aspect-video relative overflow-hidden bg-card">
-                        <img
+                        <Image
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale)}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) => {
-                            // 이미지 로드 실패 시 플레이스홀더로 대체
-                            const target = e.target as HTMLImageElement
-                            target.style.display = 'none'
-                            const parent = target.parentElement
-                            if (parent && !parent.querySelector('.placeholder-fallback')) {
-                              const placeholder = document.createElement('div')
-                              placeholder.className = 'placeholder-fallback absolute inset-0 flex items-center justify-center bg-card'
-                              placeholder.innerHTML = `
-                                <div class="text-center px-4">
-                                  <div class="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">
-                                    ${getCategoryInitial(item.category)}
-                                  </div>
-                                  <p class="text-xs text-[#A8A29E]">${noImageText}</p>
-                                </div>
-                              `
-                              parent.appendChild(placeholder)
-                            }
-                          }}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
                         />
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
                           <span className="px-2 sm:px-3 py-1 bg-[#FF4500]/10 text-[#FF4500] text-xs font-bold rounded-full uppercase">

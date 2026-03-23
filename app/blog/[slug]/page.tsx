@@ -125,27 +125,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
     image: [thumbnailAbsolute],
     datePublished: blogPost.created_at,
     dateModified: blogPost.updated_at,
-    author: [
-      {
-        "@type": "Organization",
-        name: "KOREANERS",
-        url: siteUrl,
-      },
-      {
-        "@type": "Organization",
-        name: "코리너스",
-        url: siteUrl,
-      },
-    ],
-    publisher: {
-      "@type": "Organization",
-      name: "KOREANERS",
-      url: siteUrl,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteUrl}/images/logo.png`,
-      },
+    author: {
+      "@id": "https://www.koreaners.co/#organization",
     },
+    publisher: {
+      "@id": "https://www.koreaners.co/#organization",
+    },
+    inLanguage: "ko",
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${siteUrl}/blog/${slug}`,

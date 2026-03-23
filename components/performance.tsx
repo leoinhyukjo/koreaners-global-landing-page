@@ -10,6 +10,7 @@ import { getTranslation } from '@/lib/translations'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
+import Image from 'next/image'
 
 export function Performance() {
   const { locale } = useLocale()
@@ -68,10 +69,12 @@ export function Performance() {
                   <Link href={`/portfolio/${item.id}`} className="group cursor-pointer block">
                     <div className="aspect-video bg-[var(--kn-card-dark)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-light)]/10">
                       {item.thumbnail_url ? (
-                        <img
+                        <Image
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale) || 'Portfolio image'}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
                         />
                       ) : (
