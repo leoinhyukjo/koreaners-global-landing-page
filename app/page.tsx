@@ -9,9 +9,71 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '코리너스는 어떤 회사인가요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '코리너스는 2022년 설립된 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 105명의 전속 크리에이터와 30만 SNS 커뮤니티를 보유하고 있으며, 인플루언서 캠페인, 대량 시딩, 콘텐츠 제작, 데이터 기반 리포팅까지 일본 진출의 전 과정을 설계하고 운영합니다.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '일본 인플루언서 마케팅 비용은 얼마인가요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '캠페인 규모, 크리에이터 티어, 콘텐츠 유형에 따라 달라집니다. 나노 크리에이터(~1만 팔로워) 기준 15~20만원, 마이크로(1~3만) 기준 20~35만원부터 시작합니다. 상세한 견적은 문의 페이지를 통해 요청해주세요.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '어떤 업종의 브랜드를 지원하나요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'K-뷰티, F&B, 패션, 의료관광, IT 등 다양한 업종의 300개 이상 브랜드를 지원한 경험이 있습니다. 특히 K-뷰티와 의료관광 분야에서 강점을 보유하고 있습니다.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '캠페인 성과를 어떻게 측정하나요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ROAS, CVR, 노출수, 전환 분석 등 정량적 지표와 함께 브랜드 이미지, 현지 정서, 구매 의사 등 정성적 키워드 분석을 종합한 데이터 리포트를 제공합니다.',
+        },
+      },
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
+      {/* AI 크롤러용 서버 렌더링 텍스트 — JS 미실행 크롤러가 핵심 콘텐츠를 읽을 수 있도록 */}
+      <div className="sr-only" aria-hidden="false">
+        <h1>코리너스 | KOREANERS — 일본 인플루언서 마케팅 & 현지화 전략 파트너</h1>
+        <p>
+          코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다.
+          105명의 전속 크리에이터와 30만 SNS 커뮤니티를 보유하고 있으며,
+          인플루언서 캠페인, 대량 시딩, 콘텐츠 제작, 데이터 기반 리포팅까지
+          일본 진출의 전 과정을 설계하고 운영합니다.
+        </p>
+        <p>300+ 브랜드 지원 | 105+ 전속 크리에이터 | 30만+ SNS 커뮤니티 | 평균 ROI 250%</p>
+        <h2>핵심 서비스</h2>
+        <ul>
+          <li>일본 인플루언서 마케팅 — 전속 크리에이터 네트워크를 통한 캠페인 기획 및 운영</li>
+          <li>대량 시딩 — 5,000명 이상의 체험단 풀을 활용한 리뷰 콘텐츠 확산</li>
+          <li>콘텐츠 제작 — 일본 현지 소비자 감성에 맞춘 마케팅 콘텐츠</li>
+          <li>데이터 리포팅 — ROAS, CVR, 전환 분석 및 정성적 키워드 분석</li>
+        </ul>
+        <p>KOTRA 수출바우처 공식 수행기관</p>
+      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <MainContent />
     </main>
   )
