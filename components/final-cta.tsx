@@ -6,7 +6,6 @@ import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
 
 const stats = [
-  { value: '300+', key: 'finalCtaStat1' as const },
   { value: '300+', key: 'finalCtaStat2' as const },
   { value: (locale: string) => (locale === 'ja' ? '30万' : '30만'), key: 'finalCtaStat3' as const },
   { value: '250%', key: 'finalCtaStat4' as const },
@@ -28,7 +27,7 @@ export function FinalCTA() {
         </FadeIn>
 
         {/* Stats Grid */}
-        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-3 gap-8 mt-16">
           {stats.map((stat, index) => (
             <StaggerItem key={stat.key}>
               <div className={`${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
