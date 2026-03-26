@@ -144,7 +144,7 @@ export default function ServicePage() {
             <div className="space-y-4">
               <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat1')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">105</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">300+</div>
               </div>
               <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat2')}</div>
@@ -152,7 +152,7 @@ export default function ServicePage() {
               </div>
               <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat3')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">3</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">6</div>
               </div>
             </div>
           </div>
@@ -172,15 +172,15 @@ export default function ServicePage() {
             <div className="space-y-4">
               <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
                 <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat1')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">5,000</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">5,023</div>
               </div>
               <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
                 <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat2')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">&mdash;</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">9,247</div>
               </div>
               <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
                 <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat3')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">&mdash;</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">96%</div>
               </div>
             </div>
 

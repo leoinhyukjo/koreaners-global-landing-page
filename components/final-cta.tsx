@@ -7,7 +7,7 @@ import { SectionTag } from '@/components/ui/section-tag'
 
 const stats = [
   { value: '300+', key: 'finalCtaStat1' as const },
-  { value: '105', key: 'finalCtaStat2' as const },
+  { value: '300+', key: 'finalCtaStat2' as const },
   { value: (locale: string) => (locale === 'ja' ? '30万' : '30만'), key: 'finalCtaStat3' as const },
   { value: '250%', key: 'finalCtaStat4' as const },
 ]
