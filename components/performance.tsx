@@ -67,7 +67,7 @@ export function Performance() {
               {portfolios.slice(0, 3).map((item) => (
                 <StaggerItem key={item.id}>
                   <Link href={`/portfolio/${item.id}`} className="group cursor-pointer block">
-                    <div className="aspect-video bg-[var(--kn-card-dark)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-light)]/10">
+                    <div className="relative aspect-video bg-[var(--kn-card-dark)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-light)]/10">
                       {item.thumbnail_url ? (
                         <Image
                           src={item.thumbnail_url}
