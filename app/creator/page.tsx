@@ -37,7 +37,7 @@ import { CreatorTrackSection } from "@/components/creator-track-section";
 import { SectionTag } from "@/components/ui/section-tag";
 import Image from "next/image";
 
-const CREATORS_PER_PAGE = 9;
+const CREATORS_PER_PAGE = 8;
 
 function CreatorContent() {
   const { locale } = useLocale();
@@ -262,7 +262,7 @@ function CreatorContent() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 mb-8 min-w-0">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-8 min-w-0">
                   {creators.map((creator) => {
                     const instagramHandle = creator.instagram_url
                       ? "@" +
