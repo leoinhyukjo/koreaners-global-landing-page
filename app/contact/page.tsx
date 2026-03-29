@@ -1,29 +1,38 @@
-'use client'
+import type { Metadata } from 'next'
+import ContactContent from '@/components/contact-content'
+import { safeJsonLdStringify } from '@/lib/json-ld'
 
-import React from 'react'
-import Navigation from '@/components/navigation'
-import { SafeHydration } from '@/components/common/SafeHydration'
-import { FooterCTA } from '@/components/footer-cta'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
-const ContactSkeleton = () => (
-  <div className="min-h-[60vh] flex items-center justify-center pt-24 sm:pt-28" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto rounded-[var(--radius)] animate-pulse bg-card/50" />
-  </div>
-)
+export const metadata: Metadata = {
+  title: '문의하기 | 일본 인플루언서 마케팅 상담',
+  description:
+    '일본 인플루언서 마케팅, 시딩, 콘텐츠 제작 등 일본 시장 진출에 대해 문의하세요. 코리너스가 맞춤 전략을 제안해 드립니다.',
+  alternates: { canonical: `${siteUrl}/contact` },
+  openGraph: {
+    title: '코리너스 문의하기 | 일본 마케팅 상담',
+    description: '일본 인플루언서 마케팅 전문 상담. 맞춤 전략 제안.',
+    url: `${siteUrl}/contact`,
+  },
+}
 
-/**
- * /contact — 메인 페이지 하단 'Contact Us' 섹션(FooterCTA)과 100% 동일한 UI·로직.
- * 헤더·푸터 사이 여백만 추가.
- */
 export default function ContactPage() {
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '홈', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: '문의하기' },
+    ],
+  }
+
   return (
-    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-background">
-      <Navigation />
-      <SafeHydration fallback={<ContactSkeleton />}>
-        <div className="pt-24 sm:pt-28 pb-12 sm:pb-20">
-          <FooterCTA />
-        </div>
-      </SafeHydration>
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumb) }}
+      />
+      <ContactContent />
+    </>
   )
 }

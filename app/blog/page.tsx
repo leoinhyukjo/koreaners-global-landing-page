@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import BlogPageContent from '@/components/blog-content'
+import { safeJsonLdStringify } from '@/lib/json-ld'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
@@ -18,5 +19,22 @@ export const metadata: Metadata = {
 }
 
 export default function BlogPage() {
-  return <BlogPageContent />
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '홈', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: '블로그' },
+    ],
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumb) }}
+      />
+      <BlogPageContent />
+    </>
+  )
 }

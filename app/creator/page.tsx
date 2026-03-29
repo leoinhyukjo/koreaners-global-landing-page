@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import CreatorPageContent from '@/components/creator-content'
+import { safeJsonLdStringify } from '@/lib/json-ld'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
@@ -16,5 +17,22 @@ export const metadata: Metadata = {
 }
 
 export default function CreatorPage() {
-  return <CreatorPageContent />
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '홈', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: '크리에이터' },
+    ],
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumb) }}
+      />
+      <CreatorPageContent />
+    </>
+  )
 }

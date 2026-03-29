@@ -66,10 +66,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const supabase = await createClient()
 
-    // 포트폴리오 페이지 추가
+    // 포트폴리오 페이지 추가 (썸네일 이미지 포함)
     const { data: portfolios } = await supabase
       .from('portfolios')
-      .select('id, updated_at')
+      .select('id, title, updated_at, thumbnail_url')
       .order('updated_at', { ascending: false })
 
     const portfolioPages: MetadataRoute.Sitemap = portfolios?.map((portfolio) => ({
@@ -77,12 +77,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: portfolio.updated_at || currentDate,
       changeFrequency: 'monthly',
       priority: 0.8,
+      ...(portfolio.thumbnail_url ? {
+        images: [portfolio.thumbnail_url],
+      } : {}),
     })) || []
 
-    // 블로그 포스트 페이지 추가
+    // 블로그 포스트 페이지 추가 (썸네일 이미지 포함)
     const { data: blogPosts } = await supabase
       .from('blog_posts')
-      .select('slug, updated_at, published')
+      .select('slug, title, updated_at, published, thumbnail_url')
       .eq('published', true)
       .order('updated_at', { ascending: false })
 
@@ -91,9 +94,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: post.updated_at || currentDate,
       changeFrequency: 'weekly',
       priority: 0.7,
+      ...(post.thumbnail_url ? {
+        images: [post.thumbnail_url],
+      } : {}),
     })) || []
 
-    // 크리에이터 프로필 페이지 추가 (있는 경우)
+    // 크리에이터 프로필 페이지 추가
     const { data: creators } = await supabase
       .from('creators')
       .select('id, updated_at')

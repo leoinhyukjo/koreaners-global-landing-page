@@ -137,7 +137,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
       "@id": `${siteUrl}/blog/${slug}`,
     },
     articleSection: blogPost.category,
-    keywords: blogPost.category,
+    keywords: [
+      blogPost.category,
+      '일본 인플루언서 마케팅',
+      '크로스보더 마케팅',
+      '코리너스',
+      ...(blogPost.title.includes('비용') ? ['일본 인플루언서 비용', '마케팅 비용 가이드'] : []),
+      ...(blogPost.title.includes('시딩') ? ['일본 시딩', '일본 체험단'] : []),
+      ...(blogPost.title.includes('뷰티') || blogPost.title.includes('Beauty') ? ['K-뷰티 일본', 'K-Beauty'] : []),
+    ].join(', '),
   };
 
   // FAQ Schema (faqs가 있을 때만)
