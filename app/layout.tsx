@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Barlow_Condensed, Playfair_Display, Noto_Sans_JP } from "next/font/google";
+import { safeJsonLdStringify } from "@/lib/json-ld";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -49,20 +50,22 @@ export const metadata: Metadata = {
     template: "%s | 코리너스 KOREANERS",
   },
   description:
-    "코리너스는 일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 운영하는 전문 에이전시입니다. 30만 커뮤니티, 100+ 미디어 네트워크 보유.",
+    "일본 인플루언서 마케팅 전문 대행사 코리너스. 300+ 브랜드, 300+ 전속 크리에이터. 인플루언서 캠페인, 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 설계하고 운영합니다.",
   keywords: [
     "코리너스",
     "KOREANERS",
-    "일본 마케팅",
-    "일본 인플루언서",
+    "일본 인플루언서 마케팅 대행사",
+    "일본 인플루언서 마케팅",
+    "일본 마케팅 대행",
+    "일본 인플루언서 섭외",
     "크로스보더 마케팅",
     "일본 진출",
-    "인플루언서 마케팅",
     "일본 시딩",
+    "일본 체험단",
+    "일본 SNS 마케팅",
     "K-뷰티 일본",
-    "일본 현지화",
-    "Japanese influencer marketing",
-    "cross-border marketing",
+    "Korean influencer marketing agency",
+    "韓国 インフルエンサー マーケティング",
   ],
   verification: {
     google: "TevxoNyzDOk6ZIWhhkwYSrGTNwj3Y1T9TYGUnsBYlZU",
@@ -81,7 +84,7 @@ export const metadata: Metadata = {
     siteName: "코리너스 KOREANERS",
     title: "코리너스 | KOREANERS - 일본 마케팅 & 인플루언서 전문 에이전시",
     description:
-      "일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지. 크로스보더 마케팅 전문 에이전시 코리너스.",
+      "일본 인플루언서 마케팅 전문 대행사 코리너스. 300+ 브랜드, 300+ 전속 크리에이터. 캠페인, 시딩, 콘텐츠, 리포팅까지.",
     url: baseUrl,
     locale: "ko_KR",
     images: [
@@ -130,12 +133,11 @@ export default function RootLayout({
       <body
         className="flex min-h-screen flex-col font-body antialiased bg-black text-base"
       >
-        <Script
-          id="json-ld"
+        {/* 구조화 데이터 — 서버 렌더링 (afterInteractive에서 전환, 크롤러 즉시 인식) */}
+        <script
           type="application/ld+json"
-          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
+            __html: safeJsonLdStringify([
               {
                 "@context": "https://schema.org",
                 "@type": "Organization",
@@ -151,7 +153,7 @@ export default function RootLayout({
                 },
                 image: "https://www.koreaners.co/images/logo.png",
                 description:
-                  "일본 인플루언서 마케팅, 시딩, 콘텐츠 제작, 데이터 리포팅까지. 크로스보더 마케팅 전문 에이전시.",
+                  "일본 인플루언서 마케팅 전문 대행사. 300+ 브랜드, 300+ 전속 크리에이터. 캠페인, 시딩, 콘텐츠, 리포팅까지.",
                 foundingDate: "2022",
                 areaServed: [
                   { "@type": "Country", name: "South Korea" },
