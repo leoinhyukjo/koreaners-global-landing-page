@@ -1,8 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // 1시간 ISR
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import type { Portfolio } from "@/lib/supabase";
 import Navigation from "@/components/navigation";
 import { safeJsonLdStringify } from "@/lib/json-ld";
@@ -13,9 +13,17 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("portfolios")
+    .select("id");
+  return (data || []).map((p) => ({ id: p.id }));
+}
+
 async function getPortfolio(id: string): Promise<Portfolio | null> {
   try {
-    const supabase = await createClient();
+    const supabase = createStaticClient();
     const { data, error } = await supabase
       .from("portfolios")
       .select("*")
@@ -35,7 +43,7 @@ async function getPortfolio(id: string): Promise<Portfolio | null> {
 
 async function getOtherPortfolios(excludeId: string): Promise<Portfolio[]> {
   try {
-    const supabase = await createClient();
+    const supabase = createStaticClient();
     const { data, error } = await supabase
       .from("portfolios")
       .select("*")

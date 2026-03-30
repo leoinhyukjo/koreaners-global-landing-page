@@ -1,9 +1,8 @@
-// 블로그 상세 페이지는 빌드 타임에 정적으로 생성하지 않고 런타임에 동적으로 생성
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // 1시간 ISR
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import type { BlogPost } from "@/lib/supabase";
 import Navigation from "@/components/navigation";
 import { BlogPostView } from "@/components/blog/blog-post-view";
@@ -14,9 +13,18 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("blog_posts")
+    .select("slug")
+    .eq("published", true);
+  return (data || []).map((post) => ({ slug: post.slug }));
+}
+
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const supabase = await createClient();
+    const supabase = createStaticClient();
 
     const { data, error: supabaseError } = await supabase
       .from("blog_posts")

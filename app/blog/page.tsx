@@ -4,8 +4,6 @@ import { safeJsonLdStringify } from '@/lib/json-ld'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: '블로그 | 일본 마케팅 인사이트 & 트렌드',
   description:
