@@ -49,7 +49,6 @@ def main() -> None:
         calculate_campaign_kpis,
         build_completion_review_prompt,
         generate_review,
-        create_notion_review_page,
         notify_slack_review,
     )
     from config import MKT_OPS_MASTER_SHEET_ID, DASHBOARD_TAB
@@ -121,27 +120,22 @@ def main() -> None:
             prompt = build_completion_review_prompt(kpis, campaign)
             review_text = generate_review(prompt)
 
-            notion_title = f"[완료 리뷰] {brand} — {code}"
-            page_id = create_notion_review_page(
-                review_type="completion",
-                title=notion_title,
-                content=review_text,
-                action_items=[],
-            )
-            logger.info("Notion 페이지 생성 완료: %s", page_id)
+            title = f"[완료 리뷰] {brand} — {code}"
 
+            # Slack 알림
             notify_slack_review(
-                title=notion_title,
-                summary=review_text[:300] + ("..." if len(review_text) > 300 else ""),
+                title=title,
+                summary=review_text[:500],
                 review_type="completion",
             )
 
+            # Supabase 저장
             sb.table("campaign_reviews").insert({
                 "campaign_code": code,
                 "review_type": "completion",
-                "notion_page_id": page_id,
+                "insights_json": {"text": review_text, "kpis": kpis},
             }).execute()
-            logger.info("campaign_reviews 저장 완료: %s", code)
+            logger.info("캠페인 회고 완료: %s", code)
 
         except Exception as exc:
             logger.error("리뷰 생성 실패 (%s): %s", code, exc)

@@ -258,84 +258,6 @@ def generate_review(prompt: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Notion 페이지 생성
-# ---------------------------------------------------------------------------
-
-def create_notion_review_page(
-    review_type: str,
-    title: str,
-    content: str,
-    action_items: list[str],
-) -> str:
-    """Notion에 리뷰 페이지를 생성합니다.
-
-    Args:
-        review_type: 리뷰 유형 ("completion" 또는 "periodic")
-        title: 페이지 제목
-        content: 리뷰 본문 텍스트
-        action_items: 액션아이템 리스트 (to_do 블록으로 생성)
-
-    Returns:
-        생성된 Notion 페이지 ID
-    """
-    from notion_client import Client
-
-    notion = Client(auth=os.environ.get("NOTION_TOKEN"))
-    db_id = os.environ.get("NOTION_REVIEW_DB_ID", "")
-
-    # 본문 단락 블록
-    children: list[dict] = [
-        {
-            "object": "block",
-            "type": "paragraph",
-            "paragraph": {
-                "rich_text": [
-                    {
-                        "type": "text",
-                        "text": {"content": content},
-                    }
-                ]
-            },
-        }
-    ]
-
-    # 액션아이템 to_do 블록
-    for item in action_items:
-        children.append(
-            {
-                "object": "block",
-                "type": "to_do",
-                "to_do": {
-                    "rich_text": [
-                        {
-                            "type": "text",
-                            "text": {"content": item},
-                        }
-                    ],
-                    "checked": False,
-                },
-            }
-        )
-
-    response = notion.pages.create(
-        parent={"database_id": db_id},
-        properties={
-            "이름": {
-                "title": [
-                    {
-                        "type": "text",
-                        "text": {"content": title},
-                    }
-                ]
-            }
-        },
-        children=children,
-    )
-
-    return response["id"]
-
-
-# ---------------------------------------------------------------------------
 # Slack 알림
 # ---------------------------------------------------------------------------
 
@@ -344,7 +266,7 @@ def notify_slack_review(title: str, summary: str, review_type: str) -> None:
 
     Args:
         title: 알림 제목
-        summary: 알림 요약 텍스트
+        summary: 알림 요약 텍스트 (500자 제한)
         review_type: "periodic" → 📊, "completion" → ✅
     """
     try:
@@ -353,5 +275,4 @@ def notify_slack_review(title: str, summary: str, review_type: str) -> None:
         return
 
     emoji = "📊" if review_type == "periodic" else "✅"
-    message = f"{emoji} *{title}*\n{summary}"
-    notify_slack(message)
+    notify_slack("캠페인 플라이휠", "success", f"{emoji} {title}\n{summary[:500]}")

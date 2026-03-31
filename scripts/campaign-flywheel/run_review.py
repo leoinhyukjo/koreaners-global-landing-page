@@ -50,7 +50,6 @@ def main() -> None:
     from review_generator import (
         build_periodic_review_prompt,
         generate_review,
-        create_notion_review_page,
         notify_slack_review,
     )
     from config import REVIEW_PERIODIC_DAYS
@@ -202,31 +201,23 @@ def main() -> None:
     review_text = generate_review(prompt)
     logger.info("Claude 리뷰 생성 완료 (%d자)", len(review_text))
 
-    # ── Notion 페이지 생성 ──
-    notion_title = f"[정기 리뷰] {period_start_str} ~ {period_end_str}"
-    page_id = create_notion_review_page(
+    title = f"[정기 리뷰] {period_start_str} ~ {period_end_str}"
+
+    # ── Slack 알림 ──
+    notify_slack_review(
+        title=title,
+        summary=review_text[:500],
         review_type="periodic",
-        title=notion_title,
-        content=review_text,
-        action_items=[],
     )
-    logger.info("Notion 페이지 생성 완료: %s", page_id)
 
     # ── campaign_reviews 저장 ──
     sb.table("campaign_reviews").insert({
         "review_type": "periodic",
-        "notion_page_id": page_id,
         "period_start": period_start_str,
         "period_end": period_end_str,
+        "insights_json": {"text": review_text, "summary": summary},
     }).execute()
     logger.info("campaign_reviews 저장 완료")
-
-    # ── Slack 알림 ──
-    notify_slack_review(
-        title=notion_title,
-        summary=review_text[:400] + ("..." if len(review_text) > 400 else ""),
-        review_type="periodic",
-    )
 
     logger.info("정기 리뷰 파이프라인 완료")
     notify_slack("캠페인 정기 리뷰", "success", f"{period_start_str} ~ {period_end_str}")
