@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LayoutDashboard, RefreshCw } from 'lucide-react'
+import { LayoutDashboard, RefreshCw, BarChart3 } from 'lucide-react'
 
 export default function AdminLandingPage() {
   return (
@@ -9,7 +9,7 @@ export default function AdminLandingPage() {
         <p className="text-sm text-muted-foreground">관리할 메뉴를 선택하세요</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-xl lg:max-w-2xl">
         {/* 콘텐츠 관리 */}
         <Link
           href="/admin/content"
@@ -57,6 +57,32 @@ export default function AdminLandingPage() {
               </p>
             </div>
             <span className="inline-flex items-center gap-1 text-xs text-sky-500 opacity-0 group-hover:opacity-100 transition-opacity">
+              이동 →
+            </span>
+          </div>
+        </Link>
+
+        {/* 캠페인 인사이트 */}
+        <Link
+          href="/admin/insights"
+          className="group relative rounded-xl border border-neutral-800 bg-neutral-900 p-6 hover:border-emerald-500/50 hover:bg-neutral-800/60 transition-all"
+        >
+          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ background: 'radial-gradient(ellipse at top left, rgba(16,185,129,0.08) 0%, transparent 60%)' }}
+          />
+          <div className="relative space-y-3">
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <BarChart3 className="h-5 w-5 text-emerald-400" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-neutral-50 group-hover:text-emerald-300 transition-colors">
+                캠페인 인사이트
+              </h2>
+              <p className="mt-1 text-xs text-neutral-500 leading-relaxed">
+                성과·크리에이터·매출 트렌드
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1 text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity">
               이동 →
             </span>
           </div>

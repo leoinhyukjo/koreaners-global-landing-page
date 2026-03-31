@@ -50,6 +50,34 @@ export async function fetchAllProjects(): Promise<Project[]> {
   })) as Project[]
 }
 
+export async function fetchCampaignPosts() {
+  const { data, error } = await supabase
+    .from('campaign_posts')
+    .select('*')
+    .order('collected_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function fetchCampaignFinancials() {
+  const { data, error } = await supabase
+    .from('campaign_financials')
+    .select('*')
+    .order('start_date', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function fetchCampaignReviews() {
+  const { data, error } = await supabase
+    .from('campaign_reviews')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(20)
+  if (error) throw error
+  return data ?? []
+}
+
 /**
  * 최신 JPY/KRW 환율 조회
  * exchange_rates 테이블에서 가장 최근 레코드 사용.
