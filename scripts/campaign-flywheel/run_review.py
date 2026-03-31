@@ -229,7 +229,7 @@ def main() -> None:
     )
 
     logger.info("정기 리뷰 파이프라인 완료")
-    notify_slack(f"📊 캠페인 정기 리뷰 완료 — {period_start_str} ~ {period_end_str}")
+    notify_slack("캠페인 정기 리뷰", "success", f"{period_start_str} ~ {period_end_str}")
 
 
 if __name__ == "__main__":
@@ -242,6 +242,6 @@ if __name__ == "__main__":
         import traceback
         tb = traceback.format_exc()
         logger.error("[FATAL] %s\n%s", exc, tb)
-        notify_slack(f"❌ 캠페인 정기 리뷰 실패\n{exc}\n{tb[:500]}")
+        notify_slack("캠페인 정기 리뷰", "fail", f"{exc}\n{tb[:500]}")
         ping_healthcheck("fail", str(exc))
         sys.exit(1)

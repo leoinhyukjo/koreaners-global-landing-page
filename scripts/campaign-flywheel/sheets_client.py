@@ -97,6 +97,15 @@ class SheetsClient:
         )
         return result.get("updates", {}).get("updatedRows", 0)
 
+    def get_sheet_tabs(self, spreadsheet_id: str) -> list[str]:
+        """스프레드시트의 모든 탭(시트) 이름을 반환합니다."""
+        result = (
+            self._sheets_service.spreadsheets()
+            .get(spreadsheetId=spreadsheet_id, fields="sheets.properties.title")
+            .execute()
+        )
+        return [s["properties"]["title"] for s in result.get("sheets", [])]
+
     def list_drive_sheets(self, folder_id: str) -> list[dict]:
         """Drive 폴더 내 Google Sheets 파일 목록을 반환합니다.
 

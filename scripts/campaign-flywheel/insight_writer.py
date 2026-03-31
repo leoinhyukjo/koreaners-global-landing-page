@@ -139,6 +139,14 @@ def write_financials_to_supabase(
     if not records:
         return 0
 
+    # campaign_code 중복 제거 (마지막 것 우선)
+    deduped: dict[str, dict] = {}
+    for r in records:
+        code = r.get("campaign_code")
+        if code:
+            deduped[code] = r
+    records = list(deduped.values())
+
     total = 0
     for i in range(0, len(records), batch_size):
         batch = records[i : i + batch_size]

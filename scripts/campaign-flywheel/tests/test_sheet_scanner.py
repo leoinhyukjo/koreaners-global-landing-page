@@ -114,6 +114,7 @@ class TestScanAllSheetsDeduplicates(unittest.TestCase):
         mock_client.list_drive_sheets.return_value = [
             {"id": "sheet_dup", "name": "[KOREANERS] 녹십자웰빙 인플루언서 리스트"}
         ]
+        mock_client.get_sheet_tabs.return_value = ["Sheet1"]
         # 같은 URL이 두 행에 존재
         duplicate_url = "https://www.instagram.com/reel/DUP001xyz/"
         mock_client.read_tab.return_value = [
@@ -137,6 +138,7 @@ class TestScanAllSheetsSkipsExistingUrls(unittest.TestCase):
         mock_client.list_drive_sheets.return_value = [
             {"id": "sheet_exist", "name": "[KOREANERS] 온리프 진행"}
         ]
+        mock_client.get_sheet_tabs.return_value = ["Sheet1"]
         existing_url = "https://www.instagram.com/reel/EXISTING001/"
         mock_client.read_tab.return_value = [
             ["이름", "ID", "링크"],

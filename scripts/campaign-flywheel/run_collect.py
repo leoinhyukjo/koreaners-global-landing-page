@@ -147,7 +147,7 @@ def main() -> None:
             logger.error("리뷰 생성 실패 (%s): %s", code, exc)
 
     logger.info("수집 파이프라인 완료")
-    notify_slack(f"✅ 캠페인 플라이휠 수집 완료 — 신규 {len(new_entries)}건, 재무 {written_fin}건, 회고 {len(newly_completed)}건")
+    notify_slack("캠페인 플라이휠 수집", "success", f"신규 {len(new_entries)}건, 재무 {written_fin}건, 회고 {len(newly_completed)}건")
 
 
 if __name__ == "__main__":
@@ -160,6 +160,6 @@ if __name__ == "__main__":
         import traceback
         tb = traceback.format_exc()
         logger.error("[FATAL] %s\n%s", exc, tb)
-        notify_slack(f"❌ 캠페인 플라이휠 수집 실패\n{exc}\n{tb[:500]}")
+        notify_slack("캠페인 플라이휠 수집", "fail", f"{exc}\n{tb[:500]}")
         ping_healthcheck("fail", str(exc))
         sys.exit(1)

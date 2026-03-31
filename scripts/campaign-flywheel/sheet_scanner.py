@@ -175,18 +175,26 @@ def scan_all_sheets(
 
         brand_name = _extract_brand_from_filename(filename)
 
+        # 모든 탭 순회
         try:
-            rows = client.read_tab(sheet_id, "A:Z")
+            tab_names = client.get_sheet_tabs(sheet_id)
         except Exception:
-            continue
+            tab_names = [""]  # 폴백: 기본 탭
 
-        sheet_results = extract_ig_urls_from_rows(rows, brand_name, sheet_id)
-
-        for item in sheet_results:
-            url = item["post_url"]
-            if url in global_seen:
+        for tab_name in tab_names:
+            try:
+                range_name = f"'{tab_name}'!A:Z" if tab_name else "A:Z"
+                rows = client.read_tab(sheet_id, range_name)
+            except Exception:
                 continue
-            global_seen.add(url)
-            all_results.append(item)
+
+            sheet_results = extract_ig_urls_from_rows(rows, brand_name, sheet_id)
+
+            for item in sheet_results:
+                url = item["post_url"]
+                if url in global_seen:
+                    continue
+                global_seen.add(url)
+                all_results.append(item)
 
     return all_results
