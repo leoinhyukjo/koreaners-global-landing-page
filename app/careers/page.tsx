@@ -28,6 +28,9 @@ import {
 import { SectionTag } from '@/components/ui/section-tag'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { GlassCard } from '@/components/ui/glass-card'
+import { TiltCard } from '@/components/ui/tilt-card'
+import { AuroraBackground } from '@/components/ui/aurora-background'
 
 interface JobPosting {
   id: string
@@ -122,6 +125,13 @@ export default function CareersPage() {
 
         {/* ── Hero Section (Dark) ── */}
         <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full hero-glow">
+          <AuroraBackground
+            blobs={[
+              { color: 'rgba(255,69,0,0.07)', size: 500, top: '-5%', left: '50%', animation: 'aurora-float', duration: '20s' },
+              { color: 'rgba(245,158,11,0.05)', size: 350, top: '50%', left: '70%', animation: 'aurora-float-reverse', duration: '24s' },
+            ]}
+            withDotPattern={false}
+          />
           <div className="max-w-7xl mx-auto relative z-10">
             <SectionTag variant="dark">CAREERS</SectionTag>
             <div className="mt-6 mb-8" />
@@ -166,28 +176,27 @@ export default function CareersPage() {
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {bizAreas.map((area, index) => (
-                <Card
-                  key={index}
-                  className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
-                >
-                  <p className="text-xs font-mono mb-4 text-[#FF4500]">{String(index + 1).padStart(2, '0')}</p>
-                  <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mb-6 shrink-0">
-                    <area.icon className="w-8 h-8 text-[#FF4500]/70" />
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
-                    {t(area.titleKey)}
-                  </h3>
-                  <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed break-words mb-5">
-                    {t(area.descKey)}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {area.subKeys.map((subKey, subIdx) => (
-                      <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-white/10 rounded-[var(--radius-sm)] text-sm text-[#A8A29E] font-medium">
-                        {t(subKey)}
-                      </span>
-                    ))}
-                  </div>
-                </Card>
+                <TiltCard key={index}>
+                  <GlassCard variant="dark" className="p-8 min-w-0 overflow-hidden h-full">
+                    <p className="text-xs font-mono mb-4 text-[#FF4500]">{String(index + 1).padStart(2, '0')}</p>
+                    <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mb-6 shrink-0">
+                      <area.icon className="w-8 h-8 text-[#FF4500]/70" />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
+                      {t(area.titleKey)}
+                    </h3>
+                    <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed break-words mb-5">
+                      {t(area.descKey)}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {area.subKeys.map((subKey, subIdx) => (
+                        <span key={subIdx} className="inline-flex items-center px-3 py-1.5 bg-white/5 border border-white/10 rounded-[var(--radius-sm)] text-sm text-[#A8A29E] font-medium">
+                          {t(subKey)}
+                        </span>
+                      ))}
+                    </div>
+                  </GlassCard>
+                </TiltCard>
               ))}
             </div>
           </div>
@@ -240,20 +249,19 @@ export default function CareersPage() {
                 const icons = [Network, TrendingUp, Target]
                 const Icon = icons[index]
                 return (
-                  <Card
-                    key={index}
-                    className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
-                  >
-                    <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mx-auto mb-6">
-                      <Icon className="w-8 h-8 text-[#FF4500]/70" />
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
-                      {t(item.titleKey)}
-                    </h3>
-                    <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed break-words">
-                      {t(item.descKey)}
-                    </p>
-                  </Card>
+                  <TiltCard key={index}>
+                    <GlassCard variant="dark" className="p-8 text-center h-full">
+                      <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mx-auto mb-6">
+                        <Icon className="w-8 h-8 text-[#FF4500]/70" />
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 break-keep">
+                        {t(item.titleKey)}
+                      </h3>
+                      <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed break-words">
+                        {t(item.descKey)}
+                      </p>
+                    </GlassCard>
+                  </TiltCard>
                 )
               })}
             </div>
@@ -348,9 +356,11 @@ export default function CareersPage() {
                 {jobs.map((job) => {
                   const isClosed = job.status === '채용마감'
                   return (
-                    <Card
+                    <GlassCard
                       key={job.id}
-                      className={`p-6 sm:p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                      variant="dark"
+                      className={`p-6 sm:p-8 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                      hover={false}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="min-w-0 flex-1">
@@ -401,7 +411,7 @@ export default function CareersPage() {
                           </div>
                         )}
                       </div>
-                    </Card>
+                    </GlassCard>
                   )
                 })}
               </div>

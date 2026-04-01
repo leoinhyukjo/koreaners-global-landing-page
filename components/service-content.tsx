@@ -9,6 +9,10 @@ import { AlertTriangle, TrendingUp, Users, Target, BarChart3, Globe, CheckCircle
 import { SectionTag } from '@/components/ui/section-tag'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { GlassCard } from '@/components/ui/glass-card'
+import { TiltCard } from '@/components/ui/tilt-card'
+import { CountUp } from '@/components/ui/count-up'
+import { AuroraBackground } from '@/components/ui/aurora-background'
 
 const PAIN_DESC_KEYS = ['barrier1Desc', 'barrier2Desc', 'barrier3Desc', 'barrier4Desc'] as const
 const INFLUENCER_KEYS = [
@@ -53,8 +57,15 @@ export default function ServiceContent() {
       <SafeHydration fallback={<ServiceSkeleton />}>
 
       {/* Hero Section — Dark */}
-      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
-        <div className="max-w-7xl mx-auto">
+      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow relative overflow-hidden">
+        <AuroraBackground
+          blobs={[
+            { color: 'rgba(255,69,0,0.07)', size: 500, top: '-10%', left: '50%', animation: 'aurora-float', duration: '18s' },
+            { color: 'rgba(245,158,11,0.05)', size: 400, top: '40%', left: '70%', animation: 'aurora-float-reverse', duration: '22s' },
+          ]}
+          withDotPattern={false}
+        />
+        <div className="max-w-7xl mx-auto relative z-10">
           <SectionTag variant="dark">SERVICE</SectionTag>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep max-w-4xl mt-8">
             <span>{t('serviceHero1')}</span>{' '}
@@ -86,20 +97,19 @@ export default function ServiceContent() {
 
           <div className="grid md:grid-cols-2 gap-6">
             {painPoints.map((point, index) => (
-              <div
-                key={index}
-                className="bg-[var(--kn-card-light)] border border-[var(--kn-dark)]/5 rounded-[var(--radius)] p-8 hover:border-[#FF4500]/40 transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 flex items-center justify-center mb-6">
-                  <point.icon className="w-7 h-7 text-[#FF4500]/70" />
-                </div>
-                <h3 className="text-xl font-bold text-[var(--kn-dark)] mb-3 break-keep">
-                  {point.title}
-                </h3>
-                <p className="text-[#78716C] leading-relaxed break-words">
-                  {t(point.descKey)}
-                </p>
-              </div>
+              <TiltCard key={index}>
+                <GlassCard variant="light" className="p-8">
+                  <div className="w-12 h-12 flex items-center justify-center mb-6">
+                    <point.icon className="w-7 h-7 text-[#FF4500]/70" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[var(--kn-dark)] mb-3 break-keep">
+                    {point.title}
+                  </h3>
+                  <p className="text-[#78716C] leading-relaxed break-words">
+                    {t(point.descKey)}
+                  </p>
+                </GlassCard>
+              </TiltCard>
             ))}
           </div>
         </div>
@@ -142,18 +152,28 @@ export default function ServiceContent() {
 
             {/* Right: Stat cards stacked */}
             <div className="space-y-4">
-              <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
-                <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat1')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">300+</div>
-              </div>
-              <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
-                <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat2')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">0%</div>
-              </div>
-              <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
-                <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat3')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">6</div>
-              </div>
+              <TiltCard>
+                <GlassCard variant="dark" className="p-8">
+                  <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat1')}</div>
+                  <div className="font-display font-bold text-5xl text-[#FF4500]">
+                    <CountUp end={300} suffix="+" />
+                  </div>
+                </GlassCard>
+              </TiltCard>
+              <TiltCard>
+                <GlassCard variant="dark" className="p-8">
+                  <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat2')}</div>
+                  <div className="font-display font-bold text-5xl text-[#FF4500]">0%</div>
+                </GlassCard>
+              </TiltCard>
+              <TiltCard>
+                <GlassCard variant="dark" className="p-8">
+                  <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat3')}</div>
+                  <div className="font-display font-bold text-5xl text-[#FF4500]">
+                    <CountUp end={6} />
+                  </div>
+                </GlassCard>
+              </TiltCard>
             </div>
           </div>
         </div>
@@ -170,18 +190,30 @@ export default function ServiceContent() {
           <div className="grid md:grid-cols-[1fr_2fr] gap-16 items-start">
             {/* Left: Stat cards */}
             <div className="space-y-4">
-              <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
-                <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat1')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">5,023</div>
-              </div>
-              <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
-                <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat2')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">9,247</div>
-              </div>
-              <div className="bg-[var(--kn-card-light)] rounded-[var(--radius)] border border-[var(--kn-dark)]/5 p-8 hover:border-[#FF4500]/40 transition-all duration-300">
-                <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat3')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">96%</div>
-              </div>
+              <TiltCard>
+                <GlassCard variant="light" className="p-8">
+                  <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat1')}</div>
+                  <div className="font-display font-bold text-5xl text-[#FF4500]">
+                    <CountUp end={5023} />
+                  </div>
+                </GlassCard>
+              </TiltCard>
+              <TiltCard>
+                <GlassCard variant="light" className="p-8">
+                  <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat2')}</div>
+                  <div className="font-display font-bold text-5xl text-[#FF4500]">
+                    <CountUp end={9247} />
+                  </div>
+                </GlassCard>
+              </TiltCard>
+              <TiltCard>
+                <GlassCard variant="light" className="p-8">
+                  <div className="text-xs text-[#78716C] mb-2">{t('serviceSeedingStat3')}</div>
+                  <div className="font-display font-bold text-5xl text-[#FF4500]">
+                    <CountUp end={96} suffix="%" />
+                  </div>
+                </GlassCard>
+              </TiltCard>
             </div>
 
             {/* Right: Content */}
@@ -239,7 +271,8 @@ export default function ServiceContent() {
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Card 1: Efficiency */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <TiltCard>
+            <GlassCard variant="dark" className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricEfficiency')}</h4>
@@ -293,10 +326,12 @@ export default function ServiceContent() {
                   </div>
                 </div>
               </div>
-            </div>
+            </GlassCard>
+            </TiltCard>
 
             {/* Card 2: Inflow */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <TiltCard>
+            <GlassCard variant="dark" className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricInflow')}</h4>
@@ -350,10 +385,12 @@ export default function ServiceContent() {
                   </div>
                 </div>
               </div>
-            </div>
+            </GlassCard>
+            </TiltCard>
 
             {/* Card 3: Spread */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <TiltCard>
+            <GlassCard variant="dark" className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricSpread')}</h4>
@@ -399,10 +436,12 @@ export default function ServiceContent() {
                   </div>
                 </div>
               </div>
-            </div>
+            </GlassCard>
+            </TiltCard>
 
             {/* Card 4: Qualitative */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <TiltCard>
+            <GlassCard variant="dark" className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricQualitative')}</h4>
@@ -466,7 +505,8 @@ export default function ServiceContent() {
                   </div>
                 </div>
               </div>
-            </div>
+            </GlassCard>
+            </TiltCard>
           </div>
         </div>
       </section>
