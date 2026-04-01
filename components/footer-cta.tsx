@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CheckCircle2 } from "lucide-react";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export function FooterCTA() {
   const { locale } = useLocale();
@@ -230,8 +231,14 @@ export function FooterCTA() {
   };
 
   return (
-    <section className="bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative overflow-hidden bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+      <AuroraBackground
+        blobs={[
+          { color: 'rgba(255,69,0,0.07)', size: 500, top: '20%', left: '5%', animation: 'aurora-float', duration: '24s' },
+        ]}
+        withDotPattern={false}
+      />
+      <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
           {/* Left: heading + description */}
           <div>

@@ -4,6 +4,7 @@ import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { FadeIn } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
+import { AuroraBackground } from '@/components/ui/aurora-background'
 
 const STEP_KEYS = [
   { tag: 'Diagnostic', titleKey: 'solutionStep1Title' as const, descKey: 'solutionStep1Desc' as const, featureKeys: ['solutionStep1F1', 'solutionStep1F2', 'solutionStep1F3'] as const },
@@ -18,8 +19,15 @@ export function SolutionRoadmap() {
   const steps = STEP_KEYS
 
   return (
-    <section id="solution" className="bg-[var(--kn-dark)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
-      <div className="max-w-7xl mx-auto">
+    <section id="solution" className="relative overflow-hidden bg-[var(--kn-dark)] py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+      <AuroraBackground
+        blobs={[
+          { color: 'rgba(255,69,0,0.05)', size: 600, top: '30%', left: '10%', animation: 'aurora-float-reverse', duration: '22s' },
+          { color: 'rgba(255,69,0,0.04)', size: 400, top: '60%', left: '80%', animation: 'aurora-float', duration: '16s' },
+        ]}
+        withDotPattern={false}
+      />
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section tag */}
         <FadeIn>
           <div className="flex items-center gap-4 mb-16">

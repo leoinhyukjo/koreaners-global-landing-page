@@ -5,6 +5,8 @@ import { Counter } from '@/components/ui/counter'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
+import { GlassCard } from '@/components/ui/glass-card'
+import { TiltCard } from '@/components/ui/tilt-card'
 
 export function MarketOpportunity() {
   const { locale } = useLocale()
@@ -40,19 +42,21 @@ export function MarketOpportunity() {
               <StaggerContainer staggerDelay={0.15} className="flex flex-col gap-6">
                 {stats.map((stat, index) => (
                   <StaggerItem key={index}>
-                    <div className="bg-white/10 backdrop-blur-sm rounded-[var(--radius)] p-6">
-                      <div className="text-xs text-white/70 mb-1 font-medium uppercase tracking-wider">
-                        {t(stat.titleKey)}
-                      </div>
-                      <div className="font-display font-bold text-5xl text-white">
-                        {index === 0 ? <><Counter end={500} />{locale === 'ja' ? '万' : '만'}</> :
-                         index === 1 ? <><Counter end={25} />%</> :
-                         <><Counter end={90} />%</>}
-                      </div>
-                      <div className="text-sm text-white/60 mt-2">
-                        {t(stat.descKey)}
-                      </div>
-                    </div>
+                    <TiltCard>
+                      <GlassCard variant="dark" className="p-6">
+                        <div className="text-xs text-white/70 mb-1 font-medium uppercase tracking-wider">
+                          {t(stat.titleKey)}
+                        </div>
+                        <div className="font-display font-bold text-5xl text-white">
+                          {index === 0 ? <><Counter end={500} />{locale === 'ja' ? '万' : '만'}</> :
+                           index === 1 ? <><Counter end={25} />%</> :
+                           <><Counter end={90} />%</>}
+                        </div>
+                        <div className="text-sm text-white/60 mt-2">
+                          {t(stat.descKey)}
+                        </div>
+                      </GlassCard>
+                    </TiltCard>
                   </StaggerItem>
                 ))}
               </StaggerContainer>

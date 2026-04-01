@@ -10,6 +10,7 @@ import { Performance } from '@/components/performance'
 import { ClientShowcase } from '@/components/client-showcase'
 import { FinalCTA } from '@/components/final-cta'
 import { FooterCTA } from '@/components/footer-cta'
+import { GlowSpotlight } from '@/components/ui/glow-spotlight'
 
 /** 히어로 스켈레톤 — 하이드레이션 시 레이아웃 시프트 방지 */
 const MainSkeleton = () => (
@@ -39,16 +40,19 @@ const MainSkeleton = () => (
  */
 export function MainContent() {
   return (
-    <SafeHydration fallback={<MainSkeleton />}>
-      <HeroSection />
-      <TrustSignals />
-      <MarketOpportunity />
-      <Performance />
-      <Barriers />
-      <SolutionRoadmap />
-      <FinalCTA />
-      <ClientShowcase />
-      <FooterCTA />
-    </SafeHydration>
+    <>
+      <GlowSpotlight />
+      <SafeHydration fallback={<MainSkeleton />}>
+        <HeroSection />
+        <TrustSignals />
+        <MarketOpportunity />
+        <Performance />
+        <Barriers />
+        <SolutionRoadmap />
+        <FinalCTA />
+        <ClientShowcase />
+        <FooterCTA />
+      </SafeHydration>
+    </>
   )
 }

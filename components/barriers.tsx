@@ -5,6 +5,8 @@ import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
+import { GlassCard } from '@/components/ui/glass-card'
+import { TiltCard } from '@/components/ui/tilt-card'
 
 const BARRIER_DESC_KEYS = ['barrier1Desc', 'barrier2Desc', 'barrier3Desc', 'barrier4Desc'] as const
 
@@ -32,11 +34,13 @@ export function Barriers() {
         <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16">
           {barriers.map((barrier, index) => (
             <StaggerItem key={index}>
-              <div className="bg-white rounded-[var(--radius)] border border-[var(--kn-dark)]/10 p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300 cursor-pointer">
-                <barrier.icon className="w-10 h-10 text-[#FF4500]/70 mb-4" />
-                <h3 className="text-lg font-bold text-[var(--kn-dark)] mb-2">{barrier.title}</h3>
-                <p className="text-sm text-[#78716C] leading-relaxed">{t(barrier.descKey)}</p>
-              </div>
+              <TiltCard>
+                <GlassCard variant="light" className="p-8 cursor-pointer">
+                  <barrier.icon className="w-10 h-10 text-[#FF4500]/70 mb-4" />
+                  <h3 className="text-lg font-bold text-[var(--kn-dark)] mb-2">{barrier.title}</h3>
+                  <p className="text-sm text-[#78716C] leading-relaxed">{t(barrier.descKey)}</p>
+                </GlassCard>
+              </TiltCard>
             </StaggerItem>
           ))}
         </StaggerContainer>
