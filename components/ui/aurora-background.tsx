@@ -12,9 +12,9 @@ interface AuroraBlobConfig {
 }
 
 const defaultBlobs: AuroraBlobConfig[] = [
-  { color: 'rgba(255,69,0,0.12)', size: 600, top: '-10%', left: '-10%', animation: 'aurora-float', duration: '18s' },
-  { color: 'rgba(245,158,11,0.08)', size: 500, top: '20%', left: '60%', animation: 'aurora-float-reverse', duration: '20s' },
-  { color: 'rgba(13,148,136,0.06)', size: 400, top: '60%', left: '30%', animation: 'aurora-float', duration: '22s' },
+  { color: 'rgba(255,69,0,0.25)', size: 600, top: '-10%', left: '-10%', animation: 'aurora-float', duration: '18s' },
+  { color: 'rgba(245,158,11,0.18)', size: 500, top: '20%', left: '60%', animation: 'aurora-float-reverse', duration: '20s' },
+  { color: 'rgba(13,148,136,0.12)', size: 400, top: '60%', left: '30%', animation: 'aurora-float', duration: '22s' },
 ]
 
 interface AuroraBackgroundProps {

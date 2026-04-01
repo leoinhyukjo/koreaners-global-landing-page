@@ -19,10 +19,10 @@ export default function HeroSection() {
       {/* Aurora mesh gradient background */}
       <AuroraBackground
         blobs={[
-          { color: 'rgba(255,69,0,0.15)', size: 800, top: '-20%', left: '-10%', animation: 'aurora-float', duration: '18s' },
-          { color: 'rgba(245,158,11,0.1)', size: 600, top: '10%', left: '60%', animation: 'aurora-float-reverse', duration: '20s' },
-          { color: 'rgba(13,148,136,0.07)', size: 500, top: '50%', left: '20%', animation: 'aurora-float', duration: '22s' },
-          { color: 'rgba(255,69,0,0.08)', size: 400, top: '60%', left: '70%', animation: 'aurora-float-reverse', duration: '16s' },
+          { color: 'rgba(255,69,0,0.3)', size: 800, top: '-20%', left: '-10%', animation: 'aurora-float', duration: '18s' },
+          { color: 'rgba(245,158,11,0.2)', size: 600, top: '10%', left: '60%', animation: 'aurora-float-reverse', duration: '20s' },
+          { color: 'rgba(13,148,136,0.15)', size: 500, top: '50%', left: '20%', animation: 'aurora-float', duration: '22s' },
+          { color: 'rgba(255,69,0,0.15)', size: 400, top: '60%', left: '70%', animation: 'aurora-float-reverse', duration: '16s' },
         ]}
       />
 

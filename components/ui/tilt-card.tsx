@@ -10,7 +10,7 @@ interface TiltCardProps {
   glowColor?: string
 }
 
-export function TiltCard({ children, className, maxTilt = 8, glowColor = 'rgba(255,69,0,0.15)' }: TiltCardProps) {
+export function TiltCard({ children, className, maxTilt = 12, glowColor = 'rgba(255,69,0,0.3)' }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number>(0)
   const [isTouch, setIsTouch] = useState(true)
@@ -27,8 +27,8 @@ export function TiltCard({ children, className, maxTilt = 8, glowColor = 'rgba(2
       const rect = cardRef.current.getBoundingClientRect()
       const x = (e.clientX - rect.left) / rect.width - 0.5
       const y = (e.clientY - rect.top) / rect.height - 0.5
-      cardRef.current.style.transform = `perspective(1000px) rotateY(${x * maxTilt}deg) rotateX(${-y * maxTilt}deg) scale(1.02)`
-      cardRef.current.style.boxShadow = `0 20px 60px ${glowColor}`
+      cardRef.current.style.transform = `perspective(800px) rotateY(${x * maxTilt}deg) rotateX(${-y * maxTilt}deg) scale(1.04)`
+      cardRef.current.style.boxShadow = `0 25px 80px ${glowColor}, 0 0 30px ${glowColor}`
     })
   }, [maxTilt, glowColor])
 

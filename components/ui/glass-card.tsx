@@ -16,7 +16,7 @@ export function GlassCard({ children, variant = 'dark', className, hover = true 
       className={cn(
         'rounded-[var(--radius)] transition-all duration-300',
         variant === 'dark' ? 'glass-dark' : 'glass-light',
-        hover && 'hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#FF4500]/10',
+        hover && 'hover:-translate-y-3 hover:shadow-2xl hover:shadow-[#FF4500]/25 hover:border-[#FF4500]/30',
         className
       )}
     >
