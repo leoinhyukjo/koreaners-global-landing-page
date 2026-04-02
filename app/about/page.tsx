@@ -13,11 +13,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 export const metadata: Metadata = {
   title: '회사 소개',
   description:
-    '코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 300명 이상의 주요 크리에이터, 300+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 일본 진출을 돕습니다.',
+    '코리너스는 크로스보더 인플루언서 마케팅 전문 에이전시입니다. 300명 이상의 주요 크리에이터, 300+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 해외 시장 진출을 돕습니다.',
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: {
     title: '코리너스 | 회사 소개',
-    description: '일본 시장 전문 크로스보더 마케팅 에이전시 코리너스. 300명 이상의 주요 크리에이터와 함께합니다.',
+    description: '크로스보더 인플루언서 마케팅 전문 에이전시 코리너스. 300명 이상의 주요 크리에이터와 함께합니다.',
     url: `${siteUrl}/about`,
   },
 }
@@ -31,8 +31,8 @@ const stats = [
 
 const services = [
   {
-    title: '일본 인플루언서 마케팅',
-    description: '일본 현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영. 300명 이상의 주요 크리에이터 네트워크를 통해 브랜드에 최적화된 콘텐츠를 제작합니다.',
+    title: '크로스보더 인플루언서 마케팅',
+    description: '현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영. 300명 이상의 주요 크리에이터 네트워크를 통해 브랜드에 최적화된 콘텐츠를 제작합니다.',
     icon: Target,
   },
   {
