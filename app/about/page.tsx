@@ -80,7 +80,7 @@ export default function AboutPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
             일본 시장 진출의
             <br />
-            확실한 파트너
+            <span className="gradient-warm-text">확실한 파트너</span>
           </h1>
           <p className="text-lg text-[#A8A29E] mt-6 max-w-2xl leading-relaxed">
             코리너스는 2022년 설립된 일본 시장 전문 크로스보더 마케팅 에이전시입니다.
@@ -96,7 +96,7 @@ export default function AboutPage() {
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">
               <stat.icon className="h-6 w-6 text-[#FF4500] mx-auto mb-3" />
-              <p className="text-3xl sm:text-4xl font-bold text-white">{stat.value}</p>
+              <p className="text-3xl sm:text-4xl font-bold gradient-warm-text">{stat.value}</p>
               <p className="text-sm text-[#A8A29E] mt-1">{stat.label}</p>
             </div>
           ))}

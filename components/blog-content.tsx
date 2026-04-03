@@ -93,7 +93,7 @@ function BlogContent() {
             <div className="mb-8" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('blogHeroTitle')}</span>
-              <span>{t('blogHeroTitle2')}</span>
+              <span className="gradient-warm-text">{t('blogHeroTitle2')}</span>
             </h1>
             <p className="text-lg text-[#A8A29E] max-w-2xl mt-6">
               {t('blogHeroDesc')}

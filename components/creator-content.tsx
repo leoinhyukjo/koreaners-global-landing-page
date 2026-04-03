@@ -227,7 +227,7 @@ function CreatorContent() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
               <span>{t("creatorHero1")}</span>
               <br />
-              <span>{t("creatorHero2")}</span>
+              <span className="gradient-warm-text">{t("creatorHero2")}</span>
             </h1>
             <p className="text-base md:text-lg text-[#A8A29E] max-w-3xl mb-10">
               {t("creatorHeroDesc")}

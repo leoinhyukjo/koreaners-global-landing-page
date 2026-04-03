@@ -125,8 +125,8 @@ export default function CareersPage() {
           <div className="max-w-7xl mx-auto relative z-10">
             <SectionTag variant="dark">CAREERS</SectionTag>
             <div className="mt-6 mb-8" />
-            <h1 className="font-display font-bold text-6xl md:text-7xl lg:text-8xl uppercase text-white leading-[0.85] mb-6">
-              JOIN KOREANERS
+            <h1 className="font-display font-bold text-6xl md:text-7xl lg:text-8xl uppercase leading-[0.85] mb-6">
+              <span className="text-white">JOIN </span><span className="gradient-warm-text">KOREANERS</span>
             </h1>
             <p className="text-xl sm:text-2xl md:text-3xl text-[#A8A29E] max-w-4xl break-keep font-semibold mb-4">
               {t('careersHeroSubtitle')}
