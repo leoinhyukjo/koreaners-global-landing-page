@@ -1,7 +1,6 @@
 'use client'
 
 import { SectionTag } from '@/components/ui/section-tag'
-import { GlassCard } from '@/components/ui/glass-card'
 
 const CLIENTS_ROW1 = [
   'BBIA', 'FOODOLOGY', 'INGA', 'Matin Kim', 'medicube', 'MEDI-PEEL', 'MENTHOLOGY',
@@ -35,12 +34,13 @@ function MarqueeRow({ clients, direction, duration }: { clients: string[]; direc
         style={{ animation: `${animName} ${duration} linear infinite` }}
       >
         {duplicated.map((name, i) => (
-          <div key={`${name}-${i}`} className="flex-shrink-0">
-            <GlassCard variant="dark" className="px-6 py-3 !rounded-full">
-              <span className="text-sm font-semibold text-[var(--foreground)] uppercase tracking-wider whitespace-nowrap">
-                {name}
-              </span>
-            </GlassCard>
+          <div
+            key={`${name}-${i}`}
+            className="flex-shrink-0 bg-card border border-[var(--border)] px-6 py-3 rounded-full hover:border-[#FF4500]/40 transition-colors duration-300"
+          >
+            <span className="text-sm font-semibold text-[var(--foreground)] uppercase tracking-wider whitespace-nowrap">
+              {name}
+            </span>
           </div>
         ))}
       </div>

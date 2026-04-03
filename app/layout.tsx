@@ -46,16 +46,16 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "코리너스 | KOREANERS - 크로스보더 인플루언서 마케팅 전문 에이전시",
+    default: "코리너스 | KOREANERS - 일본 마케팅 & 인플루언서 전문 에이전시",
     template: "%s | 코리너스 KOREANERS",
   },
   description:
-    "크로스보더 인플루언서 마케팅 전문 에이전시 코리너스. 300+ 브랜드, 300+ 전속 크리에이터. 인플루언서 캠페인, 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 설계하고 운영합니다.",
+    "일본 인플루언서 마케팅 전문 대행사 코리너스. 300+ 브랜드, 300+ 전속 크리에이터. 인플루언서 캠페인, 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 설계하고 운영합니다.",
   keywords: [
     "코리너스",
     "KOREANERS",
-    "크로스보더 인플루언서 마케팅 에이전시",
-    "인플루언서 마케팅 대행사",
+    "일본 인플루언서 마케팅 대행사",
+    "일본 인플루언서 마케팅",
     "일본 마케팅 대행",
     "일본 인플루언서 섭외",
     "크로스보더 마케팅",
@@ -82,9 +82,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "코리너스 KOREANERS",
-    title: "코리너스 | KOREANERS - 크로스보더 인플루언서 마케팅 전문 에이전시",
+    title: "코리너스 | KOREANERS - 일본 마케팅 & 인플루언서 전문 에이전시",
     description:
-      "크로스보더 인플루언서 마케팅 전문 에이전시 코리너스. 300+ 브랜드, 300+ 전속 크리에이터. 캠페인, 시딩, 콘텐츠, 리포팅까지.",
+      "일본 인플루언서 마케팅 전문 대행사 코리너스. 300+ 브랜드, 300+ 전속 크리에이터. 캠페인, 시딩, 콘텐츠, 리포팅까지.",
     url: baseUrl,
     locale: "ko_KR",
     images: [
@@ -100,7 +100,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "코리너스 | KOREANERS",
     description:
-      "크로스보더 인플루언서 마케팅, 시딩, 콘텐츠 제작까지. 전문 에이전시 코리너스.",
+      "일본 인플루언서 마케팅, 시딩, 콘텐츠 제작까지. 크로스보더 마케팅 전문 에이전시.",
     images: ["/images/logo.png"],
   },
   alternates: {
@@ -153,7 +153,7 @@ export default function RootLayout({
                 },
                 image: "https://www.koreaners.co/images/logo.png",
                 description:
-                  "크로스보더 인플루언서 마케팅 전문 에이전시. 300+ 브랜드, 300+ 전속 크리에이터. 캠페인, 시딩, 콘텐츠, 리포팅까지.",
+                  "일본 인플루언서 마케팅 전문 대행사. 300+ 브랜드, 300+ 전속 크리에이터. 캠페인, 시딩, 콘텐츠, 리포팅까지.",
                 foundingDate: "2022",
                 areaServed: [
                   { "@type": "Country", name: "South Korea" },
@@ -211,7 +211,7 @@ export default function RootLayout({
                       "@type": "Offer",
                       itemOffered: {
                         "@type": "Service",
-                        name: "크로스보더 인플루언서 마케팅",
+                        name: "일본 인플루언서 마케팅",
                         description: "일본 현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영",
                       },
                     },

@@ -12,9 +12,6 @@ import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-conte
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
 import Image from 'next/image'
-import { GlassCard } from '@/components/ui/glass-card'
-import { TiltCard } from '@/components/ui/tilt-card'
-import { AuroraBackground } from '@/components/ui/aurora-background'
 
 const PortfolioSkeleton = () => (
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
@@ -105,12 +102,6 @@ export default function PortfolioContent() {
       <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 relative overflow-hidden hero-glow">
-      <AuroraBackground
-        blobs={[
-          { color: 'rgba(255,69,0,0.07)', size: 500, top: '-5%', left: '55%', animation: 'aurora-float', duration: '20s' },
-        ]}
-        withDotPattern={false}
-      />
       <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">PORTFOLIO</SectionTag>
@@ -156,9 +147,10 @@ export default function PortfolioContent() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-20">
               {filteredItems.map(item => (
-                <TiltCard key={item.id} className="h-full">
-                <Link href={`/portfolio/${item.id}`} className="block h-full">
-                  <GlassCard variant="dark" className="group overflow-hidden cursor-pointer h-full flex flex-col p-0" hover={false}>
+                <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
+                  <Card
+                    className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                  >
                     {/* Image */}
                     {item.thumbnail_url ? (
                       <div className="aspect-video relative overflow-hidden bg-card">
@@ -217,9 +209,8 @@ export default function PortfolioContent() {
                         </div>
                       )}
                     </div>
-                  </GlassCard>
+                  </Card>
                 </Link>
-                </TiltCard>
               ))}
             </div>
           )}

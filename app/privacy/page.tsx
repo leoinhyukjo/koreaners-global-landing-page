@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
@@ -10,14 +9,7 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-background text-white/60">
-      <div className="mx-auto max-w-3xl px-6 py-20 relative">
-        <AuroraBackground
-          blobs={[
-            { color: 'rgba(255,69,0,0.05)', size: 350, top: '-5%', left: '60%', animation: 'aurora-float', duration: '20s' },
-          ]}
-          withDotPattern={false}
-        />
-        <div className="relative z-10">
+      <div className="mx-auto max-w-3xl px-6 py-20">
         <h1 className="mb-10 text-3xl font-bold text-white">
           개인정보처리방침
         </h1>
@@ -137,7 +129,6 @@ export default function PrivacyPolicyPage() {
               7일 전부터 공지사항을 통하여 고지할 것입니다.
             </p>
           </section>
-        </div>
         </div>
       </div>
     </main>

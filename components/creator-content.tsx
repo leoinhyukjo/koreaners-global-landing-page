@@ -36,9 +36,6 @@ import { getTranslation } from "@/lib/translations";
 import { CreatorTrackSection } from "@/components/creator-track-section";
 import { SectionTag } from "@/components/ui/section-tag";
 import Image from "next/image";
-import { GlassCard } from "@/components/ui/glass-card";
-import { TiltCard } from "@/components/ui/tilt-card";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 
 const CREATORS_PER_PAGE = 8;
 
@@ -220,15 +217,8 @@ function CreatorContent() {
       {/* ============================================================
           SECTION 1: Hero + Creator Cards (Dark bg-background)
           ============================================================ */}
-      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow relative overflow-hidden">
-        <AuroraBackground
-          blobs={[
-            { color: 'rgba(255,69,0,0.06)', size: 400, top: '10%', left: '60%', animation: 'aurora-float', duration: '18s' },
-            { color: 'rgba(245,158,11,0.05)', size: 300, top: '50%', left: '75%', animation: 'aurora-float-reverse', duration: '22s' },
-          ]}
-          withDotPattern={false}
-        />
-        <div className="max-w-7xl mx-auto relative z-10">
+      <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
+        <div className="max-w-7xl mx-auto">
           {/* Hero - Left aligned */}
           <div className="mb-20 sm:mb-28">
             <SectionTag variant="dark">CREATOR</SectionTag>
@@ -283,8 +273,10 @@ function CreatorContent() {
                       : null;
 
                     return (
-                      <TiltCard key={creator.id} className="min-w-0">
-                      <GlassCard variant="dark" className="group overflow-hidden min-w-0 p-0 h-full" hover={false}>
+                      <Card
+                        key={creator.id}
+                        className="group overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0"
+                      >
                         {/* Creator Avatar */}
                         <div className="aspect-[3/4] min-h-0 bg-card relative overflow-hidden">
                           {creator.profile_image_url ? (
@@ -293,7 +285,7 @@ function CreatorContent() {
                               alt={creator.name}
                               fill
                               sizes="(max-width: 768px) 33vw, 25vw"
-                              className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                              className="object-cover object-center"
                               loading="lazy"
                             />
                           ) : (
@@ -385,8 +377,7 @@ function CreatorContent() {
                             )}
                           </div>
                         </div>
-                      </GlassCard>
-                      </TiltCard>
+                      </Card>
                     );
                   })}
                   {/* 업데이트 중 플레이스홀더 카드 2개 - 마지막 페이지에만 노출 */}

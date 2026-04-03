@@ -86,7 +86,7 @@ export default function Navigation() {
       ref={navRef}
       className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
-          ? 'bg-[#1C1917]/80 backdrop-blur-xl border-b border-white/5'
+          ? 'bg-background/90 backdrop-blur-md border-b border-border'
           : 'bg-transparent border-b border-transparent'
       }`}
       style={{ width: '100%' }}
@@ -128,14 +128,14 @@ export default function Navigation() {
                   }`}
                 >
                   {item.label}
-                  <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#FF4500] transition-transform duration-300 origin-left ${
-                    isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-[#FF4500] transition-all duration-200 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
                   }`} />
                 </Link>
               )
             })}
             <Link href="/contact" className="ml-1">
-              <Button size="default" className="px-6 py-2.5 font-bold whitespace-nowrap gradient-warm text-white border-0 hover:opacity-90 hover:scale-[1.02] shadow-[0_0_15px_rgba(255,69,0,0.2)] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300">
+              <Button size="default" className="px-6 py-2.5 font-bold whitespace-nowrap gradient-warm text-white border-0 hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 transition-all duration-300">
                 {t('contact')}
               </Button>
             </Link>
@@ -172,9 +172,9 @@ export default function Navigation() {
                     <Menu className="h-5 w-5 text-white" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent
-                  side="right"
-                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-[#1C1917]/90 backdrop-blur-xl border-l border-white/10 z-50 overflow-y-auto"
+                <SheetContent 
+                  side="right" 
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-background border-l border-border z-50 overflow-y-auto"
                 >
                   <SheetHeader className="border-b border-border pb-4 mb-4 z-10 relative">
                     <SheetTitle className="text-left text-xl font-bold text-white break-words">

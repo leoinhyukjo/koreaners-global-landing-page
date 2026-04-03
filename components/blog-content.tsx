@@ -17,8 +17,6 @@ import { resolveThumbnailSrc } from '@/lib/thumbnail'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { getBlogTitle } from '@/lib/localized-content'
-import { GlassCard } from '@/components/ui/glass-card'
-import { AuroraBackground } from '@/components/ui/aurora-background'
 
 const POSTS_PER_PAGE = 9
 
@@ -89,12 +87,6 @@ function BlogContent() {
     <>
       {/* Hero Section */}
       <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 w-full max-w-full overflow-hidden relative hero-glow">
-        <AuroraBackground
-          blobs={[
-            { color: 'rgba(255,69,0,0.06)', size: 450, top: '0%', left: '60%', animation: 'aurora-float', duration: '18s' },
-          ]}
-          withDotPattern={false}
-        />
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">BLOG</SectionTag>
@@ -143,7 +135,9 @@ function BlogContent() {
                 {blogPosts.map((post) => (
                 <article key={post.id} className="h-full">
                   <Link href={`/blog/${post.slug}`} className="block h-full">
-                    <GlassCard variant="dark" className="group overflow-hidden cursor-pointer h-full flex flex-col p-0" hover={false}>
+                    <Card
+                      className="group overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                    >
                       {/* Image */}
                       <div className="aspect-video relative overflow-hidden bg-card">
                         {post.thumbnail_url ? (
@@ -183,7 +177,7 @@ function BlogContent() {
                           </span>
                         </div>
                       </div>
-                    </GlassCard>
+                    </Card>
                   </Link>
                 </article>
               ))}

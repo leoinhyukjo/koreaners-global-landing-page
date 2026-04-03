@@ -3,21 +3,17 @@ import Navigation from '@/components/navigation'
 import { safeJsonLdStringify } from '@/lib/json-ld'
 import Link from 'next/link'
 import { Building2, Globe, Users, BarChart3, Award, Target } from 'lucide-react'
-import { GlassCard } from '@/components/ui/glass-card'
-import { TiltCard } from '@/components/ui/tilt-card'
-import { CountUp } from '@/components/ui/count-up'
-import { AuroraBackground } from '@/components/ui/aurora-background'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
 export const metadata: Metadata = {
   title: '회사 소개',
   description:
-    '코리너스는 크로스보더 인플루언서 마케팅 전문 에이전시입니다. 300명 이상의 주요 크리에이터, 300+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 해외 시장 진출을 돕습니다.',
+    '코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 300명 이상의 주요 크리에이터, 300+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 일본 진출을 돕습니다.',
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: {
     title: '코리너스 | 회사 소개',
-    description: '크로스보더 인플루언서 마케팅 전문 에이전시 코리너스. 300명 이상의 주요 크리에이터와 함께합니다.',
+    description: '일본 시장 전문 크로스보더 마케팅 에이전시 코리너스. 300명 이상의 주요 크리에이터와 함께합니다.',
     url: `${siteUrl}/about`,
   },
 }
@@ -31,8 +27,8 @@ const stats = [
 
 const services = [
   {
-    title: '크로스보더 인플루언서 마케팅',
-    description: '현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영. 300명 이상의 주요 크리에이터 네트워크를 통해 브랜드에 최적화된 콘텐츠를 제작합니다.',
+    title: '일본 인플루언서 마케팅',
+    description: '일본 현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영. 300명 이상의 주요 크리에이터 네트워크를 통해 브랜드에 최적화된 콘텐츠를 제작합니다.',
     icon: Target,
   },
   {
@@ -78,15 +74,8 @@ export default function AboutPage() {
       />
 
       {/* Hero */}
-      <section className="pt-32 sm:pt-40 pb-16 sm:pb-20 px-6 lg:px-24 hero-glow relative overflow-hidden">
-        <AuroraBackground
-          blobs={[
-            { color: 'rgba(255,69,0,0.07)', size: 500, top: '-5%', left: '55%', animation: 'aurora-float', duration: '18s' },
-            { color: 'rgba(245,158,11,0.05)', size: 350, top: '40%', left: '70%', animation: 'aurora-float-reverse', duration: '22s' },
-          ]}
-          withDotPattern={false}
-        />
-        <div className="max-w-7xl mx-auto relative z-10">
+      <section className="pt-32 sm:pt-40 pb-16 sm:pb-20 px-6 lg:px-24 hero-glow">
+        <div className="max-w-7xl mx-auto">
           <p className="text-xs uppercase tracking-[0.2em] text-[#FF4500] font-bold mb-6">ABOUT US</p>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
             일본 시장 진출의
@@ -105,23 +94,11 @@ export default function AboutPage() {
       <section className="py-16 sm:py-20 px-6 lg:px-24 border-t border-border">
         <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat) => (
-            <TiltCard key={stat.label}>
-              <GlassCard variant="dark" className="p-6 text-center">
-                <stat.icon className="h-6 w-6 text-[#FF4500] mx-auto mb-3" />
-                <p className="text-3xl sm:text-4xl font-bold text-white">
-                  {stat.label === '평균 ROI' ? (
-                    <CountUp end={250} suffix="%" />
-                  ) : stat.label === '지원 브랜드' ? (
-                    <CountUp end={300} suffix="+" />
-                  ) : stat.label === '주요 크리에이터' ? (
-                    <CountUp end={300} suffix="+" />
-                  ) : (
-                    stat.value
-                  )}
-                </p>
-                <p className="text-sm text-[#A8A29E] mt-1">{stat.label}</p>
-              </GlassCard>
-            </TiltCard>
+            <div key={stat.label} className="text-center">
+              <stat.icon className="h-6 w-6 text-[#FF4500] mx-auto mb-3" />
+              <p className="text-3xl sm:text-4xl font-bold text-white">{stat.value}</p>
+              <p className="text-sm text-[#A8A29E] mt-1">{stat.label}</p>
+            </div>
           ))}
         </div>
       </section>
@@ -135,13 +112,14 @@ export default function AboutPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {services.map((service) => (
-              <TiltCard key={service.title}>
-                <GlassCard variant="dark" className="p-6">
-                  <service.icon className="h-5 w-5 text-[#FF4500] mb-4" />
-                  <h3 className="text-lg font-bold text-white mb-2">{service.title}</h3>
-                  <p className="text-sm text-[#A8A29E] leading-relaxed">{service.description}</p>
-                </GlassCard>
-              </TiltCard>
+              <div
+                key={service.title}
+                className="p-6 bg-card border border-border rounded-[var(--radius)] hover:border-[#FF4500]/40 transition-colors"
+              >
+                <service.icon className="h-5 w-5 text-[#FF4500] mb-4" />
+                <h3 className="text-lg font-bold text-white mb-2">{service.title}</h3>
+                <p className="text-sm text-[#A8A29E] leading-relaxed">{service.description}</p>
+              </div>
             ))}
           </div>
         </div>
