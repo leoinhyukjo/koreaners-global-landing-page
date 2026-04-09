@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { totalContractKrw } from '@/lib/dashboard/calculations'
-import type { Project } from '@/lib/dashboard/calculations'
+import type { Project, ExchangeRates } from '@/lib/dashboard/calculations'
 
 export interface BrandGroup {
   brandName: string
@@ -13,7 +13,7 @@ export interface BrandGroup {
 
 interface BrandAccordionProps {
   groups: BrandGroup[]
-  jpyRate: number
+  rates: ExchangeRates
 }
 
 function StatusBadge({ status }: { status: string | null }) {
@@ -48,7 +48,7 @@ function formatKrw(value: number): string {
   return `₩${value.toLocaleString('ko-KR')}`
 }
 
-export function BrandAccordion({ groups, jpyRate }: BrandAccordionProps) {
+export function BrandAccordion({ groups, rates }: BrandAccordionProps) {
   const [openSet, setOpenSet] = useState<Set<string>>(new Set())
 
   function toggle(brandName: string) {
@@ -143,7 +143,7 @@ export function BrandAccordion({ groups, jpyRate }: BrandAccordionProps) {
                   </thead>
                   <tbody>
                     {group.projects.map((project, rowIdx) => {
-                      const contractKrw = totalContractKrw(project, jpyRate)
+                      const contractKrw = totalContractKrw(project, rates)
 
                       return (
                         <tr

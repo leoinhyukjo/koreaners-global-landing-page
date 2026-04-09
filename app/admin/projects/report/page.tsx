@@ -15,14 +15,14 @@ import {
 import { DashboardTabs } from '@/components/admin/dashboard/dashboard-tabs'
 import {
   fetchAllProjects,
-  fetchLatestExchangeRate,
+  fetchExchangeRates,
 } from '@/lib/dashboard/queries'
 import {
   totalContractKrw,
   receivableKrw,
   projectDurationDays,
 } from '@/lib/dashboard/calculations'
-import type { Project } from '@/lib/dashboard/calculations'
+import type { Project, ExchangeRates } from '@/lib/dashboard/calculations'
 
 // ────────────────────────────────────────────────────────────
 // 유틸
@@ -58,16 +58,16 @@ function recentMonths(n: number): string[] {
 // 파생 데이터 계산
 // ────────────────────────────────────────────────────────────
 
-function useDerivedData(projects: Project[], jpyRate: number) {
+function useDerivedData(projects: Project[], rates: ExchangeRates) {
   return useMemo(() => {
     const subProjects = projects
 
     const totalContract = subProjects.reduce(
-      (sum, p) => sum + totalContractKrw(p, jpyRate),
+      (sum, p) => sum + totalContractKrw(p, rates),
       0,
     )
     const totalReceivable = subProjects.reduce(
-      (sum, p) => sum + receivableKrw(p, jpyRate),
+      (sum, p) => sum + receivableKrw(p, rates),
       0,
     )
     const completedCount = subProjects.filter(
@@ -98,11 +98,11 @@ function useDerivedData(projects: Project[], jpyRate: number) {
         brandName,
         projects: projs,
         totalContract: projs.reduce(
-          (sum, p) => sum + totalContractKrw(p, jpyRate),
+          (sum, p) => sum + totalContractKrw(p, rates),
           0,
         ),
         totalReceivable: projs.reduce(
-          (sum, p) => sum + receivableKrw(p, jpyRate),
+          (sum, p) => sum + receivableKrw(p, rates),
           0,
         ),
       }))
@@ -153,7 +153,7 @@ function useDerivedData(projects: Project[], jpyRate: number) {
       workloadData,
       trendData,
     }
-  }, [projects, jpyRate])
+  }, [projects, rates])
 }
 
 // ────────────────────────────────────────────────────────────
@@ -162,7 +162,7 @@ function useDerivedData(projects: Project[], jpyRate: number) {
 
 export default function ProjectsReportPage() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [jpyRate, setJpyRate] = useState<number>(9.0)
+  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.0, usdToKrw: 1350.0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -171,10 +171,10 @@ export default function ProjectsReportPage() {
       try {
         const [allProjects, rate] = await Promise.all([
           fetchAllProjects(),
-          fetchLatestExchangeRate(),
+          fetchExchangeRates(),
         ])
         setProjects(allProjects)
-        setJpyRate(rate)
+        setRates(rate)
       } catch (err) {
         console.error('[ReportDashboard] 데이터 로드 실패:', err)
         setError('데이터를 불러오는 중 오류가 발생했습니다.')
@@ -194,7 +194,7 @@ export default function ProjectsReportPage() {
     brandGroups,
     workloadData,
     trendData,
-  } = useDerivedData(projects, jpyRate)
+  } = useDerivedData(projects, rates)
 
   if (loading) {
     return (
@@ -290,7 +290,7 @@ export default function ProjectsReportPage() {
           <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
             브랜드별 프로젝트 현황
           </h2>
-          <BrandAccordion groups={brandGroups} jpyRate={jpyRate} />
+          <BrandAccordion groups={brandGroups} rates={rates} />
         </section>
 
         {/* 담당자별 업무량 + 월간 트렌드 */}
