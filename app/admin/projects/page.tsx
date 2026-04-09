@@ -214,7 +214,7 @@ export default function ProjectsPage() {
       {/* KPI 카드 */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
         <KpiCard title="총 프로젝트" value={`${totalProjects}개`} href="/admin/projects/detail?view=total" />
-        <KpiCard title="활성 프로젝트" value={`${inProgress}개`} href="/admin/projects/detail?view=active" />
+        <KpiCard title="활성 프로젝트" value={`${inProgress}개`} subtitle="완료·보류·진행전 제외" href="/admin/projects/detail?view=active" />
         <KpiCard title="총 계약금액" value={fmtKrw(totalContract)} href="/admin/projects/detail?view=contract" />
         <KpiCard
           title="미수금"
