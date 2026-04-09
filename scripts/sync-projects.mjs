@@ -19,6 +19,9 @@ import { createClient } from '@supabase/supabase-js'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 config({ path: resolve(__dirname, '..', '.env.local') })
 
+const headerMapRaw = readFileSync(resolve(__dirname, '..', 'lib', 'sheets', 'header-map.json'), 'utf8')
+const headerMap = JSON.parse(headerMapRaw)
+
 // ─── Config ───────────────────────────────────────────────────
 
 const REQUIRED_ENV = [
@@ -84,43 +87,54 @@ function parseAssignees(raw) {
     .filter(Boolean)
 }
 
-function parseSheetRow(row) {
-  const code = row[2]?.trim()
-  if (!code) return null
-  return {
-    row_code: code,
-    entry_date: parseEntryDate(row[0]),
-    week_code: row[1]?.trim() || null,
-    company_name: row[3]?.trim() || null,
-    brand_name: row[4]?.trim() || null,
-    name: row[4]?.trim() || row[3]?.trim() || code,
-    status: row[5]?.trim() || null,
-    project_type: row[6]?.trim() || null,
-    media: row[7]?.trim() || null,
-    assignee_names: parseAssignees(row[9]),
-    assignee_sub: parseAssignees(row[10]),
-    start_date: parseDate(row[11]),
-    end_date: parseDate(row[12]),
-    note: row[13]?.trim() || null,
-    contract_krw: parseMoney(row[15]),
-    contract_jpy: parseMoney(row[16]),
-    collab_fee: parseMoney(row[17]),
-    expense_krw: parseMoney(row[18]),
-    expense_jpy: parseMoney(row[19]),
-    margin_krw: parseMoney(row[20]),
-    margin_jpy: parseMoney(row[21]),
-    estimate_status: row[23]?.trim() || null,
-    contract_status: row[24]?.trim() || null,
-    contract_date: parseDate(row[25]),
-    settlement_due_date: parseDate(row[26]),
-    advance_paid_date: parseDate(row[27]),
-    balance_paid_date: parseDate(row[28]),
-    contract_cost: parseMoney(row[29]),
-    tax_invoice_date: parseDate(row[30]),
-    payment_status: row[31]?.trim() || null,
-    remittance_status: row[32]?.trim() || null,
-    creator_settlement_note: row[34]?.trim() || null,
+// ─── Dynamic parser (header-based) ────────────────────────
+function buildIndexMap(headerRow) {
+  const map = new Map()
+  for (let i = 0; i < headerRow.length; i++) {
+    const header = (headerRow[i] ?? '').trim()
+    if (!header) continue
+    const def = headerMap[header]
+    if (def) {
+      map.set(def.field, { index: i, type: def.type })
+    }
   }
+  for (const requiredHeader of ['코드', '브랜드명']) {
+    const def = headerMap[requiredHeader]
+    if (def && !map.has(def.field)) {
+      throw new Error(`필수 컬럼 "${requiredHeader}" (→ ${def.field})이 시트 헤더에 없습니다`)
+    }
+  }
+  return map
+}
+
+function parseRowDynamic(row, indexMap) {
+  const get = (field) => {
+    const entry = indexMap.get(field)
+    if (!entry) return ''
+    return (row[entry.index] ?? '').trim()
+  }
+  const getTyped = (field) => {
+    const entry = indexMap.get(field)
+    if (!entry) return null
+    const raw = (row[entry.index] ?? '').trim()
+    if (!raw) return entry.type === 'money' ? 0 : entry.type === 'assignees' ? [] : null
+    switch (entry.type) {
+      case 'text': return raw
+      case 'money': return parseMoney(raw)
+      case 'date': return parseDate(raw)
+      case 'entry_date': return parseEntryDate(raw)
+      case 'assignees': return parseAssignees(raw)
+      default: return raw
+    }
+  }
+  const rowCode = get('row_code')
+  if (!rowCode) return null
+  const record = {}
+  for (const [field] of indexMap) {
+    record[field] = getTyped(field)
+  }
+  record.name = get('brand_name') || get('company_name') || rowCode
+  return record
 }
 
 // ─── Slack DM notification (Oliver bot) ─────────────────────
@@ -270,19 +284,78 @@ async function getJpyToKrwRate() {
   return FALLBACK_JPY_TO_KRW
 }
 
+const FALLBACK_USD_TO_KRW = 1350.0
+
+async function getUsdToKrwRate() {
+  const today = new Date().toISOString().slice(0, 10)
+
+  try {
+    const { data: cached } = await supabase
+      .from('exchange_rates')
+      .select('rate')
+      .eq('currency_pair', 'USD/KRW')
+      .eq('rate_date', today)
+      .maybeSingle()
+    if (cached?.rate != null) return cached.rate
+  } catch {}
+
+  const apiKey = process.env.BOK_ECOS_API_KEY
+  if (apiKey) {
+    try {
+      const url = `https://ecos.bok.or.kr/api/StatisticSearch/${apiKey}/json/kr/1/1/731Y001/D/${today}/${today}/USD/0000003`
+      const res = await fetch(url)
+      if (res.ok) {
+        const json = await res.json()
+        const rows = json?.StatisticSearch?.row
+        if (Array.isArray(rows) && rows.length > 0) {
+          const raw = parseFloat(rows[0].DATA_VALUE)
+          if (!isNaN(raw)) {
+            await supabase.from('exchange_rates').upsert(
+              {
+                currency_pair: 'USD/KRW',
+                rate: raw,
+                rate_date: today,
+                source: 'ecos',
+                fetched_at: new Date().toISOString(),
+              },
+              { onConflict: 'currency_pair,rate_date' },
+            )
+            return raw
+          }
+        }
+      }
+    } catch {}
+  }
+
+  try {
+    const { data: recent } = await supabase
+      .from('exchange_rates')
+      .select('rate')
+      .eq('currency_pair', 'USD/KRW')
+      .order('rate_date', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (recent?.rate != null) return recent.rate
+  } catch {}
+
+  return FALLBACK_USD_TO_KRW
+}
+
 // ─── Fetch Google Sheets data ────────────────────────────────
 
-async function fetchSheetRows() {
+async function fetchSheetData() {
   const { data } = await withRetry(
     () =>
       sheets.spreadsheets.values.get({
         spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-        range: '시트1!A:AI',
+        range: 'Dashboard!A:AJ',
         valueRenderOption: 'FORMATTED_VALUE',
       }),
     'Google Sheets fetch',
   )
-  return (data.values ?? []).slice(1) // skip header
+  const values = data.values ?? []
+  if (values.length < 2) return { headerRow: [], dataRows: [] }
+  return { headerRow: values[0], dataRows: values.slice(1) }
 }
 
 // ─── Batch upsert to Supabase ────────────────────────────────
@@ -324,21 +397,28 @@ async function main() {
   const startTime = Date.now()
   console.log(`[sync-projects] Starting project sync at ${new Date().toISOString()}`)
 
-  // 1. 환율
-  const exchangeRate = await getJpyToKrwRate()
-  console.log(`[sync-projects] JPY→KRW rate: ${exchangeRate}`)
+  // 1. 환율 (JPY + USD)
+  const [jpyRate, usdRate] = await Promise.all([getJpyToKrwRate(), getUsdToKrwRate()])
+  console.log(`[sync-projects] Rates: JPY→KRW ${jpyRate}, USD→KRW ${usdRate}`)
 
-  // 2. Google Sheets 데이터 조회
-  const rows = await fetchSheetRows()
-  console.log(`[sync-projects] Found ${rows.length} rows in Google Sheets`)
+  // 2. Google Sheets 데이터 조회 (Dashboard 탭)
+  const { headerRow, dataRows } = await fetchSheetData()
+  if (dataRows.length === 0) {
+    console.log('[sync-projects] No data rows found')
+    process.exit(0)
+  }
 
-  // 3. 레코드 변환 (row_code 중복 시 마지막 행 우선)
+  // 3. 헤더 기반 인덱스 맵 빌드
+  const indexMap = buildIndexMap(headerRow)
+  console.log(`[sync-projects] Found ${dataRows.length} rows, ${indexMap.size} mapped columns`)
+
+  // 4. 레코드 변환 (row_code 중복 시 마지막 행 우선)
   const recordMap = new Map()
   const parseErrors = []
 
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < dataRows.length; i++) {
     try {
-      const parsed = parseSheetRow(rows[i])
+      const parsed = parseRowDynamic(dataRows[i], indexMap)
       if (parsed) recordMap.set(parsed.row_code, parsed)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
@@ -350,14 +430,14 @@ async function main() {
   const records = [...recordMap.values()]
   console.log(`[sync-projects] Parsed ${records.length} unique records (${parseErrors.length} parse errors)`)
 
-  // 4. 배치 upsert
+  // 5. 배치 upsert
   const { upserted, errors: upsertErrors } = await batchUpsert(records)
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1)
   const allErrors = [...parseErrors, ...upsertErrors]
 
   console.log(
-    `[sync-projects] Sync complete in ${elapsed}s. Synced: ${upserted}, Errors: ${allErrors.length}, Rate: ${exchangeRate}`,
+    `[sync-projects] Sync complete in ${elapsed}s. Synced: ${upserted}, Errors: ${allErrors.length}`,
   )
 
   if (allErrors.length > 0) {
