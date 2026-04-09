@@ -18,7 +18,7 @@ import {
 // ─────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────
-const NON_ACTIVE_STATUSES = new Set(['완료', '진행 완료', 'Drop', '진행 전', '보류'])
+const NON_ACTIVE_STATUSES = new Set(['진행 완료', '진행 전', '보류'])
 
 const fmtKrw = (n: number) => `₩${Math.round(n).toLocaleString('ko-KR')}`
 const fmtJpy = (n: number) => `¥${Math.round(n).toLocaleString('ja-JP')}`
@@ -78,19 +78,15 @@ function StatusBadge({ status }: { status: string | null }) {
   if (!status) return <span className="text-neutral-600">—</span>
 
   const colorMap: Record<string, string> = {
-    '완료': 'bg-emerald-900/40 text-emerald-400',
     '진행 완료': 'bg-emerald-900/40 text-emerald-400',
-    'Drop': 'bg-red-900/40 text-red-400',
-    '시작 전': 'bg-neutral-800 text-neutral-400',
+    '진행 전': 'bg-neutral-800 text-neutral-400',
     '보류': 'bg-yellow-900/40 text-yellow-400',
-    '진행 중': 'bg-blue-900/40 text-blue-400',
-    '검토 중': 'bg-purple-900/40 text-purple-400',
-    '인플루언서 정산 중': 'bg-orange-900/40 text-orange-400',
-    '클라이언트 정산 중': 'bg-orange-900/40 text-orange-400',
-    '리스트업 중': 'bg-sky-900/40 text-sky-400',
     '리스트업': 'bg-sky-900/40 text-sky-400',
-    '인플루언서 섭외': 'bg-indigo-900/40 text-indigo-400',
-    '리스트 전달': 'bg-teal-900/40 text-teal-400',
+    '섭외 중': 'bg-indigo-900/40 text-indigo-400',
+    '검토 중': 'bg-purple-900/40 text-purple-400',
+    '진행 중': 'bg-blue-900/40 text-blue-400',
+    '클라이언트 정산 중': 'bg-orange-900/40 text-orange-400',
+    '인플루언서 정산 중': 'bg-orange-900/40 text-orange-400',
   }
 
   const cls = colorMap[status] ?? 'bg-neutral-800 text-neutral-300'

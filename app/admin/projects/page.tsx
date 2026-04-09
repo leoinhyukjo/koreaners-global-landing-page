@@ -15,23 +15,20 @@ import { DashboardTabs } from '@/components/admin/dashboard/dashboard-tabs'
 
 // Active statuses to collapse into "진행중"
 const ACTIVE_STATUSES = new Set([
-  '진행 중',
-  '검토 중',
-  '인플루언서 정산 중',
-  '클라이언트 정산 중',
-  '리스트업 중',
   '리스트업',
-  '인플루언서 섭외',
-  '리스트 전달',
   '섭외 중',
+  '검토 중',
+  '진행 중',
+  '클라이언트 정산 중',
+  '인플루언서 정산 중',
 ])
 
-const COMPLETED_STATUSES = new Set(['완료', '진행 완료'])
+const COMPLETED_STATUSES = new Set(['진행 완료'])
 
 // Statuses to exclude from pipeline chart entirely
-const EXCLUDE_STATUSES = new Set(['Drop', '보류', '진행 전', '(미설정)'])
+const EXCLUDE_STATUSES = new Set(['보류', '진행 전', '(미설정)'])
 
-const NON_ACTIVE_STATUSES = new Set(['완료', '진행 완료', 'Drop', '진행 전', '보류'])
+const NON_ACTIVE_STATUSES = new Set(['진행 완료', '진행 전', '보류'])
 
 function getLast6Months(): string[] {
   const result: string[] = []
