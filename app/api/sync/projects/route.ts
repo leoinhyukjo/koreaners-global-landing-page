@@ -80,56 +80,52 @@ export async function POST(request: NextRequest) {
     // 4. Supabase admin client
     const supabase = createAdminClient()
 
-    // 5. 레코드 변환 (row_code 중복 시 마지막 행 우선)
-    const recordMap = new Map<string, Record<string, unknown>>()
-    for (const row of rows) {
+    // 5. 레코드 변환 (행 번호 기반 row_code, 빈 행 스킵)
+    const records: Record<string, unknown>[] = []
+    for (let i = 0; i < rows.length; i++) {
       try {
-        const parsed = parseRowDynamic(row, indexMap)
+        const parsed = parseRowDynamic(rows[i], indexMap, i + 2) // 행 번호: 헤더=1, 데이터=2~
         if (parsed == null) continue
-        recordMap.set(parsed.row_code as string, parsed)
+        records.push(parsed)
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
-        result.errors.push(`Row parse error: ${message}`)
+        result.errors.push(`Row ${i + 2} parse error: ${message}`)
       }
     }
-    const records = [...recordMap.values()]
-    console.log(`[sync/projects] Parsed ${records.length} unique records`)
+    console.log(`[sync/projects] Parsed ${records.length} records`)
 
-    // 6. 배치 upsert (50건 단위)
+    // 6. Full replace: 기존 데이터 전체 삭제 → 새 데이터 삽입
+    const { error: deleteError } = await supabase
+      .from('projects')
+      .delete()
+      .neq('row_code', '__never_match__') // 전체 삭제 workaround
+
+    if (deleteError) {
+      result.errors.push(`Delete all: ${deleteError.message}`)
+    }
+
+    // 7. 배치 insert (50건 단위)
     const BATCH_SIZE = 50
     for (let i = 0; i < records.length; i += BATCH_SIZE) {
       const batch = records.slice(i, i + BATCH_SIZE)
-      const { error: upsertError } = await supabase
+      const { error: insertError } = await supabase
         .from('projects')
-        .upsert(batch, { onConflict: 'row_code' })
+        .insert(batch)
 
-      if (upsertError) {
+      if (insertError) {
         result.errors.push(
-          `Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${upsertError.message}`,
+          `Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${insertError.message}`,
         )
       } else {
         result.synced += batch.length
       }
     }
 
-    // 7. 시트에 없는 레코드 삭제
-    const sheetRowCodes = [...recordMap.keys()]
-    const { error: deleteError, count: deleteCount } = await supabase
-      .from('projects')
-      .delete({ count: 'exact' })
-      .not('row_code', 'in', `(${sheetRowCodes.map((c) => `"${c}"`).join(',')})`)
-
-    if (deleteError) {
-      result.errors.push(`Delete stale rows: ${deleteError.message}`)
-    } else if (deleteCount && deleteCount > 0) {
-      console.log(`[sync/projects] Deleted ${deleteCount} stale rows not in Dashboard tab`)
-    }
-
     console.log(
-      `[sync/projects] Sync complete. Synced: ${result.synced}, Deleted: ${deleteCount ?? 0}, Errors: ${result.errors.length}`,
+      `[sync/projects] Sync complete. Synced: ${result.synced}, Errors: ${result.errors.length}`,
     )
 
-    return NextResponse.json({ ...result, deleted: deleteCount ?? 0 }, { status: 200 })
+    return NextResponse.json(result, { status: 200 })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('[sync/projects] Fatal error:', message)

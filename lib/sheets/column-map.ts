@@ -40,11 +40,13 @@ export function buildIndexMap(headerRow: string[]): Map<string, { index: number;
 
 /**
  * 데이터 행 하나를 indexMap 기반으로 파싱한다.
- * row_code가 비어있으면 null 반환.
+ * rowNumber: 시트 행 번호 (2부터 시작, 헤더=1)
+ * 법인명 또는 브랜드명이 없는 빈 행은 null 반환.
  */
 export function parseRowDynamic(
   row: string[],
   indexMap: Map<string, { index: number; type: FieldType }>,
+  rowNumber: number,
 ): Record<string, unknown> | null {
   const get = (field: string): string => {
     const entry = indexMap.get(field)
@@ -68,16 +70,20 @@ export function parseRowDynamic(
     }
   }
 
-  const rowCode = get('row_code')
-  if (!rowCode) return null
+  // 법인명 또는 브랜드명이 없으면 빈 행으로 간주
+  const companyName = get('company_name')
+  const brandName = get('brand_name')
+  if (!companyName && !brandName) return null
 
   const record: Record<string, unknown> = {}
   for (const [field] of indexMap) {
     record[field] = getTyped(field)
   }
 
-  // name 필드: brand_name > company_name > row_code
-  record.name = get('brand_name') || get('company_name') || rowCode
+  // row_code: 시트 행 번호 기반 (유니크 키)
+  record.row_code = `R${rowNumber}`
+  // name 필드: brand_name > company_name
+  record.name = brandName || companyName
 
   return record
 }

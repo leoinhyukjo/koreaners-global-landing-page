@@ -107,7 +107,7 @@ function buildIndexMap(headerRow) {
   return map
 }
 
-function parseRowDynamic(row, indexMap) {
+function parseRowDynamic(row, indexMap, rowNumber) {
   const get = (field) => {
     const entry = indexMap.get(field)
     if (!entry) return ''
@@ -127,13 +127,15 @@ function parseRowDynamic(row, indexMap) {
       default: return raw
     }
   }
-  const rowCode = get('row_code')
-  if (!rowCode) return null
+  const companyName = get('company_name')
+  const brandName = get('brand_name')
+  if (!companyName && !brandName) return null
   const record = {}
   for (const [field] of indexMap) {
     record[field] = getTyped(field)
   }
-  record.name = get('brand_name') || get('company_name') || rowCode
+  record.row_code = `R${rowNumber}`
+  record.name = brandName || companyName
   return record
 }
 
@@ -412,14 +414,14 @@ async function main() {
   const indexMap = buildIndexMap(headerRow)
   console.log(`[sync-projects] Found ${dataRows.length} rows, ${indexMap.size} mapped columns`)
 
-  // 4. 레코드 변환 (row_code 중복 시 마지막 행 우선)
-  const recordMap = new Map()
+  // 4. 레코드 변환 (행 번호 기반 row_code, 빈 행 스킵)
+  const records = []
   const parseErrors = []
 
   for (let i = 0; i < dataRows.length; i++) {
     try {
-      const parsed = parseRowDynamic(dataRows[i], indexMap)
-      if (parsed) recordMap.set(parsed.row_code, parsed)
+      const parsed = parseRowDynamic(dataRows[i], indexMap, i + 2)
+      if (parsed) records.push(parsed)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       console.error(`[sync-projects] Parse error at row ${i + 2}: ${message}`)
@@ -427,35 +429,45 @@ async function main() {
     }
   }
 
-  const records = [...recordMap.values()]
-  console.log(`[sync-projects] Parsed ${records.length} unique records (${parseErrors.length} parse errors)`)
+  console.log(`[sync-projects] Parsed ${records.length} records (${parseErrors.length} parse errors)`)
 
-  // 5. 배치 upsert
-  const { upserted, errors: upsertErrors } = await batchUpsert(records)
+  // 5. Full replace: 전체 삭제 → 새 데이터 삽입
+  const insertErrors = []
 
-  // 6. 시트에 없는 레코드 삭제
-  const sheetRowCodes = [...recordMap.keys()]
-  let deleted = 0
-  try {
-    const { error: deleteError, count } = await supabase
-      .from('projects')
-      .delete({ count: 'exact' })
-      .not('row_code', 'in', `(${sheetRowCodes.map((c) => `"${c}"`).join(',')})`)
-    if (deleteError) {
-      upsertErrors.push(`Delete stale rows: ${deleteError.message}`)
-    } else {
-      deleted = count ?? 0
-      if (deleted > 0) console.log(`[sync-projects] Deleted ${deleted} stale rows not in Dashboard tab`)
+  const { error: deleteError } = await supabase
+    .from('projects')
+    .delete()
+    .neq('row_code', '__never_match__')
+
+  if (deleteError) {
+    insertErrors.push(`Delete all: ${deleteError.message}`)
+  }
+
+  // 6. 배치 insert (50건 단위)
+  let inserted = 0
+  const BATCH_SIZE = 50
+  for (let i = 0; i < records.length; i += BATCH_SIZE) {
+    const batch = records.slice(i, i + BATCH_SIZE)
+    try {
+      const { error } = await withRetry(
+        () => supabase.from('projects').insert(batch),
+        `Supabase insert batch ${Math.floor(i / BATCH_SIZE) + 1}`,
+      )
+      if (error) {
+        insertErrors.push(`Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${error.message}`)
+      } else {
+        inserted += batch.length
+      }
+    } catch (err) {
+      insertErrors.push(`Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${err instanceof Error ? err.message : String(err)}`)
     }
-  } catch (err) {
-    upsertErrors.push(`Delete stale: ${err instanceof Error ? err.message : String(err)}`)
   }
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1)
-  const allErrors = [...parseErrors, ...upsertErrors]
+  const allErrors = [...parseErrors, ...insertErrors]
 
   console.log(
-    `[sync-projects] Sync complete in ${elapsed}s. Synced: ${upserted}, Deleted: ${deleted}, Errors: ${allErrors.length}`,
+    `[sync-projects] Sync complete in ${elapsed}s. Inserted: ${inserted}, Errors: ${allErrors.length}`,
   )
 
   if (allErrors.length > 0) {
@@ -464,7 +476,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`[sync-projects] ${upserted}건 동기화, ${deleted}건 삭제 완료 (${elapsed}s)`)
+  console.log(`[sync-projects] ${inserted}건 동기화 완료 (${elapsed}s)`)
   process.exit(0)
 }
 
