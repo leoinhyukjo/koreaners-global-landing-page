@@ -90,20 +90,20 @@ export function TeamDonutChart({ data }: TeamDonutChartProps) {
 }
 
 // ────────────────────────────────────────────────────────────
-// MonthlyLineChart — 라인 차트, 월별 계약 금액 (₩ 포맷)
+// MonthlyBarChart — 바 차트, 월별 계약 금액 (₩ 포맷)
 // ────────────────────────────────────────────────────────────
-interface MonthlyLineChartProps {
+interface MonthlyBarChartProps {
   data: { month: string; amount: number }[]
 }
 
 const krwFormatter = (value: number) =>
   `₩${(value / 10000).toFixed(0)}만`
 
-export function MonthlyLineChart({ data }: MonthlyLineChartProps) {
+export function MonthlyBarChart({ data }: MonthlyBarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data} margin={{ left: 16, right: 24, top: 8, bottom: 24 }}>
-        <CartesianGrid strokeDasharray="3 3" />
+      <BarChart data={data} margin={{ left: 16, right: 24, top: 8, bottom: 24 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="month" tick={{ fontSize: 12 }}>
           <Label value="월" offset={-8} position="insideBottom" style={{ fontSize: 11, fill: '#888' }} />
         </XAxis>
@@ -118,15 +118,8 @@ export function MonthlyLineChart({ data }: MonthlyLineChartProps) {
             '계약 금액',
           ]}
         />
-        <Line
-          type="monotone"
-          dataKey="amount"
-          stroke={COLORS[0]}
-          strokeWidth={2}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-        />
-      </LineChart>
+        <Bar dataKey="amount" fill={COLORS[0]} radius={[4, 4, 0, 0]} />
+      </BarChart>
     </ResponsiveContainer>
   )
 }

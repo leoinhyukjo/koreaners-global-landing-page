@@ -8,7 +8,7 @@ import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivab
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   StatusBarChart,
-  MonthlyLineChart,
+  MonthlyBarChart,
   WorkloadBarChart,
 } from '@/components/admin/dashboard/charts'
 import { DashboardTabs } from '@/components/admin/dashboard/dashboard-tabs'
@@ -258,7 +258,7 @@ export default function ProjectsPage() {
         {/* 월별 계약금액 추이 */}
         <div className="rounded-lg border bg-card p-4">
           <h3 className="mb-4 font-semibold">월별 계약금액 추이</h3>
-          <MonthlyLineChart data={monthlyData} />
+          <MonthlyBarChart data={monthlyData} />
         </div>
 
         {/* 미수금 TOP 10 */}
