@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ArrowUpDown } from 'lucide-react'
-import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queries'
+import { fetchAllProjects, fetchExchangeRates } from '@/lib/dashboard/queries'
 import {
   totalContractKrw,
   totalExpenseKrw,
@@ -12,6 +12,7 @@ import {
   marginRate,
   receivableKrw,
   type Project,
+  type ExchangeRates,
 } from '@/lib/dashboard/calculations'
 
 // ─────────────────────────────────────────────
@@ -101,7 +102,7 @@ function StatusBadge({ status }: { status: string | null }) {
 // ─────────────────────────────────────────────
 // view=total — 전체 프로젝트
 // ─────────────────────────────────────────────
-function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
+function TotalView({ projects, rates }: { projects: Project[]; rates: ExchangeRates }) {
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDir, setSortDir] = useState<SortDir>(null)
 
@@ -130,8 +131,8 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
-        ? totalContractKrw(a, rate) - totalContractKrw(b, rate)
-        : totalContractKrw(b, rate) - totalContractKrw(a, rate)
+        ? totalContractKrw(a, rates) - totalContractKrw(b, rates)
+        : totalContractKrw(b, rates) - totalContractKrw(a, rates)
     }
     if (sortField === 'status') {
       return sortDir === 'asc'
@@ -169,7 +170,7 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
                 {p.assignee_names.length > 0 ? p.assignee_names.join(', ') : '—'}
               </td>
               <td className="px-3 py-2.5 text-neutral-500 tabular-nums text-xs whitespace-nowrap">{fmtDate(p.start_date)}</td>
-              <td className="px-3 py-2.5 text-right font-medium text-neutral-200 tabular-nums whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
+              <td className="px-3 py-2.5 text-right font-medium text-neutral-200 tabular-nums whitespace-nowrap">{fmtKrw(totalContractKrw(p, rates))}</td>
             </tr>
           ))}
         </tbody>
@@ -182,7 +183,7 @@ function TotalView({ projects, rate }: { projects: Project[]; rate: number }) {
 // ─────────────────────────────────────────────
 // view=active — 진행 중
 // ─────────────────────────────────────────────
-function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
+function ActiveView({ projects, rates }: { projects: Project[]; rates: ExchangeRates }) {
   const active = projects.filter(
     (p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)
   )
@@ -214,8 +215,8 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
-        ? totalContractKrw(a, rate) - totalContractKrw(b, rate)
-        : totalContractKrw(b, rate) - totalContractKrw(a, rate)
+        ? totalContractKrw(a, rates) - totalContractKrw(b, rates)
+        : totalContractKrw(b, rates) - totalContractKrw(a, rates)
     }
     if (sortField === 'status') {
       return sortDir === 'asc'
@@ -253,7 +254,7 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
                 {p.assignee_names.length > 0 ? p.assignee_names.join(', ') : '—'}
               </td>
               <td className="px-3 py-2.5 text-neutral-500 tabular-nums text-xs whitespace-nowrap">{fmtDate(p.start_date)}</td>
-              <td className="px-3 py-2.5 text-right font-medium text-neutral-200 tabular-nums whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
+              <td className="px-3 py-2.5 text-right font-medium text-neutral-200 tabular-nums whitespace-nowrap">{fmtKrw(totalContractKrw(p, rates))}</td>
             </tr>
           ))}
         </tbody>
@@ -266,7 +267,7 @@ function ActiveView({ projects, rate }: { projects: Project[]; rate: number }) {
 // ─────────────────────────────────────────────
 // view=contract — 총 계약금액
 // ─────────────────────────────────────────────
-function ContractView({ projects, rate }: { projects: Project[]; rate: number }) {
+function ContractView({ projects, rates }: { projects: Project[]; rates: ExchangeRates }) {
   const [sortField, setSortField] = useState<string | null>('contract')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -295,8 +296,8 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
-        ? totalContractKrw(a, rate) - totalContractKrw(b, rate)
-        : totalContractKrw(b, rate) - totalContractKrw(a, rate)
+        ? totalContractKrw(a, rates) - totalContractKrw(b, rates)
+        : totalContractKrw(b, rates) - totalContractKrw(a, rates)
     }
     if (sortField === 'status') {
       return sortDir === 'asc'
@@ -311,7 +312,7 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
     return 0
   })
 
-  const grandTotal = projects.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
+  const grandTotal = projects.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
 
   return (
     <div className="overflow-x-auto">
@@ -343,7 +344,7 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
                 {p.contract_jpy > 0 ? fmtJpy(p.contract_jpy) : '—'}
               </td>
               <td className="px-3 py-2.5 text-right font-semibold text-neutral-100 whitespace-nowrap">
-                {fmtKrw(totalContractKrw(p, rate))}
+                {fmtKrw(totalContractKrw(p, rates))}
               </td>
             </tr>
           ))}
@@ -359,7 +360,7 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
           </tr>
         </tfoot>
       </table>
-      <p className="mt-1 text-right text-xs text-neutral-500">총 {projects.length}건 · 환율 ¥1 = ₩{rate}</p>
+      <p className="mt-1 text-right text-xs text-neutral-500">총 {projects.length}건 · 환율 ¥1=₩{rates.jpyToKrw} / $1=₩{rates.usdToKrw}</p>
     </div>
   )
 }
@@ -367,9 +368,9 @@ function ContractView({ projects, rate }: { projects: Project[]; rate: number })
 // ─────────────────────────────────────────────
 // view=receivable — 미수금
 // ─────────────────────────────────────────────
-function ReceivableView({ projects, rate }: { projects: Project[]; rate: number }) {
+function ReceivableView({ projects, rates }: { projects: Project[]; rates: ExchangeRates }) {
   const withReceivable = projects
-    .map((p) => ({ p, recv: receivableKrw(p, rate) }))
+    .map((p) => ({ p, recv: receivableKrw(p, rates) }))
     .filter(({ recv }) => recv > 0)
     .sort((a, b) => b.recv - a.recv)
 
@@ -400,7 +401,7 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
                 {fmtDate(p.start_date)}
               </td>
               <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">
-                {fmtKrw(totalContractKrw(p, rate))}
+                {fmtKrw(totalContractKrw(p, rates))}
               </td>
               <td className="px-3 py-2.5 text-neutral-400 whitespace-nowrap">
                 {p.payment_status || '—'}
@@ -431,7 +432,7 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
         </tfoot>
       </table>
       <p className="mt-1 text-right text-xs text-neutral-500">
-        미수금 {withReceivable.length}건 · 환율 ¥1 = ₩{rate}
+        미수금 {withReceivable.length}건 · 환율 ¥1=₩{rates.jpyToKrw} / $1=₩{rates.usdToKrw}
       </p>
     </div>
   )
@@ -440,9 +441,9 @@ function ReceivableView({ projects, rate }: { projects: Project[]; rate: number 
 // ─────────────────────────────────────────────
 // view=margin — 프로젝트별 마진
 // ─────────────────────────────────────────────
-function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
+function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeRates }) {
   const filtered = projects
-    .filter((p) => totalContractKrw(p, rate) > 0 || totalExpenseKrw(p, rate) > 0)
+    .filter((p) => totalContractKrw(p, rates) > 0 || totalExpenseKrw(p, rates) > 0)
   const [sortField, setSortField] = useState<string | null>('margin')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -476,32 +477,32 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
     }
     if (sortField === 'contract') {
       return sortDir === 'asc'
-        ? totalContractKrw(a, rate) - totalContractKrw(b, rate)
-        : totalContractKrw(b, rate) - totalContractKrw(a, rate)
+        ? totalContractKrw(a, rates) - totalContractKrw(b, rates)
+        : totalContractKrw(b, rates) - totalContractKrw(a, rates)
     }
     if (sortField === 'creator') {
       return sortDir === 'asc'
-        ? totalExpenseKrw(a, rate) - totalExpenseKrw(b, rate)
-        : totalExpenseKrw(b, rate) - totalExpenseKrw(a, rate)
+        ? totalExpenseKrw(a, rates) - totalExpenseKrw(b, rates)
+        : totalExpenseKrw(b, rates) - totalExpenseKrw(a, rates)
     }
     if (sortField === 'margin') {
       return sortDir === 'asc'
-        ? totalMarginKrw(a, rate) - totalMarginKrw(b, rate)
-        : totalMarginKrw(b, rate) - totalMarginKrw(a, rate)
+        ? totalMarginKrw(a) - totalMarginKrw(b)
+        : totalMarginKrw(b) - totalMarginKrw(a)
     }
     if (sortField === 'marginRate') {
       return sortDir === 'asc'
-        ? marginRate(a, rate) - marginRate(b, rate)
-        : marginRate(b, rate) - marginRate(a, rate)
+        ? marginRate(a, rates) - marginRate(b, rates)
+        : marginRate(b, rates) - marginRate(a, rates)
     }
     return 0
   })
 
-  const totalContract = filtered.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
-  const totalExpense = filtered.reduce((acc, p) => acc + totalExpenseKrw(p, rate), 0)
-  const totalMarginAmt = filtered.reduce((acc, p) => acc + totalMarginKrw(p, rate), 0)
+  const totalContract = filtered.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
+  const totalExpense = filtered.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
+  const totalMarginAmt = filtered.reduce((acc, p) => acc + totalMarginKrw(p), 0)
   const avgMarginPct = filtered.length > 0
-    ? filtered.reduce((acc, p) => acc + marginRate(p, rate), 0) / filtered.length
+    ? filtered.reduce((acc, p) => acc + marginRate(p, rates), 0) / filtered.length
     : 0
 
   return (
@@ -520,15 +521,15 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
         </thead>
         <tbody>
           {sorted.map((p) => {
-            const m = totalMarginKrw(p, rate)
-            const mr = marginRate(p, rate)
+            const m = totalMarginKrw(p)
+            const mr = marginRate(p, rates)
             return (
               <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
                 <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.company_name ?? '—'}</td>
                 <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
                 <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">{fmtDate(p.start_date)}</td>
-                <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContractKrw(p, rate))}</td>
-                <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalExpenseKrw(p, rate))}</td>
+                <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContractKrw(p, rates))}</td>
+                <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalExpenseKrw(p, rates))}</td>
                 <td className={`px-3 py-2.5 text-right font-semibold whitespace-nowrap ${m < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                   {fmtKrw(m)}
                 </td>
@@ -553,7 +554,7 @@ function MarginView({ projects, rate }: { projects: Project[]; rate: number }) {
           </tr>
         </tfoot>
       </table>
-      <p className="mt-1 text-right text-xs text-neutral-500">{filtered.length}건 · 환율 ¥1 = ₩{rate}</p>
+      <p className="mt-1 text-right text-xs text-neutral-500">{filtered.length}건 · 환율 ¥1=₩{rates.jpyToKrw} / $1=₩{rates.usdToKrw}</p>
     </div>
   )
 }
@@ -580,14 +581,14 @@ function DetailContent() {
   const view: ViewType = viewParam && viewParam in VIEW_CONFIG ? viewParam : 'total'
 
   const [projects, setProjects] = useState<Project[]>([])
-  const [rate, setRate] = useState<number>(9.0)
+  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.0, usdToKrw: 1350.0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const [all, r] = await Promise.all([fetchAllProjects(), fetchLatestExchangeRate()])
+      const [all, r] = await Promise.all([fetchAllProjects(), fetchExchangeRates()])
       setProjects(all)
-      setRate(r)
+      setRates(r)
       setLoading(false)
     }
     load()
@@ -631,11 +632,11 @@ function DetailContent() {
           <TableSkeleton />
         ) : (
           <>
-            {view === 'total' && <TotalView projects={projects} rate={rate} />}
-            {view === 'active' && <ActiveView projects={projects} rate={rate} />}
-            {view === 'contract' && <ContractView projects={projects} rate={rate} />}
-            {view === 'receivable' && <ReceivableView projects={projects} rate={rate} />}
-            {view === 'margin' && <MarginView projects={projects} rate={rate} />}
+            {view === 'total' && <TotalView projects={projects} rates={rates} />}
+            {view === 'active' && <ActiveView projects={projects} rates={rates} />}
+            {view === 'contract' && <ContractView projects={projects} rates={rates} />}
+            {view === 'receivable' && <ReceivableView projects={projects} rates={rates} />}
+            {view === 'margin' && <MarginView projects={projects} rates={rates} />}
           </>
         )}
       </div>

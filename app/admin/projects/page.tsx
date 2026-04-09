@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, RefreshCw } from 'lucide-react'
-import { fetchAllProjects, fetchLatestExchangeRate } from '@/lib/dashboard/queries'
-import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, type Project } from '@/lib/dashboard/calculations'
+import { fetchAllProjects, fetchExchangeRates } from '@/lib/dashboard/queries'
+import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, type Project, type ExchangeRates } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   StatusBarChart,
@@ -44,15 +44,15 @@ function getLast6Months(): string[] {
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [rate, setRate] = useState<number>(9.0)
+  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.0, usdToKrw: 1350.0 })
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
 
   async function loadData() {
-    const [all, r] = await Promise.all([fetchAllProjects(), fetchLatestExchangeRate()])
+    const [all, r] = await Promise.all([fetchAllProjects(), fetchExchangeRates()])
     setProjects(all)
-    setRate(r)
+    setRates(r)
     setLoading(false)
   }
 
@@ -106,15 +106,15 @@ export default function ProjectsPage() {
   // KPI
   const totalProjects = projects.length
   const inProgress = projects.filter((p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)).length
-  const totalContract = projects.reduce((acc, p) => acc + totalContractKrw(p, rate), 0)
-  const totalReceivable = projects.reduce((acc, p) => acc + receivableKrw(p, rate), 0)
+  const totalContract = projects.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
+  const totalReceivable = projects.reduce((acc, p) => acc + receivableKrw(p, rates), 0)
 
   // 마진 — 계약금액 또는 지출액이 있는 프로젝트만
-  const marginProjects = projects.filter((p) => totalContractKrw(p, rate) > 0 || totalExpenseKrw(p, rate) > 0)
+  const marginProjects = projects.filter((p) => totalContractKrw(p, rates) > 0 || totalExpenseKrw(p, rates) > 0)
   const avgMarginRate = marginProjects.length > 0
-    ? marginProjects.reduce((acc, p) => acc + marginRate(p, rate), 0) / marginProjects.length
+    ? marginProjects.reduce((acc, p) => acc + marginRate(p, rates), 0) / marginProjects.length
     : 0
-  const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p, rate), 0)
+  const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p), 0)
 
   // Status pipeline — collapse active statuses into "진행중", keep "완료", exclude others
   const pipelineMap = new Map<string, number>()
@@ -147,7 +147,7 @@ export default function ProjectsPage() {
     if (!p.start_date) continue
     const month = p.start_date.slice(0, 7)
     if (monthlyMap.has(month)) {
-      monthlyMap.set(month, (monthlyMap.get(month) ?? 0) + totalContractKrw(p, rate))
+      monthlyMap.set(month, (monthlyMap.get(month) ?? 0) + totalContractKrw(p, rates))
     }
   }
   const monthlyData = last6.map((month) => ({
@@ -161,7 +161,7 @@ export default function ProjectsPage() {
       id: p.id,
       name: p.name,
       brand_name: p.brand_name,
-      amount: receivableKrw(p, rate),
+      amount: receivableKrw(p, rates),
     }))
     .filter((p) => p.amount > 0)
     .sort((a, b) => b.amount - a.amount)
@@ -209,7 +209,7 @@ export default function ProjectsPage() {
         <KpiCard
           title="미수금"
           value={fmtKrw(totalReceivable)}
-          subtitle={`환율: ¥1 = ₩${rate}`}
+          subtitle={`¥1=₩${rates.jpyToKrw} / $1=₩${rates.usdToKrw}`}
           href="/admin/projects/detail?view=receivable"
         />
         <KpiCard
