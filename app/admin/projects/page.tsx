@@ -116,18 +116,17 @@ export default function ProjectsPage() {
     : 0
   const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p), 0)
 
-  // Status pipeline — collapse active statuses into "진행중", keep "완료", exclude others
+  // Status pipeline — 각 status별 건수 표시
   const pipelineMap = new Map<string, number>()
   for (const p of projects) {
     const s = p.status ?? '(미설정)'
-    if (EXCLUDE_STATUSES.has(s)) continue
-    if (ACTIVE_STATUSES.has(s)) {
-      pipelineMap.set('진행중', (pipelineMap.get('진행중') ?? 0) + 1)
-    } else if (COMPLETED_STATUSES.has(s)) {
-      pipelineMap.set('완료', (pipelineMap.get('완료') ?? 0) + 1)
-    }
+    pipelineMap.set(s, (pipelineMap.get(s) ?? 0) + 1)
   }
-  const statusData = Array.from(pipelineMap.entries()).map(([status, count]) => ({ status, count }))
+  // 시트 드롭다운 순서대로 정렬
+  const STATUS_ORDER = ['진행 전', '리스트업', '섭외 중', '검토 중', '진행 중', '클라이언트 정산 중', '인플루언서 정산 중', '진행 완료', '보류']
+  const statusData = STATUS_ORDER
+    .filter((s) => pipelineMap.has(s))
+    .map((s) => ({ status: s, count: pipelineMap.get(s)! }))
 
   // Assignee workload
   const assigneeMap = new Map<string, number>()
