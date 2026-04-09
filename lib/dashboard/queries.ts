@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/client'
-import type { Project } from './calculations'
+import type { Project, ExchangeRates } from './calculations'
 
 /** 전체 프로젝트 목록 조회 (클라이언트 전용) */
 export async function fetchAllProjects(): Promise<Project[]> {
@@ -24,6 +24,7 @@ export async function fetchAllProjects(): Promise<Project[]> {
     status: row.status ?? null,
     project_type: row.project_type ?? null,
     media: row.media ?? null,
+    operation_sheet: row.operation_sheet ?? null,
     assignee_names: Array.isArray(row.assignee_names) ? row.assignee_names : [],
     assignee_sub: Array.isArray(row.assignee_sub) ? row.assignee_sub : [],
     start_date: row.start_date ?? null,
@@ -31,11 +32,11 @@ export async function fetchAllProjects(): Promise<Project[]> {
     note: row.note ?? null,
     contract_krw: Number(row.contract_krw ?? 0),
     contract_jpy: Number(row.contract_jpy ?? 0),
+    contract_usd: Number(row.contract_usd ?? 0),
     collab_fee: Number(row.collab_fee ?? 0),
     expense_krw: Number(row.expense_krw ?? 0),
     expense_jpy: Number(row.expense_jpy ?? 0),
     margin_krw: Number(row.margin_krw ?? 0),
-    margin_jpy: Number(row.margin_jpy ?? 0),
     estimate_status: row.estimate_status ?? null,
     contract_status: row.contract_status ?? null,
     contract_date: row.contract_date ?? null,
@@ -50,60 +51,37 @@ export async function fetchAllProjects(): Promise<Project[]> {
   })) as Project[]
 }
 
-export async function fetchCampaignPosts() {
-  const { data, error } = await supabase
-    .from('campaign_posts')
-    .select('*')
-    .order('collected_at', { ascending: false })
-  if (error) throw error
-  return data ?? []
-}
-
-export async function fetchCampaignFinancials() {
-  const { data, error } = await supabase
-    .from('campaign_financials')
-    .select('*')
-    .order('start_date', { ascending: false })
-  if (error) throw error
-  return data ?? []
-}
-
-export async function fetchCampaignReviews() {
-  const { data, error } = await supabase
-    .from('campaign_reviews')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(20)
-  if (error) throw error
-  return data ?? []
-}
-
 /**
- * 최신 JPY/KRW 환율 조회
- * exchange_rates 테이블에서 가장 최근 레코드 사용.
- * 실패 시 폴백: 9.0
+ * 최신 JPY/KRW + USD/KRW 환율 조회 (클라이언트용)
+ * exchange_rates 테이블에서 각 통화쌍의 가장 최근 레코드 사용.
  */
-export async function fetchLatestExchangeRate(): Promise<number> {
-  const FALLBACK_RATE = 9.0
+export async function fetchExchangeRates(): Promise<ExchangeRates> {
+  const FALLBACK: ExchangeRates = { jpyToKrw: 9.0, usdToKrw: 1350.0 }
 
   try {
     const { data, error } = await supabase
       .from('exchange_rates')
-      .select('rate')
-      .eq('currency_pair', 'JPY/KRW')
+      .select('currency_pair, rate')
+      .in('currency_pair', ['JPY/KRW', 'USD/KRW'])
       .order('rate_date', { ascending: false })
-      .limit(1)
-      .maybeSingle()
 
-    if (error || !data) {
-      console.warn('[fetchLatestExchangeRate] 조회 실패, 폴백 사용:', error?.message)
-      return FALLBACK_RATE
+    if (error || !data || data.length === 0) {
+      console.warn('[fetchExchangeRates] 조회 실패, 폴백 사용:', error?.message)
+      return FALLBACK
     }
 
-    const rate = Number(data.rate)
-    return isNaN(rate) || rate <= 0 ? FALLBACK_RATE : rate
+    const jpyRow = data.find((r) => r.currency_pair === 'JPY/KRW')
+    const usdRow = data.find((r) => r.currency_pair === 'USD/KRW')
+
+    const jpyRate = jpyRow ? Number(jpyRow.rate) : FALLBACK.jpyToKrw
+    const usdRate = usdRow ? Number(usdRow.rate) : FALLBACK.usdToKrw
+
+    return {
+      jpyToKrw: isNaN(jpyRate) || jpyRate <= 0 ? FALLBACK.jpyToKrw : jpyRate,
+      usdToKrw: isNaN(usdRate) || usdRate <= 0 ? FALLBACK.usdToKrw : usdRate,
+    }
   } catch (err) {
-    console.warn('[fetchLatestExchangeRate] 예외 발생, 폴백 사용:', err)
-    return FALLBACK_RATE
+    console.warn('[fetchExchangeRates] 예외 발생, 폴백 사용:', err)
+    return FALLBACK
   }
 }
