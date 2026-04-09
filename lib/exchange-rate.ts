@@ -1,22 +1,52 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export interface ExchangeRates {
+  jpyToKrw: number;
+  usdToKrw: number;
+}
+
 const FALLBACK_JPY_TO_KRW = 9.0;
-const CURRENCY_PAIR = "JPY/KRW";
+const FALLBACK_USD_TO_KRW = 1350.0;
 
 /**
- * 한국은행 ECOS API에서 JPY→KRW 매매기준율을 조회합니다.
- * 조회 순서: Supabase 당일 캐시 → ECOS API → 최근 캐시 → 하드코딩 폴백(9.0)
+ * JPY/KRW + USD/KRW 환율을 한 번에 조회한다.
+ * 조회 순서: Supabase 당일 캐시 → ECOS API → 최근 캐시 → 폴백
  */
+export async function getExchangeRates(): Promise<ExchangeRates> {
+  const [jpyToKrw, usdToKrw] = await Promise.all([
+    getRate("JPY/KRW", "JPY", true, FALLBACK_JPY_TO_KRW),
+    getRate("USD/KRW", "USD", false, FALLBACK_USD_TO_KRW),
+  ]);
+  return { jpyToKrw, usdToKrw };
+}
+
+/** 하위 호환: 기존 코드에서 JPY 환율만 필요한 경우 */
 export async function getJpyToKrwRate(): Promise<number> {
+  return getRate("JPY/KRW", "JPY", true, FALLBACK_JPY_TO_KRW);
+}
+
+/**
+ * 단일 통화쌍 환율 조회 (공통 로직)
+ * @param currencyPair  "JPY/KRW" | "USD/KRW"
+ * @param ecosCurrency  ECOS API 통화 코드 ("JPY" | "USD")
+ * @param divideBy100   JPY는 100엔 기준 → true, USD는 1달러 기준 → false
+ * @param fallback      최종 폴백값
+ */
+async function getRate(
+  currencyPair: string,
+  ecosCurrency: string,
+  divideBy100: boolean,
+  fallback: number,
+): Promise<number> {
   const today = getTodayDateString();
 
-  // 1. Supabase 당일 캐시 조회
+  // 1. Supabase 당일 캐시
   try {
     const supabase = createAdminClient();
     const { data: cached } = await supabase
       .from("exchange_rates")
       .select("rate")
-      .eq("currency_pair", CURRENCY_PAIR)
+      .eq("currency_pair", currencyPair)
       .eq("rate_date", today)
       .maybeSingle();
 
@@ -24,30 +54,30 @@ export async function getJpyToKrwRate(): Promise<number> {
       return cached.rate;
     }
   } catch {
-    // 캐시 조회 실패 시 API 호출로 진행
+    // 캐시 조회 실패 → API 호출로 진행
   }
 
-  // 2. ECOS API 호출
+  // 2. ECOS API
   const apiKey = process.env.BOK_ECOS_API_KEY;
   if (apiKey) {
     try {
-      const rate = await fetchEcosRate(apiKey, today);
+      const rate = await fetchEcosRate(apiKey, today, ecosCurrency, divideBy100);
       if (rate != null) {
-        await upsertRate(CURRENCY_PAIR, rate, today, "ecos");
+        await upsertRate(currencyPair, rate, today, "ecos");
         return rate;
       }
     } catch {
-      // API 호출 실패 시 최근 캐시로 폴백
+      // API 실패 → 최근 캐시로 폴백
     }
   }
 
-  // 3. 최근 캐시 조회 (당일 데이터 없을 때)
+  // 3. 최근 캐시
   try {
     const supabase = createAdminClient();
     const { data: recent } = await supabase
       .from("exchange_rates")
       .select("rate")
-      .eq("currency_pair", CURRENCY_PAIR)
+      .eq("currency_pair", currencyPair)
       .order("rate_date", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -56,22 +86,19 @@ export async function getJpyToKrwRate(): Promise<number> {
       return recent.rate;
     }
   } catch {
-    // 최근 캐시도 실패 시 하드코딩 폴백
+    // 최근 캐시도 실패 → 폴백
   }
 
-  // 4. 하드코딩 폴백
-  return FALLBACK_JPY_TO_KRW;
+  return fallback;
 }
 
-/**
- * ECOS API에서 특정 날짜의 JPY/KRW 매매기준율을 조회합니다.
- * JPY는 100엔 기준이므로 /100 변환 적용.
- */
 async function fetchEcosRate(
   apiKey: string,
   date: string,
+  currency: string,
+  divideBy100: boolean,
 ): Promise<number | null> {
-  const url = `https://ecos.bok.or.kr/api/StatisticSearch/${apiKey}/json/kr/1/1/731Y001/D/${date}/${date}/JPY/0000003`;
+  const url = `https://ecos.bok.or.kr/api/StatisticSearch/${apiKey}/json/kr/1/1/731Y001/D/${date}/${date}/${currency}/0000003`;
 
   const res = await fetch(url, { next: { revalidate: 0 } });
   if (!res.ok) {
@@ -89,14 +116,9 @@ async function fetchEcosRate(
     return null;
   }
 
-  // 100엔 기준 → 1엔 기준으로 변환
-  return raw / 100;
+  return divideBy100 ? raw / 100 : raw;
 }
 
-/**
- * exchange_rates 테이블에 upsert합니다.
- * conflict 대상: currency_pair + rate_date
- */
 async function upsertRate(
   currencyPair: string,
   rate: number,
@@ -116,11 +138,10 @@ async function upsertRate(
       { onConflict: "currency_pair,rate_date" },
     );
   } catch {
-    // upsert 실패는 조용히 무시 (캐싱 실패가 비즈니스 로직에 영향 주지 않도록)
+    // upsert 실패는 조용히 무시
   }
 }
 
-/** YYYY-MM-DD 형식의 오늘 날짜 반환 */
 function getTodayDateString(): string {
   return new Date().toISOString().slice(0, 10);
 }
