@@ -433,11 +433,29 @@ async function main() {
   // 5. 배치 upsert
   const { upserted, errors: upsertErrors } = await batchUpsert(records)
 
+  // 6. 시트에 없는 레코드 삭제
+  const sheetRowCodes = [...recordMap.keys()]
+  let deleted = 0
+  try {
+    const { error: deleteError, count } = await supabase
+      .from('projects')
+      .delete({ count: 'exact' })
+      .not('row_code', 'in', `(${sheetRowCodes.map((c) => `"${c}"`).join(',')})`)
+    if (deleteError) {
+      upsertErrors.push(`Delete stale rows: ${deleteError.message}`)
+    } else {
+      deleted = count ?? 0
+      if (deleted > 0) console.log(`[sync-projects] Deleted ${deleted} stale rows not in Dashboard tab`)
+    }
+  } catch (err) {
+    upsertErrors.push(`Delete stale: ${err instanceof Error ? err.message : String(err)}`)
+  }
+
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1)
   const allErrors = [...parseErrors, ...upsertErrors]
 
   console.log(
-    `[sync-projects] Sync complete in ${elapsed}s. Synced: ${upserted}, Errors: ${allErrors.length}`,
+    `[sync-projects] Sync complete in ${elapsed}s. Synced: ${upserted}, Deleted: ${deleted}, Errors: ${allErrors.length}`,
   )
 
   if (allErrors.length > 0) {
@@ -446,7 +464,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`[sync-projects] ${upserted}건 동기화 완료 (${elapsed}s)`)
+  console.log(`[sync-projects] ${upserted}건 동기화, ${deleted}건 삭제 완료 (${elapsed}s)`)
   process.exit(0)
 }
 

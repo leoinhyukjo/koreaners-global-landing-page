@@ -112,11 +112,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 7. 시트에 없는 레코드 삭제
+    const sheetRowCodes = [...recordMap.keys()]
+    const { error: deleteError, count: deleteCount } = await supabase
+      .from('projects')
+      .delete({ count: 'exact' })
+      .not('row_code', 'in', `(${sheetRowCodes.map((c) => `"${c}"`).join(',')})`)
+
+    if (deleteError) {
+      result.errors.push(`Delete stale rows: ${deleteError.message}`)
+    } else if (deleteCount && deleteCount > 0) {
+      console.log(`[sync/projects] Deleted ${deleteCount} stale rows not in Dashboard tab`)
+    }
+
     console.log(
-      `[sync/projects] Sync complete. Synced: ${result.synced}, Errors: ${result.errors.length}`,
+      `[sync/projects] Sync complete. Synced: ${result.synced}, Deleted: ${deleteCount ?? 0}, Errors: ${result.errors.length}`,
     )
 
-    return NextResponse.json(result, { status: 200 })
+    return NextResponse.json({ ...result, deleted: deleteCount ?? 0 }, { status: 200 })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('[sync/projects] Fatal error:', message)
