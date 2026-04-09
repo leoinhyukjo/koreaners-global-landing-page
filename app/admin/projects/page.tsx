@@ -114,6 +114,7 @@ export default function ProjectsPage() {
   const avgMarginRate = marginProjects.length > 0
     ? marginProjects.reduce((acc, p) => acc + marginRate(p, rates), 0) / marginProjects.length
     : 0
+  const totalExpense = projects.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
   const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p), 0)
 
   // Status pipeline — 각 status별 건수 표시
@@ -129,15 +130,21 @@ export default function ProjectsPage() {
     .map((s) => ({ status: s, count: pipelineMap.get(s)! }))
 
   // Assignee workload
-  const assigneeMap = new Map<string, number>()
+  // 담당자별 상태 집계
+  const assigneeStatusMap = new Map<string, { active: number; completed: number; other: number }>()
   for (const p of projects) {
     for (const name of p.assignee_names) {
-      assigneeMap.set(name, (assigneeMap.get(name) ?? 0) + 1)
+      const entry = assigneeStatusMap.get(name) ?? { active: 0, completed: 0, other: 0 }
+      const s = p.status ?? ''
+      if (COMPLETED_STATUSES.has(s)) entry.completed++
+      else if (ACTIVE_STATUSES.has(s)) entry.active++
+      else entry.other++
+      assigneeStatusMap.set(name, entry)
     }
   }
-  const workloadData = Array.from(assigneeMap.entries())
-    .map(([assignee, count]) => ({ assignee, count }))
-    .sort((a, b) => b.count - a.count)
+  const workloadData = Array.from(assigneeStatusMap.entries())
+    .map(([assignee, counts]) => ({ assignee, ...counts, total: counts.active + counts.completed + counts.other }))
+    .sort((a, b) => b.total - a.total)
 
   // Monthly
   const last6 = getLast6Months()
@@ -166,7 +173,11 @@ export default function ProjectsPage() {
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 10)
 
-  const fmtKrw = (n: number) => `₩${Math.round(n).toLocaleString('ko-KR')}`
+  const fmtKrw = (n: number) => {
+    if (n >= 100_000_000) return `₩${(n / 100_000_000).toFixed(2)}억`
+    if (n >= 10_000) return `₩${(n / 10_000).toFixed(2)}만`
+    return `₩${Math.round(n).toLocaleString('ko-KR')}`
+  }
 
   return (
     <div className="space-y-6">
@@ -203,7 +214,7 @@ export default function ProjectsPage() {
       {/* KPI 카드 */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
         <KpiCard title="총 프로젝트" value={`${totalProjects}개`} href="/admin/projects/detail?view=total" />
-        <KpiCard title="진행 중" value={`${inProgress}개`} href="/admin/projects/detail?view=active" />
+        <KpiCard title="활성 프로젝트" value={`${inProgress}개`} href="/admin/projects/detail?view=active" />
         <KpiCard title="총 계약금액" value={fmtKrw(totalContract)} href="/admin/projects/detail?view=contract" />
         <KpiCard
           title="미수금"
@@ -211,12 +222,17 @@ export default function ProjectsPage() {
           subtitle={`¥1=₩${rates.jpyToKrw} / $1=₩${rates.usdToKrw}`}
           href="/admin/projects/detail?view=receivable"
         />
-        <KpiCard
-          title="평균 마진"
-          value={`${avgMarginRate.toFixed(1)}%`}
-          subtitle={`총 ${fmtKrw(totalMargin)}`}
-          href="/admin/projects/detail?view=margin"
-        />
+        <Link href="/admin/projects/detail?view=margin" className="h-full">
+          <div className="rounded-lg border bg-card p-4 sm:p-6 transition-colors flex flex-col justify-between h-full min-h-[100px] cursor-pointer hover:bg-neutral-800 hover:border-neutral-700">
+            <p className="text-xs sm:text-sm text-muted-foreground">수익 현황</p>
+            <div className="mt-2 space-y-1 text-xs sm:text-sm tabular-nums">
+              <div className="flex justify-between"><span className="text-muted-foreground">계약</span><span className="font-medium">{fmtKrw(totalContract)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">비용</span><span className="font-medium">{fmtKrw(totalExpense)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">마진</span><span className="font-bold text-emerald-400">{fmtKrw(totalMargin)}</span></div>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">마진율 {avgMarginRate.toFixed(1)}%</p>
+          </div>
+        </Link>
       </div>
 
       {/* 차트 */}

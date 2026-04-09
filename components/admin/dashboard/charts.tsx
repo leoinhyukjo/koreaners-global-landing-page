@@ -32,15 +32,25 @@ interface StatusBarChartProps {
   data: { status: string; count: number }[]
 }
 
-export function StatusBarChart({ data }: StatusBarChartProps) {
+function StatusBarLabel({ x, y, width, value }: { x?: number; y?: number; width?: number; value?: number }) {
+  if (!value) return null
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} layout="vertical" margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
+    <text x={(x ?? 0) + (width ?? 0) + 6} y={(y ?? 0) + 14} fontSize={12} fill="#ccc">
+      {value}
+    </text>
+  )
+}
+
+export function StatusBarChart({ data }: StatusBarChartProps) {
+  const chartHeight = Math.max(200, data.length * 36 + 40)
+  return (
+    <ResponsiveContainer width="100%" height={chartHeight}>
+      <BarChart data={data} layout="vertical" margin={{ left: 8, right: 40, top: 8, bottom: 8 }}>
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" allowDecimals={false} />
-        <YAxis type="category" dataKey="status" width={80} tick={{ fontSize: 12 }} />
+        <XAxis type="number" allowDecimals={false} hide />
+        <YAxis type="category" dataKey="status" width={120} tick={{ fontSize: 12 }} />
         <Tooltip {...TOOLTIP_STYLE} formatter={(value: number) => [`${value}개`, '프로젝트']} />
-        <Bar dataKey="count" fill={COLORS[0]} radius={[0, 4, 4, 0]} />
+        <Bar dataKey="count" fill={COLORS[0]} radius={[0, 4, 4, 0]} label={<StatusBarLabel />} />
       </BarChart>
     </ResponsiveContainer>
   )
@@ -161,21 +171,45 @@ export function TrendLineChart({ data }: TrendLineChartProps) {
 }
 
 // ────────────────────────────────────────────────────────────
-// WorkloadBarChart — 세로 바차트, 담당자별 프로젝트 수
+// WorkloadBarChart — 세로 스택 바차트, 담당자별 상태 분류
 // ────────────────────────────────────────────────────────────
 interface WorkloadBarChartProps {
-  data: { assignee: string; count: number }[]
+  data: { assignee: string; active: number; completed: number; other: number; total: number }[]
 }
+
+function WorkloadTopLabel({ x, y, width, value }: { x?: number; y?: number; width?: number; value?: number }) {
+  if (!value) return null
+  return (
+    <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) - 6} fontSize={12} fill="#ccc" textAnchor="middle">
+      {value}
+    </text>
+  )
+}
+
+const STACK_COLORS = { active: '#FF4500', completed: '#22c55e', other: '#666666' }
 
 export function WorkloadBarChart({ data }: WorkloadBarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
+      <BarChart data={data} margin={{ left: 8, right: 24, top: 24, bottom: 8 }}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="assignee" tick={{ fontSize: 12 }} />
-        <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-        <Tooltip {...TOOLTIP_STYLE} formatter={(value: number) => [`${value}개`, '프로젝트']} />
-        <Bar dataKey="count" fill={COLORS[0]} radius={[4, 4, 0, 0]} />
+        <XAxis dataKey="assignee" tick={{ fontSize: 11 }} interval={0} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 12 }} hide />
+        <Tooltip
+          {...TOOLTIP_STYLE}
+          formatter={(value: number, name: string) => {
+            const label = name === 'active' ? '진행중' : name === 'completed' ? '완료' : '기타'
+            return [`${value}개`, label]
+          }}
+        />
+        <Legend
+          formatter={(value: string) =>
+            value === 'active' ? '진행중' : value === 'completed' ? '완료' : '기타'
+          }
+        />
+        <Bar dataKey="active" stackId="a" fill={STACK_COLORS.active} />
+        <Bar dataKey="completed" stackId="a" fill={STACK_COLORS.completed} />
+        <Bar dataKey="other" stackId="a" fill={STACK_COLORS.other} radius={[4, 4, 0, 0]} label={<WorkloadTopLabel />} />
       </BarChart>
     </ResponsiveContainer>
   )

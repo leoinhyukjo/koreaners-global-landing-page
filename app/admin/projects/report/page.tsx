@@ -108,15 +108,22 @@ function useDerivedData(projects: Project[], rates: ExchangeRates) {
       }))
       .sort((a, b) => b.totalContract - a.totalContract)
 
-    const assigneeMap = new Map<string, number>()
+    const REPORT_ACTIVE = new Set(['리스트업', '섭외 중', '검토 중', '진행 중', '클라이언트 정산 중', '인플루언서 정산 중'])
+    const REPORT_COMPLETED = new Set(['진행 완료'])
+    const assigneeStatusMap = new Map<string, { active: number; completed: number; other: number }>()
     for (const p of subProjects) {
       for (const name of p.assignee_names) {
-        assigneeMap.set(name, (assigneeMap.get(name) ?? 0) + 1)
+        const entry = assigneeStatusMap.get(name) ?? { active: 0, completed: 0, other: 0 }
+        const s = p.status ?? ''
+        if (REPORT_COMPLETED.has(s)) entry.completed++
+        else if (REPORT_ACTIVE.has(s)) entry.active++
+        else entry.other++
+        assigneeStatusMap.set(name, entry)
       }
     }
-    const workloadData = Array.from(assigneeMap.entries())
-      .map(([assignee, count]) => ({ assignee, count }))
-      .sort((a, b) => b.count - a.count)
+    const workloadData = Array.from(assigneeStatusMap.entries())
+      .map(([assignee, counts]) => ({ assignee, ...counts, total: counts.active + counts.completed + counts.other }))
+      .sort((a, b) => b.total - a.total)
 
     const months = recentMonths(6)
     const newCountMap = new Map<string, number>(months.map((m) => [m, 0]))
