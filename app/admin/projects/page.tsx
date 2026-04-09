@@ -20,15 +20,18 @@ const ACTIVE_STATUSES = new Set([
   '인플루언서 정산 중',
   '클라이언트 정산 중',
   '리스트업 중',
+  '리스트업',
   '인플루언서 섭외',
   '리스트 전달',
   '섭외 중',
 ])
 
+const COMPLETED_STATUSES = new Set(['완료', '진행 완료'])
+
 // Statuses to exclude from pipeline chart entirely
 const EXCLUDE_STATUSES = new Set(['Drop', '보류', '진행 전', '(미설정)'])
 
-const NON_ACTIVE_STATUSES = new Set(['완료', 'Drop', '진행 전', '보류'])
+const NON_ACTIVE_STATUSES = new Set(['완료', '진행 완료', 'Drop', '진행 전', '보류'])
 
 function getLast6Months(): string[] {
   const result: string[] = []
@@ -123,7 +126,7 @@ export default function ProjectsPage() {
     if (EXCLUDE_STATUSES.has(s)) continue
     if (ACTIVE_STATUSES.has(s)) {
       pipelineMap.set('진행중', (pipelineMap.get('진행중') ?? 0) + 1)
-    } else if (s === '완료') {
+    } else if (COMPLETED_STATUSES.has(s)) {
       pipelineMap.set('완료', (pipelineMap.get('완료') ?? 0) + 1)
     }
   }
