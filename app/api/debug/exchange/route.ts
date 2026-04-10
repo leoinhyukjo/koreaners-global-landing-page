@@ -10,18 +10,21 @@ interface HttpsResult {
   headers: Record<string, string | string[] | undefined>;
 }
 
-/** Node https 모듈로 직접 호출 (undici/fetch 호환성 이슈 우회) */
-function httpsGet(url: string): Promise<HttpsResult> {
+/** 단일 HTTPS GET (cookie 헤더 옵션) */
+function httpsGetOnce(url: string, cookie?: string): Promise<HttpsResult> {
   return new Promise((resolve, reject) => {
+    const headers: Record<string, string> = {
+      "User-Agent": "Mozilla/5.0 (compatible; KoreanersBot/1.0)",
+      Accept: "*/*",
+      "Accept-Encoding": "identity",
+      Connection: "close",
+    };
+    if (cookie) headers["Cookie"] = cookie;
+
     const req = https.get(
       url,
       {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; KoreanersBot/1.0)",
-          Accept: "*/*",
-          "Accept-Encoding": "identity",
-          Connection: "close",
-        },
+        headers,
         timeout: 15000,
         rejectUnauthorized: false,
       },
@@ -39,6 +42,38 @@ function httpsGet(url: string): Promise<HttpsResult> {
       req.destroy(new Error("Request timeout"));
     });
   });
+}
+
+/**
+ * 한국수출입은행 봇 차단 우회:
+ *  1. 첫 요청 → 302 + Set-Cookie 받음
+ *  2. 받은 쿠키로 같은 URL 재요청 → 실제 데이터 반환
+ */
+async function httpsGet(url: string): Promise<HttpsResult> {
+  const first = await httpsGetOnce(url);
+
+  if (first.status === 302 || first.status === 301) {
+    // Set-Cookie 추출 (name=value 부분만)
+    const setCookieRaw = first.headers["set-cookie"];
+    const cookies = Array.isArray(setCookieRaw) ? setCookieRaw : setCookieRaw ? [setCookieRaw] : [];
+    const cookieHeader = cookies
+      .map((c) => c.split(";")[0])
+      .filter(Boolean)
+      .join("; ");
+
+    // Location 헤더의 URL로 재요청 (절대 또는 상대 URL 처리)
+    const locationHeader = first.headers["location"];
+    const locationStr = Array.isArray(locationHeader) ? locationHeader[0] : locationHeader;
+    const nextUrl = locationStr
+      ? locationStr.startsWith("http")
+        ? locationStr
+        : new URL(locationStr, url).toString()
+      : url;
+
+    return httpsGetOnce(nextUrl, cookieHeader);
+  }
+
+  return first;
 }
 
 /**
