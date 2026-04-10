@@ -3,8 +3,8 @@ import Navigation from '@/components/navigation'
 import { MainContent } from '@/components/main-content'
 
 export const metadata: Metadata = {
-  title: '코리너스 | 일본 인플루언서 마케팅 전문 대행사',
-  description: '일본 인플루언서 마케팅 전문 대행사 코리너스. 300+ 브랜드, 300+ 전속 크리에이터, 5,000+ 체험단. 인플루언서 캠페인, 대량 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 운영합니다.',
+  title: '코리너스 | 크로스보더 인플루언서 마케팅 전문 대행사',
+  description: '크로스보더 인플루언서 마케팅 전문 대행사 코리너스. 300+ 브랜드, 300+ 전속 크리에이터, 5,000+ 체험단. 인플루언서 캠페인, 대량 시딩, 콘텐츠 제작, 데이터 리포팅까지 크로스보더 마케팅 전 과정을 운영합니다.',
   alternates: { canonical: '/' },
 }
 
@@ -53,7 +53,7 @@ export default function Page() {
       <Navigation />
       {/* 서버 렌더링 SEO 콘텐츠 — JS 미실행 크롤러(AI Overview, ChatGPT, Perplexity)가 핵심 콘텐츠를 읽을 수 있도록 */}
       <div className="sr-only" aria-hidden="false">
-        <h1>코리너스 — 일본 인플루언서 마케팅 전문 대행사</h1>
+        <h1>코리너스 — 크로스보더 인플루언서 마케팅 전문 대행사</h1>
         <p>
           코리너스(KOREANERS)는 일본 시장 전문 크로스보더 마케팅 대행사입니다.
           300명 이상의 전속 크리에이터와 30만 SNS 커뮤니티를 보유하고 있으며,
