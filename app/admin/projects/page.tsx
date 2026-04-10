@@ -44,7 +44,7 @@ function getLast6Months(): string[] {
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.0, usdToKrw: 1350.0 })
+  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 })
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
@@ -115,7 +115,7 @@ export default function ProjectsPage() {
     ? marginProjects.reduce((acc, p) => acc + marginRate(p, rates), 0) / marginProjects.length
     : 0
   const totalExpense = projects.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
-  const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p), 0)
+  const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p, rates), 0)
 
   // Status pipeline — 각 status별 건수 표시
   const pipelineMap = new Map<string, number>()

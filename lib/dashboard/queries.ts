@@ -31,9 +31,11 @@ export async function fetchAllProjects(): Promise<Project[]> {
     contract_krw: Number(row.contract_krw ?? 0),
     contract_jpy: Number(row.contract_jpy ?? 0),
     contract_usd: Number(row.contract_usd ?? 0),
+    contract_cny: Number(row.contract_cny ?? 0),
     collab_fee: Number(row.collab_fee ?? 0),
     expense_krw: Number(row.expense_krw ?? 0),
     expense_jpy: Number(row.expense_jpy ?? 0),
+    expense_cny: Number(row.expense_cny ?? 0),
     margin_krw: Number(row.margin_krw ?? 0),
     estimate_status: row.estimate_status ?? null,
     contract_status: row.contract_status ?? null,
@@ -50,17 +52,17 @@ export async function fetchAllProjects(): Promise<Project[]> {
 }
 
 /**
- * 최신 JPY/KRW + USD/KRW 환율 조회 (클라이언트용)
+ * 최신 JPY/USD/CNY → KRW 환율 조회 (클라이언트용)
  * exchange_rates 테이블에서 각 통화쌍의 가장 최근 레코드 사용.
  */
 export async function fetchExchangeRates(): Promise<ExchangeRates> {
-  const FALLBACK: ExchangeRates = { jpyToKrw: 9.0, usdToKrw: 1350.0 }
+  const FALLBACK: ExchangeRates = { jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 }
 
   try {
     const { data, error } = await supabase
       .from('exchange_rates')
-      .select('currency_pair, rate')
-      .in('currency_pair', ['JPY/KRW', 'USD/KRW'])
+      .select('currency_pair, rate, rate_date')
+      .in('currency_pair', ['JPY/KRW', 'USD/KRW', 'CNY/KRW'])
       .order('rate_date', { ascending: false })
 
     if (error || !data || data.length === 0) {
@@ -68,15 +70,19 @@ export async function fetchExchangeRates(): Promise<ExchangeRates> {
       return FALLBACK
     }
 
+    // 각 통화별로 가장 최근 레코드 (정렬되어있으니 첫 매칭이 최신)
     const jpyRow = data.find((r) => r.currency_pair === 'JPY/KRW')
     const usdRow = data.find((r) => r.currency_pair === 'USD/KRW')
+    const cnyRow = data.find((r) => r.currency_pair === 'CNY/KRW')
 
     const jpyRate = jpyRow ? Number(jpyRow.rate) : FALLBACK.jpyToKrw
     const usdRate = usdRow ? Number(usdRow.rate) : FALLBACK.usdToKrw
+    const cnyRate = cnyRow ? Number(cnyRow.rate) : FALLBACK.cnyToKrw
 
     return {
       jpyToKrw: isNaN(jpyRate) || jpyRate <= 0 ? FALLBACK.jpyToKrw : jpyRate,
       usdToKrw: isNaN(usdRate) || usdRate <= 0 ? FALLBACK.usdToKrw : usdRate,
+      cnyToKrw: isNaN(cnyRate) || cnyRate <= 0 ? FALLBACK.cnyToKrw : cnyRate,
     }
   } catch (err) {
     console.warn('[fetchExchangeRates] 예외 발생, 폴백 사용:', err)

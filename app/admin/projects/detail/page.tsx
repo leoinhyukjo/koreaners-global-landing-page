@@ -485,8 +485,8 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
     }
     if (sortField === 'margin') {
       return sortDir === 'asc'
-        ? totalMarginKrw(a) - totalMarginKrw(b)
-        : totalMarginKrw(b) - totalMarginKrw(a)
+        ? totalMarginKrw(a, rates) - totalMarginKrw(b, rates)
+        : totalMarginKrw(b, rates) - totalMarginKrw(a, rates)
     }
     if (sortField === 'marginRate') {
       return sortDir === 'asc'
@@ -498,7 +498,7 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
 
   const totalContract = filtered.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
   const totalExpense = filtered.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
-  const totalMarginAmt = filtered.reduce((acc, p) => acc + totalMarginKrw(p), 0)
+  const totalMarginAmt = filtered.reduce((acc, p) => acc + totalMarginKrw(p, rates), 0)
   const avgMarginPct = filtered.length > 0
     ? filtered.reduce((acc, p) => acc + marginRate(p, rates), 0) / filtered.length
     : 0
@@ -519,7 +519,7 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
         </thead>
         <tbody>
           {sorted.map((p) => {
-            const m = totalMarginKrw(p)
+            const m = totalMarginKrw(p, rates)
             const mr = marginRate(p, rates)
             return (
               <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
@@ -579,7 +579,7 @@ function DetailContent() {
   const view: ViewType = viewParam && viewParam in VIEW_CONFIG ? viewParam : 'total'
 
   const [projects, setProjects] = useState<Project[]>([])
-  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.0, usdToKrw: 1350.0 })
+  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

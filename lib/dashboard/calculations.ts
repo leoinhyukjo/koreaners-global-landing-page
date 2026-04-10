@@ -1,6 +1,7 @@
 export interface ExchangeRates {
   jpyToKrw: number
   usdToKrw: number
+  cnyToKrw: number
 }
 
 export interface Project {
@@ -21,9 +22,15 @@ export interface Project {
   contract_krw: number
   contract_jpy: number
   contract_usd: number
+  contract_cny: number
   collab_fee: number
   expense_krw: number
   expense_jpy: number
+  expense_cny: number
+  /**
+   * 시트 '마진(원으로 적용)' 칼럼 원본값 (마케팅팀 수동 입력, 정확도 낮음).
+   * 대시보드 계산에서는 사용하지 않음 - totalMarginKrw() 참조.
+   */
   margin_krw: number
   estimate_status: string | null
   contract_status: string | null
@@ -38,26 +45,39 @@ export interface Project {
   creator_settlement_note: string | null
 }
 
-/** 계약 총액을 KRW로 환산 (3통화 합산) */
+/** 계약 총액을 KRW로 환산 (4통화 합산) */
 export function totalContractKrw(p: Project, rates: ExchangeRates): number {
-  return p.contract_krw + p.contract_jpy * rates.jpyToKrw + p.contract_usd * rates.usdToKrw
+  return (
+    p.contract_krw +
+    p.contract_jpy * rates.jpyToKrw +
+    p.contract_usd * rates.usdToKrw +
+    p.contract_cny * rates.cnyToKrw
+  )
 }
 
-/** 지출액 총액을 KRW로 환산 */
+/** 지출액 총액을 KRW로 환산 (원/엔/위안, 지출엔 USD 칼럼 없음) */
 export function totalExpenseKrw(p: Project, rates: ExchangeRates): number {
-  return p.expense_krw + p.expense_jpy * rates.jpyToKrw
+  return (
+    p.expense_krw +
+    p.expense_jpy * rates.jpyToKrw +
+    p.expense_cny * rates.cnyToKrw
+  )
 }
 
-/** 마진 총액 (시트에서 이미 원화 환산) */
-export function totalMarginKrw(p: Project): number {
-  return p.margin_krw
+/**
+ * 마진 총액 = 계약총액(KRW환산) - 지출총액(KRW환산).
+ * 콜라보 수수료 칼럼은 텍스트 오염이 있어 계산에서 제외.
+ * 시트 '마진(원으로 적용)' 칼럼(p.margin_krw)은 참조용으로만 유지.
+ */
+export function totalMarginKrw(p: Project, rates: ExchangeRates): number {
+  return totalContractKrw(p, rates) - totalExpenseKrw(p, rates)
 }
 
 /** 마진율 (%). 계약금액이 0이면 0 반환 */
 export function marginRate(p: Project, rates: ExchangeRates): number {
   const contract = totalContractKrw(p, rates)
   if (contract === 0) return 0
-  return (totalMarginKrw(p) / contract) * 100
+  return (totalMarginKrw(p, rates) / contract) * 100
 }
 
 /**
