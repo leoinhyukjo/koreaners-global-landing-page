@@ -109,8 +109,8 @@ export default function ProjectsPage() {
   const totalContract = projects.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
   const totalReceivable = projects.reduce((acc, p) => acc + receivableKrw(p, rates), 0)
 
-  // 마진 — 계약금액 또는 지출액이 있는 프로젝트만
-  const marginProjects = projects.filter((p) => totalContractKrw(p, rates) > 0 || totalExpenseKrw(p, rates) > 0)
+  // 마진 — 계약금액이 있는 프로젝트만 (0인 행은 마진율 정의 불가 → 평균 왜곡 방지)
+  const marginProjects = projects.filter((p) => totalContractKrw(p, rates) > 0)
   const avgMarginRate = marginProjects.length > 0
     ? marginProjects.reduce((acc, p) => acc + marginRate(p, rates), 0) / marginProjects.length
     : 0
@@ -219,7 +219,7 @@ export default function ProjectsPage() {
         <KpiCard
           title="미수금"
           value={fmtKrw(totalReceivable)}
-          subtitle={`¥1=₩${rates.jpyToKrw} / $1=₩${rates.usdToKrw}`}
+          subtitle={`¥1=₩${rates.jpyToKrw.toFixed(2)} / $1=₩${rates.usdToKrw.toFixed(2)}`}
           href="/admin/projects/detail?view=receivable"
         />
         <Link href="/admin/projects/detail?view=margin" className="h-full">

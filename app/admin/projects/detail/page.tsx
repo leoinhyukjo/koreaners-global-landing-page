@@ -359,7 +359,7 @@ function ContractView({ projects, rates }: { projects: Project[]; rates: Exchang
           </tr>
         </tfoot>
       </table>
-      <p className="mt-1 text-right text-xs text-neutral-500">총 {projects.length}건 · 환율 ¥1=₩{rates.jpyToKrw} / $1=₩{rates.usdToKrw}</p>
+      <p className="mt-1 text-right text-xs text-neutral-500">총 {projects.length}건 · 환율 ¥1=₩{rates.jpyToKrw.toFixed(2)} / $1=₩{rates.usdToKrw.toFixed(2)}</p>
     </div>
   )
 }
@@ -431,7 +431,7 @@ function ReceivableView({ projects, rates }: { projects: Project[]; rates: Excha
         </tfoot>
       </table>
       <p className="mt-1 text-right text-xs text-neutral-500">
-        미수금 {withReceivable.length}건 · 환율 ¥1=₩{rates.jpyToKrw} / $1=₩{rates.usdToKrw}
+        미수금 {withReceivable.length}건 · 환율 ¥1=₩{rates.jpyToKrw.toFixed(2)} / $1=₩{rates.usdToKrw.toFixed(2)}
       </p>
     </div>
   )
@@ -500,8 +500,10 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
   const totalContract = filtered.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
   const totalExpense = filtered.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
   const totalMarginAmt = filtered.reduce((acc, p) => acc + totalMarginKrw(p, rates), 0)
-  const avgMarginPct = filtered.length > 0
-    ? filtered.reduce((acc, p) => acc + marginRate(p, rates), 0) / filtered.length
+  // 계약금액이 0인 행은 마진율이 정의되지 않으므로 평균에서 제외 (0 취급 시 평균이 왜곡됨)
+  const rated = filtered.filter((p) => totalContractKrw(p, rates) > 0)
+  const avgMarginPct = rated.length > 0
+    ? rated.reduce((acc, p) => acc + marginRate(p, rates), 0) / rated.length
     : 0
 
   return (
@@ -520,20 +522,22 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
         </thead>
         <tbody>
           {sorted.map((p) => {
+            const contract = totalContractKrw(p, rates)
             const m = totalMarginKrw(p, rates)
             const mr = marginRate(p, rates)
+            const rateDefined = contract > 0
             return (
               <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-900/60 transition-colors">
                 <td className="px-3 py-2.5 text-neutral-400 max-w-[120px] truncate">{p.company_name ?? '—'}</td>
                 <td className="px-3 py-2.5 text-neutral-100 max-w-[180px] truncate">{p.name}</td>
                 <td className="px-3 py-2.5 text-neutral-500 whitespace-nowrap tabular-nums text-xs">{fmtDate(p.start_date)}</td>
-                <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(totalContractKrw(p, rates))}</td>
+                <td className="px-3 py-2.5 text-right text-neutral-300 whitespace-nowrap">{fmtKrw(contract)}</td>
                 <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap">{fmtKrw(totalExpenseKrw(p, rates))}</td>
                 <td className={`px-3 py-2.5 text-right font-semibold whitespace-nowrap ${m < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                   {fmtKrw(m)}
                 </td>
-                <td className={`px-3 py-2.5 text-right whitespace-nowrap tabular-nums ${mr < 0 ? 'text-red-400' : mr < 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
-                  {mr.toFixed(1)}%
+                <td className={`px-3 py-2.5 text-right whitespace-nowrap tabular-nums ${!rateDefined ? 'text-neutral-500' : mr < 0 ? 'text-red-400' : mr < 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
+                  {rateDefined ? `${mr.toFixed(1)}%` : '—'}
                 </td>
               </tr>
             )
@@ -553,7 +557,7 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
           </tr>
         </tfoot>
       </table>
-      <p className="mt-1 text-right text-xs text-neutral-500">{filtered.length}건 · 환율 ¥1=₩{rates.jpyToKrw} / $1=₩{rates.usdToKrw}</p>
+      <p className="mt-1 text-right text-xs text-neutral-500">{filtered.length}건 · 환율 ¥1=₩{rates.jpyToKrw.toFixed(2)} / $1=₩{rates.usdToKrw.toFixed(2)}</p>
     </div>
   )
 }
