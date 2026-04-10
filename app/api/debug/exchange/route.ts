@@ -4,8 +4,14 @@ import https from "node:https";
 export const maxDuration = 30;
 export const preferredRegion = "icn1";
 
+interface HttpsResult {
+  status: number;
+  body: string;
+  headers: Record<string, string | string[] | undefined>;
+}
+
 /** Node https 모듈로 직접 호출 (undici/fetch 호환성 이슈 우회) */
-function httpsGet(url: string): Promise<{ status: number; body: string }> {
+function httpsGet(url: string): Promise<HttpsResult> {
   return new Promise((resolve, reject) => {
     const req = https.get(
       url,
@@ -17,15 +23,15 @@ function httpsGet(url: string): Promise<{ status: number; body: string }> {
           Connection: "close",
         },
         timeout: 15000,
-        // 한국 정부 사이트 cert chain이 Vercel Node CA store에 없어 검증 실패.
-        // 환율 public data라 MITM 영향 미미 → 검증 비활성화.
         rejectUnauthorized: false,
       },
       (res) => {
         let body = "";
         res.setEncoding("utf8");
         res.on("data", (chunk) => (body += chunk));
-        res.on("end", () => resolve({ status: res.statusCode ?? 0, body }));
+        res.on("end", () =>
+          resolve({ status: res.statusCode ?? 0, body, headers: res.headers as Record<string, string | string[] | undefined> }),
+        );
       },
     );
     req.on("error", reject);
@@ -115,8 +121,11 @@ async function tryHttps(url: string) {
       ok: true,
       elapsedMs: Date.now() - started,
       status: result.status,
+      location: result.headers["location"] ?? null,
+      contentType: result.headers["content-type"] ?? null,
+      setCookie: result.headers["set-cookie"] ?? null,
       bodyLength: result.body.length,
-      bodyPreview: result.body.slice(0, 200),
+      bodyPreview: result.body.slice(0, 300),
     };
   } catch (err) {
     return {
