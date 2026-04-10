@@ -1,12 +1,4 @@
 {
-  "functions": {
-    "app/api/sync/projects/route.ts": {
-      "regions": ["icn1"]
-    },
-    "app/api/debug/exchange/route.ts": {
-      "regions": ["icn1"]
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
