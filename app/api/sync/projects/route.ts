@@ -7,6 +7,8 @@ import { authenticateSync } from '@/lib/sync-auth'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export const maxDuration = 60
+// 한국수출입은행 환율 API가 외국 IP에서 ECONNRESET 발생 → Seoul 리전에서 실행
+export const preferredRegion = 'icn1'
 
 interface SyncResult {
   synced: number

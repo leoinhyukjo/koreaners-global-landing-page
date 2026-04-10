@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 export const maxDuration = 30;
+export const preferredRegion = "icn1";
 
 /**
  * 임시 디버그 엔드포인트 — Korea Exim API 호출 상태 진단용.
