@@ -21,6 +21,7 @@ import {
   totalContractKrw,
   receivableKrw,
   projectDurationDays,
+  FALLBACK_RATES,
 } from '@/lib/dashboard/calculations'
 import type { Project, ExchangeRates } from '@/lib/dashboard/calculations'
 
@@ -169,7 +170,7 @@ function useDerivedData(projects: Project[], rates: ExchangeRates) {
 
 export default function ProjectsReportPage() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 })
+  const [rates, setRates] = useState<ExchangeRates>(FALLBACK_RATES)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

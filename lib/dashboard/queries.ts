@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/client'
-import type { Project, ExchangeRates } from './calculations'
+import { CURRENCY_PAIRS, FALLBACK_RATES, type ExchangeRates, type Project } from './calculations'
 
 /** 전체 프로젝트 목록 조회 (클라이언트 전용) */
 export async function fetchAllProjects(): Promise<Project[]> {
@@ -51,41 +51,37 @@ export async function fetchAllProjects(): Promise<Project[]> {
   })) as Project[]
 }
 
-/**
- * 최신 JPY/USD/CNY → KRW 환율 조회 (클라이언트용)
- * exchange_rates 테이블에서 각 통화쌍의 가장 최근 레코드 사용.
- */
+/** 최신 환율 조회 (브라우저 클라이언트용 — anon key, RLS 통과). */
 export async function fetchExchangeRates(): Promise<ExchangeRates> {
-  const FALLBACK: ExchangeRates = { jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 }
-
   try {
     const { data, error } = await supabase
       .from('exchange_rates')
-      .select('currency_pair, rate, rate_date')
-      .in('currency_pair', ['JPY/KRW', 'USD/KRW', 'CNY/KRW'])
+      .select('currency_pair, rate')
+      .in('currency_pair', [CURRENCY_PAIRS.JPY, CURRENCY_PAIRS.USD, CURRENCY_PAIRS.CNY])
       .order('rate_date', { ascending: false })
 
-    if (error || !data || data.length === 0) {
-      console.warn('[fetchExchangeRates] 조회 실패, 폴백 사용:', error?.message)
-      return FALLBACK
+    if (error || !data?.length) {
+      console.warn('[fetchExchangeRates] cache empty, using fallback:', error?.message)
+      return FALLBACK_RATES
     }
-
-    // 각 통화별로 가장 최근 레코드 (정렬되어있으니 첫 매칭이 최신)
-    const jpyRow = data.find((r) => r.currency_pair === 'JPY/KRW')
-    const usdRow = data.find((r) => r.currency_pair === 'USD/KRW')
-    const cnyRow = data.find((r) => r.currency_pair === 'CNY/KRW')
-
-    const jpyRate = jpyRow ? Number(jpyRow.rate) : FALLBACK.jpyToKrw
-    const usdRate = usdRow ? Number(usdRow.rate) : FALLBACK.usdToKrw
-    const cnyRate = cnyRow ? Number(cnyRow.rate) : FALLBACK.cnyToKrw
 
     return {
-      jpyToKrw: isNaN(jpyRate) || jpyRate <= 0 ? FALLBACK.jpyToKrw : jpyRate,
-      usdToKrw: isNaN(usdRate) || usdRate <= 0 ? FALLBACK.usdToKrw : usdRate,
-      cnyToKrw: isNaN(cnyRate) || cnyRate <= 0 ? FALLBACK.cnyToKrw : cnyRate,
+      jpyToKrw: pickLatest(data, CURRENCY_PAIRS.JPY) ?? FALLBACK_RATES.jpyToKrw,
+      usdToKrw: pickLatest(data, CURRENCY_PAIRS.USD) ?? FALLBACK_RATES.usdToKrw,
+      cnyToKrw: pickLatest(data, CURRENCY_PAIRS.CNY) ?? FALLBACK_RATES.cnyToKrw,
     }
   } catch (err) {
-    console.warn('[fetchExchangeRates] 예외 발생, 폴백 사용:', err)
-    return FALLBACK
+    console.warn('[fetchExchangeRates] cache read failed, using fallback:', err)
+    return FALLBACK_RATES
   }
+}
+
+function pickLatest(
+  rows: Array<{ currency_pair: string; rate: number | string | null }>,
+  pair: string,
+): number | null {
+  const row = rows.find((r) => r.currency_pair === pair)
+  if (!row?.rate) return null
+  const n = Number(row.rate)
+  return Number.isFinite(n) && n > 0 ? n : null
 }

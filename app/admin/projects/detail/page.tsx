@@ -11,6 +11,7 @@ import {
   totalMarginKrw,
   marginRate,
   receivableKrw,
+  FALLBACK_RATES,
   type Project,
   type ExchangeRates,
 } from '@/lib/dashboard/calculations'
@@ -579,7 +580,7 @@ function DetailContent() {
   const view: ViewType = viewParam && viewParam in VIEW_CONFIG ? viewParam : 'total'
 
   const [projects, setProjects] = useState<Project[]>([])
-  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 })
+  const [rates, setRates] = useState<ExchangeRates>(FALLBACK_RATES)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

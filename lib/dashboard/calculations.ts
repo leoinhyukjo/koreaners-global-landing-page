@@ -4,6 +4,21 @@ export interface ExchangeRates {
   cnyToKrw: number
 }
 
+/** Supabase 캐시가 비어있을 때만 사용. 외부 launchd가 실패하는 동안의 임시 안전망 — 2026-04 기준 근사치. */
+export const FALLBACK_RATES: ExchangeRates = {
+  jpyToKrw: 9.3,
+  usdToKrw: 1450.0,
+  cnyToKrw: 200.0,
+}
+
+export const CURRENCY_PAIRS = {
+  JPY: 'JPY/KRW',
+  USD: 'USD/KRW',
+  CNY: 'CNY/KRW',
+} as const
+
+export type CurrencyPair = (typeof CURRENCY_PAIRS)[keyof typeof CURRENCY_PAIRS]
+
 export interface Project {
   id: string
   row_code: string
@@ -45,7 +60,6 @@ export interface Project {
   creator_settlement_note: string | null
 }
 
-/** 계약 총액을 KRW로 환산 (4통화 합산) */
 export function totalContractKrw(p: Project, rates: ExchangeRates): number {
   return (
     p.contract_krw +
@@ -55,7 +69,7 @@ export function totalContractKrw(p: Project, rates: ExchangeRates): number {
   )
 }
 
-/** 지출액 총액을 KRW로 환산 (원/엔/위안, 지출엔 USD 칼럼 없음) */
+/** 지출엔 USD 칼럼 없음 (시트 구조). */
 export function totalExpenseKrw(p: Project, rates: ExchangeRates): number {
   return (
     p.expense_krw +
@@ -65,32 +79,26 @@ export function totalExpenseKrw(p: Project, rates: ExchangeRates): number {
 }
 
 /**
- * 마진 총액 = 계약총액(KRW환산) - 지출총액(KRW환산).
- * 콜라보 수수료 칼럼은 텍스트 오염이 있어 계산에서 제외.
- * 시트 '마진(원으로 적용)' 칼럼(p.margin_krw)은 참조용으로만 유지.
+ * 마진 = 계약총액 - 지출총액. 시트의 margin_krw 칼럼(마케팅팀 수동 입력)은
+ * 콜라보 수수료 텍스트 오염이 있어 사용하지 않고 환율 기반으로 재계산한다.
  */
 export function totalMarginKrw(p: Project, rates: ExchangeRates): number {
   return totalContractKrw(p, rates) - totalExpenseKrw(p, rates)
 }
 
-/** 마진율 (%). 계약금액이 0이면 0 반환 */
 export function marginRate(p: Project, rates: ExchangeRates): number {
   const contract = totalContractKrw(p, rates)
   if (contract === 0) return 0
-  return (totalMarginKrw(p, rates) / contract) * 100
+  const margin = contract - totalExpenseKrw(p, rates)
+  return (margin / contract) * 100
 }
 
-/**
- * 미수금 (KRW 기준)
- * - payment_status에 '잔금 입금 완료' 포함 → 0
- * - 그 외 → 계약 총액 전액
- */
+/** payment_status에 '잔금 입금 완료' 포함시 0, 아니면 계약 총액 전액. */
 export function receivableKrw(p: Project, rates: ExchangeRates): number {
   if (p.payment_status?.includes('잔금 입금 완료')) return 0
   return totalContractKrw(p, rates)
 }
 
-/** 프로젝트 기간 (일수). start_date 또는 end_date가 없으면 null */
 export function projectDurationDays(p: Project): number | null {
   if (!p.start_date || !p.end_date) return null
   const start = new Date(p.start_date).getTime()

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { fetchAllProjects, fetchExchangeRates } from '@/lib/dashboard/queries'
-import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, type Project, type ExchangeRates } from '@/lib/dashboard/calculations'
+import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, FALLBACK_RATES, type Project, type ExchangeRates } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   StatusBarChart,
@@ -44,7 +44,7 @@ function getLast6Months(): string[] {
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [rates, setRates] = useState<ExchangeRates>({ jpyToKrw: 9.3, usdToKrw: 1450.0, cnyToKrw: 200.0 })
+  const [rates, setRates] = useState<ExchangeRates>(FALLBACK_RATES)
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState<string | null>(null)

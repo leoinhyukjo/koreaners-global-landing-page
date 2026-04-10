@@ -1,68 +1,57 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  CURRENCY_PAIRS,
+  FALLBACK_RATES,
+  type ExchangeRates,
+} from "@/lib/dashboard/calculations";
 
-export interface ExchangeRates {
-  jpyToKrw: number;
-  usdToKrw: number;
-  cnyToKrw: number;
-}
-
-// 캐시가 비어있을 때만 사용 (실제로는 거의 발생 X). 2026-04 기준 근사치.
-const FALLBACK_JPY_TO_KRW = 9.3;
-const FALLBACK_USD_TO_KRW = 1450.0;
-const FALLBACK_CNY_TO_KRW = 200.0;
-
-const PAIR_JPY = "JPY/KRW";
-const PAIR_USD = "USD/KRW";
-const PAIR_CNY = "CNY/KRW";
+export type { ExchangeRates };
 
 /**
- * Supabase exchange_rates 테이블에서 최신 환율을 읽는다.
+ * Supabase exchange_rates에서 최신 환율을 읽는다.
  *
- * 환율 데이터 채우기는 외부 cron(work-scripts/launchd/com.koreaners.exchange-rate.plist)이
- * 한국 IP에서 한국수출입은행 API를 호출하여 매일 11:30에 upsert함.
- * Vercel에서 한국 정부 사이트 직접 호출은 봇 차단으로 불가능 → cache-only 전략.
+ * 환율 적재는 외부 launchd(work-scripts/scripts/exchange_rate_sync.py)가 한국 IP에서
+ * 한국수출입은행 API를 호출해 매일 11:30에 upsert함. Vercel 데이터센터 IP는 봇 차단되어
+ * 직접 호출 불가 → cache-only 전략.
  */
 export async function getExchangeRates(): Promise<ExchangeRates> {
-  const recent = await readMostRecentRates();
-  return {
-    jpyToKrw: recent.jpy ?? FALLBACK_JPY_TO_KRW,
-    usdToKrw: recent.usd ?? FALLBACK_USD_TO_KRW,
-    cnyToKrw: recent.cny ?? FALLBACK_CNY_TO_KRW,
-  };
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("exchange_rates")
+      .select("currency_pair, rate")
+      .in("currency_pair", [CURRENCY_PAIRS.JPY, CURRENCY_PAIRS.USD, CURRENCY_PAIRS.CNY])
+      .order("rate_date", { ascending: false });
+
+    if (error || !data?.length) {
+      console.warn("[exchange-rate] cache empty, using fallback:", error?.message);
+      return FALLBACK_RATES;
+    }
+
+    // .order로 내림차순 정렬되어있어 currency_pair별 첫 매칭이 최신 row.
+    return {
+      jpyToKrw: pickLatest(data, CURRENCY_PAIRS.JPY) ?? FALLBACK_RATES.jpyToKrw,
+      usdToKrw: pickLatest(data, CURRENCY_PAIRS.USD) ?? FALLBACK_RATES.usdToKrw,
+      cnyToKrw: pickLatest(data, CURRENCY_PAIRS.CNY) ?? FALLBACK_RATES.cnyToKrw,
+    };
+  } catch (e) {
+    console.warn("[exchange-rate] cache read failed, using fallback:", e);
+    return FALLBACK_RATES;
+  }
 }
 
-/** 하위 호환: JPY 환율만 필요한 legacy caller용 */
+/** 하위 호환: legacy caller가 JPY만 필요한 경우. */
 export async function getJpyToKrwRate(): Promise<number> {
   const rates = await getExchangeRates();
   return rates.jpyToKrw;
 }
 
-async function readMostRecentRates(): Promise<{
-  jpy: number | null;
-  usd: number | null;
-  cny: number | null;
-}> {
-  const result = { jpy: null as number | null, usd: null as number | null, cny: null as number | null };
-  try {
-    const supabase = createAdminClient();
-    for (const [pair, key] of [
-      [PAIR_JPY, "jpy"],
-      [PAIR_USD, "usd"],
-      [PAIR_CNY, "cny"],
-    ] as const) {
-      const { data } = await supabase
-        .from("exchange_rates")
-        .select("rate")
-        .eq("currency_pair", pair)
-        .order("rate_date", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (data?.rate != null) {
-        result[key] = Number(data.rate);
-      }
-    }
-  } catch {
-    // 조용히 무시, 폴백으로 진행
-  }
-  return result;
+function pickLatest(
+  rows: Array<{ currency_pair: string; rate: number | string | null }>,
+  pair: string,
+): number | null {
+  const row = rows.find((r) => r.currency_pair === pair);
+  if (!row?.rate) return null;
+  const n = Number(row.rate);
+  return Number.isFinite(n) && n > 0 ? n : null;
 }
