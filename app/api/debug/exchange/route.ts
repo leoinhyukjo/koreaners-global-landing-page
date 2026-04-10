@@ -1,7 +1,39 @@
 import { NextResponse } from "next/server";
+import https from "node:https";
 
 export const maxDuration = 30;
 export const preferredRegion = "icn1";
+
+/** Node https 모듈로 직접 호출 (undici/fetch 호환성 이슈 우회) */
+function httpsGet(url: string): Promise<{ status: number; body: string }> {
+  return new Promise((resolve, reject) => {
+    const req = https.get(
+      url,
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; KoreanersBot/1.0)",
+          Accept: "*/*",
+          "Accept-Encoding": "identity",
+          Connection: "close",
+        },
+        timeout: 15000,
+        // 한국 정부 사이트 호환성: TLS 1.2 강제
+        minVersion: "TLSv1.2",
+        maxVersion: "TLSv1.2",
+      },
+      (res) => {
+        let body = "";
+        res.setEncoding("utf8");
+        res.on("data", (chunk) => (body += chunk));
+        res.on("end", () => resolve({ status: res.statusCode ?? 0, body }));
+      },
+    );
+    req.on("error", reject);
+    req.on("timeout", () => {
+      req.destroy(new Error("Request timeout"));
+    });
+  });
+}
 
 /**
  * 임시 디버그 엔드포인트 — Korea Exim API 호출 상태 진단용.
@@ -30,10 +62,23 @@ export async function GET() {
     apiKey,
   )}&searchdate=${date}&data=AP01`;
 
+  // 두 가지 방법 동시 시도: undici fetch + node https
+  const fetchResult = await tryFetch(url);
+  const httpsResult = await tryHttps(url);
+
+  return NextResponse.json({
+    ...diagnostics,
+    date,
+    fetch: fetchResult,
+    https: httpsResult,
+  });
+}
+
+async function tryFetch(url: string) {
+  const started = Date.now();
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
-    const started = Date.now();
     let res: Response;
     try {
       res = await fetch(url, {
@@ -43,25 +88,42 @@ export async function GET() {
     } finally {
       clearTimeout(timeoutId);
     }
-    const elapsedMs = Date.now() - started;
     const text = await res.text();
-    return NextResponse.json({
-      ...diagnostics,
-      date,
-      elapsedMs,
+    return {
+      ok: true,
+      elapsedMs: Date.now() - started,
       status: res.status,
-      statusText: res.statusText,
-      contentType: res.headers.get("content-type"),
       bodyLength: text.length,
-      bodyPreview: text.slice(0, 500),
-    });
+      bodyPreview: text.slice(0, 200),
+    };
   } catch (err) {
-    return NextResponse.json({
-      ...diagnostics,
-      date,
+    return {
+      ok: false,
+      elapsedMs: Date.now() - started,
       errorType: err instanceof Error ? err.constructor.name : typeof err,
       errorMessage: err instanceof Error ? err.message : String(err),
       errorCause: err instanceof Error && "cause" in err ? String((err as { cause: unknown }).cause) : null,
-    });
+    };
+  }
+}
+
+async function tryHttps(url: string) {
+  const started = Date.now();
+  try {
+    const result = await httpsGet(url);
+    return {
+      ok: true,
+      elapsedMs: Date.now() - started,
+      status: result.status,
+      bodyLength: result.body.length,
+      bodyPreview: result.body.slice(0, 200),
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      elapsedMs: Date.now() - started,
+      errorType: err instanceof Error ? err.constructor.name : typeof err,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    };
   }
 }
