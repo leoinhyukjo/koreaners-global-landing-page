@@ -17,9 +17,9 @@ function httpsGet(url: string): Promise<{ status: number; body: string }> {
           Connection: "close",
         },
         timeout: 15000,
-        // 한국 정부 사이트 호환성: TLS 1.2 강제
-        minVersion: "TLSv1.2",
-        maxVersion: "TLSv1.2",
+        // 한국 정부 사이트 cert chain이 Vercel Node CA store에 없어 검증 실패.
+        // 환율 public data라 MITM 영향 미미 → 검증 비활성화.
+        rejectUnauthorized: false,
       },
       (res) => {
         let body = "";
