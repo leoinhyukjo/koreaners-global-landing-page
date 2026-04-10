@@ -35,11 +35,15 @@ export async function getExchangeRates(): Promise<ExchangeRates> {
 
   // 2. 한국수출입은행 API 호출 (영업일 롤백)
   const apiKey = process.env.KOREA_EXIM_API_KEY;
+  console.log("[exchange-rate] env key present:", apiKey ? `yes (len=${apiKey.length})` : "NO");
   if (apiKey) {
     const fetched = await fetchKoreaEximRatesWithRollback(apiKey, 7);
     if (fetched) {
+      console.log("[exchange-rate] fetched OK from", fetched.dateUsed, fetched.rates);
       await upsertRates(fetched.rates, today, "korea_exim");
       return fetched.rates;
+    } else {
+      console.warn("[exchange-rate] fetchKoreaEximRatesWithRollback returned null after 7 day rollback");
     }
   }
 
@@ -166,8 +170,10 @@ async function fetchKoreaEximRatesWithRollback(
       if (rates) {
         return { rates, dateUsed: date };
       }
-    } catch {
-      // 다음 날짜로 롤백
+      console.warn(`[exchange-rate] ${date}: parsed but missing JPY/USD/CNH`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[exchange-rate] ${date}: fetch failed - ${msg}`);
     }
   }
   return null;
