@@ -187,12 +187,32 @@ async function fetchKoreaEximRates(
     apiKey,
   )}&searchdate=${date}&data=AP01`;
 
-  const res = await fetch(url, { next: { revalidate: 0 } });
+  // 한국수출입은행 API는 User-Agent 헤더가 없으면 빈 응답/connection reset을 반환할 수 있음.
+  // AbortController로 15초 타임아웃 강제 - 행잉 방지.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15_000);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; KoreanersBot/1.0)" },
+      next: { revalidate: 0 },
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
   if (!res.ok) {
     throw new Error(`Korea Exim HTTP ${res.status}`);
   }
 
-  const rows: KoreaEximRow[] = await res.json();
+  const text = await res.text();
+  let rows: KoreaEximRow[];
+  try {
+    rows = JSON.parse(text);
+  } catch {
+    throw new Error(`Korea Exim non-JSON response (${text.length} bytes): ${text.slice(0, 200)}`);
+  }
   if (!Array.isArray(rows) || rows.length === 0) {
     return null;
   }
