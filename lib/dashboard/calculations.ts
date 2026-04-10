@@ -7,8 +7,6 @@ export interface Project {
   id: string
   row_code: string
   name: string
-  entry_date: string | null
-  week_code: string | null
   company_name: string | null
   brand_name: string | null
   status: string | null

@@ -17,8 +17,6 @@ export async function fetchAllProjects(): Promise<Project[]> {
     id: row.id ?? '',
     row_code: row.row_code ?? '',
     name: row.brand_name || row.company_name || row.row_code || '',
-    entry_date: row.entry_date ?? null,
-    week_code: row.week_code ?? null,
     company_name: row.company_name ?? null,
     brand_name: row.brand_name ?? null,
     status: row.status ?? null,

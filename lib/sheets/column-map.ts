@@ -10,7 +10,7 @@ interface FieldDef {
 
 const HEADER_FIELD_MAP: Record<string, FieldDef> = headerMap as Record<string, FieldDef>
 
-const REQUIRED_HEADERS = ['코드', '브랜드명']
+const REQUIRED_HEADERS = ['유니크코드', '브랜드명']
 
 /**
  * 헤더 행에서 { supabaseField → columnIndex } 맵을 빌드한다.
@@ -80,8 +80,10 @@ export function parseRowDynamic(
     record[field] = getTyped(field)
   }
 
-  // row_code: 시트 행 번호 기반 (유니크 키)
-  record.row_code = `R${rowNumber}`
+  // row_code: 유니크코드 칼럼 값 사용 (없으면 행 번호 폴백)
+  if (!record.row_code) {
+    record.row_code = `R${rowNumber}`
+  }
   // name 필드: brand_name > company_name
   record.name = brandName || companyName
 

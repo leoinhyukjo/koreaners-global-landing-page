@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-      range: 'Dashboard!A:AJ',
+      range: 'Dashboard!A:AL',
       valueRenderOption: 'FORMATTED_VALUE',
     })
 

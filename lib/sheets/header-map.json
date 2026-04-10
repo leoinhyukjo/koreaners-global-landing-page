@@ -1,7 +1,4 @@
 {
-  "구분-날짜": { "field": "entry_date", "type": "entry_date" },
-  "구분-날짜(Y-W)": { "field": "week_code", "type": "text" },
-  "코드": { "field": "row_code", "type": "text" },
   "법인명": { "field": "company_name", "type": "text" },
   "브랜드명": { "field": "brand_name", "type": "text" },
   "운영-status": { "field": "status", "type": "text" },
@@ -30,5 +27,6 @@
   "세금계산서 발행일": { "field": "tax_invoice_date", "type": "date" },
   "입금 여부": { "field": "payment_status", "type": "text" },
   "송금 여부": { "field": "remittance_status", "type": "text" },
-  "섭외 정산": { "field": "creator_settlement_note", "type": "text" }
+  "섭외 정산": { "field": "creator_settlement_note", "type": "text" },
+  "유니크코드": { "field": "row_code", "type": "text" }
 }
