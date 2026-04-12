@@ -11,6 +11,7 @@ import { ConsentModal } from "@/components/consent-modal";
 import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
 import { postWithCsrf } from "@/lib/api-client";
+import { readStoredUtmData } from "@/lib/utm-tracking";
 import {
   Dialog,
   DialogContent,
@@ -125,6 +126,7 @@ export function FooterCTA() {
 
       // DB에 저장할 데이터 준비
       // 필드명은 DB 스키마와 정확히 일치해야 합니다.
+      const utm = readStoredUtmData();
       const insertData: Record<string, any> = {
         name: formData.name.trim(),
         company: formData.company.trim(),
@@ -134,6 +136,14 @@ export function FooterCTA() {
         message: formData.message.trim(),
         privacy_agreement: formData.privacyConsent,
         marketing_agreement: formData.marketingConsent,
+        utm_source: utm.utm_source ?? null,
+        utm_medium: utm.utm_medium ?? null,
+        utm_campaign: utm.utm_campaign ?? null,
+        utm_content: utm.utm_content ?? null,
+        utm_term: utm.utm_term ?? null,
+        referrer: utm.referrer ?? null,
+        landing_page: utm.landing_page ?? null,
+        first_touch_at: utm.first_touch_at ?? null,
       };
 
       const { data, error } = await supabase

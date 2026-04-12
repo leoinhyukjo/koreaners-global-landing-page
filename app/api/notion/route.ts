@@ -150,6 +150,13 @@ export async function POST(request: NextRequest) {
       message,
       privacy_agreement,
       marketing_agreement,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_content,
+      utm_term,
+      referrer,
+      landing_page,
     } = body;
 
     // 필수 필드 검증
@@ -220,6 +227,23 @@ export async function POST(request: NextRequest) {
         rich_text: [{ text: { content: safePhone } }],
       };
     }
+
+    // UTM + referrer 추적 필드 (옵셔널, 값 있을 때만 저장)
+    const UTM_MAX = 500;
+    const setRichText = (key: string, raw: unknown) => {
+      if (!has(raw)) return;
+      const value = clamp(trim(raw), UTM_MAX);
+      (properties as Record<string, unknown>)[key] = {
+        rich_text: [{ text: { content: value } }],
+      };
+    };
+    setRichText("utm_source", utm_source);
+    setRichText("utm_medium", utm_medium);
+    setRichText("utm_campaign", utm_campaign);
+    setRichText("utm_content", utm_content);
+    setRichText("utm_term", utm_term);
+    setRichText("referrer", referrer);
+    setRichText("landing_page", landing_page);
 
     const response = await notion.pages.create({
       parent: {

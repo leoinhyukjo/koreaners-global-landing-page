@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { FooterWrapper } from "@/components/layout/footer-wrapper";
 import { LocaleProvider } from "@/contexts/locale-context";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
+import { UtmTracker } from "@/components/common/UtmTracker";
 import ClarityProvider from "./ClarityProvider";
 import AgentationProvider from "./AgentationProvider";
 
@@ -248,6 +249,7 @@ export default function RootLayout({
         <LocaleProvider>
           <ClarityProvider />
           <ScrollToTop />
+          <UtmTracker />
           {children}
           <FooterWrapper />
         </LocaleProvider>
