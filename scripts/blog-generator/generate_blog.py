@@ -193,10 +193,11 @@ def strip_html_tags(html: str) -> str:
     return re.sub(r"<[^>]+>", "", html)
 
 
-def html_to_notion_blocks(content_html: str, faqs: list[dict]) -> list[dict]:
+def html_to_notion_blocks(content_html: str) -> list[dict]:
     """
-    Convert content_html + FAQs into Notion block children.
+    Convert content_html into Notion block children.
     Produces heading_2, paragraph, bulleted_list_item, and table blocks.
+    <mark data-leo="...">text</mark> tags are rendered as orange-highlighted bold rich_text.
     Respects Notion limits: max 100 children, max 2000 chars per rich_text.
     """
     blocks: list[dict] = []
@@ -210,31 +211,82 @@ def html_to_notion_blocks(content_html: str, faqs: list[dict]) -> list[dict]:
             text = text[NOTION_MAX_RICH_TEXT_LENGTH:]
         return chunks
 
-    def add_heading(text: str) -> None:
-        text = strip_html_tags(text).strip()
-        if text and len(blocks) < NOTION_MAX_CHILDREN:
+    def _chunked_text_objects(text: str, annotations: dict | None = None) -> list[dict]:
+        """Chunk plain text into rich_text objects of <= NOTION_MAX_RICH_TEXT_LENGTH."""
+        if not text:
+            return []
+        objs: list[dict] = []
+        while text:
+            chunk = text[:NOTION_MAX_RICH_TEXT_LENGTH]
+            obj: dict = {"type": "text", "text": {"content": chunk}}
+            if annotations:
+                obj["annotations"] = dict(annotations)
+            objs.append(obj)
+            text = text[NOTION_MAX_RICH_TEXT_LENGTH:]
+        return objs
+
+    def make_rich_text_with_marks(html_fragment: str) -> list[dict]:
+        """
+        Build rich_text preserving <mark data-leo="cat">...</mark> as orange-highlighted bold.
+        Non-mark segments become plain text. Other HTML tags are stripped.
+        """
+        if not html_fragment:
+            return []
+
+        mark_pattern = re.compile(
+            r'<mark\s+data-leo\s*=\s*"([^"]+)"\s*>(.*?)</mark>',
+            re.DOTALL,
+        )
+
+        result: list[dict] = []
+        cursor = 0
+        for m in mark_pattern.finditer(html_fragment):
+            before = html_fragment[cursor:m.start()]
+            before_text = strip_html_tags(before)
+            if before_text:
+                result.extend(_chunked_text_objects(before_text))
+
+            category = m.group(1).strip()
+            inner_text = strip_html_tags(m.group(2)).strip()
+            labeled = f"[{category}] {inner_text}" if inner_text else f"[{category}]"
+            result.extend(_chunked_text_objects(
+                labeled,
+                annotations={"bold": True, "color": "orange_background"},
+            ))
+            cursor = m.end()
+
+        tail = html_fragment[cursor:]
+        tail_text = strip_html_tags(tail)
+        if tail_text:
+            result.extend(_chunked_text_objects(tail_text))
+
+        return result
+
+    def add_heading(html_fragment: str) -> None:
+        rich = make_rich_text_with_marks(html_fragment)
+        if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
                 "type": "heading_2",
-                "heading_2": {"rich_text": make_rich_text(text)},
+                "heading_2": {"rich_text": rich},
             })
 
-    def add_paragraph(text: str) -> None:
-        text = strip_html_tags(text).strip()
-        if text and len(blocks) < NOTION_MAX_CHILDREN:
+    def add_paragraph(html_fragment: str) -> None:
+        rich = make_rich_text_with_marks(html_fragment)
+        if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
                 "type": "paragraph",
-                "paragraph": {"rich_text": make_rich_text(text)},
+                "paragraph": {"rich_text": rich},
             })
 
-    def add_bulleted_item(text: str) -> None:
-        text = strip_html_tags(text).strip()
-        if text and len(blocks) < NOTION_MAX_CHILDREN:
+    def add_bulleted_item(html_fragment: str) -> None:
+        rich = make_rich_text_with_marks(html_fragment)
+        if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
                 "type": "bulleted_list_item",
-                "bulleted_list_item": {"rich_text": make_rich_text(text)},
+                "bulleted_list_item": {"rich_text": rich},
             })
 
     def add_table_block(table_html: str) -> None:
@@ -333,32 +385,6 @@ def html_to_notion_blocks(content_html: str, faqs: list[dict]) -> list[dict]:
                     if cleaned:
                         add_paragraph(cleaned)
 
-    # --- Add FAQs section ---
-    if faqs and len(blocks) < NOTION_MAX_CHILDREN:
-        blocks.append({
-            "object": "block",
-            "type": "heading_2",
-            "heading_2": {"rich_text": make_rich_text("자주 묻는 질문 (FAQ)")},
-        })
-
-        for faq in faqs:
-            if len(blocks) >= NOTION_MAX_CHILDREN - 1:
-                break
-            # Question as bold paragraph (with 2000-char chunking)
-            q_text = faq.get("question", "")
-            q_chunks = make_rich_text(f"Q. {q_text}")
-            for chunk in q_chunks:
-                chunk["annotations"] = {"bold": True}
-            blocks.append({
-                "object": "block",
-                "type": "paragraph",
-                "paragraph": {"rich_text": q_chunks},
-            })
-            # Answer as regular paragraph
-            a_text = faq.get("answer", "")
-            if a_text and len(blocks) < NOTION_MAX_CHILDREN:
-                add_paragraph(f"A. {a_text}")
-
     # Final safety: truncate to max children
     return blocks[:NOTION_MAX_CHILDREN]
 
@@ -399,7 +425,7 @@ def create_notion_page(article: dict) -> str:
     }
 
     # Build page body blocks
-    children = html_to_notion_blocks(article["content_html"], article.get("faqs", []))
+    children = html_to_notion_blocks(article["content_html"])
 
     log(f"Creating Notion page: {article['title']} ({len(children)} blocks)")
     page = notion.pages.create(
