@@ -234,7 +234,7 @@ def html_to_notion_blocks(content_html: str) -> list[dict]:
             return []
 
         mark_pattern = re.compile(
-            r'<mark\s+data-leo\s*=\s*"([^"]+)"\s*>(.*?)</mark>',
+            r"""<mark\s+data-leo\s*=\s*['"]([^'"]+)['"]\s*>(.*?)</mark>""",
             re.DOTALL,
         )
 
