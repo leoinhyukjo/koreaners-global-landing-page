@@ -173,12 +173,24 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
 
     # Handle ```json ... ``` wrapping
     if raw_text.startswith("```"):
-        # Remove opening ```json or ```
         raw_text = re.sub(r"^```(?:json)?\s*\n?", "", raw_text)
-        # Remove closing ```
         raw_text = re.sub(r"\n?```\s*$", "", raw_text)
 
-    article = json.loads(raw_text)
+    # With web_search tool enabled, Claude may prepend prose ("리서치 결과...") or
+    # append commentary. Extract the first top-level JSON object from raw_text.
+    if not raw_text.lstrip().startswith("{"):
+        match = re.search(r"\{.*\}", raw_text, re.DOTALL)
+        if match:
+            raw_text = match.group(0)
+
+    try:
+        article = json.loads(raw_text)
+    except json.JSONDecodeError as e:
+        preview = raw_text[:500].replace("\n", "\\n")
+        raise ValueError(
+            f"Failed to parse JSON from Claude response: {e}. "
+            f"raw_text preview (first 500 chars): {preview}"
+        ) from e
 
     # Validate required fields
     required_fields = [
