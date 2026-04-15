@@ -195,16 +195,7 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
         log(f"WARNING: unknown format_type={article['format_type']!r}, defaulting to 'tactical'")
         article["format_type"] = "tactical"
 
-    # leo_markers_count is optional metadata; coerce to int 0..5 or None
-    raw_count = article.get("leo_markers_count")
-    try:
-        if isinstance(raw_count, bool):
-            raise TypeError
-        article["leo_markers_count"] = max(0, min(5, int(raw_count)))
-    except (TypeError, ValueError):
-        article["leo_markers_count"] = None
-
-    log(f"Generated [{article['format_type']}]: {article['title']} (markers={article.get('leo_markers_count')})")
+    log(f"Generated [{article['format_type']}]: {article['title']}")
     return article
 
 
