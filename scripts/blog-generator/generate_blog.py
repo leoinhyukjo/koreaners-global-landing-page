@@ -208,13 +208,12 @@ def html_to_notion_blocks(content_html: str) -> list[dict]:
     """
     Convert content_html into Notion block children.
     Produces heading_2, paragraph, bulleted_list_item, and table blocks.
-    <mark data-leo="...">text</mark> tags are rendered as orange-highlighted bold rich_text.
     Respects Notion limits: max 100 children, max 2000 chars per rich_text.
     """
     blocks: list[dict] = []
 
     def make_rich_text(text: str) -> list[dict]:
-        """Create rich_text array, chunking if text exceeds 2000 chars."""
+        """Create rich_text array from plain text, chunking if >2000 chars."""
         chunks = []
         while text:
             chunk = text[:NOTION_MAX_RICH_TEXT_LENGTH]
@@ -222,59 +221,9 @@ def html_to_notion_blocks(content_html: str) -> list[dict]:
             text = text[NOTION_MAX_RICH_TEXT_LENGTH:]
         return chunks
 
-    def _chunked_text_objects(text: str, annotations: dict | None = None) -> list[dict]:
-        """Chunk plain text into rich_text objects of <= NOTION_MAX_RICH_TEXT_LENGTH."""
-        if not text:
-            return []
-        objs: list[dict] = []
-        while text:
-            chunk = text[:NOTION_MAX_RICH_TEXT_LENGTH]
-            obj: dict = {"type": "text", "text": {"content": chunk}}
-            if annotations:
-                obj["annotations"] = dict(annotations)
-            objs.append(obj)
-            text = text[NOTION_MAX_RICH_TEXT_LENGTH:]
-        return objs
-
-    def make_rich_text_with_marks(html_fragment: str) -> list[dict]:
-        """
-        Build rich_text preserving <mark data-leo="cat">...</mark> as orange-highlighted bold.
-        Non-mark segments become plain text. Other HTML tags are stripped.
-        """
-        if not html_fragment:
-            return []
-
-        mark_pattern = re.compile(
-            r"""<mark\b[^>]*?\bdata-leo\s*=\s*['"]([^'"]+)['"][^>]*>(.*?)</mark>""",
-            re.DOTALL,
-        )
-
-        result: list[dict] = []
-        cursor = 0
-        for m in mark_pattern.finditer(html_fragment):
-            before = html_fragment[cursor:m.start()]
-            before_text = strip_html_tags(before)
-            if before_text:
-                result.extend(_chunked_text_objects(before_text))
-
-            category = m.group(1).strip()
-            inner_text = strip_html_tags(m.group(2)).strip()
-            labeled = f"[{category}] {inner_text}" if inner_text else f"[{category}]"
-            result.extend(_chunked_text_objects(
-                labeled,
-                annotations={"bold": True, "color": "orange_background"},
-            ))
-            cursor = m.end()
-
-        tail = html_fragment[cursor:]
-        tail_text = strip_html_tags(tail)
-        if tail_text:
-            result.extend(_chunked_text_objects(tail_text))
-
-        return result
-
     def add_heading(html_fragment: str) -> None:
-        rich = make_rich_text_with_marks(html_fragment)
+        text = strip_html_tags(html_fragment).strip()
+        rich = make_rich_text(text)
         if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
@@ -283,7 +232,8 @@ def html_to_notion_blocks(content_html: str) -> list[dict]:
             })
 
     def add_paragraph(html_fragment: str) -> None:
-        rich = make_rich_text_with_marks(html_fragment)
+        text = strip_html_tags(html_fragment).strip()
+        rich = make_rich_text(text)
         if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
@@ -292,7 +242,8 @@ def html_to_notion_blocks(content_html: str) -> list[dict]:
             })
 
     def add_bulleted_item(html_fragment: str) -> None:
-        rich = make_rich_text_with_marks(html_fragment)
+        text = strip_html_tags(html_fragment).strip()
+        rich = make_rich_text(text)
         if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
