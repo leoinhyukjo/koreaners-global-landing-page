@@ -138,13 +138,13 @@
 
 ## 작성 규칙 (공통)
 
-- **글 전체 길이**: 1,200-2,000자 (한국어 기준, HTML 태그 제외)
+- **글 전체 길이**: 1,200-2,000자 (한국어 기준, HTML 태그 제외). 형식별 상한이 있을 경우 형식 규칙이 우선합니다.
 - **존댓말(~합니다/~입니다 체)로 통일**
 - "코리너스"를 본문에 1-2회 자연스럽게 언급 (강제 삽입 X)
 - 마지막에 CTA 문구: "일본 마케팅 전문가와 상담하고 싶으시다면 코리너스에 문의해 주세요."
 - **slug 규칙**: 연도 포함 금지. 영속 URL 원칙. 예: `japan-influencer-marketing-cost-guide` (O) / `japan-influencer-marketing-cost-guide-2026` (X)
 - **title 규칙**: 트렌드형에서만 {year}년 포함 허용. 나머지 형식은 연도 없는 영속 제목.
-- **meta_title 규칙**: title과 동일
+- **meta_title 규칙**: title과 동일 (trend 형식은 title 규칙에 따라 {year}년 포함 가능)
 - **HTML 태그**: h2, p, ul, li, table, thead, tbody, tr, th, td, strong, em. 마크다운 아님. `<mark>` 태그 사용 금지.
 
 ## 출력 형식
