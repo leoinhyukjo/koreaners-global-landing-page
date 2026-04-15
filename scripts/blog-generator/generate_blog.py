@@ -134,7 +134,7 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
 
     log(f"Calling Claude API for: {keyword}")
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-opus-4-6",
         max_tokens=8192,
         messages=[{"role": "user", "content": prompt}],
     )
@@ -411,7 +411,7 @@ def dry_run_report(selected_keywords: list[dict], template: str) -> None:
 
     print()
     log(f"Prompt template: {len(template)} chars")
-    log(f"Model: claude-sonnet-4-20250514")
+    log(f"Model: claude-opus-4-6")
     log(f"Target Notion DB: NOTION_BLOG_DB_ID (from env)")
     log("=== DRY RUN COMPLETE (no API calls made) ===")
 
