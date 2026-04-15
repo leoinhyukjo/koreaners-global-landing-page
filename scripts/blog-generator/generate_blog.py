@@ -164,14 +164,27 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
 
     # Validate required fields
     required_fields = [
-        "title", "slug", "category", "summary",
-        "meta_title", "meta_description", "content_html", "faqs",
+        "title", "slug", "category", "format_type", "summary",
+        "meta_title", "meta_description", "content_html",
     ]
     missing = [f for f in required_fields if f not in article]
     if missing:
         raise ValueError(f"Missing fields in Claude response: {missing}")
 
-    log(f"Generated: {article['title']}")
+    # Validate format_type value
+    valid_formats = {"concept", "tactical", "trend", "comparative", "pitfall"}
+    if article["format_type"] not in valid_formats:
+        log(f"WARNING: unknown format_type={article['format_type']!r}, defaulting to 'tactical'")
+        article["format_type"] = "tactical"
+
+    # leo_markers_count is optional metadata; coerce to int 0..5 or None
+    raw_count = article.get("leo_markers_count")
+    if isinstance(raw_count, int):
+        article["leo_markers_count"] = max(0, min(5, raw_count))
+    else:
+        article["leo_markers_count"] = None
+
+    log(f"Generated [{article['format_type']}]: {article['title']} (markers={article.get('leo_markers_count')})")
     return article
 
 
