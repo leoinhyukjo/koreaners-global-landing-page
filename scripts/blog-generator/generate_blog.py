@@ -492,6 +492,7 @@ if __name__ == "__main__":
         exit_code = main()
         ping_healthcheck("success")
         if exit_code == 0:
+            notify_slack("블로그 자동 생성", "success", "블로그 포스트 초안 생성 완료")
         else:
             notify_slack("블로그 자동 생성", "fail", f"exit code: {exit_code}")
         sys.exit(exit_code)
