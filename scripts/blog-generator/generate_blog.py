@@ -132,23 +132,41 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
     current_year = str(datetime.now().year)
     prompt = template.replace("{keyword}", keyword).replace("{pillar}", pillar).replace("{year}", current_year)
 
-    log(f"Calling Claude API for: {keyword}")
+    log(f"Calling Claude API (with web_search) for: {keyword}")
     response = client.messages.create(
         model="claude-opus-4-6",
         max_tokens=8192,
+        tools=[{
+            "type": "web_search_20250305",
+            "name": "web_search",
+            "max_uses": 5,
+        }],
         messages=[{"role": "user", "content": prompt}],
     )
 
     if not response.content:
         raise ValueError("Claude API returned empty content")
 
-    block = response.content[0]
-    if not hasattr(block, "text"):
-        raise ValueError(f"Unexpected content block type: {type(block).__name__}")
+    # With tools enabled, response.content contains a mix of server_tool_use,
+    # web_search_tool_result, and text blocks. We only care about text blocks
+    # for JSON extraction.
+    search_count = sum(
+        1 for b in response.content
+        if getattr(b, "type", None) == "server_tool_use"
+        and getattr(b, "name", None) == "web_search"
+    )
+    text_blocks = [b for b in response.content if getattr(b, "type", None) == "text"]
+    if not text_blocks:
+        raise ValueError(
+            f"Claude API returned no text blocks "
+            f"(got {len(response.content)} blocks, stop_reason={response.stop_reason})"
+        )
 
-    raw_text = block.text.strip()
+    raw_text = "".join(b.text for b in text_blocks).strip()
     if not raw_text:
         raise ValueError("Claude API returned empty text")
+
+    log(f"web_search used {search_count} time(s)")
 
     if response.stop_reason == "max_tokens":
         log("WARNING: Response truncated (max_tokens). JSON may be incomplete.")
