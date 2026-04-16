@@ -202,7 +202,7 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
         raise ValueError(f"Missing fields in Claude response: {missing}")
 
     # Validate format_type value
-    valid_formats = {"concept", "tactical", "trend", "comparative", "pitfall"}
+    valid_formats = {"concept", "tactical", "trend", "comparative", "pitfall", "case-study", "data-report"}
     if article["format_type"] not in valid_formats:
         log(f"WARNING: unknown format_type={article['format_type']!r}, defaulting to 'tactical'")
         article["format_type"] = "tactical"
@@ -433,6 +433,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="KOREANERS Blog Auto-Generator")
     parser.add_argument("--count", type=int, default=3, help="Number of posts to generate (default: 3)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without making API calls")
+    parser.add_argument("--json-only", action="store_true", help="Generate JSON files without creating Notion pages")
     args = parser.parse_args()
 
     log(f"Starting blog generation (count={args.count}, dry_run={args.dry_run})")
@@ -473,8 +474,16 @@ def main() -> int:
             # Generate article via Claude
             article = generate_article(keyword, pillar, template)
 
-            # Create Notion page
-            page_url = create_notion_page(article)
+            if args.json_only:
+                output_dir = SCRIPT_DIR / "output"
+                output_dir.mkdir(exist_ok=True)
+                output_path = output_dir / f"{article['slug']}.json"
+                with open(output_path, "w", encoding="utf-8") as f:
+                    json.dump(article, f, ensure_ascii=False, indent=2)
+                log(f"JSON saved: {output_path}")
+            else:
+                # Create Notion page
+                page_url = create_notion_page(article)
 
             # Mark keyword as used
             kw["used"] = True
