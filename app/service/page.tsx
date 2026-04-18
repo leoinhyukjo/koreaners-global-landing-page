@@ -7,11 +7,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 export const metadata: Metadata = {
   title: '서비스 소개 | 일본 인플루언서 마케팅 & 시딩 대행',
   description:
-    '일본 인플루언서 마케팅, 대량 시딩, 콘텐츠 제작, 데이터 리포팅까지. 300+ 전속 크리에이터, 5,000+ 체험단 풀. 코리너스의 크로스보더 마케팅 서비스를 확인하세요.',
+    '일본 인플루언서 마케팅, 대량 시딩, 콘텐츠 제작, 데이터 리포팅까지. 300+ 주요 크리에이터, 5,000+ 체험단 풀. 코리너스의 크로스보더 마케팅 서비스를 확인하세요.',
   alternates: { canonical: `${siteUrl}/service` },
   openGraph: {
     title: '코리너스 서비스 | 일본 인플루언서 마케팅 대행사',
-    description: '일본 인플루언서 캠페인, 대량 시딩, 콘텐츠 제작, 데이터 리포팅. 300+ 전속 크리에이터 네트워크.',
+    description: '일본 인플루언서 캠페인, 대량 시딩, 콘텐츠 제작, 데이터 리포팅. 300+ 주요 크리에이터 네트워크.',
     url: `${siteUrl}/service`,
   },
 }
