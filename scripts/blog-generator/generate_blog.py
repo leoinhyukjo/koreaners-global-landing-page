@@ -132,46 +132,82 @@ def generate_article(keyword: str, pillar: str, template: str) -> dict:
     current_year = str(datetime.now().year)
     prompt = template.replace("{keyword}", keyword).replace("{pillar}", pillar).replace("{year}", current_year)
 
-    log(f"Calling Claude API for: {keyword}")
+    log(f"Calling Claude API (with web_search) for: {keyword}")
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-opus-4-6",
         max_tokens=8192,
+        tools=[{
+            "type": "web_search_20250305",
+            "name": "web_search",
+            "max_uses": 5,
+        }],
         messages=[{"role": "user", "content": prompt}],
     )
 
     if not response.content:
         raise ValueError("Claude API returned empty content")
 
-    block = response.content[0]
-    if not hasattr(block, "text"):
-        raise ValueError(f"Unexpected content block type: {type(block).__name__}")
+    # With tools enabled, response.content contains a mix of server_tool_use,
+    # web_search_tool_result, and text blocks. We only care about text blocks
+    # for JSON extraction.
+    search_count = sum(
+        1 for b in response.content
+        if getattr(b, "type", None) == "server_tool_use"
+        and getattr(b, "name", None) == "web_search"
+    )
+    text_blocks = [b for b in response.content if getattr(b, "type", None) == "text"]
+    if not text_blocks:
+        raise ValueError(
+            f"Claude API returned no text blocks "
+            f"(got {len(response.content)} blocks, stop_reason={response.stop_reason})"
+        )
 
-    raw_text = block.text.strip()
+    raw_text = "".join(b.text for b in text_blocks).strip()
     if not raw_text:
         raise ValueError("Claude API returned empty text")
+
+    log(f"web_search used {search_count} time(s)")
 
     if response.stop_reason == "max_tokens":
         log("WARNING: Response truncated (max_tokens). JSON may be incomplete.")
 
     # Handle ```json ... ``` wrapping
     if raw_text.startswith("```"):
-        # Remove opening ```json or ```
         raw_text = re.sub(r"^```(?:json)?\s*\n?", "", raw_text)
-        # Remove closing ```
         raw_text = re.sub(r"\n?```\s*$", "", raw_text)
 
-    article = json.loads(raw_text)
+    # With web_search tool enabled, Claude may prepend prose ("리서치 결과...") or
+    # append commentary. Extract the first top-level JSON object from raw_text.
+    if not raw_text.lstrip().startswith("{"):
+        match = re.search(r"\{.*\}", raw_text, re.DOTALL)
+        if match:
+            raw_text = match.group(0)
+
+    try:
+        article = json.loads(raw_text)
+    except json.JSONDecodeError as e:
+        preview = raw_text[:500].replace("\n", "\\n")
+        raise ValueError(
+            f"Failed to parse JSON from Claude response: {e}. "
+            f"raw_text preview (first 500 chars): {preview}"
+        ) from e
 
     # Validate required fields
     required_fields = [
-        "title", "slug", "category", "summary",
-        "meta_title", "meta_description", "content_html", "faqs",
+        "title", "slug", "category", "format_type", "summary",
+        "meta_title", "meta_description", "content_html",
     ]
     missing = [f for f in required_fields if f not in article]
     if missing:
         raise ValueError(f"Missing fields in Claude response: {missing}")
 
-    log(f"Generated: {article['title']}")
+    # Validate format_type value
+    valid_formats = {"concept", "tactical", "trend", "comparative", "pitfall", "case-study", "data-report"}
+    if article["format_type"] not in valid_formats:
+        log(f"WARNING: unknown format_type={article['format_type']!r}, defaulting to 'tactical'")
+        article["format_type"] = "tactical"
+
+    log(f"Generated [{article['format_type']}]: {article['title']}")
     return article
 
 
@@ -180,16 +216,16 @@ def strip_html_tags(html: str) -> str:
     return re.sub(r"<[^>]+>", "", html)
 
 
-def html_to_notion_blocks(content_html: str, faqs: list[dict]) -> list[dict]:
+def html_to_notion_blocks(content_html: str) -> list[dict]:
     """
-    Convert content_html + FAQs into Notion block children.
+    Convert content_html into Notion block children.
     Produces heading_2, paragraph, bulleted_list_item, and table blocks.
     Respects Notion limits: max 100 children, max 2000 chars per rich_text.
     """
     blocks: list[dict] = []
 
     def make_rich_text(text: str) -> list[dict]:
-        """Create rich_text array, chunking if text exceeds 2000 chars."""
+        """Create rich_text array from plain text, chunking if >2000 chars."""
         chunks = []
         while text:
             chunk = text[:NOTION_MAX_RICH_TEXT_LENGTH]
@@ -197,31 +233,34 @@ def html_to_notion_blocks(content_html: str, faqs: list[dict]) -> list[dict]:
             text = text[NOTION_MAX_RICH_TEXT_LENGTH:]
         return chunks
 
-    def add_heading(text: str) -> None:
-        text = strip_html_tags(text).strip()
-        if text and len(blocks) < NOTION_MAX_CHILDREN:
+    def add_heading(html_fragment: str) -> None:
+        text = strip_html_tags(html_fragment).strip()
+        rich = make_rich_text(text)
+        if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
                 "type": "heading_2",
-                "heading_2": {"rich_text": make_rich_text(text)},
+                "heading_2": {"rich_text": rich},
             })
 
-    def add_paragraph(text: str) -> None:
-        text = strip_html_tags(text).strip()
-        if text and len(blocks) < NOTION_MAX_CHILDREN:
+    def add_paragraph(html_fragment: str) -> None:
+        text = strip_html_tags(html_fragment).strip()
+        rich = make_rich_text(text)
+        if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
                 "type": "paragraph",
-                "paragraph": {"rich_text": make_rich_text(text)},
+                "paragraph": {"rich_text": rich},
             })
 
-    def add_bulleted_item(text: str) -> None:
-        text = strip_html_tags(text).strip()
-        if text and len(blocks) < NOTION_MAX_CHILDREN:
+    def add_bulleted_item(html_fragment: str) -> None:
+        text = strip_html_tags(html_fragment).strip()
+        rich = make_rich_text(text)
+        if rich and len(blocks) < NOTION_MAX_CHILDREN:
             blocks.append({
                 "object": "block",
                 "type": "bulleted_list_item",
-                "bulleted_list_item": {"rich_text": make_rich_text(text)},
+                "bulleted_list_item": {"rich_text": rich},
             })
 
     def add_table_block(table_html: str) -> None:
@@ -320,32 +359,6 @@ def html_to_notion_blocks(content_html: str, faqs: list[dict]) -> list[dict]:
                     if cleaned:
                         add_paragraph(cleaned)
 
-    # --- Add FAQs section ---
-    if faqs and len(blocks) < NOTION_MAX_CHILDREN:
-        blocks.append({
-            "object": "block",
-            "type": "heading_2",
-            "heading_2": {"rich_text": make_rich_text("자주 묻는 질문 (FAQ)")},
-        })
-
-        for faq in faqs:
-            if len(blocks) >= NOTION_MAX_CHILDREN - 1:
-                break
-            # Question as bold paragraph (with 2000-char chunking)
-            q_text = faq.get("question", "")
-            q_chunks = make_rich_text(f"Q. {q_text}")
-            for chunk in q_chunks:
-                chunk["annotations"] = {"bold": True}
-            blocks.append({
-                "object": "block",
-                "type": "paragraph",
-                "paragraph": {"rich_text": q_chunks},
-            })
-            # Answer as regular paragraph
-            a_text = faq.get("answer", "")
-            if a_text and len(blocks) < NOTION_MAX_CHILDREN:
-                add_paragraph(f"A. {a_text}")
-
     # Final safety: truncate to max children
     return blocks[:NOTION_MAX_CHILDREN]
 
@@ -386,7 +399,7 @@ def create_notion_page(article: dict) -> str:
     }
 
     # Build page body blocks
-    children = html_to_notion_blocks(article["content_html"], article.get("faqs", []))
+    children = html_to_notion_blocks(article["content_html"])
 
     log(f"Creating Notion page: {article['title']} ({len(children)} blocks)")
     page = notion.pages.create(
@@ -411,7 +424,7 @@ def dry_run_report(selected_keywords: list[dict], template: str) -> None:
 
     print()
     log(f"Prompt template: {len(template)} chars")
-    log(f"Model: claude-sonnet-4-20250514")
+    log(f"Model: claude-opus-4-6")
     log(f"Target Notion DB: NOTION_BLOG_DB_ID (from env)")
     log("=== DRY RUN COMPLETE (no API calls made) ===")
 
@@ -420,6 +433,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="KOREANERS Blog Auto-Generator")
     parser.add_argument("--count", type=int, default=3, help="Number of posts to generate (default: 3)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without making API calls")
+    parser.add_argument("--json-only", action="store_true", help="Generate JSON files without creating Notion pages")
     args = parser.parse_args()
 
     log(f"Starting blog generation (count={args.count}, dry_run={args.dry_run})")
@@ -460,8 +474,16 @@ def main() -> int:
             # Generate article via Claude
             article = generate_article(keyword, pillar, template)
 
-            # Create Notion page
-            page_url = create_notion_page(article)
+            if args.json_only:
+                output_dir = SCRIPT_DIR / "output"
+                output_dir.mkdir(exist_ok=True)
+                output_path = output_dir / f"{article['slug']}.json"
+                with open(output_path, "w", encoding="utf-8") as f:
+                    json.dump(article, f, ensure_ascii=False, indent=2)
+                log(f"JSON saved: {output_path}")
+            else:
+                # Create Notion page
+                page_url = create_notion_page(article)
 
             # Mark keyword as used
             kw["used"] = True
