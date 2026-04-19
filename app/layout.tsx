@@ -174,11 +174,14 @@ export default function RootLayout({
                   streetAddress: "논현로36길 31, B1, 4F, 5F",
                   addressLocality: "Seoul",
                   addressRegion: "강남구",
+                  postalCode: "06296",
                   addressCountry: "KR",
                 },
+                telephone: "+82-10-2368-2009",
                 contactPoint: [
                   {
                     "@type": "ContactPoint",
+                    telephone: "+82-10-2368-2009",
                     email: "leo@koreaners.com",
                     contactType: "sales",
                     availableLanguage: ["Korean", "Japanese"],
@@ -186,6 +189,7 @@ export default function RootLayout({
                   },
                   {
                     "@type": "ContactPoint",
+                    telephone: "+82-10-2368-2009",
                     email: "leo@koreaners.com",
                     contactType: "customer support",
                     availableLanguage: ["Korean", "Japanese"],
