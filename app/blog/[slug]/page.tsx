@@ -132,7 +132,18 @@ export default async function BlogDetailPage({ params }: PageProps) {
     datePublished: blogPost.created_at,
     dateModified: blogPost.updated_at,
     author: {
-      "@id": "https://www.koreaners.co/#organization",
+      "@type": "Person",
+      "@id": "https://www.koreaners.co/#person-jo-in-hyuk",
+      name: "조인혁",
+      jobTitle: "채널 담당 매니저",
+      worksFor: { "@id": "https://www.koreaners.co/#organization" },
+      url: "https://www.koreaners.co/about",
+      knowsAbout: [
+        "일본 인플루언서 마케팅",
+        "크로스보더 마케팅",
+        "K-뷰티 일본 진출",
+        "Qoo10·라쿠텐 이커머스 전략",
+      ],
     },
     publisher: {
       "@id": "https://www.koreaners.co/#organization",
@@ -152,6 +163,32 @@ export default async function BlogDetailPage({ params }: PageProps) {
       ...(blogPost.title.includes('시딩') ? ['일본 시딩', '일본 체험단'] : []),
       ...(blogPost.title.includes('뷰티') || blogPost.title.includes('Beauty') ? ['K-뷰티 일본', 'K-Beauty'] : []),
     ].join(', '),
+  };
+
+  // BreadcrumbList Schema (Home → Blog → Post)
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: `${siteUrl}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: blogPost.title,
+        item: `${siteUrl}/blog/${slug}`,
+      },
+    ],
   };
 
   // FAQ Schema (faqs가 있을 때만)
@@ -178,6 +215,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumbJsonLd) }}
       />
       {faqJsonLd && (
         <script
