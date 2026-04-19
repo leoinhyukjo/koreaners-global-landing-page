@@ -1,15 +1,10 @@
 'use client'
 
 import Navigation from '@/components/navigation'
-import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { useState, useEffect, Suspense } from 'react'
-import { supabase } from '@/lib/supabase/client'
 import type { BlogPost } from '@/lib/supabase'
 import Link from 'next/link'
-import { useSearchParams, useRouter } from 'next/navigation'
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionTag } from '@/components/ui/section-tag'
 import { SafeImage } from '@/components/ui/SafeImage'
@@ -20,68 +15,19 @@ import { getBlogTitle } from '@/lib/localized-content'
 
 const POSTS_PER_PAGE = 9
 
-function BlogContent() {
+interface BlogContentProps {
+  initialPosts: BlogPost[]
+  currentPage: number
+}
+
+function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
   const { locale } = useLocale()
-  const [allBlogPosts, setAllBlogPosts] = useState<BlogPost[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const searchParams = useSearchParams()
-  const router = useRouter()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
 
-  const currentPage = parseInt(searchParams.get('page') || '1', 10)
-  const totalPages = Math.ceil(allBlogPosts.length / POSTS_PER_PAGE)
+  const totalPages = Math.ceil(initialPosts.length / POSTS_PER_PAGE)
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE
   const endIndex = startIndex + POSTS_PER_PAGE
-  const blogPosts = allBlogPosts.slice(startIndex, endIndex)
-
-  useEffect(() => {
-    fetchBlogPosts()
-  }, [])
-
-  async function fetchBlogPosts() {
-    try {
-      setLoading(true)
-      setError(null)
-
-      // Supabase 객체 정상 생성 확인
-      if (!supabase) {
-        setError(t('blogEnvError'))
-        setAllBlogPosts([])
-        return
-      }
-
-      // Supabase URL이 placeholder인지 확인
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co') {
-        setError(t('blogEnvError'))
-        setAllBlogPosts([])
-        return
-      }
-
-      const { data, error: supabaseError } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('published', true)
-        .order('created_at', { ascending: false })
-
-      if (supabaseError) {
-        console.error('[Blog] 에러: ' + (supabaseError?.message || '알 수 없는 에러'))
-        throw supabaseError
-      }
-
-      // 데이터 안전 처리
-      const posts = Array.isArray(data) ? data : []
-      setAllBlogPosts(posts)
-    } catch (err: any) {
-      const errorMessage = err?.message || t('blogLoadError')
-      console.error('[Blog] 에러: ' + errorMessage)
-      setError(errorMessage)
-      setAllBlogPosts([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const blogPosts = initialPosts.slice(startIndex, endIndex)
 
   return (
     <>
@@ -101,27 +47,7 @@ function BlogContent() {
           </div>
 
           {/* Blog Grid */}
-          {loading ? (
-            <div className="text-center py-20">
-              <div className="space-y-3">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent"></div>
-                <p className="text-white/80 text-lg">{t('blogLoading')}</p>
-              </div>
-            </div>
-          ) : error ? (
-            <div className="text-center py-20">
-              <div className="space-y-4 max-w-md mx-auto">
-                <div className="text-white text-4xl">⚠️</div>
-                <p className="text-white/80 text-lg">{error}</p>
-                <button
-                  onClick={fetchBlogPosts}
-                  className="text-white hover:underline text-sm"
-                >
-                  {t('blogRetry')}
-                </button>
-              </div>
-            </div>
-          ) : allBlogPosts.length === 0 ? (
+          {initialPosts.length === 0 ? (
             <div className="text-center py-20">
               <div className="space-y-3">
                 <div className="text-white/80 text-4xl">📝</div>
@@ -186,19 +112,14 @@ function BlogContent() {
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-12 mb-8">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      if (currentPage > 1) {
-                        router.push(`/blog?page=${currentPage - 1}`)
-                      }
-                    }}
-                    disabled={currentPage === 1}
-                    className="border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                  <Link
+                    href={currentPage > 1 ? `/blog?page=${currentPage - 1}` : '#'}
+                    aria-disabled={currentPage === 1}
+                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-card text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     {t('prev')}
-                  </Button>
+                  </Link>
 
                   <div className="flex gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
@@ -208,19 +129,19 @@ function BlogContent() {
                         page === totalPages ||
                         (page >= currentPage - 2 && page <= currentPage + 2)
                       ) {
+                        const isActive = page === currentPage
                         return (
-                          <Button
+                          <Link
                             key={page}
-                            variant={page === currentPage ? 'default' : 'outline'}
-                            onClick={() => router.push(`/blog?page=${page}`)}
-                            className={`min-w-[44px] ${
-                              page === currentPage
+                            href={`/blog?page=${page}`}
+                            className={`inline-flex items-center justify-center min-w-[44px] h-10 px-4 rounded-md text-sm ${
+                              isActive
                                 ? 'gradient-warm text-white hover:opacity-90'
-                                : 'border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border'
+                                : 'border border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border'
                             }`}
                           >
                             {page}
-                          </Button>
+                          </Link>
                         )
                       } else if (
                         page === currentPage - 3 ||
@@ -236,19 +157,14 @@ function BlogContent() {
                     })}
                   </div>
 
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      if (currentPage < totalPages) {
-                        router.push(`/blog?page=${currentPage + 1}`)
-                      }
-                    }}
-                    disabled={currentPage === totalPages}
-                    className="border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                  <Link
+                    href={currentPage < totalPages ? `/blog?page=${currentPage + 1}` : '#'}
+                    aria-disabled={currentPage === totalPages}
+                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-card text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
+                  </Link>
                 </div>
               )}
             </>
@@ -259,31 +175,11 @@ function BlogContent() {
   )
 }
 
-const BlogSkeleton = () => (
-  <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-12 sm:mb-16">
-        <div className="h-7 w-20 bg-card/50 rounded-full animate-pulse mb-3" />
-        <div className="mb-8" />
-        <div className="h-12 sm:h-14 max-w-2xl bg-card/50 rounded animate-pulse" />
-        <div className="h-5 max-w-xl bg-card/50 rounded animate-pulse mt-6" />
-      </div>
-      <div className="text-center py-20">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
-      </div>
-    </div>
-  </section>
-)
-
-export default function BlogPageContent() {
+export default function BlogPageContent({ initialPosts, currentPage }: BlogContentProps) {
   return (
     <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
-      <SafeHydration fallback={<BlogSkeleton />}>
-        <Suspense fallback={<BlogSkeleton />}>
-          <BlogContent />
-        </Suspense>
-      </SafeHydration>
+      <BlogContent initialPosts={initialPosts} currentPage={currentPage} />
     </main>
   )
 }
