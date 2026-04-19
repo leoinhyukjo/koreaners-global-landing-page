@@ -144,18 +144,22 @@ export default function Navigation() {
           {/* Mobile: 언어 토글(헤더 고정) + 햄버거 메뉴 — 하이드레이션 가드로 Sheet는 클라이언트 마운트 후에만 렌더 */}
           <div className="flex md:hidden items-center gap-2 flex-shrink-0 min-w-0">
             {/* 언어 토글: 화면 크기와 관계없이 항상 헤더 우측(햄버거 옆)에 노출 */}
-            <div className="flex items-center gap-0.5 border border-white/20 bg-card/50 p-0.5 flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setLocale('ko')}
-                className={`rounded px-2 py-1 text-xs font-bold transition-colors ${locale === 'ko' ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`}
+                aria-label="한국어로 전환"
+                aria-pressed={locale === 'ko'}
+                className={`rounded-md min-w-[44px] min-h-[44px] px-3 text-sm font-bold transition-colors flex items-center justify-center border ${locale === 'ko' ? 'bg-white text-black border-white' : 'bg-card/50 text-white/70 border-white/20 hover:text-white hover:border-white/40'}`}
               >
                 KR
               </button>
               <button
                 type="button"
                 onClick={() => setLocale('ja')}
-                className={`rounded px-2 py-1 text-xs font-bold transition-colors ${locale === 'ja' ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`}
+                aria-label="日本語に切り替え"
+                aria-pressed={locale === 'ja'}
+                className={`rounded-md min-w-[44px] min-h-[44px] px-3 text-sm font-bold transition-colors flex items-center justify-center border ${locale === 'ja' ? 'bg-white text-black border-white' : 'bg-card/50 text-white/70 border-white/20 hover:text-white hover:border-white/40'}`}
               >
                 JP
               </button>

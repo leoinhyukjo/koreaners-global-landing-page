@@ -70,10 +70,7 @@ export async function generateMetadata({
     `${blogPost.title} - ${blogPost.category}`;
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://www.koreaners.co";
-  const ogImage = toAbsoluteUrl(
-    siteUrl,
-    resolveThumbnailSrc(blogPost.thumbnail_url),
-  );
+  const ogImage = `${siteUrl}/api/og?title=${encodeURIComponent(blogPost.title)}&category=${encodeURIComponent(blogPost.category || "")}`;
 
   return {
     title: metaTitle,
@@ -123,6 +120,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const schemaType = isNews ? "NewsArticle" : "BlogPosting";
   const thumbnailSrc = resolveThumbnailSrc(blogPost.thumbnail_url);
   const thumbnailAbsolute = toAbsoluteUrl(siteUrl, thumbnailSrc);
+  const ogCardUrl = `${siteUrl}/api/og?title=${encodeURIComponent(blogPost.title)}&category=${encodeURIComponent(blogPost.category || "")}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -130,7 +128,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     headline: blogPost.meta_title || blogPost.title,
     description:
       blogPost.meta_description || blogPost.title,
-    image: [thumbnailAbsolute],
+    image: [ogCardUrl, thumbnailAbsolute],
     datePublished: blogPost.created_at,
     dateModified: blogPost.updated_at,
     author: {

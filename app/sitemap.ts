@@ -1,121 +1,140 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 
+// 정적 콘텐츠 페이지의 실제 마지막 카피 변경일. 페이지 콘텐츠를 수정하면 이 값도 함께 갱신.
+const STATIC_CONTENT_DATES: Record<string, string> = {
+  '/about': '2026-04-02',
+  '/service': '2026-03-29',
+  '/careers': '2026-04-19',
+  '/contact': '2026-02-28',
+  '/privacy': '2025-09-01',
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.koreaners.co'
-  const currentDate = new Date().toISOString()
+  const today = new Date().toISOString().slice(0, 10)
 
-  // 정적 페이지 목록
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/portfolio`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/creator`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/service`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: currentDate,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/careers`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-  ]
+  let maxPortfolio = today
+  let maxBlog = today
+  let maxCreator = today
+  let portfolioPages: MetadataRoute.Sitemap = []
+  let blogPages: MetadataRoute.Sitemap = []
+  let creatorPages: MetadataRoute.Sitemap = []
 
   try {
     const supabase = await createClient()
 
-    // 포트폴리오 페이지 추가 (썸네일 이미지 포함)
     const { data: portfolios } = await supabase
       .from('portfolios')
-      .select('id, title, updated_at, thumbnail_url')
+      .select('id, updated_at, thumbnail_url')
       .order('updated_at', { ascending: false })
 
-    const portfolioPages: MetadataRoute.Sitemap = portfolios?.map((portfolio) => ({
-      url: `${baseUrl}/portfolio/${portfolio.id}`,
-      lastModified: portfolio.updated_at || currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-      ...(portfolio.thumbnail_url ? {
-        images: [portfolio.thumbnail_url],
-      } : {}),
-    })) || []
+    if (portfolios?.length) {
+      maxPortfolio = portfolios[0].updated_at || today
+      portfolioPages = portfolios.map((portfolio) => ({
+        url: `${baseUrl}/portfolio/${portfolio.id}`,
+        lastModified: portfolio.updated_at || today,
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+        ...(portfolio.thumbnail_url ? { images: [portfolio.thumbnail_url] } : {}),
+      }))
+    }
 
-    // 블로그 포스트 페이지 추가 (썸네일 이미지 포함)
     const { data: blogPosts } = await supabase
       .from('blog_posts')
-      .select('slug, title, updated_at, published, thumbnail_url')
+      .select('slug, title, category, updated_at, published, thumbnail_url')
       .eq('published', true)
       .order('updated_at', { ascending: false })
 
-    const blogPages: MetadataRoute.Sitemap = blogPosts?.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: post.updated_at || currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-      ...(post.thumbnail_url ? {
-        images: [post.thumbnail_url],
-      } : {}),
-    })) || []
+    if (blogPosts?.length) {
+      maxBlog = blogPosts[0].updated_at || today
+      blogPages = blogPosts.map((post) => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: post.updated_at || today,
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+        images: [
+          `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category || '')}`,
+        ],
+      }))
+    }
 
-    // 크리에이터 프로필 페이지 추가
     const { data: creators } = await supabase
       .from('creators')
       .select('id, updated_at')
       .order('updated_at', { ascending: false })
 
-    const creatorPages: MetadataRoute.Sitemap = creators?.map((creator) => ({
-      url: `${baseUrl}/creator/${creator.id}`,
-      lastModified: creator.updated_at || currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    })) || []
-
-    return [...staticPages, ...portfolioPages, ...blogPages, ...creatorPages]
+    if (creators?.length) {
+      maxCreator = creators[0].updated_at || today
+      creatorPages = creators.map((creator) => ({
+        url: `${baseUrl}/creator/${creator.id}`,
+        lastModified: creator.updated_at || today,
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      }))
+    }
   } catch (error) {
-    console.error('Sitemap 생성 중 오류:', error)
-    // 오류 발생 시 정적 페이지만 반환
-    return staticPages
+    console.error('[sitemap] Supabase query failed:', error)
   }
+
+  const maxAll = [maxPortfolio, maxBlog, maxCreator].sort().reverse()[0]
+
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: baseUrl,
+      lastModified: maxAll,
+      changeFrequency: 'weekly',
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/portfolio`,
+      lastModified: maxPortfolio,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: maxBlog,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/creator`,
+      lastModified: maxCreator,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: STATIC_CONTENT_DATES['/about'],
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/service`,
+      lastModified: STATIC_CONTENT_DATES['/service'],
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/careers`,
+      lastModified: STATIC_CONTENT_DATES['/careers'],
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: STATIC_CONTENT_DATES['/contact'],
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: STATIC_CONTENT_DATES['/privacy'],
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+  ]
+
+  return [...staticPages, ...portfolioPages, ...blogPages, ...creatorPages]
 }

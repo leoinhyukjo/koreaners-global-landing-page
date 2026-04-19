@@ -76,9 +76,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    icon: [
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/favicon-32.png",
+    apple: { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
   },
   openGraph: {
     type: "website",
@@ -161,18 +165,32 @@ export default function RootLayout({
                   { "@type": "Country", name: "Japan" },
                 ],
                 knowsLanguage: ["ko", "ja"],
-                sameAs: ["https://www.instagram.com/koreaners_global"],
+                sameAs: [
+                  "https://www.instagram.com/koreaners_global",
+                  "https://www.instagram.com/paripari.korea",
+                ],
                 address: {
                   "@type": "PostalAddress",
+                  streetAddress: "논현로36길 31, B1, 4F, 5F",
                   addressLocality: "Seoul",
+                  addressRegion: "강남구",
                   addressCountry: "KR",
                 },
-                contactPoint: {
-                  "@type": "ContactPoint",
-                  email: "leo@koreaners.com",
-                  contactType: "sales",
-                  availableLanguage: ["Korean", "Japanese"],
-                },
+                contactPoint: [
+                  {
+                    "@type": "ContactPoint",
+                    email: "leo@koreaners.com",
+                    contactType: "sales",
+                    availableLanguage: ["Korean", "Japanese"],
+                    areaServed: ["KR", "JP"],
+                  },
+                  {
+                    "@type": "ContactPoint",
+                    email: "leo@koreaners.com",
+                    contactType: "customer support",
+                    availableLanguage: ["Korean", "Japanese"],
+                  },
+                ],
               },
               {
                 "@context": "https://schema.org",
