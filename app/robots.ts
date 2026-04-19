@@ -13,4 +13,7 @@ export default function robots(): MetadataRoute.Robots {
   };
 }
 
+// NOTE: public/robots.txt takes precedence over this file.
+// AI crawler allowlist + training-crawler block lives in public/robots.txt.
+// This file kept as fallback; actual served content = public/robots.txt.
 // llms.txt는 /llms.txt route로 별도 제공

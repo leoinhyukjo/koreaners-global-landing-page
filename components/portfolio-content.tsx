@@ -1,10 +1,8 @@
 'use client'
 
 import Navigation from '@/components/navigation'
-import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase/client'
+import { useState } from 'react'
 import type { Portfolio } from '@/lib/supabase'
 import Link from 'next/link'
 import { useLocale } from '@/contexts/locale-context'
@@ -13,50 +11,16 @@ import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
 import Image from 'next/image'
 
-const PortfolioSkeleton = () => (
-<section className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24 min-h-screen" aria-hidden="true">
-  <div className="max-w-7xl mx-auto">
-      <div className="mb-12 sm:mb-16">
-        <div className="h-7 w-28 bg-card/50 rounded-full animate-pulse mb-6" />
-        <div className="h-12 sm:h-14 max-w-2xl bg-card/50 rounded animate-pulse" />
-        <div className="h-5 max-w-xl bg-card/50 rounded animate-pulse mt-6" />
-      </div>
-      <div className="text-center py-20">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-white border-r-transparent" />
-      </div>
-    </div>
-  </section>
-)
+interface PortfolioContentProps {
+  initialPortfolios: Portfolio[]
+}
 
-export default function PortfolioContent() {
+export default function PortfolioContent({ initialPortfolios }: PortfolioContentProps) {
   const { locale } = useLocale()
   const [activeTab, setActiveTab] = useState('all')
-  const [portfolios, setPortfolios] = useState<Portfolio[]>([])
-  const [loading, setLoading] = useState(true)
+  const portfolios = initialPortfolios
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   const noImageText = t('performanceNoImage')
-
-  useEffect(() => {
-    fetchPortfolios()
-  }, [])
-
-  async function fetchPortfolios() {
-    try {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from('portfolios')
-        .select('*')
-        .order('published_at', { ascending: false, nullsFirst: false })
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setPortfolios(data || [])
-    } catch (error: any) {
-      console.error('Error fetching portfolios:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // 카테고리 필터링 (대소문자 구분)
   const filteredItems = activeTab === 'all'
@@ -99,7 +63,6 @@ export default function PortfolioContent() {
   return (
     <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
-      <SafeHydration fallback={<PortfolioSkeleton />}>
       {/* Hero Section */}
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 relative overflow-hidden hero-glow">
       <div className="max-w-7xl mx-auto relative z-10">
@@ -134,11 +97,7 @@ export default function PortfolioContent() {
           </div>
 
           {/* Portfolio Grid */}
-          {loading ? (
-            <div className="text-center py-20">
-              <p className="text-white/80">{t('loading')}</p>
-            </div>
-          ) : filteredItems.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-white/80 text-lg">
                 {portfolios.length === 0 ? t('portfolioEmpty') : t('portfolioEmptyFilter')}
@@ -216,7 +175,6 @@ export default function PortfolioContent() {
           )}
         </div>
       </section>
-      </SafeHydration>
     </main>
   )
 }
