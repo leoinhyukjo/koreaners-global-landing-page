@@ -1,8 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Navigation from '@/components/navigation'
-import { SafeHydration } from '@/components/common/SafeHydration'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle, TrendingUp, Users, Target, BarChart3, Globe, CheckCircle2, MessageSquare, Database, Shield, Zap, Lightbulb, Brain, GitCompare, Clock, Share2, Bookmark } from 'lucide-react'
@@ -21,12 +19,6 @@ const SEEDING_KEYS = [
   { titleKey: 'serviceSeedingF2Title' as const, descKey: 'serviceSeedingF2Desc' as const },
   { titleKey: 'serviceSeedingF3Title' as const, descKey: 'serviceSeedingF3Desc' as const },
 ] as const
-
-const ServiceSkeleton = () => (
-  <div className="min-h-[60vh] flex items-center justify-center pt-24" aria-hidden="true">
-    <div className="h-32 w-full max-w-2xl mx-auto bg-card/50 rounded animate-pulse" />
-  </div>
-)
 
 export default function ServiceContent() {
   const { locale } = useLocale()
@@ -50,7 +42,6 @@ export default function ServiceContent() {
   return (
     <main className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       <Navigation />
-      <SafeHydration fallback={<ServiceSkeleton />}>
 
       {/* Hero Section — Dark */}
       <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
@@ -470,7 +461,6 @@ export default function ServiceContent() {
           </div>
         </div>
       </section>
-      </SafeHydration>
     </main>
   )
 }

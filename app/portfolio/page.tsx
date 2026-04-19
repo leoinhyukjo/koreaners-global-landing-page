@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import PortfolioContent from '@/components/portfolio-content'
 import { safeJsonLdStringify } from '@/lib/json-ld'
+import { createStaticClient } from '@/lib/supabase/static'
+import type { Portfolio } from '@/lib/supabase'
+
+export const revalidate = 3600 // 1시간 ISR
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
@@ -16,7 +20,29 @@ export const metadata: Metadata = {
   },
 }
 
-export default function PortfolioPage() {
+async function getPortfolios(): Promise<Portfolio[]> {
+  try {
+    const supabase = createStaticClient()
+    const { data, error } = await supabase
+      .from('portfolios')
+      .select('*')
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('[Portfolio Index] 에러: ' + (error.message || '알 수 없는 에러'))
+      return []
+    }
+    return Array.isArray(data) ? data : []
+  } catch (err: any) {
+    console.error('[Portfolio Index] 에러: ' + (err?.message || '알 수 없는 에러'))
+    return []
+  }
+}
+
+export default async function PortfolioPage() {
+  const initialPortfolios = await getPortfolios()
+
   const breadcrumb = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -32,7 +58,7 @@ export default function PortfolioPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumb) }}
       />
-      <PortfolioContent />
+      <PortfolioContent initialPortfolios={initialPortfolios} />
     </>
   )
 }
