@@ -119,12 +119,20 @@ export default async function PortfolioDetailPage({ params }: PageProps) {
     {
       "@context": "https://schema.org",
       "@type": "CreativeWork",
+      "@id": `${siteUrl}/portfolio/${id}`,
       name: portfolio.title,
       description: portfolio.summary || `${portfolio.title} - ${portfolio.client_name}`,
       image: portfolio.thumbnail_url || undefined,
       datePublished: portfolio.published_at ?? portfolio.created_at,
       author: { "@id": "https://www.koreaners.co/#organization" },
       publisher: { "@id": "https://www.koreaners.co/#organization" },
+      ...(portfolio.client_name?.trim()
+        ? { about: { "@type": "Brand", name: portfolio.client_name.trim() } }
+        : {}),
+      ...(Array.isArray(portfolio.category) && portfolio.category.length
+        ? { keywords: portfolio.category.join(", "), genre: portfolio.category }
+        : {}),
+      inLanguage: "ko",
       mainEntityOfPage: {
         "@type": "WebPage",
         "@id": `${siteUrl}/portfolio/${id}`,

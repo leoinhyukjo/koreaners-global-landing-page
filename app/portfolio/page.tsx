@@ -52,11 +52,54 @@ export default async function PortfolioPage() {
     ],
   }
 
+  // ItemList — 전체 포트폴리오를 LLM/검색엔진이 일관된 구조로 크롤링
+  const itemList = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: '코리너스 포트폴리오',
+    description:
+      'K-뷰티, F&B, 패션, 의료관광 등 300+ 브랜드의 일본 인플루언서 마케팅 캠페인 사례',
+    url: `${siteUrl}/portfolio`,
+    isPartOf: { '@id': 'https://www.koreaners.co/#website' },
+    publisher: { '@id': 'https://www.koreaners.co/#organization' },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: initialPortfolios.length,
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      itemListElement: initialPortfolios.map((p, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        url: `${siteUrl}/portfolio/${p.id}`,
+        item: {
+          '@type': 'CreativeWork',
+          '@id': `${siteUrl}/portfolio/${p.id}`,
+          name: p.title,
+          description: p.summary || `${p.title} — ${p.client_name}`,
+          ...(p.thumbnail_url ? { image: p.thumbnail_url } : {}),
+          url: `${siteUrl}/portfolio/${p.id}`,
+          datePublished: p.published_at ?? p.created_at,
+          ...(p.client_name?.trim()
+            ? { about: { '@type': 'Brand', name: p.client_name.trim() } }
+            : {}),
+          ...(Array.isArray(p.category) && p.category.length
+            ? { genre: p.category }
+            : {}),
+          author: { '@id': 'https://www.koreaners.co/#organization' },
+          publisher: { '@id': 'https://www.koreaners.co/#organization' },
+        },
+      })),
+    },
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(itemList) }}
       />
       <PortfolioContent initialPortfolios={initialPortfolios} />
     </>
