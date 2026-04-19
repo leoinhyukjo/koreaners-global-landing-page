@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MarketingCTA } from "@/components/common/marketing-cta";
-import { SafeHydration } from "@/components/common/SafeHydration";
 import { resolveThumbnailSrc } from "@/lib/thumbnail";
 import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
@@ -23,21 +22,6 @@ interface BlogPostViewProps {
   blogPost: BlogPost;
   thumbnailSrc: string;
 }
-
-const BlogDetailSkeleton = () => (
-  <main
-    className="min-h-screen relative overflow-hidden bg-background"
-    aria-hidden="true"
-  >
-    <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 px-6 lg:px-24">
-      <div className="max-w-7xl mx-auto">
-        <div className="h-10 w-48 bg-card/50 rounded animate-pulse mb-8" />
-        <div className="aspect-video bg-card/50 rounded animate-pulse mb-6" />
-        <div className="h-8 max-w-2xl bg-card/50 rounded animate-pulse" />
-      </div>
-    </div>
-  </main>
-);
 
 export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
   const { locale } = useLocale();
@@ -58,8 +42,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
       (Array.isArray(contentToShow) && contentToShow.length > 0));
 
   return (
-    <SafeHydration fallback={<BlogDetailSkeleton />}>
-      <main className="min-h-screen relative overflow-hidden bg-background">
+    <main className="min-h-screen relative overflow-hidden bg-background">
         <article className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 relative z-10">
           <div className="max-w-7xl mx-auto">
             <header className="mb-8 sm:mb-12">
@@ -139,6 +122,5 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
           </div>
         </article>
       </main>
-    </SafeHydration>
   );
 }
