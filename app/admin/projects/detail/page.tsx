@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, Suspense } from 'react'
+import { useEffect, useMemo, useState, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ArrowUpDown } from 'lucide-react'
@@ -15,6 +15,13 @@ import {
   type Project,
   type ExchangeRates,
 } from '@/lib/dashboard/calculations'
+import {
+  DateFilterBar,
+  DEFAULT_DATE_FILTER,
+  computeDateRange,
+  matchesDateRange,
+  type DateFilter,
+} from '@/components/admin/dashboard/date-filter-bar'
 
 // ─────────────────────────────────────────────
 // Constants
@@ -586,6 +593,7 @@ function DetailContent() {
   const [projects, setProjects] = useState<Project[]>([])
   const [rates, setRates] = useState<ExchangeRates>(FALLBACK_RATES)
   const [loading, setLoading] = useState(true)
+  const [dateFilter, setDateFilter] = useState<DateFilter>(DEFAULT_DATE_FILTER)
 
   useEffect(() => {
     async function load() {
@@ -596,6 +604,11 @@ function DetailContent() {
     }
     load()
   }, [])
+
+  const filteredProjects = useMemo(() => {
+    const range = computeDateRange(dateFilter)
+    return projects.filter((p) => matchesDateRange(p, range))
+  }, [projects, dateFilter])
 
   const config = VIEW_CONFIG[view]
 
@@ -629,17 +642,27 @@ function DetailContent() {
         <p className="mt-1 text-sm text-neutral-500">{config.description}</p>
       </div>
 
+      {/* Date filter */}
+      {!loading && (
+        <DateFilterBar
+          value={dateFilter}
+          onChange={setDateFilter}
+          totalCount={projects.length}
+          filteredCount={filteredProjects.length}
+        />
+      )}
+
       {/* Table */}
       <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
         {loading ? (
           <TableSkeleton />
         ) : (
           <>
-            {view === 'total' && <TotalView projects={projects} rates={rates} />}
-            {view === 'active' && <ActiveView projects={projects} rates={rates} />}
-            {view === 'contract' && <ContractView projects={projects} rates={rates} />}
-            {view === 'receivable' && <ReceivableView projects={projects} rates={rates} />}
-            {view === 'margin' && <MarginView projects={projects} rates={rates} />}
+            {view === 'total' && <TotalView projects={filteredProjects} rates={rates} />}
+            {view === 'active' && <ActiveView projects={filteredProjects} rates={rates} />}
+            {view === 'contract' && <ContractView projects={filteredProjects} rates={rates} />}
+            {view === 'receivable' && <ReceivableView projects={filteredProjects} rates={rates} />}
+            {view === 'margin' && <MarginView projects={filteredProjects} rates={rates} />}
           </>
         )}
       </div>
