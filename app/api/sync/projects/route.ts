@@ -24,6 +24,27 @@ function getGoogleAuth() {
   })
 }
 
+// "Dashboard" 포함 탭 중 이름 내 최대 숫자 기준 (예: "26년 Dashboard" > "25년 Dashboard") 우선.
+// 시트 연도 교체로 탭명이 바뀌어도 자동 탐지.
+async function resolveDashboardTabName(
+  sheets: ReturnType<typeof google.sheets>,
+  spreadsheetId: string,
+): Promise<string> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId, fields: 'sheets.properties.title' })
+  const titles = (meta.data.sheets ?? [])
+    .map(s => s.properties?.title ?? '')
+    .filter(t => /dashboard/i.test(t))
+  if (titles.length === 0) {
+    throw new Error('No "Dashboard" tab found in spreadsheet')
+  }
+  titles.sort((a, b) => {
+    const numA = Math.max(...(a.match(/\d+/g)?.map(Number) ?? [0]))
+    const numB = Math.max(...(b.match(/\d+/g)?.map(Number) ?? [0]))
+    return numB - numA
+  })
+  return titles[0]
+}
+
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown> = {}
   try {
@@ -57,13 +78,16 @@ export async function POST(request: NextRequest) {
     result.exchangeRates = rates
     console.log(`[sync/projects] Rates: JPY→KRW ${rates.jpyToKrw}, USD→KRW ${rates.usdToKrw}`)
 
-    // 2. Google Sheets 데이터 조회 (Dashboard 탭)
+    // 2. Google Sheets 데이터 조회 (Dashboard 탭 — 연도 prefix 자동 탐지)
     const googleAuth = getGoogleAuth()
     const sheets = google.sheets({ version: 'v4', auth: googleAuth })
 
+    const tabName = await resolveDashboardTabName(sheets, process.env.GOOGLE_SHEETS_PROJECT_ID)
+    console.log(`[sync/projects] Resolved dashboard tab: "${tabName}"`)
+
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-      range: 'Dashboard!A:AL',
+      range: `'${tabName}'!A:AL`,
       valueRenderOption: 'FORMATTED_VALUE',
     })
 
