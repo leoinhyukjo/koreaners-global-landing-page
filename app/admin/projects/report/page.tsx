@@ -31,15 +31,10 @@ import type { Project, ExchangeRates } from '@/lib/dashboard/calculations'
 // 유틸
 // ────────────────────────────────────────────────────────────
 
+// KPI 카드 표시는 억 단위 통일 (1억 미만은 소수점 2자리, 0 은 ₩0)
 function formatKrw(value: number): string {
   if (value === 0) return '₩0'
-  if (value >= 100_000_000) {
-    return `₩${(value / 100_000_000).toFixed(1)}억`
-  }
-  if (value >= 10_000) {
-    return `₩${(value / 10_000).toFixed(0)}만`
-  }
-  return `₩${value.toLocaleString('ko-KR')}`
+  return `₩${(value / 100_000_000).toFixed(2)}억`
 }
 
 function toYearMonth(dateStr: string): string {

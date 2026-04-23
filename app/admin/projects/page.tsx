@@ -179,10 +179,10 @@ export default function ProjectsPage() {
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 10)
 
+  // KPI 카드 표시는 억 단위로 통일 (1억 미만은 소수점 2자리, 0 은 ₩0)
   const fmtKrw = (n: number) => {
-    if (n >= 100_000_000) return `₩${(n / 100_000_000).toFixed(2)}억`
-    if (n >= 10_000) return `₩${(n / 10_000).toFixed(2)}만`
-    return `₩${Math.round(n).toLocaleString('ko-KR')}`
+    if (n === 0) return '₩0'
+    return `₩${(n / 100_000_000).toFixed(2)}억`
   }
 
   return (
@@ -240,14 +240,14 @@ export default function ProjectsPage() {
           href="/admin/projects/detail?view=receivable"
         />
         <Link href="/admin/projects/detail?view=margin" className="h-full">
-          <div className="rounded-lg border bg-card p-4 sm:p-6 transition-colors flex flex-col justify-between h-full min-h-[100px] cursor-pointer hover:bg-neutral-800 hover:border-neutral-700">
-            <p className="text-xs sm:text-sm text-muted-foreground">수익 현황</p>
-            <div className="mt-2 space-y-1 text-xs sm:text-sm tabular-nums">
-              <div className="flex justify-between"><span className="text-muted-foreground">계약</span><span className="font-medium">{fmtKrw(totalContract)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">비용</span><span className="font-medium">{fmtKrw(totalExpense)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">마진</span><span className="font-bold text-emerald-400">{fmtKrw(totalMargin)}</span></div>
+          <div className="rounded-lg border bg-card p-3 sm:p-4 transition-colors flex flex-col justify-between h-full min-h-[96px] cursor-pointer hover:bg-neutral-800 hover:border-neutral-700">
+            <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight break-keep">수익 현황</p>
+            <div className="mt-1.5 space-y-0.5 text-[11px] sm:text-xs tabular-nums">
+              <div className="flex justify-between gap-1"><span className="text-muted-foreground shrink-0">계약</span><span className="font-medium truncate">{fmtKrw(totalContract)}</span></div>
+              <div className="flex justify-between gap-1"><span className="text-muted-foreground shrink-0">비용</span><span className="font-medium truncate">{fmtKrw(totalExpense)}</span></div>
+              <div className="flex justify-between gap-1"><span className="text-muted-foreground shrink-0">마진</span><span className="font-bold text-emerald-400 truncate">{fmtKrw(totalMargin)}</span></div>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">마진율 {avgMarginRate.toFixed(1)}%</p>
+            <p className="mt-0.5 text-[10px] sm:text-xs text-muted-foreground leading-tight">마진율 {avgMarginRate.toFixed(1)}%</p>
           </div>
         </Link>
       </div>
