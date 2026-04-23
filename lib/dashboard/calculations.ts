@@ -60,6 +60,38 @@ export interface Project {
   creator_settlement_note: string | null
 }
 
+/**
+ * "계약 전" = 시트 status = '진행 전'. 계약금액은 합의됐지만 계약서 미체결 상태.
+ * 이 row 들을 계약금액/미수금/수익 집계에 포함시키면 실제 체결액이 부풀어 보이므로
+ * 대시보드 financial 집계는 signed 만 대상으로 하고, pending 은 "예상 계약 대기금액"
+ * 버킷으로 분리한다. '검토 중'/'리스트업'/'섭외 중' 은 보통 계약금액이 0 이라 별도 분리
+ * 안 해도 무해하나, 안전하게 여기도 pending 으로 묶는다.
+ */
+export const PENDING_CONTRACT_STATUSES = new Set([
+  '진행 전',
+  '리스트업',
+  '섭외 중',
+  '검토 중',
+])
+
+/** Drop 상태는 모든 금전 집계에서 제외 (취소된 건). */
+export const EXCLUDED_FROM_FINANCIALS = new Set(['Drop'])
+
+/** 계약 체결 후 상태 (집계 대상). null/기타는 signed 로 취급하지 않음 — 상태 미설정이면 안전하게 제외. */
+export function isSignedContract(p: Project): boolean {
+  const s = p.status ?? ''
+  if (!s) return false
+  if (EXCLUDED_FROM_FINANCIALS.has(s)) return false
+  if (PENDING_CONTRACT_STATUSES.has(s)) return false
+  return true
+}
+
+/** '진행 전' 등 계약 체결 전이지만 계약금액 합의된 단계. "예상 계약 대기금액" 버킷. */
+export function isPendingContract(p: Project): boolean {
+  const s = p.status ?? ''
+  return PENDING_CONTRACT_STATUSES.has(s)
+}
+
 export function totalContractKrw(p: Project, rates: ExchangeRates): number {
   return (
     p.contract_krw +

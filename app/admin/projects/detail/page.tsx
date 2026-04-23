@@ -11,6 +11,8 @@ import {
   totalMarginKrw,
   marginRate,
   receivableKrw,
+  isSignedContract,
+  isPendingContract,
   FALLBACK_RATES,
   type Project,
   type ExchangeRates,
@@ -572,14 +574,15 @@ function MarginView({ projects, rates }: { projects: Project[]; rates: ExchangeR
 // ─────────────────────────────────────────────
 // Page config map
 // ─────────────────────────────────────────────
-type ViewType = 'total' | 'active' | 'contract' | 'receivable' | 'margin'
+type ViewType = 'total' | 'active' | 'contract' | 'receivable' | 'margin' | 'pending'
 
 const VIEW_CONFIG: Record<ViewType, { title: string; description: string }> = {
   total: { title: '총 프로젝트', description: '전체 프로젝트 목록입니다.' },
   active: { title: '진행 중 프로젝트', description: '현재 진행 중인 프로젝트 목록입니다.' },
-  contract: { title: '총 계약금액', description: '계약금액 기준 전체 프로젝트 내역입니다.' },
-  receivable: { title: '미수금 현황', description: '미수금이 남아 있는 프로젝트 목록입니다.' },
-  margin: { title: '마진 분석', description: '프로젝트별 마진(계약금액 - 지출액) 분석입니다.' },
+  contract: { title: '총 계약금액', description: '계약 체결된 프로젝트 기준. 리스트업·섭외·검토·진행 전 단계는 제외됩니다.' },
+  pending: { title: '예상 계약 대기금액', description: '계약서 체결 전 단계(리스트업·섭외 중·검토 중·진행 전)의 예상 금액입니다.' },
+  receivable: { title: '미수금 현황', description: '계약 체결건 중 미수금이 남아 있는 프로젝트 목록입니다.' },
+  margin: { title: '마진 분석', description: '계약 체결건 기준 마진(계약금액 - 지출액) 분석입니다.' },
 }
 
 // ─────────────────────────────────────────────
@@ -609,6 +612,17 @@ function DetailContent() {
     const range = computeDateRange(dateFilter)
     return projects.filter((p) => matchesDateRange(p, range))
   }, [projects, dateFilter])
+
+  // View 별 추가 필터 — 계약 금전 집계 뷰는 체결건만, pending 뷰는 계약 전 단계만.
+  const viewProjects = useMemo(() => {
+    if (view === 'contract' || view === 'receivable' || view === 'margin') {
+      return filteredProjects.filter(isSignedContract)
+    }
+    if (view === 'pending') {
+      return filteredProjects.filter(isPendingContract)
+    }
+    return filteredProjects
+  }, [filteredProjects, view])
 
   const config = VIEW_CONFIG[view]
 
@@ -648,7 +662,7 @@ function DetailContent() {
           value={dateFilter}
           onChange={setDateFilter}
           totalCount={projects.length}
-          filteredCount={filteredProjects.length}
+          filteredCount={viewProjects.length}
         />
       )}
 
@@ -658,11 +672,12 @@ function DetailContent() {
           <TableSkeleton />
         ) : (
           <>
-            {view === 'total' && <TotalView projects={filteredProjects} rates={rates} />}
-            {view === 'active' && <ActiveView projects={filteredProjects} rates={rates} />}
-            {view === 'contract' && <ContractView projects={filteredProjects} rates={rates} />}
-            {view === 'receivable' && <ReceivableView projects={filteredProjects} rates={rates} />}
-            {view === 'margin' && <MarginView projects={filteredProjects} rates={rates} />}
+            {view === 'total' && <TotalView projects={viewProjects} rates={rates} />}
+            {view === 'active' && <ActiveView projects={viewProjects} rates={rates} />}
+            {view === 'contract' && <ContractView projects={viewProjects} rates={rates} />}
+            {view === 'pending' && <ContractView projects={viewProjects} rates={rates} />}
+            {view === 'receivable' && <ReceivableView projects={viewProjects} rates={rates} />}
+            {view === 'margin' && <MarginView projects={viewProjects} rates={rates} />}
           </>
         )}
       </div>
