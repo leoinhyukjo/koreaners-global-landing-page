@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { fetchAllProjects, fetchExchangeRates } from '@/lib/dashboard/queries'
-import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, FALLBACK_RATES, type Project, type ExchangeRates } from '@/lib/dashboard/calculations'
+import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, isSignedContract, isPendingContract, FALLBACK_RATES, type Project, type ExchangeRates } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
   StatusBarChart,
@@ -106,16 +106,22 @@ export default function ProjectsPage() {
   // KPI
   const totalProjects = projects.length
   const inProgress = projects.filter((p) => p.status && !NON_ACTIVE_STATUSES.has(p.status)).length
-  const totalContract = projects.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
-  const totalReceivable = projects.reduce((acc, p) => acc + receivableKrw(p, rates), 0)
 
-  // 마진 — 계약금액이 있는 프로젝트만 (0인 행은 마진율 정의 불가 → 평균 왜곡 방지)
-  const marginProjects = projects.filter((p) => totalContractKrw(p, rates) > 0)
+  // 계약 체결된 건만 financial 집계에 포함 (계약서 전 단계 = '진행 전'/'검토 중'/'리스트업'/'섭외 중' 제외)
+  const signedProjects = projects.filter(isSignedContract)
+  const pendingProjects = projects.filter(isPendingContract)
+
+  const totalContract = signedProjects.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
+  const totalReceivable = signedProjects.reduce((acc, p) => acc + receivableKrw(p, rates), 0)
+  const pendingContract = pendingProjects.reduce((acc, p) => acc + totalContractKrw(p, rates), 0)
+
+  // 마진 — 계약금액이 있는 signed 프로젝트만 (0인 행은 마진율 정의 불가 → 평균 왜곡 방지)
+  const marginProjects = signedProjects.filter((p) => totalContractKrw(p, rates) > 0)
   const avgMarginRate = marginProjects.length > 0
     ? marginProjects.reduce((acc, p) => acc + marginRate(p, rates), 0) / marginProjects.length
     : 0
-  const totalExpense = projects.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
-  const totalMargin = projects.reduce((acc, p) => acc + totalMarginKrw(p, rates), 0)
+  const totalExpense = signedProjects.reduce((acc, p) => acc + totalExpenseKrw(p, rates), 0)
+  const totalMargin = signedProjects.reduce((acc, p) => acc + totalMarginKrw(p, rates), 0)
 
   // Status pipeline — 각 status별 건수 표시
   const pipelineMap = new Map<string, number>()
@@ -146,10 +152,10 @@ export default function ProjectsPage() {
     .map(([assignee, counts]) => ({ assignee, ...counts, total: counts.active + counts.completed + counts.other }))
     .sort((a, b) => b.total - a.total)
 
-  // Monthly
+  // Monthly — 계약 체결건만 집계 (pre-contract 제외)
   const last6 = getLast6Months()
   const monthlyMap = new Map<string, number>(last6.map((m) => [m, 0]))
-  for (const p of projects) {
+  for (const p of signedProjects) {
     if (!p.start_date) continue
     const month = p.start_date.slice(0, 7)
     if (monthlyMap.has(month)) {
@@ -161,8 +167,8 @@ export default function ProjectsPage() {
     amount: monthlyMap.get(month) ?? 0,
   }))
 
-  // Receivable TOP 10
-  const receivableList = projects
+  // Receivable TOP 10 — 계약 체결건만
+  const receivableList = signedProjects
     .map((p) => ({
       id: p.id,
       name: p.name,
@@ -212,10 +218,21 @@ export default function ProjectsPage() {
       <DashboardTabs />
 
       {/* KPI 카드 */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         <KpiCard title="총 프로젝트" value={`${totalProjects}개`} href="/admin/projects/detail?view=total" />
         <KpiCard title="활성 프로젝트" value={`${inProgress}개`} subtitle="완료·보류·진행전 제외" href="/admin/projects/detail?view=active" />
-        <KpiCard title="총 계약금액" value={fmtKrw(totalContract)} href="/admin/projects/detail?view=contract" />
+        <KpiCard
+          title="총 계약금액"
+          value={fmtKrw(totalContract)}
+          subtitle="계약 체결 기준"
+          href="/admin/projects/detail?view=contract"
+        />
+        <KpiCard
+          title="예상 계약 대기금액"
+          value={fmtKrw(pendingContract)}
+          subtitle={`${pendingProjects.length}건 · 계약서 전`}
+          href="/admin/projects/detail?view=pending"
+        />
         <KpiCard
           title="미수금"
           value={fmtKrw(totalReceivable)}

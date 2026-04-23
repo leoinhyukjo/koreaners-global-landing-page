@@ -21,6 +21,8 @@ import {
   totalContractKrw,
   receivableKrw,
   projectDurationDays,
+  isSignedContract,
+  isPendingContract,
   FALLBACK_RATES,
 } from '@/lib/dashboard/calculations'
 import type { Project, ExchangeRates } from '@/lib/dashboard/calculations'
@@ -62,13 +64,20 @@ function recentMonths(n: number): string[] {
 function useDerivedData(projects: Project[], rates: ExchangeRates) {
   return useMemo(() => {
     const subProjects = projects
+    // 계약 체결건 / 체결 전 단계 분리 — financial 집계는 signed 만 기준
+    const signedProjects = subProjects.filter(isSignedContract)
+    const pendingProjects = subProjects.filter(isPendingContract)
 
-    const totalContract = subProjects.reduce(
+    const totalContract = signedProjects.reduce(
       (sum, p) => sum + totalContractKrw(p, rates),
       0,
     )
-    const totalReceivable = subProjects.reduce(
+    const totalReceivable = signedProjects.reduce(
       (sum, p) => sum + receivableKrw(p, rates),
+      0,
+    )
+    const pendingContract = pendingProjects.reduce(
+      (sum, p) => sum + totalContractKrw(p, rates),
       0,
     )
     const completedCount = subProjects.filter(
@@ -87,8 +96,9 @@ function useDerivedData(projects: Project[], rates: ExchangeRates) {
         ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
         : null
 
+    // 브랜드별 집계 — 체결건만 대상
     const brandMap = new Map<string, Project[]>()
-    for (const p of subProjects) {
+    for (const p of signedProjects) {
       const key = p.brand_name ?? '(브랜드 미정)'
       const list = brandMap.get(key) ?? []
       list.push(p)
@@ -153,8 +163,11 @@ function useDerivedData(projects: Project[], rates: ExchangeRates) {
 
     return {
       subProjects,
+      signedCount: signedProjects.length,
+      pendingCount: pendingProjects.length,
       totalContract,
       totalReceivable,
+      pendingContract,
       completedCount,
       avgDuration,
       brandGroups,
@@ -195,8 +208,11 @@ export default function ProjectsReportPage() {
 
   const {
     subProjects,
+    signedCount,
+    pendingCount,
     totalContract,
     totalReceivable,
+    pendingContract,
     completedCount,
     avgDuration,
     brandGroups,
@@ -265,11 +281,16 @@ export default function ProjectsReportPage() {
           <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
             핵심 지표
           </h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             <KpiCard
               title="전체 계약금액"
               value={formatKrw(totalContract)}
-              subtitle={`하위 프로젝트 ${subProjects.length}건`}
+              subtitle={`체결 ${signedCount}건`}
+            />
+            <KpiCard
+              title="예상 계약 대기"
+              value={formatKrw(pendingContract)}
+              subtitle={`${pendingCount}건 · 계약서 전`}
             />
             <KpiCard
               title="미수금"
