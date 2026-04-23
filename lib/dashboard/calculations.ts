@@ -61,11 +61,13 @@ export interface Project {
 }
 
 /**
- * "계약 전" = 시트 status = '진행 전'. 계약금액은 합의됐지만 계약서 미체결 상태.
- * 이 row 들을 계약금액/미수금/수익 집계에 포함시키면 실제 체결액이 부풀어 보이므로
- * 대시보드 financial 집계는 signed 만 대상으로 하고, pending 은 "예상 계약 대기금액"
- * 버킷으로 분리한다. '검토 중'/'리스트업'/'섭외 중' 은 보통 계약금액이 0 이라 별도 분리
- * 안 해도 무해하나, 안전하게 여기도 pending 으로 묶는다.
+ * 시트 status 를 financial 집계용 3 버킷으로 분류:
+ *   SIGNED   = 진행 중 ~ 진행 완료 구간 → 총 계약금액/미수금/수익(계약·비용·마진) 집계 대상
+ *   PENDING  = 진행 전 ~ 검토 중 구간    → "예상 계약 대기금액" 버킷 (계약서 전)
+ *   EXCLUDED = 보류, Drop                → 어느 집계에도 포함 X
+ *
+ * '보류' 는 계약 진행이 중단된 상태라 signed 에도 pending 에도 속하지 않음.
+ * 상태 미설정 (null/empty) 은 안전하게 어디에도 포함하지 않음.
  */
 export const PENDING_CONTRACT_STATUSES = new Set([
   '진행 전',
@@ -74,19 +76,23 @@ export const PENDING_CONTRACT_STATUSES = new Set([
   '검토 중',
 ])
 
-/** Drop 상태는 모든 금전 집계에서 제외 (취소된 건). */
-export const EXCLUDED_FROM_FINANCIALS = new Set(['Drop'])
+export const SIGNED_CONTRACT_STATUSES = new Set([
+  '진행 중',
+  '클라이언트 정산 중',
+  '인플루언서 정산 중',
+  '진행 완료',
+])
 
-/** 계약 체결 후 상태 (집계 대상). null/기타는 signed 로 취급하지 않음 — 상태 미설정이면 안전하게 제외. */
+/** 보류 / Drop — 금전 집계에서 완전히 제외. */
+export const EXCLUDED_FROM_FINANCIALS = new Set(['보류', 'Drop'])
+
+/** 진행 중 ~ 진행 완료 구간 (계약 체결 후). */
 export function isSignedContract(p: Project): boolean {
   const s = p.status ?? ''
-  if (!s) return false
-  if (EXCLUDED_FROM_FINANCIALS.has(s)) return false
-  if (PENDING_CONTRACT_STATUSES.has(s)) return false
-  return true
+  return SIGNED_CONTRACT_STATUSES.has(s)
 }
 
-/** '진행 전' 등 계약 체결 전이지만 계약금액 합의된 단계. "예상 계약 대기금액" 버킷. */
+/** 진행 전 ~ 검토 중 구간 (계약서 체결 전, 예상 계약 대기금액). */
 export function isPendingContract(p: Project): boolean {
   const s = p.status ?? ''
   return PENDING_CONTRACT_STATUSES.has(s)

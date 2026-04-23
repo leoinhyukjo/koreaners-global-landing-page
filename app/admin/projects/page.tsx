@@ -224,7 +224,7 @@ export default function ProjectsPage() {
         <KpiCard
           title="총 계약금액"
           value={fmtKrw(totalContract)}
-          subtitle="계약 체결 기준"
+          subtitle="진행 중~진행 완료"
           href="/admin/projects/detail?view=contract"
         />
         <KpiCard
