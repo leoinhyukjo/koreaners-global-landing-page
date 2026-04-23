@@ -13,15 +13,15 @@ export function KpiCard({ title, value, subtitle, href }: KpiCardProps) {
   const inner = (
     <div
       className={[
-        'rounded-lg border bg-card p-4 sm:p-6 transition-colors flex flex-col justify-between h-full min-h-[100px]',
+        'rounded-lg border bg-card p-3 sm:p-4 transition-colors flex flex-col justify-between h-full min-h-[96px]',
         href ? 'cursor-pointer hover:bg-neutral-800 hover:border-neutral-700' : '',
       ]
         .filter(Boolean)
         .join(' ')}
     >
-      <p className="text-xs sm:text-sm text-muted-foreground">{title}</p>
-      <p className="mt-2 text-lg sm:text-2xl font-bold whitespace-nowrap tabular-nums">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground min-h-[1rem]">{subtitle ?? '\u00A0'}</p>
+      <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight break-keep">{title}</p>
+      <p className="mt-1.5 text-base sm:text-lg lg:text-xl font-bold whitespace-nowrap tabular-nums">{value}</p>
+      <p className="mt-0.5 text-[10px] sm:text-xs text-muted-foreground min-h-[0.85rem] leading-tight break-keep">{subtitle ?? ' '}</p>
     </div>
   )
 
