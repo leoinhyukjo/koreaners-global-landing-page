@@ -12,6 +12,7 @@ interface SyncResult {
   synced: number
   errors: string[]
   exchangeRates: { jpyToKrw: number; usdToKrw: number }
+  duplicates?: number
 }
 
 function getGoogleAuth() {
@@ -118,35 +119,69 @@ export async function POST(request: NextRequest) {
     }
     console.log(`[sync/projects] Parsed ${records.length} records`)
 
-    // 6. Full replace: 기존 데이터 전체 삭제 → 새 데이터 삽입
-    const { error: deleteError } = await supabase
-      .from('projects')
-      .delete()
-      .neq('row_code', '__never_match__') // 전체 삭제 workaround
-
-    if (deleteError) {
-      result.errors.push(`Delete all: ${deleteError.message}`)
+    // 5b. row_code 중복 제거 (last wins — 시트 뒤쪽 row 가 더 최신이라는 가정).
+    // 시트에 같은 유니크코드가 두 번 들어가면 batch upsert 가 "command cannot affect
+    // row a second time" 로 전체 실패하므로, 서버 측에서 먼저 정리.
+    const deduped: Record<string, unknown>[] = []
+    const seen = new Map<string, number>() // row_code -> deduped index
+    for (const rec of records) {
+      const code = String(rec.row_code ?? '')
+      const existing = seen.get(code)
+      if (existing !== undefined) {
+        deduped[existing] = rec
+      } else {
+        seen.set(code, deduped.length)
+        deduped.push(rec)
+      }
+    }
+    result.duplicates = records.length - deduped.length
+    if (result.duplicates > 0) {
+      console.log(`[sync/projects] Collapsed ${result.duplicates} duplicate row_code(s) before upsert`)
     }
 
-    // 7. 배치 insert (50건 단위)
+    // 6. Upsert (신규 + 기존 덮어쓰기). 배치 실패 시 한 배치만 영향.
     const BATCH_SIZE = 50
-    for (let i = 0; i < records.length; i += BATCH_SIZE) {
-      const batch = records.slice(i, i + BATCH_SIZE)
-      const { error: insertError } = await supabase
+    for (let i = 0; i < deduped.length; i += BATCH_SIZE) {
+      const batch = deduped.slice(i, i + BATCH_SIZE)
+      const { error: upsertError } = await supabase
         .from('projects')
-        .insert(batch)
+        .upsert(batch, { onConflict: 'row_code' })
 
-      if (insertError) {
+      if (upsertError) {
         result.errors.push(
-          `Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${insertError.message}`,
+          `Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${upsertError.message}`,
         )
       } else {
         result.synced += batch.length
       }
     }
 
+    // 7. 시트에 없는 row_code 는 삭제 (mirror full-replace 의미 유지)
+    const activeCodes = new Set(deduped.map(r => String(r.row_code ?? '')))
+    const { data: existing, error: listError } = await supabase
+      .from('projects')
+      .select('row_code')
+    if (listError) {
+      result.errors.push(`List existing: ${listError.message}`)
+    } else if (existing) {
+      const stale = existing
+        .map(r => r.row_code as string)
+        .filter(code => code && !activeCodes.has(code))
+      if (stale.length > 0) {
+        const { error: delError } = await supabase
+          .from('projects')
+          .delete()
+          .in('row_code', stale)
+        if (delError) {
+          result.errors.push(`Delete stale: ${delError.message}`)
+        } else {
+          console.log(`[sync/projects] Deleted ${stale.length} stale row(s)`)
+        }
+      }
+    }
+
     console.log(
-      `[sync/projects] Sync complete. Synced: ${result.synced}, Errors: ${result.errors.length}`,
+      `[sync/projects] Sync complete. Synced: ${result.synced}, Duplicates collapsed: ${result.duplicates ?? 0}, Errors: ${result.errors.length}`,
     )
 
     return NextResponse.json(result, { status: 200 })
