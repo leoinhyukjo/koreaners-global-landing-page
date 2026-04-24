@@ -39,6 +39,9 @@ import Image from "next/image";
 
 const CREATORS_PER_PAGE = 8;
 
+// 크리에이터 동의 전까지 카드 그리드 숨김 (2026-04-24). true 로 바꾸면 롤백.
+const SHOW_CREATOR_CARDS = false;
+
 function CreatorContent() {
   const { locale } = useLocale();
   const t = (key: Parameters<typeof getTranslation>[1]) =>
@@ -246,6 +249,7 @@ function CreatorContent() {
           </div>
 
           {/* Creator Cards Grid */}
+          {SHOW_CREATOR_CARDS && (
           <div className="mb-20 sm:mb-28">
             <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-white">
               {t("creatorPoolTitle1")}
@@ -471,6 +475,7 @@ function CreatorContent() {
               </>
             )}
           </div>
+          )}
         </div>
       </section>
 
