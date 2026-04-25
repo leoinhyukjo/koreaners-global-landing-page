@@ -9,7 +9,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 export const metadata: Metadata = {
   title: '회사 소개',
   description:
-    '코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 200명 이상의 주요 크리에이터, 300+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 일본 진출을 돕습니다.',
+    '코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 200명 이상의 주요 크리에이터, 70+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 일본 진출을 돕습니다.',
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: {
     title: '코리너스 | 회사 소개',
