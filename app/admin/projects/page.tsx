@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, RefreshCw } from 'lucide-react'
-import { fetchAllProjects, fetchExchangeRates } from '@/lib/dashboard/queries'
+import { fetchAllProjects, fetchExchangeRates, fetchLastSyncedAt } from '@/lib/dashboard/queries'
 import { totalContractKrw, totalExpenseKrw, totalMarginKrw, marginRate, receivableKrw, isSignedContract, isPendingContract, FALLBACK_RATES, type Project, type ExchangeRates } from '@/lib/dashboard/calculations'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
 import {
@@ -48,11 +48,13 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
 
   async function loadData() {
-    const [all, r] = await Promise.all([fetchAllProjects(), fetchExchangeRates()])
+    const [all, r, ts] = await Promise.all([fetchAllProjects(), fetchExchangeRates(), fetchLastSyncedAt()])
     setProjects(all)
     setRates(r)
+    setLastSyncedAt(ts)
     setLoading(false)
   }
 
@@ -203,6 +205,11 @@ export default function ProjectsPage() {
         <div className="flex items-center gap-2">
           {syncMsg && (
             <span className="text-xs text-neutral-400">{syncMsg}</span>
+          )}
+          {!syncMsg && lastSyncedAt && (
+            <span className="text-xs text-neutral-500">
+              마지막 동기화: {new Date(lastSyncedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
+            </span>
           )}
           <button
             onClick={handleSync}

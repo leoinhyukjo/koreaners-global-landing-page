@@ -1,5 +1,6 @@
 {
   "법인명": { "field": "company_name", "type": "text" },
+  "Milk": { "field": "company_name", "type": "text" },
   "브랜드명": { "field": "brand_name", "type": "text" },
   "운영-status": { "field": "status", "type": "text" },
   "구분": { "field": "project_type", "type": "text" },

@@ -70,10 +70,11 @@ export function parseRowDynamic(
     }
   }
 
-  // 법인명 또는 브랜드명이 없으면 빈 행으로 간주
+  // row_code 가 있으면 무조건 sync 대상. 없으면 법인명/브랜드명 둘 다 비어야 빈 행으로 간주.
   const companyName = get('company_name')
   const brandName = get('brand_name')
-  if (!companyName && !brandName) return null
+  const rowCodeRaw = get('row_code')
+  if (!rowCodeRaw && !companyName && !brandName) return null
 
   const record: Record<string, unknown> = {}
   for (const [field] of indexMap) {
