@@ -27,24 +27,37 @@ interface CreatorApplicationData {
 async function sendSlackWebhook(
   webhookUrl: string,
   blocks: Record<string, unknown>[],
+  context: string,
 ): Promise<void> {
+  let res: Response;
   try {
-    const res = await fetch(webhookUrl, {
+    res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ blocks }),
     });
-    if (!res.ok) {
-      console.error("[Slack] Webhook failed:", res.status, await res.text());
-    }
   } catch (error) {
-    console.error("[Slack] Webhook error:", error);
+    console.error(`[Slack] ${context} fetch error:`, error);
+    return;
+  }
+
+  // Slack incoming webhook은 정상 게시 시 HTTP 200 + body "ok"를 반환.
+  // 4/22 19:03 사고처럼 channel disconnect 후에도 200을 받지만 body가 "ok"가 아닌 케이스
+  // (예: "no_service") → res.ok만 보면 silent fail. body까지 검증해야 진짜 게시 여부 판정 가능.
+  const body = await res.text().catch(() => "");
+  if (!res.ok || body.trim() !== "ok") {
+    console.error(
+      `[Slack] ${context} webhook failed: status=${res.status} body=${JSON.stringify(body.slice(0, 200))}`,
+    );
   }
 }
 
 export async function sendSlackInquiry(data: InquiryData): Promise<void> {
   const webhookUrl = process.env.SLACK_WEBHOOK_INQUIRIES;
-  if (!webhookUrl) return;
+  if (!webhookUrl) {
+    console.error("[Slack] SLACK_WEBHOOK_INQUIRIES env not set — inquiry alert dropped");
+    return;
+  }
 
   const fields = [
     `*이름:* ${data.name}`,
@@ -83,14 +96,17 @@ export async function sendSlackInquiry(data: InquiryData): Promise<void> {
     });
   }
 
-  await sendSlackWebhook(webhookUrl, blocks);
+  await sendSlackWebhook(webhookUrl, blocks, "inquiry");
 }
 
 export async function sendSlackCreatorApplication(
   data: CreatorApplicationData,
 ): Promise<void> {
   const webhookUrl = process.env.SLACK_WEBHOOK_CREATORS;
-  if (!webhookUrl) return;
+  if (!webhookUrl) {
+    console.error("[Slack] SLACK_WEBHOOK_CREATORS env not set — creator application alert dropped");
+    return;
+  }
 
   const localeEmoji = data.locale === "ko" ? "🇰🇷" : "🇯🇵";
   const trackLabel = data.track_type === "exclusive" ? "Exclusive" : "Partner";
@@ -137,5 +153,5 @@ export async function sendSlackCreatorApplication(
     });
   }
 
-  await sendSlackWebhook(webhookUrl, blocks);
+  await sendSlackWebhook(webhookUrl, blocks, "creator-application");
 }
