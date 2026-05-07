@@ -278,7 +278,16 @@ export async function POST(request: NextRequest) {
         const clientNames = await Promise.all(
           relationIds.map((id) => fetchRelationTitle(id)),
         );
-        const clientName = clientNames.filter(Boolean).join(", ") || "";
+        let clientName = clientNames.filter(Boolean).join(", ") || "";
+
+        // Notion relation 비어 있을 때 title prefix `{client}: {desc}` 에서 derive
+        // SEO Brand schema 가 client_name 의존, 빈 값이면 schema emit 안 됨
+        if (!clientName) {
+          const colonIdx = title.indexOf(":");
+          if (colonIdx > 0 && colonIdx < 60) {
+            clientName = title.slice(0, colonIdx).trim();
+          }
+        }
 
         const category = getSelect(page.properties, "카테고리");
         const link = getUrl(page.properties, "링크");
