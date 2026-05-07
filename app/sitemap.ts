@@ -75,23 +75,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }))
     }
 
-    const { data: creators, error: creatorError } = await supabase
-      .from('creators')
-      .select('id, created_at')
-      .order('created_at', { ascending: false })
-
-    if (creatorError) {
-      console.error('[sitemap] creators query failed:', creatorError.message)
-    }
-    if (creators?.length) {
-      maxCreator = creators[0].created_at?.slice(0, 10) || today
-      creatorPages = creators.map((creator) => ({
-        url: `${baseUrl}/creator/${creator.id}`,
-        lastModified: (creator.created_at || today).slice(0, 10),
-        changeFrequency: 'monthly' as const,
-        priority: 0.6,
-      }))
-    }
+    // creator 상세 페이지 라우트 (/creator/[id]) 부재 — 24건 모두 404 반환되므로 sitemap 제외.
+    // /creator 인덱스 페이지만 staticPages 에 포함.
+    // creator 동의 받고 detail route + page 빌드되면 이 블록 복원.
+    // const { data: creators } = await supabase.from('creators').select('id, created_at').order('created_at', { ascending: false })
+    // if (creators?.length) { ... }
+    // maxCreator 는 today 기본값 유지 (creator 인덱스 lastModified 용)
   } catch (error) {
     console.error('[sitemap] Supabase query failed:', error)
   }
