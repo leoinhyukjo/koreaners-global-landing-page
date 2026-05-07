@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar } from "lucide-react";
+import { ArrowLeft, Calendar, User } from "lucide-react";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MarketingCTA } from "@/components/common/marketing-cta";
 import { resolveThumbnailSrc } from "@/lib/thumbnail";
@@ -104,6 +104,14 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight break-keep text-white">
                     {displayTitle}
                   </h1>
+                  <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-white/60 flex-wrap break-keep">
+                    <User className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                    <span className="font-semibold text-white/80">조인혁</span>
+                    <span className="text-white/40">|</span>
+                    <span>BD 팀장, KOREANERS</span>
+                    <span className="text-white/40">|</span>
+                    <span>일본 인플루언서 마케팅, 크로스보더 마케팅, K-뷰티 일본 진출</span>
+                  </div>
                 </div>
               </div>
             </header>
