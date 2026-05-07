@@ -135,14 +135,14 @@ export default async function BlogDetailPage({ params }: PageProps) {
       "@type": "Person",
       "@id": "https://www.koreaners.co/#person-jo-in-hyuk",
       name: "조인혁",
-      jobTitle: "채널 담당 매니저",
+      jobTitle: "BD 팀장",
       worksFor: { "@id": "https://www.koreaners.co/#organization" },
       url: "https://www.koreaners.co/about",
       knowsAbout: [
         "일본 인플루언서 마케팅",
         "크로스보더 마케팅",
         "K-뷰티 일본 진출",
-        "Qoo10·라쿠텐 이커머스 전략",
+        "Qoo10, 라쿠텐 이커머스 전략",
       ],
     },
     publisher: {

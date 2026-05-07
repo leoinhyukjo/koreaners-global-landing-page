@@ -74,7 +74,7 @@ export default async function PortfolioPage() {
           '@type': 'CreativeWork',
           '@id': `${siteUrl}/portfolio/${p.id}`,
           name: p.title,
-          description: p.summary || `${p.title} — ${p.client_name}`,
+          description: p.summary || (p.client_name?.trim() ? `${p.title} — ${p.client_name.trim()}` : p.title),
           ...(p.thumbnail_url ? { image: p.thumbnail_url } : {}),
           url: `${siteUrl}/portfolio/${p.id}`,
           datePublished: p.published_at ?? p.created_at,
