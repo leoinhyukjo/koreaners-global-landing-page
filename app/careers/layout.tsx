@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Client } from "@notionhq/client";
+import { getCareerJobs, type CareerJob } from "@/lib/notion/careers";
 
 export const metadata: Metadata = {
   title: "채용 | 코리너스와 함께 성장하세요",
@@ -14,64 +14,7 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-type OpenRole = {
-  id: string;
-  title: string;
-  startDate: string | null;
-  note: string;
-  applyUrl: string | null;
-  jdUrl: string | null;
-};
-
-async function getOpenRoles(): Promise<OpenRole[]> {
-  if (
-    !process.env.NOTION_CAREERS_TOKEN ||
-    !process.env.NOTION_CAREERS_DATASOURCE_ID
-  ) {
-    return [];
-  }
-  try {
-    const notion = new Client({ auth: process.env.NOTION_CAREERS_TOKEN });
-    const response = await notion.dataSources.query({
-      data_source_id: process.env.NOTION_CAREERS_DATASOURCE_ID,
-      filter: {
-        property: "채용현황",
-        select: { equals: "채용중" },
-      },
-    });
-    return response.results.map((page: any) => {
-      const props = page.properties;
-      const title =
-        props["공고명"]?.title?.[0]?.plain_text ??
-        props["Name"]?.title?.[0]?.plain_text ??
-        "";
-      const startDate = props["채용개시일"]?.date?.start ?? null;
-      const note =
-        props["비고"]?.rich_text?.[0]?.plain_text ??
-        props["Note"]?.rich_text?.[0]?.plain_text ??
-        "";
-      const applyUrl: string | null = props["지원 링크"]?.url ?? null;
-      const rawJdUrl: string | null = props["JD"]?.url ?? null;
-      const jdUrl = rawJdUrl
-        ? rawJdUrl
-            .replace(
-              "https://www.notion.so/",
-              "https://descriptive-wallflower-afd.notion.site/",
-            )
-            .split("?")[0]
-        : null;
-      return { id: page.id, title, startDate, note, applyUrl, jdUrl };
-    });
-  } catch (error: any) {
-    console.error(
-      "[Careers layout] Notion fetch failed:",
-      error?.message ?? error,
-    );
-    return [];
-  }
-}
-
-function buildJobPostingLd(roles: OpenRole[]) {
+function buildJobPostingLd(roles: CareerJob[]) {
   return roles.map((role) => ({
     "@context": "https://schema.org",
     "@type": "JobPosting",
@@ -114,7 +57,7 @@ export default async function CareersLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const roles = await getOpenRoles();
+  const roles = await getCareerJobs({ includeClosed: false });
   const ldJson = buildJobPostingLd(roles);
   return (
     <>
