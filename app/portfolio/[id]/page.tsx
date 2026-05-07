@@ -78,12 +78,17 @@ export async function generateMetadata({
     ? toAbsoluteUrl(siteUrl, resolveThumbnailSrc(portfolio.thumbnail_url))
     : `${siteUrl}/images/logo.png`;
 
+  // client_name 이 비어 있을 때 trailing dash 방지
+  const clientName = portfolio.client_name?.trim();
+  const description =
+    portfolio.summary || (clientName ? `${portfolio.title} - ${clientName}` : portfolio.title);
+
   return {
     title: portfolio.title,
-    description: portfolio.summary || `${portfolio.title} - ${portfolio.client_name}`,
+    description,
     openGraph: {
       title: portfolio.title,
-      description: portfolio.summary || `${portfolio.title} - ${portfolio.client_name}`,
+      description,
       type: "article",
       publishedTime: portfolio.published_at ?? portfolio.created_at,
       images: [{ url: ogImage, width: 1200, height: 630 }],
@@ -91,7 +96,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: portfolio.title,
-      description: portfolio.summary || `${portfolio.title} - ${portfolio.client_name}`,
+      description,
       images: [ogImage],
     },
     alternates: {
@@ -121,7 +126,7 @@ export default async function PortfolioDetailPage({ params }: PageProps) {
       "@type": "CreativeWork",
       "@id": `${siteUrl}/portfolio/${id}`,
       name: portfolio.title,
-      description: portfolio.summary || `${portfolio.title} - ${portfolio.client_name}`,
+      description: portfolio.summary || (portfolio.client_name?.trim() ? `${portfolio.title} - ${portfolio.client_name.trim()}` : portfolio.title),
       image: portfolio.thumbnail_url || undefined,
       datePublished: portfolio.published_at ?? portfolio.created_at,
       author: { "@id": "https://www.koreaners.co/#organization" },

@@ -15,16 +15,24 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 function buildJobPostingLd(roles: CareerJob[]) {
-  return roles.map((role) => ({
+  return roles.map((role) => {
+    // validThrough: datePosted + 90일 (Notion 에 명시적 만료일 없을 때 default)
+    const datePosted = role.startDate ?? new Date().toISOString().slice(0, 10);
+    const validThrough = new Date(datePosted);
+    validThrough.setDate(validThrough.getDate() + 90);
+
+    return {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: role.title,
     description:
       role.note ||
       `${role.title} — 코리너스(KOREANERS) 크로스보더 인플루언서 마케팅 에이전시 포지션. 상세 JD와 지원 링크를 공고 페이지에서 확인해주세요.`,
-    datePosted: role.startDate ?? new Date().toISOString().slice(0, 10),
+    datePosted,
+    validThrough: validThrough.toISOString().slice(0, 10),
     hiringOrganization: {
       "@type": "Organization",
+      "@id": "https://www.koreaners.co/#organization",
       name: "코리너스 KOREANERS",
       sameAs: "https://www.koreaners.co",
       logo: "https://www.koreaners.co/icon-512.png",
@@ -49,7 +57,8 @@ function buildJobPostingLd(roles: CareerJob[]) {
       name: "KOREANERS",
       value: role.id,
     },
-  }));
+    };
+  });
 }
 
 export default async function CareersLayout({

@@ -22,10 +22,11 @@ import {
 } from "@/components/ui/dialog";
 import { CheckCircle2 } from "lucide-react";
 
-export function FooterCTA() {
+export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" } = {}) {
   const { locale } = useLocale();
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(locale, key);
+  const Heading = headingLevel;
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -245,10 +246,10 @@ export function FooterCTA() {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
           {/* Left: heading + description */}
           <div>
-            <h2 className="font-display font-bold text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
+            <Heading className="font-display font-bold text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
               <span className="italic text-[#FF4500]">CONTACT</span><br />
               US
-            </h2>
+            </Heading>
             <p className="text-base text-white/60 mt-8 leading-relaxed">
               {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
             </p>
