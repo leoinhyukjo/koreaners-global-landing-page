@@ -217,6 +217,8 @@ export default function RootLayout({
               {
                 "@context": "https://schema.org",
                 "@type": "ProfessionalService",
+                "@id": "https://www.koreaners.co/#professionalservice",
+                parentOrganization: { "@id": "https://www.koreaners.co/#organization" },
                 name: "코리너스",
                 alternateName: "KOREANERS",
                 url: "https://www.koreaners.co",
