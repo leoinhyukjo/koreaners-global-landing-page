@@ -14,11 +14,11 @@
   "계약 금액 / 원 (부가세X)": { "field": "contract_krw", "type": "money" },
   "계약 금액 / 엔 (부가세X)": { "field": "contract_jpy", "type": "money" },
   "계약 금액 / USD (부가세X)": { "field": "contract_usd", "type": "money" },
-  "계약 금액 / 위안 (부가세X)": { "field": "contract_cny", "type": "money" },
+  "계약 금액 / RMB (부가세X)": { "field": "contract_cny", "type": "money" },
   "콜라보 수수료 금액": { "field": "collab_fee", "type": "money" },
   "지출액/원(섭외비)": { "field": "expense_krw", "type": "money" },
   "지출액/엔(섭외비)": { "field": "expense_jpy", "type": "money" },
-  "지출액/위안(섭외비)": { "field": "expense_cny", "type": "money" },
+  "지출액/위안화(섭외비)": { "field": "expense_cny", "type": "money" },
   "마진(원으로 적용)": { "field": "margin_krw", "type": "money" },
   "견적서": { "field": "estimate_status", "type": "text" },
   "계약서": { "field": "contract_status", "type": "text" },
@@ -31,5 +31,6 @@
   "입금 여부": { "field": "payment_status", "type": "text" },
   "송금 여부": { "field": "remittance_status", "type": "text" },
   "섭외 정산": { "field": "creator_settlement_note", "type": "text" },
+  "드라이브URL": { "field": "drive_url", "type": "text" },
   "유니크코드": { "field": "row_code", "type": "text" }
 }

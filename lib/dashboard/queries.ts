@@ -51,12 +51,12 @@ export async function fetchAllProjects(): Promise<Project[]> {
   })) as Project[]
 }
 
-/** projects 테이블 마지막 동기화 시각 (max(updated_at)) */
+/** projects 테이블 마지막 동기화 시각 (max(synced_at) — sync route 가 매 실행마다 명시 주입) */
 export async function fetchLastSyncedAt(): Promise<string | null> {
   const { data, error } = await supabase
     .from('projects')
-    .select('updated_at')
-    .order('updated_at', { ascending: false })
+    .select('synced_at')
+    .order('synced_at', { ascending: false })
     .limit(1)
     .maybeSingle()
 
@@ -64,7 +64,7 @@ export async function fetchLastSyncedAt(): Promise<string | null> {
     console.warn('[fetchLastSyncedAt] 조회 실패:', error.message)
     return null
   }
-  return (data?.updated_at as string | null) ?? null
+  return (data?.synced_at as string | null) ?? null
 }
 
 /** 최신 환율 조회 (브라우저 클라이언트용 — anon key, RLS 통과). */

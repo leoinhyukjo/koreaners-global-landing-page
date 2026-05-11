@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-      range: `'${tabName}'!A:AL`,
+      range: `'${tabName}'!A:AZ`,
       valueRenderOption: 'FORMATTED_VALUE',
     })
 
@@ -140,6 +140,11 @@ export async function POST(request: NextRequest) {
     }
 
     // 6. Upsert (신규 + 기존 덮어쓰기). 배치 실패 시 한 배치만 영향.
+    // synced_at 명시 주입 → 컬럼값 변동이 없어도 매 sync 마다 갱신되어 "마지막 동기화" 표시가 움직임.
+    const syncedAt = new Date().toISOString()
+    for (const rec of deduped) {
+      rec.synced_at = syncedAt
+    }
     const BATCH_SIZE = 50
     for (let i = 0; i < deduped.length; i += BATCH_SIZE) {
       const batch = deduped.slice(i, i + BATCH_SIZE)
