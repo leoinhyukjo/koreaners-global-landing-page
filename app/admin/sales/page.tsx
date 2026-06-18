@@ -70,7 +70,16 @@ function BudgetCell({ r }: { r: SalesLead }) {
 function SectionTable({ rows }: { rows: SalesLead[] }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-neutral-800">
-      <table className="w-full min-w-[760px] text-sm">
+      <table className="w-full min-w-[820px] table-fixed text-sm">
+        <colgroup>
+          <col className="w-[124px]" />
+          <col className="w-[92px]" />
+          <col className="w-[48px]" />
+          <col className="w-[48px]" />
+          <col className="w-[96px]" />
+          <col className="w-[140px]" />
+          <col />
+        </colgroup>
         <thead>
           <tr className="border-b border-neutral-800 text-left text-[11px] text-neutral-500">
             <th className="px-3 py-2 font-medium">클라이언트</th>
@@ -99,7 +108,7 @@ function SectionTable({ rows }: { rows: SalesLead[] }) {
                 <td className="whitespace-nowrap px-3 py-2 text-[11px] text-neutral-500">{r.last_action || '—'}</td>
                 <td className="px-3 py-2"><BudgetCell r={r} /></td>
                 <td className="px-3 py-2 text-[11px]"><PaymentCell r={r} /></td>
-                <td className="px-3 py-2 text-[12px] text-neutral-400">{r.bigo}</td>
+                <td className="px-3 py-2 text-[12px] leading-relaxed text-neutral-400 break-words">{r.bigo}</td>
               </tr>
             )
           })}
