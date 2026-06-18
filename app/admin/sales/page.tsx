@@ -92,15 +92,11 @@ function SectionTable({ rows }: { rows: SalesLead[] }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, i) => {
-            const divider = i > 0 && rows[i - 1].funnel !== r.funnel
+          {rows.map((r) => {
             return (
               <tr
                 key={`${r.section}-${r.name}`}
-                className={[
-                  'align-top text-neutral-300 odd:bg-neutral-900/30',
-                  divider ? 'border-t border-neutral-800' : '',
-                ].join(' ')}
+                className="align-top text-neutral-300 odd:bg-neutral-900/30 border-b border-neutral-800/40"
               >
                 <td className="px-3 py-2 font-semibold text-neutral-100 break-keep">{r.name}</td>
                 <td className="px-3 py-2 text-xs text-neutral-500 break-keep">{r.funnel}</td>
