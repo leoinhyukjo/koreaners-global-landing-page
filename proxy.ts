@@ -45,15 +45,20 @@ export async function proxy(request: NextRequest) {
   }
 
   // 역할 판정: 서버 전용 app_metadata.role 만 신뢰 (user_metadata 는 사용자가 직접 수정
-  // 가능 → 스푸핑 위험). role 없으면 admin(전체 접근, 기존 계정 보존).
+  // 가능 → 스푸핑 위험).
+  // fail-safe 화이트리스트: role 미설정(null/undefined) 이거나 정확히 'admin' 인 경우만
+  // 전체 어드민 접근 허용 (기존 무설정 계정 보존). 그 외 비어있지 않은 모든 role
+  // (exec / 'executive' 오타 / 'viewer' 등 신규 티어 포함) 은 세일즈 전용으로 제한.
+  // 화이트리스트 외 명칭이 마진·AR 등 전체 접근으로 새지 않도록 안전하게 떨어뜨린다.
   const role = (user?.app_metadata as Record<string, unknown> | undefined)?.role as string | undefined
-  const isExec = role === 'exec'
+  const isFullAdmin = !role || role === 'admin'
 
   // 로그인 페이지 접근 시
   if (pathname === '/admin/login') {
-    // 이미 로그인되어 있으면 대시보드로 리다이렉트 (exec 는 세일즈 보드로)
+    // 이미 로그인되어 있으면 대시보드로 리다이렉트
+    // (전체 어드민 → /admin, 제한 대상 → 세일즈 보드)
     if (user) {
-      return NextResponse.redirect(new URL(isExec ? '/admin/sales' : '/admin', request.url))
+      return NextResponse.redirect(new URL(isFullAdmin ? '/admin' : '/admin/sales', request.url))
     }
     // 세션이 없으면 로그인 페이지 접근 허용
     return response
@@ -65,8 +70,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 
-  // 역할 게이트: exec 계정은 /admin/sales 만 접근 (마진·AR 등 /admin/projects 차단)
-  if (isExec && !pathname.startsWith('/admin/sales')) {
+  // 역할 게이트: 전체 어드민이 아닌 제한 대상은 /admin/sales 만 접근
+  // (마진·AR 등 /admin/projects 차단). fail-safe — 미설정/admin 만 통과.
+  if (!isFullAdmin && !pathname.startsWith('/admin/sales')) {
     return NextResponse.redirect(new URL('/admin/sales', request.url))
   }
 
