@@ -68,6 +68,21 @@ export function fmtKrw(n: number | null | undefined): string {
   return Math.round(n / 10_000).toLocaleString('ko-KR') + '만'
 }
 
+/** 예산 표기 문자열 → 정렬용 근사 KRW (범위 중간값, 억/천만/만 단위). 파싱 불가 0. */
+export function budgetKrw(s: string | null | undefined): number {
+  if (!s) return 0
+  const t = s.replace(/\([^)]*\)/g, '')
+  const unit: Record<string, number> = { 억: 1e8, 천만: 1e7, 만: 1e4 }
+  const vals: number[] = []
+  const re = /(\d[\d,]*(?:\.\d+)?)\s*(억|천만|만)/g
+  let m: RegExpExecArray | null
+  while ((m = re.exec(t))) vals.push(parseFloat(m[1].replace(/,/g, '')) * unit[m[2]])
+  if (!vals.length) return 0
+  if (t.includes('~') && vals.length >= 2) return (vals[0] + vals[1]) / 2
+  if (t.includes('+')) return vals.reduce((a, b) => a + b, 0)
+  return vals[0]
+}
+
 /** 'YYYY-MM' → 'M월'. */
 export function monthKr(ym: string | null | undefined): string {
   if (!ym || !ym.includes('-')) return ''

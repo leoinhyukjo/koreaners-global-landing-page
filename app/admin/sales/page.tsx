@@ -9,6 +9,7 @@ import {
   fmtKrw,
   monthKr,
   daysSince,
+  budgetKrw,
   SECTION_ORDER,
   type SalesLead,
 } from '@/lib/dashboard/sales'
@@ -28,6 +29,51 @@ const SECTION_LABEL: Record<string, string> = {
   협상중: '협상 중',
   '운영 중': '운영 중',
   스톨: '스톨 (정체)',
+}
+
+// --- 정렬 ---
+type SortKey = 'name' | 'funnel' | 'first' | 'last' | 'budget' | 'pay'
+type SortState = { key: SortKey; dir: 'asc' | 'desc' } | null
+
+function mdNum(md: string): number {
+  // 'M/D' → M*100+D (정렬용). 빈값은 맨 뒤로 가도록 큰 값.
+  const m = /^(\d{1,2})\/(\d{1,2})/.exec(md || '')
+  return m ? parseInt(m[1], 10) * 100 + parseInt(m[2], 10) : -1
+}
+
+const SORT_GET: Record<SortKey, (r: SalesLead) => number | string> = {
+  name: (r) => r.name,
+  funnel: (r) => r.funnel,
+  first: (r) => mdNum(r.first_contact),
+  last: (r) => r.last_action_date ?? '',
+  budget: (r) => budgetKrw(r.budget_amount),
+  pay: (r) => (r.undetermined ? -1 : (r.seon_krw ?? 0) + (r.jan_krw ?? 0)),
+}
+
+// 헤더 7칼럼(colgroup 순서와 일치). 비고는 정렬 불가.
+const COLUMNS: { label: string; key?: SortKey }[] = [
+  { label: '클라이언트', key: 'name' },
+  { label: '퍼널', key: 'funnel' },
+  { label: '최초', key: 'first' },
+  { label: '최근', key: 'last' },
+  { label: '예산', key: 'budget' },
+  { label: '예상 입금', key: 'pay' },
+  { label: '비고/현황' },
+]
+
+function sortRows(rows: SalesLead[], sort: SortState): SalesLead[] {
+  if (!sort) return rows // 정렬 미지정 시 원본(퍼널 그룹) 순서 유지
+  const get = SORT_GET[sort.key]
+  const mul = sort.dir === 'asc' ? 1 : -1
+  return [...rows].sort((a, b) => {
+    const va = get(a)
+    const vb = get(b)
+    const r =
+      typeof va === 'number' && typeof vb === 'number'
+        ? va - vb
+        : String(va).localeCompare(String(vb), 'ko')
+    return r * mul
+  })
 }
 
 function PaymentCell({ r }: { r: SalesLead }) {
@@ -67,32 +113,52 @@ function BudgetCell({ r }: { r: SalesLead }) {
   )
 }
 
-function SectionTable({ rows }: { rows: SalesLead[] }) {
+function SectionTable({
+  rows,
+  sort,
+  onSort,
+}: {
+  rows: SalesLead[]
+  sort: SortState
+  onSort: (key: SortKey) => void
+}) {
+  const sorted = sortRows(rows, sort)
   return (
     <div className="overflow-x-auto rounded-lg border border-neutral-800">
-      <table className="w-full min-w-[820px] table-fixed text-sm">
+      <table className="w-full min-w-[840px] table-fixed text-sm">
         <colgroup>
           <col className="w-[124px]" />
           <col className="w-[92px]" />
-          <col className="w-[48px]" />
-          <col className="w-[48px]" />
+          <col className="w-[56px]" />
+          <col className="w-[56px]" />
           <col className="w-[96px]" />
           <col className="w-[140px]" />
           <col />
         </colgroup>
         <thead>
           <tr className="border-b border-neutral-800 text-left text-[11px] text-neutral-500">
-            <th className="px-3 py-2 font-medium">클라이언트</th>
-            <th className="px-3 py-2 font-medium">퍼널</th>
-            <th className="px-3 py-2 font-medium">최초</th>
-            <th className="px-3 py-2 font-medium">최근</th>
-            <th className="px-3 py-2 font-medium">예산</th>
-            <th className="px-3 py-2 font-medium">예상 입금</th>
-            <th className="px-3 py-2 font-medium">비고/현황</th>
+            {COLUMNS.map((c) => (
+              <th key={c.label} className="px-3 py-2 font-medium">
+                {c.key ? (
+                  <button
+                    type="button"
+                    onClick={() => onSort(c.key as SortKey)}
+                    className="inline-flex items-center gap-0.5 transition-colors hover:text-neutral-200"
+                  >
+                    {c.label}
+                    <span className="w-2 text-[9px] text-orange-400">
+                      {sort?.key === c.key ? (sort.dir === 'asc' ? '▲' : '▼') : ''}
+                    </span>
+                  </button>
+                ) : (
+                  c.label
+                )}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => {
+          {sorted.map((r) => {
             return (
               <tr
                 key={`${r.section}-${r.name}`}
@@ -118,6 +184,9 @@ export default function SalesPage() {
   const [rows, setRows] = useState<SalesLead[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<DateFilter>(DEFAULT_DATE_FILTER)
+  const [sort, setSort] = useState<SortState>(null)
+  const toggleSort = (key: SortKey) =>
+    setSort((s) => (s?.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'asc' }))
 
   useEffect(() => {
     fetchSalesLeads().then((r) => {
@@ -199,7 +268,7 @@ export default function SalesPage() {
                 {secRows.length}
               </span>
             </h2>
-            <SectionTable rows={secRows} />
+            <SectionTable rows={secRows} sort={sort} onSort={toggleSort} />
           </section>
         )
       })}
