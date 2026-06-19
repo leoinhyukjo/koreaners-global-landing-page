@@ -13,6 +13,28 @@ const HEADER_FIELD_MAP: Record<string, FieldDef> = headerMap as Record<string, F
 const REQUIRED_HEADERS = ['유니크코드', '브랜드명']
 
 /**
+ * 헤더 셀 → FieldDef 조회. exact 일치 우선, 실패 시 관용 매칭.
+ * 사람이 헤더 셀에 안내문을 붙이는 경우(예: `유니크코드 ... "직접입력"`)가 잦아
+ * exact-match 만으로는 동기화가 반복적으로 깨졌다(2026-06-19 유니크코드 사고).
+ * 관용 규칙: 알려진 헤더명으로 시작하고 그 다음 문자가 글자/숫자가 아닌 경계
+ * (공백·구두점·줄바꿈·끝)면 그 헤더로 인정. 가장 긴 키 우선(짧은 키 오탐 방지).
+ */
+function lookupHeaderDef(header: string): FieldDef | undefined {
+  const exact = HEADER_FIELD_MAP[header]
+  if (exact) return exact
+  let best: { len: number; def: FieldDef } | undefined
+  for (const key of Object.keys(HEADER_FIELD_MAP)) {
+    if (!header.startsWith(key)) continue
+    const next = header.charAt(key.length)
+    const boundary = next === '' || !/[\p{L}\p{N}]/u.test(next)
+    if (boundary && (!best || key.length > best.len)) {
+      best = { len: key.length, def: HEADER_FIELD_MAP[key] }
+    }
+  }
+  return best?.def
+}
+
+/**
  * 헤더 행에서 { supabaseField → columnIndex } 맵을 빌드한다.
  * 필수 컬럼이 누락되면 에러를 throw한다.
  */
@@ -22,8 +44,8 @@ export function buildIndexMap(headerRow: string[]): Map<string, { index: number;
   for (let i = 0; i < headerRow.length; i++) {
     const header = headerRow[i]?.trim()
     if (!header) continue
-    const def = HEADER_FIELD_MAP[header]
-    if (def) {
+    const def = lookupHeaderDef(header)
+    if (def && !map.has(def.field)) {
       map.set(def.field, { index: i, type: def.type })
     }
   }
