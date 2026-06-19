@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import {
   fetchSalesLeads,
   buildMonthly,
@@ -125,36 +125,49 @@ function SectionTable({
   const sorted = sortRows(rows, sort)
   return (
     <div className="overflow-x-auto rounded-lg border border-neutral-800">
-      <table className="w-full min-w-[840px] table-fixed text-sm">
+      <table className="w-full min-w-[864px] table-fixed text-sm">
         <colgroup>
           <col className="w-[124px]" />
           <col className="w-[92px]" />
-          <col className="w-[56px]" />
-          <col className="w-[56px]" />
+          <col className="w-[64px]" />
+          <col className="w-[64px]" />
           <col className="w-[96px]" />
           <col className="w-[140px]" />
           <col />
         </colgroup>
         <thead>
           <tr className="border-b border-neutral-800 text-left text-[11px] text-neutral-500">
-            {COLUMNS.map((c) => (
-              <th key={c.label} className="px-3 py-2 font-medium">
-                {c.key ? (
-                  <button
-                    type="button"
-                    onClick={() => onSort(c.key as SortKey)}
-                    className="inline-flex items-center gap-0.5 transition-colors hover:text-neutral-200"
-                  >
-                    {c.label}
-                    <span className="w-2 text-[9px] text-orange-400">
-                      {sort?.key === c.key ? (sort.dir === 'asc' ? '▲' : '▼') : ''}
-                    </span>
-                  </button>
-                ) : (
-                  c.label
-                )}
-              </th>
-            ))}
+            {COLUMNS.map((c) => {
+              const active = sort?.key === c.key
+              return (
+                <th key={c.label} className="px-3 py-2 font-medium">
+                  {c.key ? (
+                    <button
+                      type="button"
+                      onClick={() => onSort(c.key as SortKey)}
+                      title="클릭하여 정렬"
+                      className={[
+                        'inline-flex items-center gap-0.5 transition-colors hover:text-neutral-200',
+                        active ? 'text-orange-400' : '',
+                      ].join(' ')}
+                    >
+                      {c.label}
+                      {active ? (
+                        sort!.dir === 'asc' ? (
+                          <ChevronUp className="h-3 w-3 shrink-0" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3 shrink-0" />
+                        )
+                      ) : (
+                        <ChevronsUpDown className="h-3 w-3 shrink-0 text-neutral-600" />
+                      )}
+                    </button>
+                  ) : (
+                    c.label
+                  )}
+                </th>
+              )
+            })}
           </tr>
         </thead>
         <tbody>
