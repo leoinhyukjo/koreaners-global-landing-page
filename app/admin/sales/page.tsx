@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { ArrowLeft, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import {
   fetchSalesLeads,
+  fetchSnapshots,
+  snapshotPoints,
   buildMonthly,
   fmtKrw,
   monthKr,
@@ -12,9 +14,14 @@ import {
   budgetKrw,
   SECTION_ORDER,
   type SalesLead,
+  type SalesSnapshot,
 } from '@/lib/dashboard/sales'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
-import { MonthlyBarChart } from '@/components/admin/dashboard/charts'
+import {
+  MonthlyBarChart,
+  SalesPipelineTrendChart,
+  SalesForecastTrendChart,
+} from '@/components/admin/dashboard/charts'
 import {
   DateFilterBar,
   DEFAULT_DATE_FILTER,
@@ -195,6 +202,7 @@ function SectionTable({
 
 export default function SalesPage() {
   const [rows, setRows] = useState<SalesLead[]>([])
+  const [snaps, setSnaps] = useState<SalesSnapshot[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<DateFilter>(DEFAULT_DATE_FILTER)
   const [sort, setSort] = useState<SortState>(null)
@@ -206,7 +214,10 @@ export default function SalesPage() {
       setRows(r)
       setLoading(false)
     })
+    fetchSnapshots().then(setSnaps)
   }, [])
+
+  const trend = useMemo(() => snapshotPoints(snaps), [snaps])
 
   const range = useMemo(() => computeDateRange(filter), [filter])
   const filtered = useMemo(
@@ -269,6 +280,31 @@ export default function SalesPage() {
         <KpiCard title="예상 입금 합" value={`₩${fmtKrw(monthly.grand.total)}`} subtitle={`전망 ${monthly.forecastN}건`} />
         <KpiCard title="정체 위험" value={atRisk} subtitle="협상·스톨 14일+ 무대응" />
       </div>
+
+      <section className="space-y-2">
+        <h2 className="flex items-center gap-2 border-b border-neutral-800 pb-1.5 text-base font-semibold text-neutral-100">
+          추세
+          <span className="text-[11px] font-normal text-neutral-500">
+            {trend.length > 0 ? `최근 ${trend.length}개 스냅샷` : '매일 1포인트씩 누적'}
+          </span>
+        </h2>
+        {trend.length === 0 ? (
+          <p className="text-xs text-neutral-500">
+            추세 데이터가 아직 없습니다. 오늘부터 매일 1포인트씩 쌓여 변화를 보여줍니다.
+          </p>
+        ) : (
+          <div className="grid gap-3 lg:grid-cols-2">
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
+              <p className="mb-1 px-1 text-xs font-medium text-neutral-400">파이프라인 건수</p>
+              <SalesPipelineTrendChart data={trend} />
+            </div>
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
+              <p className="mb-1 px-1 text-xs font-medium text-neutral-400">예상 입금 합</p>
+              <SalesForecastTrendChart data={trend} />
+            </div>
+          </div>
+        )}
+      </section>
 
       {SECTION_ORDER.map((sec) => {
         const secRows = filtered.filter((r) => r.section === sec)
