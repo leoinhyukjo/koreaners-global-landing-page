@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { ArrowLeft, ChevronUp, ChevronDown, ChevronsUpDown, AlertTriangle } from 'lucide-react'
 import {
   fetchSalesLeads,
   fetchMonthlyFlow,
@@ -265,7 +265,18 @@ export default function SalesPage() {
       ).length,
     [filtered],
   )
-  const generatedAt = rows.find((r) => r.generated_at)?.generated_at?.replace('T', ' ').slice(0, 16)
+  const genRaw = rows.find((r) => r.generated_at)?.generated_at
+  const generatedAt = genRaw?.replace('T', ' ').slice(0, 16)
+  // 데이터 신선도: 일일 갱신(매일 10시)이 멈추면 묵은 데이터가 조용히 노출됨(TCC 사고 클래스).
+  // 36시간 = 최소 하루치 갱신 누락 → 경고. genRaw 는 KST 'YYYY-MM-DDTHH:MM'(브라우저=KST 가정).
+  const staleHours = useMemo(() => {
+    if (!genRaw) return null
+    const t = new Date(genRaw).getTime()
+    return Number.isNaN(t) ? null : (Date.now() - t) / 3_600_000
+  }, [genRaw])
+  const stale = staleHours != null && staleHours >= 36
+  const staleLabel =
+    staleHours == null ? '' : staleHours >= 48 ? `${Math.floor(staleHours / 24)}일` : `${Math.floor(staleHours)}시간`
 
   if (loading) {
     return (
@@ -291,7 +302,15 @@ export default function SalesPage() {
           </Link>
           <h1 className="text-lg font-semibold text-neutral-50">세일즈 현황</h1>
         </div>
-        {generatedAt && <span className="text-[11px] text-neutral-600 tabular-nums">{generatedAt} 기준</span>}
+        {generatedAt &&
+          (stale ? (
+            <span className="inline-flex items-center gap-1 rounded-md bg-red-500/15 px-2 py-1 text-[11px] font-medium text-red-400 tabular-nums">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              {staleLabel} 전 데이터 · 자동 갱신 점검 필요
+            </span>
+          ) : (
+            <span className="text-[11px] text-neutral-600 tabular-nums">{generatedAt} 기준</span>
+          ))}
       </div>
 
       <DateFilterBar value={filter} onChange={setFilter} totalCount={rows.length} filteredCount={filtered.length} />
