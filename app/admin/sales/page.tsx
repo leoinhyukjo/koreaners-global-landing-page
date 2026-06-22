@@ -277,7 +277,7 @@ export default function SalesPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <KpiCard title="협상 중" value={counts['협상중'] ?? 0} subtitle="진행 영업 건" />
         <KpiCard title="운영 중" value={counts['운영 중'] ?? 0} subtitle="계약 후 운영" />
-        <KpiCard title="예상 입금 합" value={`₩${fmtKrw(monthly.grand.total)}`} subtitle={`전망 ${monthly.forecastN}건`} />
+        <KpiCard title="예상 입금 합" value={`₩${fmtKrw(monthly.grand.total)}`} subtitle={`전체 기간 누적 · 전망 ${monthly.forecastN}건`} />
         <KpiCard title="정체 위험" value={atRisk} subtitle="협상·스톨 14일+ 무대응" />
       </div>
 
@@ -299,7 +299,9 @@ export default function SalesPage() {
               <SalesPipelineTrendChart data={trend} />
             </div>
             <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
-              <p className="mb-1 px-1 text-xs font-medium text-neutral-400">예상 입금 합</p>
+              <p className="mb-1 px-1 text-xs font-medium text-neutral-400">
+                예상 입금 합 (전체 기간 누적)
+              </p>
               <SalesForecastTrendChart data={trend} />
             </div>
           </div>
