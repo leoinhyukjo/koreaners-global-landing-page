@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { ArrowLeft, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import {
   fetchSalesLeads,
-  fetchSnapshots,
-  snapshotPoints,
+  fetchMonthlyFlow,
+  flowLabel,
   buildMonthly,
   fmtKrw,
   monthKr,
@@ -14,14 +14,10 @@ import {
   budgetKrw,
   SECTION_ORDER,
   type SalesLead,
-  type SalesSnapshot,
+  type MonthlyFlow,
 } from '@/lib/dashboard/sales'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
-import {
-  MonthlyBarChart,
-  SalesPipelineTrendChart,
-  SalesForecastTrendChart,
-} from '@/components/admin/dashboard/charts'
+import { MonthlyBarChart, MonthlyFlowChart } from '@/components/admin/dashboard/charts'
 import {
   DateFilterBar,
   DEFAULT_DATE_FILTER,
@@ -202,7 +198,7 @@ function SectionTable({
 
 export default function SalesPage() {
   const [rows, setRows] = useState<SalesLead[]>([])
-  const [snaps, setSnaps] = useState<SalesSnapshot[]>([])
+  const [flow, setFlow] = useState<MonthlyFlow[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<DateFilter>(DEFAULT_DATE_FILTER)
   const [sort, setSort] = useState<SortState>(null)
@@ -214,10 +210,14 @@ export default function SalesPage() {
       setRows(r)
       setLoading(false)
     })
-    fetchSnapshots().then(setSnaps)
+    fetchMonthlyFlow().then(setFlow)
   }, [])
 
-  const trend = useMemo(() => snapshotPoints(snaps), [snaps])
+  // 최근 8개월만 표시 (이벤트 기반 — 일별 잡음 없음)
+  const flowPoints = useMemo(
+    () => flow.slice(-8).map((f) => ({ label: flowLabel(f.month), intake: f.intake, contracted: f.contracted })),
+    [flow],
+  )
 
   const range = useMemo(() => computeDateRange(filter), [filter])
   const filtered = useMemo(
@@ -283,27 +283,18 @@ export default function SalesPage() {
 
       <section className="space-y-2">
         <h2 className="flex items-center gap-2 border-b border-neutral-800 pb-1.5 text-base font-semibold text-neutral-100">
-          추세
-          <span className="text-[11px] font-normal text-neutral-500">
-            {trend.length > 0 ? `최근 ${trend.length}개 스냅샷` : '매일 1포인트씩 누적'}
-          </span>
+          월별 흐름
+          <span className="text-[11px] font-normal text-neutral-500">신규 인입 vs 체결</span>
         </h2>
-        {trend.length === 0 ? (
-          <p className="text-xs text-neutral-500">
-            추세 데이터가 아직 없습니다. 오늘부터 매일 1포인트씩 쌓여 변화를 보여줍니다.
-          </p>
+        {flowPoints.length === 0 ? (
+          <p className="text-xs text-neutral-500">흐름 데이터가 없습니다.</p>
         ) : (
-          <div className="grid gap-3 lg:grid-cols-2">
-            <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
-              <p className="mb-1 px-1 text-xs font-medium text-neutral-400">파이프라인 건수</p>
-              <SalesPipelineTrendChart data={trend} />
-            </div>
-            <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
-              <p className="mb-1 px-1 text-xs font-medium text-neutral-400">
-                예상 입금 합 (전체 기간 누적)
-              </p>
-              <SalesForecastTrendChart data={trend} />
-            </div>
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
+            <MonthlyFlowChart data={flowPoints} />
+            <p className="mt-1 px-1 text-[11px] leading-relaxed text-neutral-500">
+              신규 인입 = 그 달 들어온 리드(intake_date), 체결 = 그 달 계약 성사(contracted_date,
+              현재도 체결·운영·완료인 건만 = 역행 제외). 영업 흐름을 월 단위 이벤트로 집계 — 일별 잡음 없음.
+            </p>
           </div>
         )}
       </section>

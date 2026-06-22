@@ -61,65 +61,35 @@ export async function fetchSalesLeads(): Promise<SalesLead[]> {
   })) as SalesLead[]
 }
 
-// 추세(시간축) 스냅샷 — sales_snapshots, 하루 1행 적재.
-export interface SalesSnapshot {
-  snapshot_date: string // ISO date
-  negotiating: number
+// 월별 흐름(추세) — sales_monthly_flow. 재고(stock) 스냅샷 대신 이벤트 기반이라
+// 일별 잡음·체결 역행 노이즈 없음. intake=신규 인입, contracted=순(net) 체결.
+export interface MonthlyFlow {
+  month: string // 'YYYY-MM'
+  intake: number
   contracted: number
-  operating: number
-  stall: number
-  at_risk: number
-  forecast_total: number
-  forecast_n: number
 }
 
-/** sales_snapshots 전체 조회 (날짜 오름차순, anon client + 로그인 세션). */
-export async function fetchSnapshots(): Promise<SalesSnapshot[]> {
+/** sales_monthly_flow 조회 (월 오름차순). 차트는 최근 N개월만 표시. */
+export async function fetchMonthlyFlow(): Promise<MonthlyFlow[]> {
   const { data, error } = await supabase
-    .from('sales_snapshots')
+    .from('sales_monthly_flow')
     .select('*')
-    .order('snapshot_date', { ascending: true })
+    .order('month', { ascending: true })
   if (error) {
-    console.error('[fetchSnapshots] 조회 실패:', error.message)
+    console.error('[fetchMonthlyFlow] 조회 실패:', error.message)
     return []
   }
   return (data ?? []).map((r) => ({
-    snapshot_date: r.snapshot_date ?? '',
-    negotiating: Number(r.negotiating ?? 0),
+    month: r.month ?? '',
+    intake: Number(r.intake ?? 0),
     contracted: Number(r.contracted ?? 0),
-    operating: Number(r.operating ?? 0),
-    stall: Number(r.stall ?? 0),
-    at_risk: Number(r.at_risk ?? 0),
-    forecast_total: r.forecast_total == null ? 0 : Number(r.forecast_total),
-    forecast_n: Number(r.forecast_n ?? 0),
   }))
 }
 
-export interface TrendPoint {
-  date: string // 'M/D'
-  negotiating: number
-  contracted: number
-  operating: number
-  stall: number
-  at_risk: number
-  forecast_total: number
-}
-
-/** 스냅샷 → 차트용 포인트 (날짜 'M/D' 라벨). */
-export function snapshotPoints(snaps: SalesSnapshot[]): TrendPoint[] {
-  return snaps.map((s) => {
-    const parts = s.snapshot_date.split('-')
-    const label = parts.length === 3 ? `${parseInt(parts[1], 10)}/${parseInt(parts[2], 10)}` : s.snapshot_date
-    return {
-      date: label,
-      negotiating: s.negotiating,
-      contracted: s.contracted,
-      operating: s.operating,
-      stall: s.stall,
-      at_risk: s.at_risk,
-      forecast_total: s.forecast_total,
-    }
-  })
+/** 'YYYY-MM' → 'M월' 라벨. */
+export function flowLabel(month: string): string {
+  const p = month.split('-')
+  return p.length === 2 ? `${parseInt(p[1], 10)}월` : month
 }
 
 /** KRW 정수 → 보드 표기 (Python fmt_krw 와 동일 규칙). */

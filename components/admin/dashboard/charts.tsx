@@ -164,58 +164,30 @@ export function TrendLineChart({ data }: TrendLineChartProps) {
 }
 
 // ────────────────────────────────────────────────────────────
-// SalesPipelineTrendChart — 파이프라인 건수 추세 (협상중/운영중/스톨/정체위험)
+// MonthlyFlowChart — 월별 흐름: 신규 인입 vs 체결 (이벤트 기반, 재고 아님)
+// 재고 스냅샷 추세를 대체. 일별 잡음·체결 역행 노이즈 없음.
 // ────────────────────────────────────────────────────────────
-interface SalesTrendPoint {
-  date: string
-  negotiating: number
+interface MonthlyFlowPoint {
+  label: string // 'M월'
+  intake: number
   contracted: number
-  operating: number
-  stall: number
-  at_risk: number
-  forecast_total: number
 }
 
-export function SalesPipelineTrendChart({ data }: { data: SalesTrendPoint[] }) {
-  // 포인트가 적으면(누적 초기) 점을 보여 단일 포인트도 보이게, 많으면 라인만.
-  const dot = data.length <= 31 ? { r: 3 } : false
+export function MonthlyFlowChart({ data }: { data: MonthlyFlowPoint[] }) {
   return (
-    <ResponsiveContainer width="100%" height={280}>
-      <LineChart data={data} margin={{ left: 0, right: 16, top: 8, bottom: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
-        <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#888' }} />
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={data} margin={{ left: 0, right: 16, top: 16, bottom: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+        <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#888' }} />
         <YAxis allowDecimals={false} width={28} tick={{ fontSize: 11, fill: '#888' }} />
-        <Tooltip {...TOOLTIP_STYLE} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Line type="monotone" dataKey="negotiating" name="협상중" stroke="#fbbf24" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
-        <Line type="monotone" dataKey="contracted" name="체결" stroke="#34d399" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
-        <Line type="monotone" dataKey="operating" name="운영중" stroke="#60a5fa" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
-        <Line type="monotone" dataKey="stall" name="스톨" stroke="#9ca3af" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
-        <Line type="monotone" dataKey="at_risk" name="정체위험" stroke="#f87171" strokeWidth={2} strokeDasharray="4 2" dot={dot} activeDot={{ r: 5 }} />
-      </LineChart>
-    </ResponsiveContainer>
-  )
-}
-
-// ────────────────────────────────────────────────────────────
-// SalesForecastTrendChart — 예상 입금 합 추세 (KRW)
-// ────────────────────────────────────────────────────────────
-const krwAxis = (v: number) =>
-  v >= 1e8 ? `${(v / 1e8).toFixed(1)}억` : `${Math.round(v / 1e4).toLocaleString('ko-KR')}만`
-
-export function SalesForecastTrendChart({ data }: { data: SalesTrendPoint[] }) {
-  return (
-    <ResponsiveContainer width="100%" height={240}>
-      <LineChart data={data} margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
-        <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#888' }} />
-        <YAxis width={52} tickFormatter={krwAxis} tick={{ fontSize: 11, fill: '#888' }} />
         <Tooltip
           {...TOOLTIP_STYLE}
-          formatter={(value: number) => [`₩${value.toLocaleString('ko-KR')}`, '예상 입금 합']}
+          formatter={(value: number, name: string) => [`${value}건`, name === 'intake' ? '신규 인입' : '체결']}
         />
-        <Line type="monotone" dataKey="forecast_total" name="예상 입금 합" stroke="#FF4500" strokeWidth={2} dot={data.length <= 31 ? { r: 3 } : false} activeDot={{ r: 6 }} />
-      </LineChart>
+        <Legend wrapperStyle={{ fontSize: 12 }} formatter={(v: string) => (v === 'intake' ? '신규 인입' : '체결')} />
+        <Bar dataKey="intake" fill="#fbbf24" radius={[3, 3, 0, 0]} />
+        <Bar dataKey="contracted" fill="#34d399" radius={[3, 3, 0, 0]} />
+      </BarChart>
     </ResponsiveContainer>
   )
 }
