@@ -65,6 +65,7 @@ export async function fetchSalesLeads(): Promise<SalesLead[]> {
 export interface SalesSnapshot {
   snapshot_date: string // ISO date
   negotiating: number
+  contracted: number
   operating: number
   stall: number
   at_risk: number
@@ -85,6 +86,7 @@ export async function fetchSnapshots(): Promise<SalesSnapshot[]> {
   return (data ?? []).map((r) => ({
     snapshot_date: r.snapshot_date ?? '',
     negotiating: Number(r.negotiating ?? 0),
+    contracted: Number(r.contracted ?? 0),
     operating: Number(r.operating ?? 0),
     stall: Number(r.stall ?? 0),
     at_risk: Number(r.at_risk ?? 0),
@@ -96,6 +98,7 @@ export async function fetchSnapshots(): Promise<SalesSnapshot[]> {
 export interface TrendPoint {
   date: string // 'M/D'
   negotiating: number
+  contracted: number
   operating: number
   stall: number
   at_risk: number
@@ -110,6 +113,7 @@ export function snapshotPoints(snaps: SalesSnapshot[]): TrendPoint[] {
     return {
       date: label,
       negotiating: s.negotiating,
+      contracted: s.contracted,
       operating: s.operating,
       stall: s.stall,
       at_risk: s.at_risk,

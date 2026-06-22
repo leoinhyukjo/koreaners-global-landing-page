@@ -169,6 +169,7 @@ export function TrendLineChart({ data }: TrendLineChartProps) {
 interface SalesTrendPoint {
   date: string
   negotiating: number
+  contracted: number
   operating: number
   stall: number
   at_risk: number
@@ -187,7 +188,8 @@ export function SalesPipelineTrendChart({ data }: { data: SalesTrendPoint[] }) {
         <Tooltip {...TOOLTIP_STYLE} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
         <Line type="monotone" dataKey="negotiating" name="협상중" stroke="#fbbf24" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
-        <Line type="monotone" dataKey="operating" name="운영중" stroke="#34d399" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
+        <Line type="monotone" dataKey="contracted" name="체결" stroke="#34d399" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
+        <Line type="monotone" dataKey="operating" name="운영중" stroke="#60a5fa" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
         <Line type="monotone" dataKey="stall" name="스톨" stroke="#9ca3af" strokeWidth={2} dot={dot} activeDot={{ r: 5 }} />
         <Line type="monotone" dataKey="at_risk" name="정체위험" stroke="#f87171" strokeWidth={2} strokeDasharray="4 2" dot={dot} activeDot={{ r: 5 }} />
       </LineChart>
