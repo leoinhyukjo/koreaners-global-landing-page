@@ -171,22 +171,54 @@ interface MonthlyFlowPoint {
   label: string // 'M월'
   intake: number
   contracted: number
+  incomplete?: boolean // 데이터 미완 월(흐리게 표시)
 }
 
 export function MonthlyFlowChart({ data }: { data: MonthlyFlowPoint[] }) {
+  // 미완 월은 저투명도로 흐리게(블러 대용) + 라벨 흐림.
+  const op = (d: MonthlyFlowPoint) => (d.incomplete ? 0.25 : 1)
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data} margin={{ left: 0, right: 16, top: 16, bottom: 8 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#888' }} />
+        <XAxis
+          dataKey="label"
+          height={38}
+          tick={({ x, y, payload, index }: { x: number; y: number; payload: { value: string }; index: number }) => {
+            const inc = data[index]?.incomplete
+            return (
+              <g>
+                <text x={x} y={y + 12} textAnchor="middle" fontSize={12} fill={inc ? '#555' : '#888'}>
+                  {payload.value}
+                </text>
+                {inc && (
+                  <text x={x} y={y + 25} textAnchor="middle" fontSize={9} fill="#555">
+                    미완
+                  </text>
+                )}
+              </g>
+            )
+          }}
+        />
         <YAxis allowDecimals={false} width={28} tick={{ fontSize: 11, fill: '#888' }} />
         <Tooltip
           {...TOOLTIP_STYLE}
           formatter={(value: number, name: string) => [`${value}건`, name === 'intake' ? '신규 인입' : '체결']}
+          labelFormatter={(label: string, p) =>
+            p?.[0]?.payload?.incomplete ? `${label} (데이터 미완)` : label
+          }
         />
         <Legend wrapperStyle={{ fontSize: 12 }} formatter={(v: string) => (v === 'intake' ? '신규 인입' : '체결')} />
-        <Bar dataKey="intake" fill="#fbbf24" radius={[3, 3, 0, 0]} />
-        <Bar dataKey="contracted" fill="#34d399" radius={[3, 3, 0, 0]} />
+        <Bar dataKey="intake" radius={[3, 3, 0, 0]} isAnimationActive={false}>
+          {data.map((d, i) => (
+            <Cell key={i} fill="#fbbf24" fillOpacity={op(d)} />
+          ))}
+        </Bar>
+        <Bar dataKey="contracted" radius={[3, 3, 0, 0]} isAnimationActive={false}>
+          {data.map((d, i) => (
+            <Cell key={i} fill="#34d399" fillOpacity={op(d)} />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   )
