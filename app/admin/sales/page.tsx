@@ -213,11 +213,33 @@ export default function SalesPage() {
     fetchMonthlyFlow().then(setFlow)
   }, [])
 
-  // 최근 8개월만 표시 (이벤트 기반 — 일별 잡음 없음)
-  const flowPoints = useMemo(
-    () => flow.slice(-8).map((f) => ({ label: flowLabel(f.month), intake: f.intake, contracted: f.contracted })),
-    [flow],
-  )
+  // 1월부터 연속 축으로 표시(빠진 달 0). 1~2월은 리드 트래킹 도입 전이라 데이터 미완 → 흐리게.
+  const flowPoints = useMemo(() => {
+    const START = '2026-01'
+    const INCOMPLETE = new Set(['2026-01', '2026-02'])
+    const by = new Map(flow.map((f) => [f.month, f]))
+    const latest = flow.length ? flow[flow.length - 1].month : START
+    const months: string[] = []
+    let [y, m] = START.split('-').map(Number)
+    const [ly, lm] = latest.split('-').map(Number)
+    while (y < ly || (y === ly && m <= lm)) {
+      months.push(`${y}-${String(m).padStart(2, '0')}`)
+      m += 1
+      if (m > 12) {
+        m = 1
+        y += 1
+      }
+    }
+    return months.map((key) => {
+      const f = by.get(key)
+      return {
+        label: flowLabel(key),
+        intake: f?.intake ?? 0,
+        contracted: f?.contracted ?? 0,
+        incomplete: INCOMPLETE.has(key),
+      }
+    })
+  }, [flow])
 
   const range = useMemo(() => computeDateRange(filter), [filter])
   const filtered = useMemo(
@@ -294,6 +316,7 @@ export default function SalesPage() {
             <p className="mt-1 px-1 text-[11px] leading-relaxed text-neutral-500">
               신규 인입 = 그 달 들어온 리드(intake_date), 체결 = 그 달 계약 성사(contracted_date,
               현재도 체결·운영·완료인 건만 = 역행 제외). 영업 흐름을 월 단위 이벤트로 집계 — 일별 잡음 없음.
+              1~2월은 리드 트래킹 도입 전이라 데이터 미완(흐리게 표시, 참고용).
             </p>
           </div>
         )}
