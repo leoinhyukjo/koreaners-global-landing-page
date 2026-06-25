@@ -268,3 +268,38 @@ export function WorkloadBarChart({ data }: WorkloadBarChartProps) {
     </ResponsiveContainer>
   )
 }
+
+// ────────────────────────────────────────────────────────────
+// MonthlyFunnelChart — 월별 퍼널 stacked bar (인입 또는 체결)
+// 월간통계(Obsidian) 퍼널 분해 화면을 어드민으로 포팅. 색/순서 동일.
+// ────────────────────────────────────────────────────────────
+interface MonthlyFunnelChartProps {
+  data: Record<string, number | string>[]
+  funnels: string[] // 스택 순서 (아래→위)
+  colorOf: (funnel: string) => string
+  unit?: string // 툴팁 단위 (기본 '건')
+}
+
+export function MonthlyFunnelChart({ data, funnels, colorOf, unit = '건' }: MonthlyFunnelChartProps) {
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={data} margin={{ left: 0, right: 16, top: 16, bottom: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+        <XAxis dataKey="label" height={28} tick={{ fontSize: 12, fill: '#888' }} />
+        <YAxis allowDecimals={false} width={28} tick={{ fontSize: 11, fill: '#888' }} />
+        <Tooltip {...TOOLTIP_STYLE} formatter={(value: number, name: string) => [`${value}${unit}`, name]} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        {funnels.map((f, i) => (
+          <Bar
+            key={f}
+            dataKey={f}
+            stackId="a"
+            fill={colorOf(f)}
+            isAnimationActive={false}
+            radius={i === funnels.length - 1 ? [3, 3, 0, 0] : [0, 0, 0, 0]}
+          />
+        ))}
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}
