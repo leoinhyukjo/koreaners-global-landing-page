@@ -92,6 +92,124 @@ export function flowLabel(month: string): string {
   return p.length === 2 ? `${parseInt(p[1], 10)}월` : month
 }
 
+// 흐름 차트 축 기준 — 총계 차트와 퍼널 차트가 공유(둘이 어긋나지 않게).
+// 리드 트래킹 도입 전(1~2월)은 데이터 미완 → 흐리게. START 이전 월(2025 등 sparse)은 축에서 제외.
+export const FLOW_AXIS_START = '2026-01'
+const FLOW_INCOMPLETE = new Set(['2026-01', '2026-02'])
+
+export interface FlowMonth {
+  month: string // 'YYYY-MM'
+  label: string
+  incomplete: boolean
+}
+
+/**
+ * START(2026-01)부터 latest 까지 연속 월 축 생성(빈 월 0 채움 대상).
+ * 축이 2개 연도에 걸치면 라벨에 연도 표기("26.1") — 연도 없는 'M월' 충돌(2025-01 vs 2026-01) 방지.
+ * latest < START 이거나 비면 START 단일 월만.
+ */
+export function buildFlowMonths(latest: string | null | undefined): FlowMonth[] {
+  const start = FLOW_AXIS_START
+  const end = latest && latest >= start ? latest : start
+  const months: string[] = []
+  let [y, m] = start.split('-').map(Number)
+  const [ly, lm] = end.split('-').map(Number)
+  while (y < ly || (y === ly && m <= lm)) {
+    months.push(`${y}-${String(m).padStart(2, '0')}`)
+    m += 1
+    if (m > 12) {
+      m = 1
+      y += 1
+    }
+  }
+  const multiYear = new Set(months.map((mm) => mm.slice(0, 4))).size > 1
+  return months.map((mm) => ({
+    month: mm,
+    label: multiYear ? `${mm.slice(2, 4)}.${parseInt(mm.slice(5), 10)}` : flowLabel(mm),
+    incomplete: FLOW_INCOMPLETE.has(mm),
+  }))
+}
+
+// 월별 퍼널별 흐름 — sales_monthly_flow_funnel. monthly_flow(총계)에 funnel 차원 추가분.
+// 퍼널 합 = sales_monthly_flow 총계 (aggregate.monthly_flow_by_funnel invariant).
+export interface MonthlyFlowFunnel {
+  month: string // 'YYYY-MM'
+  funnel: string
+  intake: number
+  contracted: number
+}
+
+// 월간통계(Obsidian dataviewjs)와 동일한 퍼널 순서·색 — 대표님이 본 화면과 일치시키기 위함.
+export const FUNNEL_ORDER = [
+  '크리에이터 경유', '경영진 네트워크', '홈페이지', '아웃바운드', '레퍼럴', '기존 고객사',
+] as const
+
+export const FUNNEL_COLOR: Record<string, string> = {
+  '크리에이터 경유': '#36a2eb',
+  '경영진 네트워크': '#ffce56',
+  홈페이지: '#ff6384',
+  아웃바운드: '#9966ff',
+  레퍼럴: '#4bc0c0',
+  '기존 고객사': '#ff9f40',
+  '(없음)': '#9ca3af',
+}
+
+export const funnelColor = (f: string): string => FUNNEL_COLOR[f] ?? '#9ca3af'
+
+/** sales_monthly_flow_funnel 조회 (월 오름차순). */
+export async function fetchMonthlyFlowFunnel(): Promise<MonthlyFlowFunnel[]> {
+  const { data, error } = await supabase
+    .from('sales_monthly_flow_funnel')
+    .select('*')
+    .order('month', { ascending: true })
+  if (error) {
+    console.error('[fetchMonthlyFlowFunnel] 조회 실패:', error.message)
+    return []
+  }
+  return (data ?? []).map((r) => ({
+    month: r.month ?? '',
+    funnel: r.funnel ?? '(없음)',
+    intake: Number(r.intake ?? 0),
+    contracted: Number(r.contracted ?? 0),
+  }))
+}
+
+export interface FunnelPivot {
+  funnels: string[]
+  data: Record<string, number | string>[]
+}
+
+/**
+ * 퍼널 흐름을 Recharts stacked bar 용으로 피벗.
+ * axis = buildFlowMonths() 결과(총계 차트와 동일 축). axis 밖 월(2025 sparse 등)은 제외 →
+ * 두 차트 x축·라벨 일치, 연도 충돌 없음. FUNNEL_ORDER 밖 funnel 값은 '(없음)'으로 흡수해
+ * 막대 합 == 총계 invariant 유지(드롭 금지). 해당 metric 이 한 번도 양수가 아닌 funnel 은 키에서 제외.
+ */
+export function pivotFunnelFlow(
+  rows: MonthlyFlowFunnel[],
+  metric: 'intake' | 'contracted',
+  axis: FlowMonth[],
+): FunnelPivot {
+  const known = new Set<string>([...FUNNEL_ORDER, '(없음)'])
+  const axisMonths = new Set(axis.map((a) => a.month))
+  const present = new Set<string>()
+  const cell: Record<string, Record<string, number>> = {}
+  for (const r of rows) {
+    if (!axisMonths.has(r.month)) continue // 축 밖(2025 등) 제외
+    const f = known.has(r.funnel) ? r.funnel : '(없음)' // 미지 funnel → (없음) 흡수
+    if (r[metric] > 0) present.add(f)
+    cell[r.month] = cell[r.month] || {}
+    cell[r.month][f] = (cell[r.month][f] || 0) + r[metric]
+  }
+  const funnels = [...FUNNEL_ORDER, '(없음)'].filter((f) => present.has(f))
+  const data = axis.map(({ month, label }) => {
+    const row: Record<string, number | string> = { label, month }
+    for (const f of funnels) row[f] = cell[month]?.[f] ?? 0
+    return row
+  })
+  return { funnels, data }
+}
+
 /** KRW 정수 → 보드 표기 (Python fmt_krw 와 동일 규칙). */
 export function fmtKrw(n: number | null | undefined): string {
   if (!n || n <= 0) return '0'

@@ -6,7 +6,11 @@ import { ArrowLeft, ChevronUp, ChevronDown, ChevronsUpDown, AlertTriangle } from
 import {
   fetchSalesLeads,
   fetchMonthlyFlow,
-  flowLabel,
+  fetchMonthlyFlowFunnel,
+  pivotFunnelFlow,
+  funnelColor,
+  buildFlowMonths,
+  FLOW_AXIS_START,
   buildMonthly,
   fmtKrw,
   monthKr,
@@ -15,9 +19,10 @@ import {
   SECTION_ORDER,
   type SalesLead,
   type MonthlyFlow,
+  type MonthlyFlowFunnel,
 } from '@/lib/dashboard/sales'
 import { KpiCard } from '@/components/admin/dashboard/kpi-card'
-import { MonthlyBarChart, MonthlyFlowChart } from '@/components/admin/dashboard/charts'
+import { MonthlyBarChart, MonthlyFlowChart, MonthlyFunnelChart } from '@/components/admin/dashboard/charts'
 import {
   DateFilterBar,
   DEFAULT_DATE_FILTER,
@@ -199,6 +204,7 @@ function SectionTable({
 export default function SalesPage() {
   const [rows, setRows] = useState<SalesLead[]>([])
   const [flow, setFlow] = useState<MonthlyFlow[]>([])
+  const [flowFunnel, setFlowFunnel] = useState<MonthlyFlowFunnel[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<DateFilter>(DEFAULT_DATE_FILTER)
   const [sort, setSort] = useState<SortState>(null)
@@ -211,35 +217,28 @@ export default function SalesPage() {
       setLoading(false)
     })
     fetchMonthlyFlow().then(setFlow)
+    fetchMonthlyFlowFunnel().then(setFlowFunnel)
   }, [])
 
-  // 1월부터 연속 축으로 표시(빠진 달 0). 1~2월은 리드 트래킹 도입 전이라 데이터 미완 → 흐리게.
+  // 총계·퍼널 차트가 공유하는 단일 월 축(2026-01부터 연속, 빈 달 0, 1~2월 미완 흐림).
+  // 두 소스(flow=총계, flowFunnel=퍼널)의 최신 월 중 큰 쪽까지 → 세 차트 x축이 항상 일치.
+  const flowAxis = useMemo(() => {
+    const months = [...flow.map((f) => f.month), ...flowFunnel.map((f) => f.month)]
+    const latest = months.length ? months.reduce((a, b) => (b > a ? b : a)) : FLOW_AXIS_START
+    return buildFlowMonths(latest)
+  }, [flow, flowFunnel])
+
   const flowPoints = useMemo(() => {
-    const START = '2026-01'
-    const INCOMPLETE = new Set(['2026-01', '2026-02'])
     const by = new Map(flow.map((f) => [f.month, f]))
-    const latest = flow.length ? flow[flow.length - 1].month : START
-    const months: string[] = []
-    let [y, m] = START.split('-').map(Number)
-    const [ly, lm] = latest.split('-').map(Number)
-    while (y < ly || (y === ly && m <= lm)) {
-      months.push(`${y}-${String(m).padStart(2, '0')}`)
-      m += 1
-      if (m > 12) {
-        m = 1
-        y += 1
-      }
-    }
-    return months.map((key) => {
-      const f = by.get(key)
-      return {
-        label: flowLabel(key),
-        intake: f?.intake ?? 0,
-        contracted: f?.contracted ?? 0,
-        incomplete: INCOMPLETE.has(key),
-      }
+    return flowAxis.map(({ month, label, incomplete }) => {
+      const f = by.get(month)
+      return { label, intake: f?.intake ?? 0, contracted: f?.contracted ?? 0, incomplete }
     })
-  }, [flow])
+  }, [flow, flowAxis])
+
+  // 퍼널 stacked 차트 데이터(인입/체결) — 월간통계 Part 1/2 포팅. 총계 차트와 동일 축 공유.
+  const intakePivot = useMemo(() => pivotFunnelFlow(flowFunnel, 'intake', flowAxis), [flowFunnel, flowAxis])
+  const contractedPivot = useMemo(() => pivotFunnelFlow(flowFunnel, 'contracted', flowAxis), [flowFunnel, flowAxis])
 
   const range = useMemo(() => computeDateRange(filter), [filter])
   const filtered = useMemo(
@@ -339,6 +338,40 @@ export default function SalesPage() {
             </p>
           </div>
         )}
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="flex items-center gap-2 border-b border-neutral-800 pb-1.5 text-base font-semibold text-neutral-100">
+          퍼널별 흐름
+          <span className="text-[11px] font-normal text-neutral-500">채널별 인입·체결 (월간통계 동일 기준)</span>
+        </h2>
+        {flowFunnel.length === 0 ? (
+          <p className="text-xs text-neutral-500">퍼널 흐름 데이터가 없습니다.</p>
+        ) : (
+          <div className="grid gap-3 lg:grid-cols-2">
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
+              <p className="mb-1 px-1 text-xs font-medium text-neutral-300">신규 인입 (퍼널별)</p>
+              {intakePivot.funnels.length === 0 ? (
+                <p className="px-1 py-8 text-center text-xs text-neutral-600">신규 인입 데이터가 없습니다.</p>
+              ) : (
+                <MonthlyFunnelChart data={intakePivot.data} funnels={intakePivot.funnels} colorOf={funnelColor} />
+              )}
+            </div>
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900/30 p-3">
+              <p className="mb-1 px-1 text-xs font-medium text-neutral-300">계약 체결 (퍼널별)</p>
+              {contractedPivot.funnels.length === 0 ? (
+                <p className="px-1 py-8 text-center text-xs text-neutral-600">계약 체결 데이터가 없습니다.</p>
+              ) : (
+                <MonthlyFunnelChart data={contractedPivot.data} funnels={contractedPivot.funnels} colorOf={funnelColor} />
+              )}
+            </div>
+          </div>
+        )}
+        <p className="px-1 text-[11px] leading-relaxed text-neutral-500">
+          인입 = intake_date, 체결 = contracted_date 기준으로 채널(퍼널)별 누적. 막대 높이 합은 위 월별 흐름 총계와
+          일치합니다. 퍼널 6종: 크리에이터 경유 / 경영진 네트워크 / 홈페이지 / 아웃바운드 / 레퍼럴 / 기존 고객사.
+          경영진 네트워크 막대가 곧 부대표·경영진 경유 분리입니다.
+        </p>
       </section>
 
       {SECTION_ORDER.map((sec) => {
