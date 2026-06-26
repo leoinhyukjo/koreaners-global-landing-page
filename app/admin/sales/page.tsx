@@ -9,6 +9,7 @@ import {
   fetchMonthlyFlowFunnel,
   pivotFunnelFlow,
   funnelColor,
+  FUNNEL_ORDER,
   buildFlowMonths,
   FLOW_AXIS_START,
   buildMonthly,
@@ -369,7 +370,7 @@ export default function SalesPage() {
         )}
         <p className="px-1 text-[11px] leading-relaxed text-neutral-500">
           인입 = intake_date, 체결 = contracted_date 기준으로 채널(퍼널)별 누적. 막대 높이 합은 위 월별 흐름 총계와
-          일치합니다. 퍼널 6종: 크리에이터 경유 / 경영진 네트워크 / 홈페이지 / 아웃바운드 / 레퍼럴 / 기존 고객사.
+          일치합니다. 퍼널: {FUNNEL_ORDER.join(' / ')} (+ 미분류는 &lsquo;(없음)&rsquo;).
           경영진 네트워크 막대가 곧 부대표·경영진 경유 분리입니다.
         </p>
       </section>

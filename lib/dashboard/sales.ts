@@ -140,6 +140,8 @@ export interface MonthlyFlowFunnel {
 }
 
 // 월간통계(Obsidian dataviewjs)와 동일한 퍼널 순서·색 — 대표님이 본 화면과 일치시키기 위함.
+// 주의: 파이썬 exec_sales_board/config.py 의 FUNNEL_ORDER 는 "섹션 내 정렬" 용도라 순서가
+// 다르다(드리프트 아님). 차트 stack 순서의 SoT 는 이 배열(월간통계 기준)이다.
 export const FUNNEL_ORDER = [
   '크리에이터 경유', '경영진 네트워크', '홈페이지', '아웃바운드', '레퍼럴', '기존 고객사',
 ] as const

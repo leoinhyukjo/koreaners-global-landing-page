@@ -272,12 +272,40 @@ export function WorkloadBarChart({ data }: WorkloadBarChartProps) {
 // ────────────────────────────────────────────────────────────
 // MonthlyFunnelChart — 월별 퍼널 stacked bar (인입 또는 체결)
 // 월간통계(Obsidian) 퍼널 분해 화면을 어드민으로 포팅. 색/순서 동일.
+// NOTE: 축/그리드/툴팁 스타일이 MonthlyFlowChart 와 비슷하나, 그쪽은 intake-vs-contracted
+// 2-시리즈, 이쪽은 funnel N-스택으로 시리즈 구성이 달라 공유 컴포넌트로 추출하지 않음(의도).
 // ────────────────────────────────────────────────────────────
 interface MonthlyFunnelChartProps {
   data: Record<string, number | string>[]
   funnels: string[] // 스택 순서 (아래→위)
   colorOf: (funnel: string) => string
   unit?: string // 툴팁 단위 (기본 '건')
+}
+
+// gap-fill 로 빈 달의 모든 퍼널이 0 으로 채워져 기본 툴팁이 "…0건"을 줄줄이 나열 →
+// 값 0 인 퍼널은 숨겨 활성 퍼널만 보이게 하는 커스텀 툴팁.
+function FunnelStackTooltip({
+  active, payload, label, unit,
+}: {
+  active?: boolean
+  label?: string
+  unit: string
+  payload?: { name?: string; value?: number; color?: string; dataKey?: string | number }[]
+}) {
+  if (!active || !payload?.length) return null
+  const items = payload.filter((p) => (p.value ?? 0) > 0)
+  if (!items.length) return null
+  return (
+    <div style={TOOLTIP_STYLE.contentStyle}>
+      <div style={TOOLTIP_STYLE.labelStyle}>{label}</div>
+      {items.map((p) => (
+        <div key={String(p.dataKey)} style={{ color: p.color, fontSize: 12 }}>
+          {p.name}: {p.value}
+          {unit}
+        </div>
+      ))}
+    </div>
+  )
 }
 
 export function MonthlyFunnelChart({ data, funnels, colorOf, unit = '건' }: MonthlyFunnelChartProps) {
@@ -287,7 +315,7 @@ export function MonthlyFunnelChart({ data, funnels, colorOf, unit = '건' }: Mon
         <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
         <XAxis dataKey="label" height={28} tick={{ fontSize: 12, fill: '#888' }} />
         <YAxis allowDecimals={false} width={28} tick={{ fontSize: 11, fill: '#888' }} />
-        <Tooltip {...TOOLTIP_STYLE} formatter={(value: number, name: string) => [`${value}${unit}`, name]} />
+        <Tooltip content={<FunnelStackTooltip unit={unit} />} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
         {funnels.map((f, i) => (
           <Bar
