@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LayoutDashboard, RefreshCw, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, RefreshCw, TrendingUp, Boxes } from 'lucide-react'
 
 export default function AdminLandingPage() {
   return (
@@ -83,6 +83,32 @@ export default function AdminLandingPage() {
               </p>
             </div>
             <span className="inline-flex items-center gap-1 text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity">
+              이동 →
+            </span>
+          </div>
+        </Link>
+
+        {/* 통합 엔티티 */}
+        <Link
+          href="/admin/entities"
+          className="group relative rounded-xl border border-neutral-800 bg-neutral-900 p-6 hover:border-violet-500/50 hover:bg-neutral-800/60 transition-all"
+        >
+          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ background: 'radial-gradient(ellipse at top left, rgba(139,92,246,0.08) 0%, transparent 60%)' }}
+          />
+          <div className="relative space-y-3">
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/10 border border-violet-500/20">
+              <Boxes className="h-5 w-5 text-violet-400" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-neutral-50 group-hover:text-violet-300 transition-colors">
+                통합 엔티티
+              </h2>
+              <p className="mt-1 text-xs text-neutral-500 leading-relaxed">
+                브랜드 단위 계약·운영·리드 통합 뷰
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1 text-xs text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity">
               이동 →
             </span>
           </div>
