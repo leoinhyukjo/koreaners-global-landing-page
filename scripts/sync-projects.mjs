@@ -345,12 +345,38 @@ async function getUsdToKrwRate() {
 
 // ─── Fetch Google Sheets data ────────────────────────────────
 
+// "Dashboard" 포함 탭 중 이름 내 최대 숫자(연도) 큰 것 우선 — "26년 Dashboard" > "25년 Dashboard".
+// 연도 prefix rename 에 견디게 함 (2026-06-29: 탭이 "26년 Dashboard" 로 rename 되며
+// 하드코딩된 'Dashboard!A:AJ' 읽기가 깨져 6/19 이후 동기화 중단된 사고 수정).
+async function resolveDashboardTab() {
+  const { data } = await withRetry(
+    () =>
+      sheets.spreadsheets.get({
+        spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
+        fields: 'sheets.properties.title',
+      }),
+    'Google Sheets get tab titles',
+  )
+  const titles = (data.sheets ?? []).map((s) => s.properties.title)
+  const matches = titles.filter((t) => /dashboard/i.test(t))
+  if (matches.length === 0) {
+    throw new Error('No "Dashboard" tab found. Tabs: ' + titles.join(', '))
+  }
+  matches.sort((a, b) => {
+    const na = Math.max(...(a.match(/\d+/g) || ['0']).map(Number))
+    const nb = Math.max(...(b.match(/\d+/g) || ['0']).map(Number))
+    return nb - na
+  })
+  return matches[0]
+}
+
 async function fetchSheetData() {
+  const tab = await resolveDashboardTab()
   const { data } = await withRetry(
     () =>
       sheets.spreadsheets.values.get({
         spreadsheetId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-        range: 'Dashboard!A:AJ',
+        range: `'${tab}'!A:AJ`,
         valueRenderOption: 'FORMATTED_VALUE',
       }),
     'Google Sheets fetch',
