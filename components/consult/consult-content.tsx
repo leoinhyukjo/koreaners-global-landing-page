@@ -20,7 +20,7 @@ const PROCESS = [
   {
     step: "01",
     title: "무료 상담 신청",
-    desc: "아래 폼 작성에 1분이면 충분합니다. 담당 매니저가 확인 후 연락드립니다.",
+    desc: "폼 작성은 1분이면 충분합니다. 담당 매니저가 확인 후 바로 연락드립니다.",
   },
   {
     step: "02",
@@ -30,7 +30,7 @@ const PROCESS = [
   {
     step: "03",
     title: "캠페인 실행",
-    desc: "크리에이터 섭외부터 콘텐츠 제작, 성과 리포트까지 코리너스가 운영합니다.",
+    desc: "크리에이터 섭외부터 콘텐츠 제작, 성과 리포트까지 코리너스가 직접 운영합니다.",
   },
 ];
 
@@ -61,13 +61,14 @@ export function ConsultContent() {
             수출바우처 공식 수행기관
           </p>
           <h1 className="font-display font-bold uppercase text-4xl md:text-5xl leading-[0.95] text-[var(--foreground)] mb-6">
-            일본 진출, 검증된
+            일본 진출은
             <br />
-            크리에이터 네트워크로 시작하세요
+            코리너스입니다
           </h1>
           <p className="text-lg text-[#A8A29E] mb-8">
-            코리너스는 크리에이터 섭외부터 콘텐츠 제작, 성과 리포트까지
-            일본 인플루언서 마케팅 전 과정을 직접 운영합니다.
+            일본인 크리에이터 리뷰 하나로 인지도부터 매출까지 이어집니다.
+            코리너스가 크리에이터 섭외부터 콘텐츠 제작, 성과 리포트까지
+            캠페인 전 과정을 직접 운영합니다.
           </p>
           <Button size="lg" className="uppercase tracking-wider" onClick={scrollToForm}>
             무료 상담 받기
@@ -93,9 +94,9 @@ export function ConsultContent() {
           Qoo10 메가와리 시즌, K뷰티 4개 브랜드 동시 캠페인
         </h2>
         <p className="text-[#78716C]">
-          크리에이터 마루오카 에츠코가 4일간 투고한 콘텐츠가 누적 113만 조회를
-          기록했습니다. 코리너스는 시즌 커머스 일정에 맞춘 크리에이터 캠페인을
-          설계하고 운영합니다.
+          일본인 크리에이터 마루오카 에츠코가 4일간 투고한 콘텐츠가 누적 113만
+          조회를 기록했습니다. 코리너스는 시즌 커머스 일정에 맞춰 크리에이터
+          캠페인을 설계하고 운영합니다.
         </p>
       </section>
 
