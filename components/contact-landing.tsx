@@ -6,6 +6,7 @@ import Navigation from "@/components/navigation";
 import { Button } from "@/components/ui/button";
 import { FooterCTA } from "@/components/footer-cta";
 import { ChannelTalk } from "@/components/common/channel-talk";
+import { LogoWall } from "@/components/common/logo-wall";
 
 // 수치 SoT: meta-ads-automation/config/verified_numbers.json > ad_safe_claims
 // 이 배열 밖의 수치를 추가하려면 verified_numbers 검증 절차를 먼저 거칠 것
@@ -13,15 +14,6 @@ const STATS = [
   { value: "220명+", label: "크리에이터 네트워크" },
   { value: "185개+", label: "누적 협업 브랜드" },
   { value: "10곳", label: "일본 현지 미디어 직접 연결" },
-];
-
-// 대표 브랜드 (Leo 큐레이션 2026-07-06). 코드에서 이름 가공 금지, 표기 수정은 이 상수에서.
-const BRAND_GROUPS: { label: string; brands: string[] }[] = [
-  { label: "BEAUTY", brands: ["메디필", "메디큐브", "달바", "정심물", "닥터지", "바이오던스"] },
-  { label: "F&B", brands: ["감자밭", "뉴믹스커피", "리포데이", "뉴트리원"] },
-  { label: "MEDICAL", brands: ["강남언니", "셰에의원", "아비쥬", "온리프 성형외과", "BNC"] },
-  { label: "LIFESTYLE", brands: ["럭키팝", "스크럽대디"] },
-  { label: "FASHION", brands: ["마땡킴", "트리밍버드", "뷰맵", "오호스", "브랜더진"] },
 ];
 
 const PROCESS = [
@@ -95,24 +87,8 @@ export default function ContactLanding() {
         </div>
       </section>
 
-      {/* 그룹별 대표 브랜드 */}
-      <section className="bg-[var(--kn-light)] px-6 py-16">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-display font-bold text-2xl md:text-3xl text-[var(--kn-dark)] mb-8 text-center">
-            함께한 대표 브랜드
-          </h2>
-          <div className="max-w-2xl mx-auto space-y-4">
-            {BRAND_GROUPS.map((g) => (
-              <div key={g.label} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
-                <p className="w-28 shrink-0 text-xs font-bold uppercase tracking-widest text-[#FF4500]">
-                  {g.label}
-                </p>
-                <p className="text-[var(--kn-dark)] font-medium">{g.brands.join(", ")}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 그룹별 대표 브랜드 로고 월 */}
+      <LogoWall />
 
       {/* 프로세스 */}
       <section className="bg-[var(--kn-card-light)] px-6 py-16">
