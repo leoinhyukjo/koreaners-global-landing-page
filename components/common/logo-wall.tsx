@@ -6,7 +6,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-type Logo = { slug: string; ext: string; name: string; href?: string };
+type Logo = { slug: string; ext: string; name: string; href?: string; scale?: number };
 
 // 2행 분할 (상단 좌→우, 하단 우→좌)
 const ROW1: Logo[] = [
@@ -18,7 +18,7 @@ const ROW1: Logo[] = [
   { slug: "biodance", ext: "svg", name: "Biodance" },
   { slug: "gamjabat", ext: "png", name: "감자밭", href: "/portfolio/f6bfe351-7330-4bf8-b7e5-faf0eace6ac4" },
   { slug: "newmix", ext: "svg", name: "newmix", href: "/portfolio/66f5513e-5b0c-4ac3-9020-44671af86ddd" },
-  { slug: "ripoday", ext: "jpg", name: "RE4DAY" },
+  { slug: "ripoday", ext: "jpg", name: "RE4DAY", scale: 2 },
   { slug: "nutrione", ext: "svg", name: "Nutrione" },
 ];
 
@@ -26,7 +26,7 @@ const ROW2: Logo[] = [
   { slug: "gangnamunni", ext: "svg", name: "강남언니" },
   { slug: "seye", ext: "svg", name: "세예의원" },
   { slug: "abijou", ext: "png", name: "Abijou" },
-  { slug: "onlif", ext: "png", name: "Onlif", href: "/portfolio/d1aab841-138e-4001-9f4b-cda67726a649" },
+  { slug: "onlif", ext: "png", name: "Onlif", href: "/portfolio/d1aab841-138e-4001-9f4b-cda67726a649", scale: 0.75 },
   { slug: "bnc", ext: "png", name: "BNC KOREA", href: "/portfolio/ea6e14bc-86d6-46f3-b7ca-70653018aeee" },
   { slug: "scrubdaddy", ext: "svg", name: "Scrub Daddy" },
   { slug: "matinkim", ext: "jpg", name: "Matin Kim", href: "/portfolio/39faf105-a8a9-41fd-bd02-b5b182c38b8a" },
@@ -42,6 +42,7 @@ function LogoImg({ logo }: { logo: Logo }) {
       src={`/logos/${logo.slug}.${logo.ext}`}
       alt={`${logo.name} 로고`}
       loading="lazy"
+      style={logo.scale ? { transform: `scale(${logo.scale})` } : undefined}
       className="max-h-10 sm:max-h-12 max-w-full w-auto object-contain"
     />
   );
