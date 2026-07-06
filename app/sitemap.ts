@@ -6,7 +6,7 @@ const STATIC_CONTENT_DATES: Record<string, string> = {
   '/about': '2026-04-02',
   '/service': '2026-03-29',
   '/careers': '2026-04-19',
-  '/contact': '2026-02-28',
+  '/contact': '2026-07-06',
   '/privacy': '2025-09-01',
 }
 

@@ -1,12 +1,11 @@
-// components/consult/consult-content.tsx
+// components/contact-landing.tsx
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
+import Navigation from "@/components/navigation";
 import { Button } from "@/components/ui/button";
 import { FooterCTA } from "@/components/footer-cta";
-import { Logo } from "@/components/logo";
-import { ChannelTalk } from "@/components/consult/channel-talk";
+import { ChannelTalk } from "@/components/common/channel-talk";
 
 // 수치 SoT: meta-ads-automation/config/verified_numbers.json > ad_safe_claims
 // 이 배열 밖의 수치를 추가하려면 verified_numbers 검증 절차를 먼저 거칠 것
@@ -34,28 +33,25 @@ const PROCESS = [
   },
 ];
 
+export type BrandGroup = { category: string; brands: string[] };
+
 function scrollToForm() {
   document.getElementById("consult-form")?.scrollIntoView({ behavior: "smooth" });
 }
 
-export function ConsultContent() {
+export default function ContactLanding({ brandGroups }: { brandGroups: BrandGroup[] }) {
   useEffect(() => {
     if (typeof window.fbq === "function") {
-      window.fbq("track", "ViewContent", { content_name: "consult_landing" });
+      window.fbq("track", "ViewContent", { content_name: "contact_landing" });
     }
   }, []);
 
   return (
-    <main className="min-h-screen">
-      {/* 슬림 헤더: 로고만, 사이트 네비게이션 없음 (이탈 경로 제거) */}
-      <header className="flex items-center justify-center py-5 bg-[var(--kn-dark)] border-b border-[#A8A29E]/15">
-        <Link href="/" aria-label="KOREANERS 홈">
-          <Logo variant="header" />
-        </Link>
-      </header>
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden">
+      <Navigation />
 
       {/* 히어로 */}
-      <section className="relative bg-[var(--kn-dark)] hero-glow px-6 pt-16 pb-12 text-center">
+      <section className="relative bg-[var(--kn-dark)] hero-glow px-6 pt-32 md:pt-36 pb-14 text-center">
         <div className="max-w-3xl mx-auto">
           <p className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#FF4500] bg-white/10 mb-6">
             수출바우처 공식 수행기관
@@ -88,17 +84,26 @@ export function ConsultContent() {
         </div>
       </section>
 
-      {/* 레퍼런스 사례 */}
-      <section className="bg-[var(--kn-light)] px-6 py-16 max-w-3xl mx-auto text-center">
-        <h2 className="font-display font-bold text-2xl md:text-3xl text-[var(--kn-dark)] mb-4">
-          Qoo10 메가와리 시즌, K뷰티 4개 브랜드 동시 캠페인
-        </h2>
-        <p className="text-[#78716C]">
-          일본인 크리에이터 마루오카 에츠코가 4일간 투고한 콘텐츠가 누적 113만
-          조회를 기록했습니다. 코리너스는 시즌 커머스 일정에 맞춰 크리에이터
-          캠페인을 설계하고 운영합니다.
-        </p>
-      </section>
+      {/* 그룹별 대표 포트폴리오 브랜드 (공개 포트폴리오 published 만, Supabase portfolios) */}
+      {brandGroups.length > 0 && (
+        <section className="bg-[var(--kn-light)] px-6 py-16">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-[var(--kn-dark)] mb-8 text-center">
+              함께한 대표 브랜드
+            </h2>
+            <div className="max-w-2xl mx-auto space-y-4">
+              {brandGroups.map((g) => (
+                <div key={g.category} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
+                  <p className="w-28 shrink-0 text-xs font-bold uppercase tracking-widest text-[#FF4500]">
+                    {g.category}
+                  </p>
+                  <p className="text-[var(--kn-dark)] font-medium">{g.brands.join(", ")}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 프로세스 */}
       <section className="bg-[var(--kn-card-light)] px-6 py-16">

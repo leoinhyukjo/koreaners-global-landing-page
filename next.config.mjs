@@ -12,6 +12,12 @@ const nextConfig = {
         destination: '/creator',
         permanent: true,
       },
+      {
+        // 광고 전용 랜딩을 /contact 로 통합 (2026-07-06). 배포 이력상 URL 보존용
+        source: '/consult',
+        destination: '/contact',
+        permanent: true,
+      },
     ]
   },
   // 메타데이터(탭 제목 등)를 스트리밍 대신 초기 HTML에 포함시켜 'browser tab' 현상 방지
