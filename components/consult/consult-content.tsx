@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FooterCTA } from "@/components/footer-cta";
 import { Logo } from "@/components/logo";
+import { ChannelTalk } from "@/components/consult/channel-talk";
 
 // 수치 SoT: meta-ads-automation/config/verified_numbers.json > ad_safe_claims
 // 이 배열 밖의 수치를 추가하려면 verified_numbers 검증 절차를 먼저 거칠 것
@@ -122,6 +123,8 @@ export function ConsultContent() {
           무료 상담 받기
         </Button>
       </div>
+
+      <ChannelTalk />
     </main>
   );
 }
