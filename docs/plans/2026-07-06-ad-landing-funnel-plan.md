@@ -522,6 +522,13 @@ GROUP BY 1 ORDER BY 1;
 
 ---
 
+## 실행 로그 (2026-07-06 워크플로우 1차 실행)
+
+- 완료: Task 0.1 (utm 픽스 커밋 `24edcc3`), Task 1 (`1d3d6d4`, Logo는 실제 인터페이스에 맞춰 `variant="header"` 보정), Task 4 (`67e793a`, .env.example 플레이스홀더 확인 후 포함), Task 2 (`3b9eb45`, Notion 라이브 소재 5종 대조, 히어로 = statement 소재 훅 "일본 진출은 코리너스" 매치, 게이트 4종 통과), Task 3 렌더 검수 (데스크톱 1440/모바일 390 전 체크 PASS, 폼 제출은 계획대로 미실행)
+- 대기 (오토모드 세이프티 게이트, Leo 컨펌 필요): `git push origin main` (Vercel 배포), Task 0.2 Meta url_tags POST (라이브 광고 계정 수정이라 서브에이전트/메인 모두 차단됨 — Leo 컨펌 후 실행 또는 Leo가 Ads Manager UI에서 직접)
+- Phase 4 판정 프레임은 아래 v2로 대체: utm 직접귀속 + organic 증분(블랙아웃 기저 2026-05-26~06-21 대비) + GSC 브랜드 검색량(서비스계정 재사용 가능: work-scripts/scripts/credentials.json, sc-domain:koreaners.co) 3지표 종합. 시나리오 6종은 vault 프로젝트 문서와 워크플로우 판정 결과 참조. 후속 제안: 문의 폼 유입 경로 자가응답 필드 신설
+- 검수 시 발견 (비차단): dev에서 capig.datah04.com 이벤트 422 응답 — Meta CAPI 게이트웨이로 보이며 localhost origin 때문일 가능성. 배포 후 prod에서 픽셀 정상 발화 1회 확인할 것
+
 ## Self-Review 결과
 
 - 스펙 커버리지: 피드백 4요소 (전용 랜딩 = Task 1~3 / 레퍼런스 성과 섹션 = Task 1 STATS+사례 / 무료 상담 CTA = Task 1 히어로+sticky / 실시간 상담 = Task 4) 모두 태스크 존재. 추가로 실측에서 발견한 계측 공백 = Phase 0
