@@ -35,6 +35,16 @@ function sanitize(value: string | null, max = 500): string | undefined {
  * First-touch capture: the first landing URL that carries utm params is preserved
  * for the rest of the session, even if the user navigates to utm-less pages before
  * submitting the inquiry form.
+ *
+ * A real page load ALWAYS records landing_page + first_touch_at, even when there is
+ * no utm param and no referrer (direct / typed-URL / bookmark traffic). This leaves a
+ * minimal fingerprint for legitimate page-loaded visits, so that an all-blank inquiry
+ * (no utm, no referrer, no landing_page) is a reliable signal of a bot POSTing straight
+ * to the form endpoint without ever loading the page.
+ *
+ * Trade-off: a pure-direct first touch (no utm + no referrer) is now locked in, so a
+ * later utm/referrer touch in the same tab session cannot overwrite it. In practice utm
+ * arrives on the first touch (campaign link), so this edge case is negligible.
  */
 export function captureUtmFromUrl(): UtmData | null {
   const storage = safeGetStorage();
@@ -57,13 +67,8 @@ export function captureUtmFromUrl(): UtmData | null {
     if (v) captured[key] = v;
   }
 
-  const hasAnyUtm = Object.keys(captured).length > 0;
   const referrer = sanitize(document.referrer);
   const landingPage = sanitize(window.location.pathname + window.location.search);
-
-  if (!hasAnyUtm && !referrer) {
-    return null;
-  }
 
   if (referrer) captured.referrer = referrer;
   if (landingPage) captured.landing_page = landingPage;
