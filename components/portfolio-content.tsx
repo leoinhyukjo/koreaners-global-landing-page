@@ -39,6 +39,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
   const tabs = [
     { id: 'all', label: 'All' },
     { id: 'Beauty', label: 'Beauty' },
+    { id: 'Medical', label: 'Medical' },
     { id: 'F&B', label: 'F&B' },
     { id: 'Fashion', label: 'Fashion' },
     { id: 'etc', label: 'etc' },
@@ -55,6 +56,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
     if (!category || category.length === 0) return 'E'
     const firstCat = category[0]
     if (firstCat === 'Beauty') return 'B'
+    if (firstCat === 'Medical') return 'M'
     if (firstCat === 'Fashion') return 'F'
     if (firstCat === 'F&B' || firstCat === 'fb') return 'F&B'
     return 'E'
