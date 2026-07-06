@@ -529,6 +529,13 @@ GROUP BY 1 ORDER BY 1;
 - Phase 4 판정 프레임은 아래 v2로 대체: utm 직접귀속 + organic 증분(블랙아웃 기저 2026-05-26~06-21 대비) + GSC 브랜드 검색량(서비스계정 재사용 가능: work-scripts/scripts/credentials.json, sc-domain:koreaners.co) 3지표 종합. 시나리오 6종은 vault 프로젝트 문서와 워크플로우 판정 결과 참조. 후속 제안: 문의 폼 유입 경로 자가응답 필드 신설
 - 검수 시 발견 (비차단): dev에서 capig.datah04.com 이벤트 422 응답 — Meta CAPI 게이트웨이로 보이며 localhost origin 때문일 가능성. 배포 후 prod에서 픽셀 정상 발화 1회 확인할 것
 
+## 실행 로그 2차 (2026-07-06 오후, Leo 디자인 결정 반영)
+
+- 1차 배포 완료: Leo 직접 push → /consult prod 검증 통과 (200/noindex/신규 카피, Pixel `facebook.com/tr` 200 발화 확인). capig.datah04.com 422는 prod에서도 재현 — 기존 현상, CAPI 게이트웨이 설정 별도 점검 항목
+- Leo 결정 반영 커밋 `985826e`: 랜딩을 `/contact`로 통합 (`components/contact-landing.tsx` + `app/contact/page.tsx` 서버 fetch), 에츠코 사례 섹션 제거 (재사용 금지), 그룹별 대표 브랜드 섹션 신설 (Supabase `portfolios` published만, 카테고리 Beauty/Fashion/F&B/Lifestyle 최신순 최대 5개, 1h ISR), `/consult` → `/contact` 영구 리다이렉트 (next.config.mjs), 구 `contact-content.tsx`/`app/consult`/`components/consult` 제거, `channel-talk.tsx` → `components/common/`, sitemap `/contact` lastmod 2026-07-06
+- Phase 3 광고 도착 URL은 `https://www.koreaners.co/consult`가 아니라 **`https://www.koreaners.co/contact`** 로 전환할 것 (본문 Task 5의 /consult 표기는 이 로그가 우선)
+- 브랜드명 표기 수정은 코드가 아니라 Notion 포트폴리오 DB `client_name`에서 (예: 그란데클립 에프앤비코리아 유한책임회사 (뉴믹스) → 뉴믹스 권장), admin 포트폴리오 sync 후 1시간 내 자동 반영
+
 ## Self-Review 결과
 
 - 스펙 커버리지: 피드백 4요소 (전용 랜딩 = Task 1~3 / 레퍼런스 성과 섹션 = Task 1 STATS+사례 / 무료 상담 CTA = Task 1 히어로+sticky / 실시간 상담 = Task 4) 모두 태스크 존재. 추가로 실측에서 발견한 계측 공백 = Phase 0
