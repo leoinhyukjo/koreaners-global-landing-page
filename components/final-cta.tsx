@@ -2,13 +2,14 @@
 
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { CountUp } from '@/components/ui/count-up'
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
 
 const stats = [
-  { value: '300+', key: 'finalCtaStat2' as const },
-  { value: (locale: string) => (locale === 'ja' ? '30万' : '30만'), key: 'finalCtaStat3' as const },
-  { value: '250%', key: 'finalCtaStat4' as const },
+  { value: 300, suffix: () => '+', key: 'finalCtaStat2' as const },
+  { value: 30, suffix: (locale: string) => (locale === 'ja' ? '万' : '만'), key: 'finalCtaStat3' as const },
+  { value: 250, suffix: () => '%', key: 'finalCtaStat4' as const },
 ]
 
 export function FinalCTA() {
@@ -31,9 +32,11 @@ export function FinalCTA() {
           {stats.map((stat, index) => (
             <StaggerItem key={stat.key}>
               <div className={`${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
-                <div className="font-display font-bold text-6xl lg:text-8xl gradient-warm-text leading-none">
-                  {typeof stat.value === 'function' ? stat.value(locale) : stat.value}
-                </div>
+                <CountUp
+                  value={stat.value}
+                  suffix={stat.suffix(locale)}
+                  className="block font-display font-bold text-4xl sm:text-6xl lg:text-8xl gradient-warm-text leading-none whitespace-nowrap"
+                />
                 <div className="text-sm text-[#78716C] mt-3 uppercase tracking-wider">
                   {t(stat.key)}
                 </div>

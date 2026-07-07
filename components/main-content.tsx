@@ -15,11 +15,12 @@ export function MainContent() {
     <>
       <HeroSection />
       <TrustSignals />
+      {/* 신뢰 블록(RESULTS 스탯) 상단 배치 — 평균 스크롤 33% 데드존 대응 (Task 1.3) */}
+      <FinalCTA />
       <MarketOpportunity />
       <Performance />
       <Barriers />
       <SolutionRoadmap />
-      <FinalCTA />
       <ClientShowcase />
       <FooterCTA />
     </>
