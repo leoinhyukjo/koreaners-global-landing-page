@@ -31,7 +31,7 @@ export function FinalCTA() {
         <StaggerContainer staggerDelay={0.1} className="grid grid-cols-3 gap-8 mt-16">
           {stats.map((stat, index) => (
             <StaggerItem key={stat.key}>
-              <div className={`${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
+              <div className={`cursor-default select-none ${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
                 <CountUp
                   value={stat.value}
                   suffix={stat.suffix(locale)}

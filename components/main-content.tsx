@@ -9,6 +9,7 @@ import { Performance } from '@/components/performance'
 import { ClientShowcase } from '@/components/client-showcase'
 import { FinalCTA } from '@/components/final-cta'
 import { FooterCTA } from '@/components/footer-cta'
+import { StickyCtaBar } from '@/components/ui/sticky-cta-bar'
 
 export function MainContent() {
   return (
@@ -22,7 +23,11 @@ export function MainContent() {
       <Barriers />
       <SolutionRoadmap />
       <ClientShowcase />
-      <FooterCTA />
+      {/* StickyCtaBar 의 폼 진입 감지 앵커 — /contact 의 #consult-form 과 페이지가 달라 충돌 없음 */}
+      <div id="consult-form">
+        <FooterCTA />
+      </div>
+      <StickyCtaBar />
     </>
   )
 }
