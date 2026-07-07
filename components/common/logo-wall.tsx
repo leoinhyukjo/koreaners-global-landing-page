@@ -74,8 +74,8 @@ function MarqueeRow({ logos, direction }: { logos: Logo[]; direction: "left" | "
   const anim = direction === "left" ? "marquee-left" : "marquee-right";
   return (
     <div className="overflow-hidden py-2">
-      {/* 속도 1.5배 (60s → 40s) */}
-      <div className="flex gap-4 w-max" style={{ animation: `${anim} 40s linear infinite` }}>
+      {/* 속도 40% 증가 (40s → 28.6s) */}
+      <div className="flex gap-4 w-max" style={{ animation: `${anim} 28.6s linear infinite` }}>
         {dup.map((logo, i) => (
           <LogoCard key={`${logo.slug}-${i}`} logo={logo} />
         ))}
