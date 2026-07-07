@@ -49,6 +49,9 @@ footer {
   --kn-light: #FAF7F2;
   --kn-dark: #1C1917;
   --kn-card-light: #F3EDE4;
+  /* 다크 표면 elevation (2026-07-07 프론트 개선) */
+  --surface-1: #232019;
+  --surface-2: #2A2620;
   --sidebar: #292524;
   --sidebar-foreground: #FAF7F2;
   --sidebar-primary: #FAF7F2;
@@ -118,6 +121,8 @@ footer {
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -773,6 +778,13 @@ footer {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* KR 헤드라인 디스플레이 규격 — EN Barlow Condensed 와의 격차 해소 (가이드 §1-1) */
+@utility heading-kr {
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  word-break: keep-all;
 }
 
 /* Reduced motion */
