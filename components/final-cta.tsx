@@ -6,10 +6,11 @@ import { CountUp } from '@/components/ui/count-up'
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
 
+// 검증 수치 화이트리스트(verified_numbers.json ad_safe_claims)만 사용 — /contact 노출값과 동일 트리오
 const stats = [
-  { value: 300, suffix: () => '+', key: 'finalCtaStat2' as const },
-  { value: 30, suffix: (locale: string) => (locale === 'ja' ? '万' : '만'), key: 'finalCtaStat3' as const },
-  { value: 250, suffix: () => '%', key: 'finalCtaStat4' as const },
+  { value: 220, suffix: (locale: string) => (locale === 'ja' ? '名+' : '명+'), key: 'finalCtaStat2' as const },
+  { value: 185, suffix: (locale: string) => (locale === 'ja' ? '+' : '개+'), key: 'finalCtaStat3' as const },
+  { value: 10, suffix: (locale: string) => (locale === 'ja' ? '社' : '곳'), key: 'finalCtaStat4' as const },
 ]
 
 export function FinalCTA() {

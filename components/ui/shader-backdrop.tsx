@@ -50,17 +50,19 @@ export function ShaderBackdrop({
     setCanRender(true);
     // 캔버스 첫 프레임 이후 페이드인 (CSS transition — framer-motion 금지)
     const raf = requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)));
-    const host = hostRef.current;
-    let io: IntersectionObserver | undefined;
-    if (host) {
-      io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0 });
-      io.observe(host);
-    }
-    return () => {
-      cancelAnimationFrame(raf);
-      io?.disconnect();
-    };
+    return () => cancelAnimationFrame(raf);
   }, []);
+
+  // 뷰포트 이탈 시 speed 0 가드 — 첫 effect 시점엔 canRender=false 로 host div 가
+  // 아직 미마운트(ref null)라 별도 effect 로 분리해야 observer 가 실제로 붙는다.
+  useEffect(() => {
+    if (!canRender) return;
+    const host = hostRef.current;
+    if (!host) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0 });
+    io.observe(host);
+    return () => io.disconnect();
+  }, [canRender]);
 
   if (!canRender) return null; // CSS 폴백(.hero-glow 등)은 부모 마크업이 상시 유지
 
