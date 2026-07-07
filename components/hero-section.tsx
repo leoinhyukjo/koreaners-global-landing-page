@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 
 export default function HeroSection() {
   const { locale } = useLocale()
@@ -11,7 +12,9 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-[var(--kn-dark)] px-6 lg:px-24 hero-glow">
-      <div className="text-center">
+      {/* absolute! — .hero-glow > * (unlayered) 가 position:relative 로 덮는 것을 되돌림 */}
+      <ShaderBackdrop variant="hero" seed={0} className="absolute!" />
+      <div className="relative z-10 text-center">
         <SectionTag variant="dark">{t('tagline')}</SectionTag>
 
         <h1 className="leading-[0.85] mt-8">
@@ -23,8 +26,11 @@ export default function HeroSection() {
           </span>
         </h1>
 
-        <p className="text-lg md:text-xl text-[#A8A29E] max-w-xl mx-auto mt-8">
-          {t('heroBrandName')}
+        <p className="heading-kr mx-auto mt-6 max-w-xl text-center text-lg text-foreground/90 sm:text-xl">
+          {t('heroValueProp')}
+        </p>
+        <p className="mt-3 text-center text-sm tracking-wide text-foreground/50">
+          {t('heroTrustLine')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">

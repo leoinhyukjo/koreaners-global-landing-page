@@ -2,13 +2,15 @@
 
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { CountUp } from '@/components/ui/count-up'
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
 
+// 검증 수치 화이트리스트(verified_numbers.json ad_safe_claims)만 사용 — /contact 노출값과 동일 트리오
 const stats = [
-  { value: '300+', key: 'finalCtaStat2' as const },
-  { value: (locale: string) => (locale === 'ja' ? '30万' : '30만'), key: 'finalCtaStat3' as const },
-  { value: '250%', key: 'finalCtaStat4' as const },
+  { value: 220, suffix: (locale: string) => (locale === 'ja' ? '名+' : '명+'), key: 'finalCtaStat2' as const },
+  { value: 185, suffix: (locale: string) => (locale === 'ja' ? '+' : '개+'), key: 'finalCtaStat3' as const },
+  { value: 10, suffix: (locale: string) => (locale === 'ja' ? '社' : '곳'), key: 'finalCtaStat4' as const },
 ]
 
 export function FinalCTA() {
@@ -30,10 +32,12 @@ export function FinalCTA() {
         <StaggerContainer staggerDelay={0.1} className="grid grid-cols-3 gap-8 mt-16">
           {stats.map((stat, index) => (
             <StaggerItem key={stat.key}>
-              <div className={`${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
-                <div className="font-display font-bold text-6xl lg:text-8xl gradient-warm-text leading-none">
-                  {typeof stat.value === 'function' ? stat.value(locale) : stat.value}
-                </div>
+              <div className={`cursor-default select-none ${index < stats.length - 1 ? 'border-r border-[var(--kn-dark)]/10' : ''}`}>
+                <CountUp
+                  value={stat.value}
+                  suffix={stat.suffix(locale)}
+                  className="block font-display font-bold text-4xl sm:text-6xl lg:text-8xl gradient-warm-text leading-none whitespace-nowrap"
+                />
                 <div className="text-sm text-[#78716C] mt-3 uppercase tracking-wider">
                   {t(stat.key)}
                 </div>

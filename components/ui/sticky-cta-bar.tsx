@@ -10,6 +10,7 @@ export function StickyCtaBar() {
   const { locale } = useLocale();
   const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(false);
+  const [formInView, setFormInView] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -21,13 +22,22 @@ export function StickyCtaBar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    // 문의 폼(#consult-form) 진입 시 바 숨김 — 폼 위 오버레이 방지 (Task 1.5)
+    const form = document.getElementById('consult-form');
+    if (!form) return;
+    const io = new IntersectionObserver(([e]) => setFormInView(e.isIntersecting), { threshold: 0 });
+    io.observe(form);
+    return () => io.disconnect();
+  }, []);
+
   // Hydration mismatch 방지 (navigation.tsx 의 effectiveLocale 패턴과 동일)
   const effectiveLocale = mounted ? locale : 'ko';
 
   return (
     <div
       className={`fixed inset-x-0 bottom-0 z-40 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] transition-transform duration-300 lg:hidden ${
-        show ? 'translate-y-0' : 'translate-y-full'
+        show && !formInView ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
       <Link
