@@ -36,7 +36,7 @@ function MarqueeRow({ clients, direction, duration }: { clients: string[]; direc
         {duplicated.map((name, i) => (
           <div
             key={`${name}-${i}`}
-            className="flex-shrink-0 bg-card border border-[var(--border)] px-6 py-3 rounded-full hover:border-[#FF4500]/40 transition-colors duration-300"
+            className="flex-shrink-0 bg-card border border-[var(--border)] px-6 py-3 rounded-full cursor-default select-none"
           >
             <span className="text-sm font-semibold text-[var(--foreground)] uppercase tracking-wider whitespace-nowrap">
               {name}
