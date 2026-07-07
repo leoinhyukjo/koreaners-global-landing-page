@@ -30,3 +30,4 @@ next-env.d.ts
 
 # audit screenshots (Playwright 부산물, repo 미커밋)
 screenshots/
+docs/plans/assets/shots/
