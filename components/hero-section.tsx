@@ -23,8 +23,11 @@ export default function HeroSection() {
           </span>
         </h1>
 
-        <p className="text-lg md:text-xl text-[#A8A29E] max-w-xl mx-auto mt-8">
-          {t('heroBrandName')}
+        <p className="heading-kr mx-auto mt-6 max-w-xl text-center text-lg text-foreground/90 sm:text-xl">
+          {t('heroValueProp')}
+        </p>
+        <p className="mt-3 text-center text-sm tracking-wide text-foreground/50">
+          {t('heroTrustLine')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
