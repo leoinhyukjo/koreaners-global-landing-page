@@ -9,6 +9,7 @@ import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionTag } from '@/components/ui/section-tag'
 import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
+import { blogArtSrc, isGenericBlogThumbnail } from '@/lib/blog-art'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { getBlogTitle } from '@/lib/localized-content'
@@ -64,24 +65,20 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                     <Card
                       className="group overflow-hidden bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
-                      {/* Image */}
+                      {/* Image — 고유 썸네일 → 카테고리 아트 → 기본 아트 폴백 체인 */}
                       <div className="aspect-video relative overflow-hidden bg-surface-1">
-                        {post.thumbnail_url ? (
-                          <SafeImage
-                            src={resolveThumbnailSrc(post.thumbnail_url)}
-                            alt={`${getBlogTitle(post, locale)} - ${post.category}`}
-                            fill
-                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-surface-1">
-                            <div className="text-center px-4">
-                              <div className="text-4xl mb-2">📝</div>
-                              <p className="text-sm text-[#A8A29E]">{t('performanceNoImage')}</p>
-                            </div>
-                          </div>
-                        )}
+                        <SafeImage
+                          src={
+                            isGenericBlogThumbnail(post.thumbnail_url)
+                              ? blogArtSrc(post.category)
+                              : resolveThumbnailSrc(post.thumbnail_url)
+                          }
+                          alt={`${getBlogTitle(post, locale)} - ${post.category}`}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1917]/60 via-transparent to-transparent pointer-events-none z-[5]" />
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
                           <Badge variant="secondary" className="text-xs bg-surface-1 text-white/80 border-border">{post.category}</Badge>
                         </div>

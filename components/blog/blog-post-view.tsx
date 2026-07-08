@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MarketingCTA } from "@/components/common/marketing-cta";
+import { ReadingProgress } from "@/components/blog/reading-progress";
+import { TableOfContents } from "@/components/blog/table-of-contents";
 import { resolveThumbnailSrc } from "@/lib/thumbnail";
 import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
@@ -43,6 +45,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
 
   return (
     <main className="min-h-screen relative overflow-hidden bg-background">
+        <ReadingProgress />
         <article className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 relative z-10">
           <div className="max-w-7xl mx-auto">
             <header className="mb-8 sm:mb-12">
@@ -115,16 +118,19 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                 </div>
               </div>
             </header>
-            <div
-              className="mt-10 sm:mt-12 border border-[var(--border)] bg-card px-6 md:px-12 lg:px-24 py-6 md:py-8 lg:py-10 rounded-[var(--radius)] blog-content-wrapper"
-            >
-              <div className="prose prose-lg dark:prose-invert max-w-none break-keep text-white/80 leading-relaxed text-base lg:text-lg blog-content-prose">
-                {hasContent ? (
-                  <BlogContent blogPost={blogPost} content={contentToShow} />
-                ) : (
-                  <p className="text-white/40">{t("blogNoContent")}</p>
-                )}
+            <div className="mt-10 sm:mt-12 xl:grid xl:grid-cols-[minmax(0,1fr)_15rem] xl:gap-10 xl:items-start">
+              <div
+                className="border border-black/5 bg-[#FAF7F2] px-6 md:px-12 lg:px-16 py-8 md:py-10 lg:py-12 rounded-2xl blog-content-wrapper blog-reading-cream shadow-sm"
+              >
+                <div className="prose prose-lg max-w-[65ch] mx-auto break-keep text-[#1C1917] leading-relaxed text-base lg:text-lg blog-content-prose">
+                  {hasContent ? (
+                    <BlogContent blogPost={blogPost} content={contentToShow} />
+                  ) : (
+                    <p className="text-[#78716C]">{t("blogNoContent")}</p>
+                  )}
+                </div>
               </div>
+              <TableOfContents />
             </div>
             <MarketingCTA />
           </div>

@@ -762,6 +762,68 @@ footer {
   word-break: keep-all;
 }
 
+/* ─── Blog 상세 크림 리딩 표면 (blog-post-view 한정) ───
+   기본 .blog-content-wrapper .prose 는 다크 전제(밝은 글자). 포트폴리오 상세와 공유하므로
+   블로그 상세에만 .blog-reading-cream 을 덧붙여 라이트(크림) 기준으로 색을 교정한다.
+   특이도(0,3,1) > 기본(0,2,1) 이라 !important 끼리도 이 규칙이 이긴다. */
+.blog-content-wrapper.blog-reading-cream .prose p,
+.blog-content-wrapper.blog-reading-cream .prose li,
+.blog-content-wrapper.blog-reading-cream .prose ul,
+.blog-content-wrapper.blog-reading-cream .prose ol,
+.blog-content-wrapper.blog-reading-cream .prose td {
+  color: #292524 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose {
+  color: #292524 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose h1,
+.blog-content-wrapper.blog-reading-cream .prose h2,
+.blog-content-wrapper.blog-reading-cream .prose h3,
+.blog-content-wrapper.blog-reading-cream .prose h4,
+.blog-content-wrapper.blog-reading-cream .prose h5,
+.blog-content-wrapper.blog-reading-cream .prose h6,
+.blog-content-wrapper.blog-reading-cream .prose strong {
+  color: #1C1917 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose h2::before,
+.blog-content-wrapper.blog-reading-cream .prose h3::before {
+  color: #FF4500 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose a {
+  color: #C2410C !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose a:hover {
+  color: #9A3412 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose blockquote {
+  border-left-color: rgba(255, 69, 0, 0.4) !important;
+  color: #57534E !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose code {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #1C1917 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose pre {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose pre code {
+  color: #1C1917 !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose td,
+.blog-content-wrapper.blog-reading-cream .prose th {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose tbody tr:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose figcaption {
+  color: #78716C !important;
+}
+.blog-content-wrapper.blog-reading-cream .prose hr {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
