@@ -67,7 +67,7 @@ export function SiteFooter() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm text-white/60 transition-colors hover:text-accent w-fit"
+                className="text-sm text-white/60 transition-colors hover:text-[#FF4500] w-fit"
               >
                 {item.label}
               </Link>
@@ -82,7 +82,7 @@ export function SiteFooter() {
               </h2>
               <a
                 href={`mailto:${SALES_EMAIL}`}
-                className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-accent w-fit"
+                className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-[#FF4500] w-fit"
               >
                 <Mail className="h-4 w-4 flex-shrink-0" aria-hidden />
                 {SALES_EMAIL}
@@ -98,7 +98,7 @@ export function SiteFooter() {
                   href={ig.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-accent w-fit"
+                  className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-[#FF4500] w-fit"
                 >
                   <Instagram className="h-4 w-4 flex-shrink-0" aria-hidden />
                   {ig.label}

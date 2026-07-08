@@ -131,7 +131,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
             {bizAreas.map((area, index) => (
               <Card
                 key={index}
-                className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
+                className="p-8 bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
               >
                 <p className="text-xs font-mono mb-4 text-[#FF4500]">{String(index + 1).padStart(2, '0')}</p>
                 <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mb-6 shrink-0">
@@ -205,7 +205,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
               return (
                 <Card
                   key={index}
-                  className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
+                  className="p-8 bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
                 >
                   <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mx-auto mb-6">
                     <Icon className="w-8 h-8 text-[#FF4500]/70" />
@@ -278,7 +278,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
 
           {jobs.length === 0 ? (
             <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-card flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-surface-1 flex items-center justify-center mx-auto mb-6">
                 <FileText className="w-8 h-8 text-white/50" />
               </div>
               <p className="text-[#A8A29E] text-lg">{t('careersNoOpenings')}</p>
@@ -290,7 +290,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
                 return (
                   <Card
                     key={job.id}
-                    className={`p-6 sm:p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                    className={`p-6 sm:p-8 bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="min-w-0 flex-1">

@@ -580,9 +580,9 @@ function CreatorContent() {
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-card rounded-[var(--radius-sm)] border border-[var(--border)]">
+                <div className="p-3 bg-surface-2 rounded-[var(--radius-sm)] border border-[var(--border)]">
                   <Award className="w-6 h-6 text-[#FF4500]/70" />
                 </div>
                 <div className="flex-1">
@@ -596,9 +596,9 @@ function CreatorContent() {
               </div>
             </div>
 
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-card rounded-[var(--radius-sm)] border border-[var(--border)]">
+                <div className="p-3 bg-surface-2 rounded-[var(--radius-sm)] border border-[var(--border)]">
                   <Target className="w-6 h-6 text-[#FF4500]/70" />
                 </div>
                 <div className="flex-1">
@@ -612,9 +612,9 @@ function CreatorContent() {
               </div>
             </div>
 
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-card rounded-[var(--radius-sm)] border border-[var(--border)]">
+                <div className="p-3 bg-surface-2 rounded-[var(--radius-sm)] border border-[var(--border)]">
                   <Users className="w-6 h-6 text-[#FF4500]/70" />
                 </div>
                 <div className="flex-1">
@@ -694,7 +694,7 @@ function CreatorContent() {
                     name="name"
                     value={formData.name}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder={t("creatorPlaceholderName")}
                   />
                 </div>
@@ -715,7 +715,7 @@ function CreatorContent() {
                       const value = e.target.value.replace(/[^0-9]/g, "");
                       setFormData({ ...formData, phone: value });
                     }}
-                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="01000000000"
                   />
                   <p className="mt-1.5 text-xs text-[#A8A29E]">
@@ -740,7 +740,7 @@ function CreatorContent() {
                   name="email"
                   value={formData.email}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                  className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                   placeholder="example@email.com"
                 />
               </div>
@@ -761,7 +761,7 @@ function CreatorContent() {
                     name="instagram_url"
                     value={formData.instagram_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://instagram.com/..."
                   />
                 </div>
@@ -779,7 +779,7 @@ function CreatorContent() {
                     name="youtube_url"
                     value={formData.youtube_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://youtube.com/..."
                   />
                 </div>
@@ -797,7 +797,7 @@ function CreatorContent() {
                     name="tiktok_url"
                     value={formData.tiktok_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://tiktok.com/..."
                   />
                 </div>
@@ -815,7 +815,7 @@ function CreatorContent() {
                     name="x_url"
                     value={formData.x_url}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
+                    className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all"
                     placeholder="https://x.com/..."
                   />
                 </div>
@@ -835,7 +835,7 @@ function CreatorContent() {
                   rows={4}
                   value={formData.message}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-3.5 bg-card border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-surface-2 border border-[var(--border)] text-white placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-[#FF4500] transition-all resize-none"
                   placeholder={t("creatorPlaceholderMessage")}
                 />
               </div>

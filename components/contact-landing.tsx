@@ -61,7 +61,7 @@ export default function ContactLanding() {
           <h1 className="heading-kr font-display font-bold uppercase text-4xl md:text-5xl leading-[0.95] text-[var(--foreground)] mb-6">
             일본, 대만 진출은
             <br />
-            <span className="text-accent">코리너스입니다</span>
+            <span className="gradient-warm-text">코리너스입니다</span>
           </h1>
           <p className="text-lg text-[#A8A29E] mb-8">
             현지 크리에이터 리뷰 하나로 인지도부터 매출까지 이어집니다.

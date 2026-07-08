@@ -90,7 +90,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
                 className={`px-4 sm:px-6 py-2 sm:py-3 rounded-[var(--radius-sm)] font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
                     ? 'gradient-warm text-white'
-                    : 'bg-card text-[#A8A29E] hover:bg-white/10 border border-[var(--border)]'
+                    : 'bg-surface-1 text-[#A8A29E] hover:bg-white/10 border border-[var(--border)]'
                 }`}
               >
                 {tab.label}
@@ -110,11 +110,11 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
               {filteredItems.map(item => (
                 <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
                   <Card
-                    className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                    className="group overflow-hidden bg-surface-1 border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                   >
                     {/* Image */}
                     {item.thumbnail_url ? (
-                      <div className="aspect-video relative overflow-hidden bg-card">
+                      <div className="aspect-video relative overflow-hidden bg-surface-1">
                         <Image
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale)}
@@ -130,7 +130,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
                         </div>
                       </div>
                     ) : (
-                      <div className="aspect-video bg-card relative overflow-hidden">
+                      <div className="aspect-video bg-surface-1 relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center px-4">
                             <div className="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">

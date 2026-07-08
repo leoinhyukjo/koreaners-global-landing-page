@@ -49,7 +49,7 @@ export default function ServiceContent() {
           <SectionTag variant="dark">SERVICE</SectionTag>
           <h1 className="heading-kr text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep max-w-4xl mt-8">
             <span>{t('serviceHero1')}</span>{' '}
-            <span className="text-accent">{t('serviceHero2')}</span>
+            <span className="gradient-warm-text">{t('serviceHero2')}</span>
             <span>{t('serviceHero3')}</span>
           </h1>
           <p className="text-lg md:text-xl text-[#A8A29E] max-w-2xl mt-6 leading-relaxed break-keep">
@@ -133,15 +133,15 @@ export default function ServiceContent() {
 
             {/* Right: Stat cards stacked */}
             <div className="space-y-4">
-              <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+              <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat1')}</div>
                 <div className="font-display font-bold text-5xl text-[#FF4500]">220+</div>
               </div>
-              <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+              <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat2')}</div>
                 <div className="font-display font-bold text-5xl text-[#FF4500]">0%</div>
               </div>
-              <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
+              <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat3')}</div>
                 <div className="font-display font-bold text-5xl text-[#FF4500]">6</div>
               </div>
@@ -230,7 +230,7 @@ export default function ServiceContent() {
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Card 1: Efficiency */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricEfficiency')}</h4>
@@ -287,7 +287,7 @@ export default function ServiceContent() {
             </div>
 
             {/* Card 2: Inflow */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricInflow')}</h4>
@@ -344,7 +344,7 @@ export default function ServiceContent() {
             </div>
 
             {/* Card 3: Spread */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricSpread')}</h4>
@@ -393,7 +393,7 @@ export default function ServiceContent() {
             </div>
 
             {/* Card 4: Qualitative */}
-            <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
+            <div className="bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#FF4500]/5 transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h4 className="text-lg font-bold text-white">{t('serviceMetricQualitative')}</h4>

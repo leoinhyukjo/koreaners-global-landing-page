@@ -114,7 +114,7 @@ export default function AboutPage() {
             {services.map((service) => (
               <div
                 key={service.title}
-                className="p-6 bg-card border border-border rounded-[var(--radius)] hover:border-[#FF4500]/40 transition-colors"
+                className="p-6 bg-surface-1 border border-border rounded-[var(--radius)] hover:border-[#FF4500]/40 transition-colors"
               >
                 <service.icon className="h-5 w-5 text-[#FF4500] mb-4" />
                 <h3 className="text-lg font-bold text-white mb-2">{service.title}</h3>

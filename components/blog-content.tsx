@@ -62,10 +62,10 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                 <article key={post.id} className="h-full">
                   <Link href={`/blog/${post.slug}`} className="block h-full">
                     <Card
-                      className="group overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                      className="group overflow-hidden bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
                       {/* Image */}
-                      <div className="aspect-video relative overflow-hidden bg-card">
+                      <div className="aspect-video relative overflow-hidden bg-surface-1">
                         {post.thumbnail_url ? (
                           <SafeImage
                             src={resolveThumbnailSrc(post.thumbnail_url)}
@@ -75,7 +75,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-card">
+                          <div className="absolute inset-0 flex items-center justify-center bg-surface-1">
                             <div className="text-center px-4">
                               <div className="text-4xl mb-2">📝</div>
                               <p className="text-sm text-[#A8A29E]">{t('performanceNoImage')}</p>
@@ -83,7 +83,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                           </div>
                         )}
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <Badge variant="secondary" className="text-xs bg-card text-white/80 border-border">{post.category}</Badge>
+                          <Badge variant="secondary" className="text-xs bg-surface-1 text-white/80 border-border">{post.category}</Badge>
                         </div>
                       </div>
 
@@ -115,7 +115,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                   <Link
                     href={currentPage > 1 ? `/blog?page=${currentPage - 1}` : '#'}
                     aria-disabled={currentPage === 1}
-                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-card text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-surface-1 text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     {t('prev')}
@@ -137,7 +137,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                             className={`inline-flex items-center justify-center min-w-[44px] h-10 px-4 rounded-md text-sm ${
                               isActive
                                 ? 'gradient-warm text-white hover:opacity-90'
-                                : 'border border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border'
+                                : 'border border-border bg-surface-1 text-white hover:bg-white/10 hover:text-white hover:border-border'
                             }`}
                           >
                             {page}
@@ -160,7 +160,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                   <Link
                     href={currentPage < totalPages ? `/blog?page=${currentPage + 1}` : '#'}
                     aria-disabled={currentPage === totalPages}
-                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-card text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
+                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-surface-1 text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />
