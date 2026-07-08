@@ -5,6 +5,7 @@ import { Counter } from '@/components/ui/counter'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 
 export function MarketOpportunity() {
   const { locale } = useLocale()
@@ -36,8 +37,10 @@ export function MarketOpportunity() {
 
           {/* Right column — Gradient stats card */}
           <Reveal direction="right">
-            <div className="rounded-[var(--radius-lg)] overflow-hidden gradient-sunset p-8 md:p-10">
-              <StaggerContainer staggerDelay={0.15} className="flex flex-col gap-6">
+            <div className="relative rounded-[var(--radius-lg)] overflow-hidden gradient-sunset p-8 md:p-10">
+              {/* 라이브 셰이더 (홈 2번째 캔버스, 상한) — gradient-sunset 은 폴백으로 유지 */}
+              <ShaderBackdrop variant="card" seed={7} />
+              <StaggerContainer staggerDelay={0.15} className="relative z-10 flex flex-col gap-6">
                 {stats.map((stat, index) => (
                   <StaggerItem key={index}>
                     <div className="bg-white/10 backdrop-blur-sm rounded-[var(--radius)] p-6">
