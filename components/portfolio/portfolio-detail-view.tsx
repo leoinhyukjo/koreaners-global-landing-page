@@ -96,7 +96,7 @@ export function PortfolioDetailView({ portfolio, otherPortfolios }: PortfolioDet
           )}
         </div>
 
-        <MarketingCTA />
+        <MarketingCTA shaderSeed={3} />
 
         {otherPortfolios.length > 0 && (
           <section className="mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-border">
