@@ -1,14 +1,17 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
 import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
+import { InquirySheet } from '@/components/ui/inquiry-sheet'
 
 export default function HeroSection() {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
+  const [inquiryOpen, setInquiryOpen] = useState(false)
 
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-[var(--kn-dark)] px-6 lg:px-24 hero-glow">
@@ -34,14 +37,20 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-          <Link href="/contact" className="gradient-warm text-white px-8 py-4 text-sm font-bold uppercase tracking-wider rounded-[var(--radius-sm)] hover:opacity-90 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 cursor-pointer text-center">
+          <button
+            type="button"
+            onClick={() => setInquiryOpen(true)}
+            className="gradient-warm text-white px-8 py-4 text-sm font-bold uppercase tracking-wider rounded-[var(--radius-sm)] hover:opacity-90 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#FF4500]/20 cursor-pointer text-center"
+          >
             {t('heroCtaFreeConsult')}
-          </Link>
+          </button>
           <Link href="/portfolio" className="bg-transparent text-[var(--foreground)] px-8 py-4 text-sm font-bold uppercase tracking-wider border border-[#A8A29E]/30 rounded-[var(--radius-sm)] hover:border-[#FF4500]/60 hover:bg-white/5 transition-all duration-300 cursor-pointer text-center">
             {t('heroCtaViewCases')}
           </Link>
         </div>
       </div>
+
+      <InquirySheet open={inquiryOpen} onOpenChange={setInquiryOpen} />
     </section>
   )
 }

@@ -30,7 +30,7 @@ const fieldClass = (hasError = false) =>
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" } = {}) {
+export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form" }: { headingLevel?: "h1" | "h2"; instanceId?: string } = {}) {
   const { locale } = useLocale();
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(locale, key);
@@ -299,14 +299,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label
-                  htmlFor="footer-name"
+                  htmlFor={`${instanceId}-name`}
                   className="block text-xs uppercase tracking-wider text-white/40 mb-2"
                 >
                   {t("formName")} <span className="text-white/60">*</span>
                 </label>
                 <input
                   type="text"
-                  id="footer-name"
+                  id={`${instanceId}-name`}
                   name="name"
                   required
                   value={formData.name}
@@ -318,14 +318,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
 
               <div>
                 <label
-                  htmlFor="footer-company"
+                  htmlFor={`${instanceId}-company`}
                   className="block text-xs uppercase tracking-wider text-white/40 mb-2"
                 >
                   {t("formCompany")} <span className="text-white/60">*</span>
                 </label>
                 <input
                   type="text"
-                  id="footer-company"
+                  id={`${instanceId}-company`}
                   name="company"
                   required
                   autoComplete="organization"
@@ -338,14 +338,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
 
               <div>
                 <label
-                  htmlFor="footer-position"
+                  htmlFor={`${instanceId}-position`}
                   className="block text-xs uppercase tracking-wider text-white/40 mb-2"
                 >
                   {t("formPosition")} <span className="text-white/60">*</span>
                 </label>
                 <input
                   type="text"
-                  id="footer-position"
+                  id={`${instanceId}-position`}
                   name="position"
                   required
                   autoComplete="organization-title"
@@ -361,14 +361,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
-                  htmlFor="footer-email"
+                  htmlFor={`${instanceId}-email`}
                   className="block text-xs uppercase tracking-wider text-white/40 mb-2"
                 >
                   {t("formEmail")} <span className="text-white/60">*</span>
                 </label>
                 <input
                   type="email"
-                  id="footer-email"
+                  id={`${instanceId}-email`}
                   name="email"
                   required
                   autoComplete="email"
@@ -389,14 +389,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
 
               <div>
                 <label
-                  htmlFor="footer-phone"
+                  htmlFor={`${instanceId}-phone`}
                   className="block text-xs uppercase tracking-wider text-white/40 mb-2"
                 >
                   {t("formPhone")} <span className="text-white/60">*</span>
                 </label>
                 <input
                   type="tel"
-                  id="footer-phone"
+                  id={`${instanceId}-phone`}
                   name="phone"
                   required
                   autoComplete="tel"
@@ -424,13 +424,13 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
             {/* Row 3: Message */}
             <div>
               <label
-                htmlFor="footer-message"
+                htmlFor={`${instanceId}-message`}
                 className="block text-xs uppercase tracking-wider text-white/40 mb-2"
               >
                 {t("formMessage")} <span className="text-white/60">*</span>
               </label>
               <textarea
-                id="footer-message"
+                id={`${instanceId}-message`}
                 name="message"
                 required
                 rows={4}
@@ -446,14 +446,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
-                  id="footer-privacyConsent"
+                  id={`${instanceId}-privacyConsent`}
                   name="privacyConsent"
                   checked={formData.privacyConsent}
                   onChange={handleChange}
                   className="w-5 h-5 rounded-[var(--radius-sm)] border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
                 />
                 <label
-                  htmlFor="footer-privacyConsent"
+                  htmlFor={`${instanceId}-privacyConsent`}
                   className="flex-1 cursor-pointer group"
                 >
                   <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
@@ -475,14 +475,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
-                  id="footer-marketingConsent"
+                  id={`${instanceId}-marketingConsent`}
                   name="marketingConsent"
                   checked={formData.marketingConsent}
                   onChange={handleChange}
                   className="w-5 h-5 rounded-[var(--radius-sm)] border-2 border-white/30 bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-white transition-all cursor-pointer shrink-0"
                 />
                 <label
-                  htmlFor="footer-marketingConsent"
+                  htmlFor={`${instanceId}-marketingConsent`}
                   className="flex-1 cursor-pointer group"
                 >
                   <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors">

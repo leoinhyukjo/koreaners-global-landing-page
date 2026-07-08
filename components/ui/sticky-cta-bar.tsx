@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLocale } from '@/contexts/locale-context';
 import { getTranslation } from '@/lib/translations';
+import { InquirySheet } from '@/components/ui/inquiry-sheet';
 
 /** 모바일 전용: 히어로를 벗어나면 하단 고정 문의 바 (가이드 §1-3) */
 export function StickyCtaBar() {
@@ -11,6 +11,7 @@ export function StickyCtaBar() {
   const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(false);
   const [formInView, setFormInView] = useState(false);
+  const [inquiryOpen, setInquiryOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -35,17 +36,21 @@ export function StickyCtaBar() {
   const effectiveLocale = mounted ? locale : 'ko';
 
   return (
-    <div
-      className={`fixed inset-x-0 bottom-0 z-40 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] transition-transform duration-300 lg:hidden ${
-        show && !formInView ? 'translate-y-0' : 'translate-y-full'
-      }`}
-    >
-      <Link
-        href="/contact"
-        className="gradient-warm block w-full rounded-lg py-3.5 text-center font-bold text-white shadow-xl"
+    <>
+      <div
+        className={`fixed inset-x-0 bottom-0 z-40 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] transition-transform duration-300 lg:hidden ${
+          show && !formInView && !inquiryOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
       >
-        {getTranslation(effectiveLocale, 'contact') /* 기존 '문의하기' 번역 키 재사용 */}
-      </Link>
-    </div>
+        <button
+          type="button"
+          onClick={() => setInquiryOpen(true)}
+          className="gradient-warm block w-full rounded-lg py-3.5 text-center font-bold text-white shadow-xl"
+        >
+          {getTranslation(effectiveLocale, 'contact') /* 기존 '문의하기' 번역 키 재사용 */}
+        </button>
+      </div>
+      <InquirySheet open={inquiryOpen} onOpenChange={setInquiryOpen} />
+    </>
   );
 }
