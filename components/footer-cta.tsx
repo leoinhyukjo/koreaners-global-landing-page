@@ -125,6 +125,10 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
     try {
       setSubmitting(true);
 
+      // 브라우저 Pixel Lead 와 서버 CAPI Lead 를 dedup 하기 위한 공유 event_id.
+      // 브라우저 fbq 의 eventID + /api/notion 으로 넘기는 payload 의 eventId 로 동일 값 전달.
+      const eventId = crypto.randomUUID();
+
       // DB에 저장할 데이터 준비
       // 필드명은 DB 스키마와 정확히 일치해야 합니다.
       const utm = readStoredUtmData();
@@ -163,9 +167,14 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
         throw error;
       }
 
-      // Meta Pixel Lead 이벤트
+      // Meta Pixel Lead 이벤트 (eventID = 서버 CAPI 와 dedup 키)
       if (typeof window.fbq === "function") {
-        window.fbq("track", "Lead");
+        window.fbq("track", "Lead", {}, { eventID: eventId });
+      }
+
+      // GA4 generate_lead
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "generate_lead", { method: "contact_form" });
       }
 
       // 성공 Dialog 표시
@@ -177,9 +186,10 @@ export function FooterCTA({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" 
       });
 
       // Notion에 데이터 저장 (비동기, 실패해도 사용자 경험에 영향 없음)
-      // CSRF 토큰 자동 포함
+      // CSRF 토큰 자동 포함. eventId 는 서버 CAPI Lead dedup 용으로만 전달
+      // (Supabase insert 스키마에는 넣지 않음 — insertData 는 그대로 유지).
       try {
-        await postWithCsrf("/api/notion", insertData);
+        await postWithCsrf("/api/notion", { ...insertData, eventId });
       } catch (notionError: any) {
         if (process.env.NODE_ENV === "development") {
           console.error(

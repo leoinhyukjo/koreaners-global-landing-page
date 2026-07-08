@@ -157,6 +157,7 @@ export async function POST(request: NextRequest) {
       utm_term,
       referrer,
       landing_page,
+      eventId,
     } = body;
 
     // 필수 필드 검증
@@ -277,6 +278,7 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get("user-agent") || undefined,
       fbc: request.cookies.get("_fbc")?.value,
       fbp: request.cookies.get("_fbp")?.value,
+      eventId: typeof eventId === "string" ? eventId : undefined,
     }).catch(() => {});
 
     const successResponse = withCors(
