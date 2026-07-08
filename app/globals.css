@@ -707,9 +707,9 @@ footer {
   100% { transform: translateX(0); }
 }
 
-/* Portfolio 한 줄 캐러셀 (검증된 성과) — 마퀴 + hover 정지 */
+/* Portfolio 한 줄 캐러셀 (검증된 성과) — 마퀴 + hover 정지, 속도 30% 증가 (50s → 38.5s) */
 .portfolio-marquee {
-  animation: marquee-left 50s linear infinite;
+  animation: marquee-left 38.5s linear infinite;
 }
 .portfolio-marquee:hover {
   animation-play-state: paused;
