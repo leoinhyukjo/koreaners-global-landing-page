@@ -30,7 +30,7 @@ const fieldClass = (hasError = false) =>
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form" }: { headingLevel?: "h1" | "h2"; instanceId?: string } = {}) {
+export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", compact = false }: { headingLevel?: "h1" | "h2"; instanceId?: string; compact?: boolean } = {}) {
   const { locale } = useLocale();
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(locale, key);
@@ -153,7 +153,11 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form" }: 
 
       // 브라우저 Pixel Lead 와 서버 CAPI Lead 를 dedup 하기 위한 공유 event_id.
       // 브라우저 fbq 의 eventID + /api/notion 으로 넘기는 payload 의 eventId 로 동일 값 전달.
-      const eventId = crypto.randomUUID();
+      // randomUUID 는 비-secure-context/구형 인앱 웹뷰에 없을 수 있어 가드 (없으면 dedup 만 포기, 제출은 진행).
+      const eventId =
+        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
       // DB에 저장할 데이터 준비
       // 필드명은 DB 스키마와 정확히 일치해야 합니다.
@@ -279,19 +283,21 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form" }: 
   };
 
   return (
-    <section className="bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24">
+    <section className={compact ? "bg-background px-6 py-8" : "bg-background py-24 md:py-32 lg:py-40 px-6 lg:px-24"}>
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
-          {/* Left: heading + description */}
-          <div>
-            <Heading className="font-display font-bold text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
-              <span className="italic text-[#FF4500]">CONTACT</span><br />
-              US
-            </Heading>
-            <p className="text-base text-white/60 mt-8 leading-relaxed">
-              {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
-            </p>
-          </div>
+        <div className={compact ? "grid grid-cols-1" : "grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start"}>
+          {/* Left: heading + description — 시트(compact) 컨텍스트에서는 생략해 첫 필드를 즉시 노출 */}
+          {!compact && (
+            <div>
+              <Heading className="font-display font-bold text-6xl lg:text-8xl uppercase text-white leading-[0.85]">
+                <span className="italic text-[#FF4500]">CONTACT</span><br />
+                US
+              </Heading>
+              <p className="text-base text-white/60 mt-8 leading-relaxed">
+                {t("footerCtaDesc1")} {t("footerCtaDesc2")} {t("footerCtaDesc3")}
+              </p>
+            </div>
+          )}
 
           {/* Right: form */}
           <form onSubmit={handleSubmit} className="space-y-6">

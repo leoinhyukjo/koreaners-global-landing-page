@@ -28,17 +28,18 @@ export function InquirySheet({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
           aria-describedby={undefined}
-          onOpenAutoFocus={(e) => e.preventDefault()}
           className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-2xl border border-border bg-background shadow-2xl outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom lg:inset-x-auto lg:top-1/2 lg:left-1/2 lg:bottom-auto lg:w-full lg:max-w-3xl lg:max-h-[88vh] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-2xl"
         >
-          <DialogPrimitive.Title className="sr-only">
-            {t('heroCtaFreeConsult')}
-          </DialogPrimitive.Title>
-          <DialogPrimitive.Close className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#FF4500]/40">
-            <XIcon className="h-5 w-5" />
-            <span className="sr-only">{t('dialogCancel')}</span>
-          </DialogPrimitive.Close>
-          <FooterCTA instanceId="inquiry-sheet-form" />
+          <div className="flex items-center justify-between px-6 pt-6">
+            <DialogPrimitive.Title className="font-display text-2xl font-bold text-white">
+              {t('heroCtaFreeConsult')}
+            </DialogPrimitive.Title>
+            <DialogPrimitive.Close className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#FF4500]/40">
+              <XIcon className="h-5 w-5" />
+              <span className="sr-only">{t('dialogCancel')}</span>
+            </DialogPrimitive.Close>
+          </div>
+          <FooterCTA instanceId="inquiry-sheet-form" compact />
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

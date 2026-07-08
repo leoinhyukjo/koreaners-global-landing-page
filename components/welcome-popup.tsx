@@ -47,7 +47,11 @@ export function WelcomePopup() {
     try {
       setSubmitting(true)
 
-      const eventId = crypto.randomUUID()
+      // randomUUID 가드 (구형 인앱 웹뷰 방어 — 없으면 dedup 만 포기, 제출은 진행)
+      const eventId =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`
 
       const { error } = await supabase
         .from('inquiries')
