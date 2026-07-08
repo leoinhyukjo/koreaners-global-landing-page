@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 }
 
 const stats = [
-  { value: '300+', label: '지원 브랜드', icon: Building2 },
+  { value: '185+', label: '지원 브랜드', icon: Building2 },
   { value: '200+', label: '주요 크리에이터', icon: Users },
   { value: '30만+', label: 'SNS 커뮤니티', icon: Globe },
   { value: '250%', label: '평균 ROI', icon: BarChart3 },
@@ -33,7 +33,7 @@ const services = [
   },
   {
     title: '대량 시딩',
-    description: '일본 크리에이터 네트워크를 통한 제품 체험 및 리뷰 콘텐츠 확산. 5,000명 이상의 체험단 풀을 활용하여 자연스러운 입소문을 형성합니다.',
+    description: '일본 크리에이터 네트워크를 통한 제품 체험 및 리뷰 콘텐츠 확산. 크리에이터·체험단 네트워크를 활용하여 자연스러운 입소문을 형성합니다.',
     icon: Users,
   },
   {

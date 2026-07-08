@@ -135,7 +135,7 @@ export default function ServiceContent() {
             <div className="space-y-4">
               <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat1')}</div>
-                <div className="font-display font-bold text-5xl text-[#FF4500]">300+</div>
+                <div className="font-display font-bold text-5xl text-[#FF4500]">200+</div>
               </div>
               <div className="bg-card rounded-[var(--radius)] border border-[var(--border)] p-8 hover:border-[#FF4500]/60 transition-all duration-300">
                 <div className="text-xs text-[#A8A29E] mb-2">{t('serviceInfluencerStat2')}</div>
