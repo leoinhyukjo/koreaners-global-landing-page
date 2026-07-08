@@ -27,10 +27,13 @@ export function ShaderBackdrop({
   variant,
   seed = 0,
   className = '',
+  forceStatic = false,
 }: {
   variant: Variant;
   seed?: number;
   className?: string;
+  /** true 면 speed 0 강제(rAF 루프 off, 최초 1회 드로우) — /contact 등 보수적 페이지용 */
+  forceStatic?: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [canRender, setCanRender] = useState(false);
@@ -66,7 +69,7 @@ export function ShaderBackdrop({
 
   if (!canRender) return null; // CSS 폴백(.hero-glow 등)은 부모 마크업이 상시 유지
 
-  const speed = reduced || !inView ? 0 : BASE_SPEED[variant];
+  const speed = forceStatic || reduced || !inView ? 0 : BASE_SPEED[variant];
   const common = {
     speed,
     frame: 20000 + seed * 11000, // 페이지별 다른 컷

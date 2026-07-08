@@ -17,6 +17,11 @@ interface CAPIEventParams {
   userAgent?: string;
   fbc?: string;
   fbp?: string;
+  /**
+   * 브라우저 Pixel 이벤트와 동일한 event_id — Meta 가 (event_name + event_id)
+   * 로 브라우저/서버 중복 이벤트를 dedup 한다. 없으면 dedup 없이 그대로 전송(하위 호환).
+   */
+  eventId?: string;
 }
 
 export async function sendCAPIEvent(params: CAPIEventParams): Promise<void> {
@@ -39,6 +44,7 @@ export async function sendCAPIEvent(params: CAPIEventParams): Promise<void> {
     event_source_url: params.sourceUrl || "https://koreaners.co",
     action_source: "website",
     user_data: userData,
+    ...(params.eventId ? { event_id: params.eventId } : {}),
   };
 
   const url = `https://graph.facebook.com/${API_VERSION}/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`;

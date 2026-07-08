@@ -46,7 +46,13 @@ export function WelcomePopup() {
 
     try {
       setSubmitting(true)
-      
+
+      // randomUUID 가드 (구형 인앱 웹뷰 방어 — 없으면 dedup 만 포기, 제출은 진행)
+      const eventId =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+
       const { error } = await supabase
         .from('inquiries')
         .insert({
@@ -58,10 +64,18 @@ export function WelcomePopup() {
 
       if (error) throw error
 
+      // 무료 진단 제출도 Lead 로 계측 (footer-cta 와 동일 패턴, 클라이언트 이벤트만)
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead', {}, { eventID: eventId })
+      }
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', { method: 'welcome_popup' })
+      }
+
       toast.success(t('welcomePopupSuccess'), {
         description: t('welcomePopupSuccessDesc'),
       })
-      
+
       handleClose()
     } catch (error) {
       console.error('Error:', error)

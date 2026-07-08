@@ -53,7 +53,7 @@ export function ClientShowcase() {
     <section className="bg-[var(--kn-dark)] py-16 md:py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-24 mb-8">
         <SectionTag variant="dark">
-          TRUSTED BY 300+ BRANDS
+          TRUSTED BY 185+ BRANDS
         </SectionTag>
       </div>
 

@@ -9,18 +9,18 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 export const metadata: Metadata = {
   title: '회사 소개',
   description:
-    '코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 200명 이상의 주요 크리에이터, 70+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 일본 진출을 돕습니다.',
+    '코리너스는 일본 시장 전문 크로스보더 마케팅 에이전시입니다. 220명 이상의 주요 크리에이터, 70+ 브랜드 지원 경험, 데이터 기반 캠페인 운영으로 일본 진출을 돕습니다.',
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: {
     title: '코리너스 | 회사 소개',
-    description: '일본 시장 전문 크로스보더 마케팅 에이전시 코리너스. 200명 이상의 주요 크리에이터와 함께합니다.',
+    description: '일본 시장 전문 크로스보더 마케팅 에이전시 코리너스. 220명 이상의 주요 크리에이터와 함께합니다.',
     url: `${siteUrl}/about`,
   },
 }
 
 const stats = [
-  { value: '300+', label: '지원 브랜드', icon: Building2 },
-  { value: '200+', label: '주요 크리에이터', icon: Users },
+  { value: '185+', label: '지원 브랜드', icon: Building2 },
+  { value: '220+', label: '주요 크리에이터', icon: Users },
   { value: '30만+', label: 'SNS 커뮤니티', icon: Globe },
   { value: '250%', label: '평균 ROI', icon: BarChart3 },
 ]
@@ -28,12 +28,12 @@ const stats = [
 const services = [
   {
     title: '일본 인플루언서 마케팅',
-    description: '일본 현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영. 200명 이상의 주요 크리에이터 네트워크를 통해 브랜드에 최적화된 콘텐츠를 제작합니다.',
+    description: '일본 현지 인플루언서를 활용한 브랜드 마케팅 캠페인 기획 및 운영. 220명 이상의 주요 크리에이터 네트워크를 통해 브랜드에 최적화된 콘텐츠를 제작합니다.',
     icon: Target,
   },
   {
     title: '대량 시딩',
-    description: '일본 크리에이터 네트워크를 통한 제품 체험 및 리뷰 콘텐츠 확산. 5,000명 이상의 체험단 풀을 활용하여 자연스러운 입소문을 형성합니다.',
+    description: '일본 크리에이터 네트워크를 통한 제품 체험 및 리뷰 콘텐츠 확산. 크리에이터·체험단 네트워크를 활용하여 자연스러운 입소문을 형성합니다.',
     icon: Users,
   },
   {
