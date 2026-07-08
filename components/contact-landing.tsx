@@ -52,8 +52,8 @@ export default function ContactLanding() {
 
       {/* 히어로 */}
       <section className="relative bg-[var(--kn-dark)] hero-glow px-6 pt-32 md:pt-36 pb-14 text-center">
-        {/* 정적 셰이더 (speed 0, 드로우 1회) — hero-glow 는 폴백으로 유지 */}
-        <ShaderBackdrop variant="hero-sub" seed={9} forceStatic />
+        {/* 서브 히어로 셰이더 (다른 서브페이지와 동일하게 애니메이션) — hero-glow 는 폴백으로 유지 */}
+        <ShaderBackdrop variant="hero-sub" seed={9} />
         <div className="relative z-10 max-w-3xl mx-auto">
           <p className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#FF4500] bg-white/10 mb-6">
             수출바우처 공식 수행기관
