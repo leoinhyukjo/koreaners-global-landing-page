@@ -9,13 +9,6 @@ import { ChannelTalk } from "@/components/common/channel-talk";
 import { LogoWall } from "@/components/common/logo-wall";
 import { ShaderBackdrop } from "@/components/ui/shader-backdrop";
 
-// 폼 상단 신뢰 로고 — LogoWall 큐레이션 중 인지도 상위 3종 (흰 카드 위, 다크 섹션)
-const TRUST_LOGOS = [
-  { slug: "medicube", ext: "png", name: "medicube" },
-  { slug: "dalba", ext: "png", name: "d'Alba" },
-  { slug: "drg", ext: "png", name: "Dr.G" },
-];
-
 // 수치 SoT: meta-ads-automation/config/verified_numbers.json > ad_safe_claims
 // 이 배열 밖의 수치를 추가하려면 verified_numbers 검증 절차를 먼저 거칠 것
 const STATS = [
@@ -110,31 +103,6 @@ export default function ContactLanding() {
               <p className="text-sm text-[#78716C]">{p.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* 폼 직상단 신뢰 요소: 대표 브랜드 로고 3종 + 수출바우처 pill 재노출 */}
-      <section className="bg-background px-6 pt-16 md:pt-20">
-        <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
-          <p className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#FF4500] bg-white/10">
-            수출바우처 공식 수행기관
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {TRUST_LOGOS.map((logo) => (
-              <div
-                key={logo.slug}
-                className="flex h-16 w-32 items-center justify-center rounded-xl border border-[var(--kn-dark)]/8 bg-white px-5"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/logos/${logo.slug}.${logo.ext}`}
-                  alt={`${logo.name} 로고`}
-                  loading="lazy"
-                  className="max-h-8 w-auto max-w-full object-contain"
-                />
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
