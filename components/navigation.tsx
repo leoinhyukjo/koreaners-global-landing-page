@@ -86,13 +86,13 @@ export default function Navigation() {
       ref={navRef}
       className={`main-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full max-w-full overflow-hidden ${
         scrolled
-          ? 'bg-background/90 backdrop-blur-md border-b border-border'
+          ? 'bg-background/80 backdrop-blur-md border-b border-border'
           : 'bg-transparent border-b border-transparent'
       }`}
       style={{ width: '100%' }}
     >
       <div className="w-full max-w-full px-6 md:px-12 lg:px-24">
-        <div className="container mx-auto max-w-7xl h-16 sm:h-20 flex items-center">
+        <div className={`container mx-auto max-w-7xl flex items-center transition-[height] duration-300 ${scrolled ? 'h-12 sm:h-16' : 'h-16 sm:h-20'}`}>
         <div className="flex items-center justify-between min-w-0 w-full">
           <Link href="/" className="hover:opacity-80 transition-opacity flex-shrink-0 flex items-center gap-2 sm:gap-3 min-w-0">
             <Logo variant="header" />
@@ -178,7 +178,7 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent 
                   side="right" 
-                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-background border-l border-border z-50 overflow-y-auto"
+                  className="w-[min(300px,100vw)] sm:w-[340px] max-w-full bg-surface-1 border-l border-border z-50 overflow-y-auto"
                 >
                   <SheetHeader className="border-b border-border pb-4 mb-4 z-10 relative">
                     <SheetTitle className="text-left text-xl font-bold text-white break-words">
