@@ -9,6 +9,7 @@ import { useLocale } from '@/contexts/locale-context'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 import Image from 'next/image'
 
 interface PortfolioContentProps {
@@ -67,6 +68,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
       <Navigation />
       {/* Hero Section */}
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 relative overflow-hidden hero-glow">
+      <ShaderBackdrop variant="hero-sub" seed={3} className="absolute!" />
       <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">PORTFOLIO</SectionTag>

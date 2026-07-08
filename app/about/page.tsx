@@ -3,6 +3,7 @@ import Navigation from '@/components/navigation'
 import { safeJsonLdStringify } from '@/lib/json-ld'
 import Link from 'next/link'
 import { Building2, Globe, Users, BarChart3, Award, Target } from 'lucide-react'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
@@ -74,8 +75,9 @@ export default function AboutPage() {
       />
 
       {/* Hero */}
-      <section className="pt-32 sm:pt-40 pb-16 sm:pb-20 px-6 lg:px-24 hero-glow">
-        <div className="max-w-7xl mx-auto">
+      <section className="pt-32 sm:pt-40 pb-16 sm:pb-20 px-6 lg:px-24 relative overflow-hidden hero-glow">
+        <ShaderBackdrop variant="hero-sub" seed={6} className="absolute!" />
+        <div className="max-w-7xl mx-auto relative z-10">
           <p className="text-xs uppercase tracking-[0.2em] text-[#FF4500] font-bold mb-6">ABOUT US</p>
           <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
             일본 시장 진출의

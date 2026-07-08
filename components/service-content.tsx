@@ -8,6 +8,7 @@ import { SectionTag } from '@/components/ui/section-tag'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { ProcessTimeline } from '@/components/service/process-timeline'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 
 const PAIN_DESC_KEYS = ['barrier1Desc', 'barrier2Desc', 'barrier3Desc', 'barrier4Desc'] as const
 const INFLUENCER_KEYS = [
@@ -46,7 +47,8 @@ export default function ServiceContent() {
 
       {/* Hero Section — Dark */}
       <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
-        <div className="max-w-7xl mx-auto">
+        <ShaderBackdrop variant="hero-sub" seed={1} className="absolute!" />
+        <div className="max-w-7xl mx-auto relative z-10">
           <SectionTag variant="dark">SERVICE</SectionTag>
           <h1 className="heading-kr text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep max-w-4xl mt-8">
             <span>{t('serviceHero1')}</span>{' '}

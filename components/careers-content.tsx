@@ -23,6 +23,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import type { CareerJob } from '@/lib/notion/careers'
@@ -85,6 +86,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
 
       {/* Hero Section (Dark) */}
       <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full hero-glow">
+        <ShaderBackdrop variant="hero-sub" seed={5} className="absolute!" />
         <div className="max-w-7xl mx-auto relative z-10">
           <SectionTag variant="dark">CAREERS</SectionTag>
           <div className="mt-6 mb-8" />

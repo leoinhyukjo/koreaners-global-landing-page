@@ -36,6 +36,7 @@ import { getTranslation } from "@/lib/translations";
 import { CreatorTrackSection } from "@/components/creator-track-section";
 import { SectionTag } from "@/components/ui/section-tag";
 import { NetworkStats } from "@/components/creator/network-stats";
+import { ShaderBackdrop } from "@/components/ui/shader-backdrop";
 import Image from "next/image";
 
 const CREATORS_PER_PAGE = 8;
@@ -222,7 +223,8 @@ function CreatorContent() {
           SECTION 1: Hero + Creator Cards (Dark bg-background)
           ============================================================ */}
       <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
-        <div className="max-w-7xl mx-auto">
+        <ShaderBackdrop variant="hero-sub" seed={2} className="absolute!" />
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Hero - Left aligned */}
           <div className="mb-20 sm:mb-28">
             <SectionTag variant="dark">CREATOR</SectionTag>
