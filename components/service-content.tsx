@@ -7,6 +7,7 @@ import { AlertTriangle, TrendingUp, Users, Target, BarChart3, Globe, CheckCircle
 import { SectionTag } from '@/components/ui/section-tag'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { ProcessTimeline } from '@/components/service/process-timeline'
 
 const PAIN_DESC_KEYS = ['barrier1Desc', 'barrier2Desc', 'barrier3Desc', 'barrier4Desc'] as const
 const INFLUENCER_KEYS = [
@@ -59,7 +60,7 @@ export default function ServiceContent() {
       </section>
 
       {/* Pain Points — Light */}
-      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-[var(--kn-light)]">
+      <section className="py-16 md:py-24 lg:py-28 px-6 lg:px-24 bg-[var(--kn-light)]">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-16">
             <SectionTag variant="light">CHALLENGES</SectionTag>
@@ -96,8 +97,11 @@ export default function ServiceContent() {
         </div>
       </section>
 
+      {/* Process Timeline — Dark */}
+      <ProcessTimeline />
+
       {/* Service 01: Influencer Marketing — Dark */}
-      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+      <section className="py-16 md:py-24 lg:py-28 px-6 lg:px-24 bg-background">
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">SERVICE 01</SectionTag>
           <div className="mb-8" />
@@ -151,7 +155,7 @@ export default function ServiceContent() {
       </section>
 
       {/* Service 02: Seeding — Light */}
-      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-[var(--kn-light)]">
+      <section className="py-16 md:py-24 lg:py-28 px-6 lg:px-24 bg-[var(--kn-light)]">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-16">
             <SectionTag variant="light">SERVICE 02</SectionTag>
@@ -207,7 +211,7 @@ export default function ServiceContent() {
       </section>
 
       {/* Data & Reporting — Dark */}
-      <section className="py-24 md:py-32 lg:py-40 px-6 lg:px-24 bg-background">
+      <section className="py-16 md:py-24 lg:py-28 px-6 lg:px-24 bg-background">
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">DATA & REPORTING</SectionTag>
 
