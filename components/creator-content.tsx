@@ -35,6 +35,7 @@ import { useLocale } from "@/contexts/locale-context";
 import { getTranslation } from "@/lib/translations";
 import { CreatorTrackSection } from "@/components/creator-track-section";
 import { SectionTag } from "@/components/ui/section-tag";
+import { NetworkStats } from "@/components/creator/network-stats";
 import Image from "next/image";
 
 const CREATORS_PER_PAGE = 8;
@@ -247,6 +248,9 @@ function CreatorContent() {
               <ArrowDown className="ml-3 w-6 h-6 animate-bounce-slow" />
             </Button>
           </div>
+
+          {/* 동의 전: 익명 네트워크 통계 그리드로 대체 */}
+          {!SHOW_CREATOR_CARDS && <NetworkStats />}
 
           {/* Creator Cards Grid */}
           {SHOW_CREATOR_CARDS && (
@@ -645,7 +649,7 @@ function CreatorContent() {
           ============================================================ */}
       {/* Creator Application Form Modal */}
       <Dialog open={applyModalOpen} onOpenChange={setApplyModalOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-[var(--border)] p-0">
+        <DialogContent className="sm:max-w-2xl max-h-[90dvh] overflow-y-auto bg-background border-[var(--border)] p-0">
           <div className="p-8 sm:p-10">
             <DialogHeader className="mb-8">
               <div className="flex items-center gap-3 mb-4">
