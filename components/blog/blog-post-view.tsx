@@ -50,7 +50,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
           <div className="max-w-7xl mx-auto">
             <header className="mb-8 sm:mb-12">
               {/* Section tag */}
-              <span className="text-xs uppercase tracking-[0.2em] text-white/40">BLOG</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-white/60">BLOG</span>
               <div className="w-12 h-0.5 bg-[#FF4500] mt-3 mb-8" />
 
               <Link href="/blog">
@@ -78,7 +78,7 @@ export function BlogPostView({ blogPost, thumbnailSrc }: BlogPostViewProps) {
                       <div className="absolute inset-0 flex items-center justify-center bg-card">
                         <div className="text-center px-4">
                           <span className="text-4xl font-bold text-white/20 tracking-widest">BLOG</span>
-                          <p className="text-sm text-white/40 mt-2">
+                          <p className="text-sm text-white/60 mt-2">
                             {t("performanceNoImage")}
                           </p>
                         </div>

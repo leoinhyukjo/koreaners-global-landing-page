@@ -306,7 +306,7 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", co
               <div>
                 <label
                   htmlFor={`${instanceId}-name`}
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/60 mb-2"
                 >
                   {t("formName")} <span className="text-white/60">*</span>
                 </label>
@@ -325,7 +325,7 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", co
               <div>
                 <label
                   htmlFor={`${instanceId}-company`}
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/60 mb-2"
                 >
                   {t("formCompany")} <span className="text-white/60">*</span>
                 </label>
@@ -345,7 +345,7 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", co
               <div>
                 <label
                   htmlFor={`${instanceId}-position`}
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/60 mb-2"
                 >
                   {t("formPosition")} <span className="text-white/60">*</span>
                 </label>
@@ -368,7 +368,7 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", co
               <div>
                 <label
                   htmlFor={`${instanceId}-email`}
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/60 mb-2"
                 >
                   {t("formEmail")} <span className="text-white/60">*</span>
                 </label>
@@ -396,7 +396,7 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", co
               <div>
                 <label
                   htmlFor={`${instanceId}-phone`}
-                  className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                  className="block text-xs uppercase tracking-wider text-white/60 mb-2"
                 >
                   {t("formPhone")} <span className="text-white/60">*</span>
                 </label>
@@ -431,7 +431,7 @@ export function FooterCTA({ headingLevel = "h2", instanceId = "consult-form", co
             <div>
               <label
                 htmlFor={`${instanceId}-message`}
-                className="block text-xs uppercase tracking-wider text-white/40 mb-2"
+                className="block text-xs uppercase tracking-wider text-white/60 mb-2"
               >
                 {t("formMessage")} <span className="text-white/60">*</span>
               </label>

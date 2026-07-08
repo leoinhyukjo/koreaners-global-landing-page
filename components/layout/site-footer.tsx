@@ -60,7 +60,7 @@ export function SiteFooter() {
 
           {/* 2) 사이트맵 */}
           <nav aria-label={t('footerSitemapHeading')} className="flex flex-col gap-3">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-white/40">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-white/60">
               {t('footerSitemapHeading')}
             </h2>
             {SITEMAP.map((item) => (
@@ -77,7 +77,7 @@ export function SiteFooter() {
           {/* 3) 연락 + 팔로우 */}
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-white/40">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-white/60">
                 {t('footerContactHeading')}
               </h2>
               <a
@@ -89,7 +89,7 @@ export function SiteFooter() {
               </a>
             </div>
             <div className="flex flex-col gap-3">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-white/40">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-white/60">
                 {t('footerFollowHeading')}
               </h2>
               {INSTAGRAM.map((ig) => (
@@ -113,7 +113,7 @@ export function SiteFooter() {
           <div className="text-xs sm:text-sm font-semibold text-white/70 break-keep">
             {t('companyName')}
           </div>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50 break-keep">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/60 break-keep">
             <span className="break-keep">
               {t('ceo')}: {t('ceoName')}
             </span>
@@ -126,11 +126,11 @@ export function SiteFooter() {
               {t('address')}: {t('addressValue')}
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/50 break-keep">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/60 break-keep">
             <span>{t('copyright')}</span>
             <Link
               href="/privacy"
-              className="text-white/50 transition-colors hover:text-white/70"
+              className="text-white/60 transition-colors hover:text-white/80"
             >
               {locale === 'ja' ? 'プライバシーポリシー' : '개인정보처리방침'}
             </Link>

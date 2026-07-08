@@ -112,6 +112,11 @@ footer {
   * {
     @apply border-border outline-ring/50;
   }
+  /* 키보드 접근: 전역 포커스 비저블 규격 */
+  :focus-visible {
+    outline: 2px solid var(--accent-orange);
+    outline-offset: 2px;
+  }
   html {
     /* 전역 90% 축소: 16px → 15px, rem 단위 일괄 적용 */
     font-size: 15px;

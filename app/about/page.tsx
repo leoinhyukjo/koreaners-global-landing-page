@@ -4,6 +4,7 @@ import { safeJsonLdStringify } from '@/lib/json-ld'
 import Link from 'next/link'
 import { Building2, Globe, Users, BarChart3, Award, Target } from 'lucide-react'
 import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
+import { CountUp } from '@/components/ui/count-up'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.koreaners.co'
 
@@ -20,10 +21,10 @@ export const metadata: Metadata = {
 }
 
 const stats = [
-  { value: '185+', label: '지원 브랜드', icon: Building2 },
-  { value: '220+', label: '주요 크리에이터', icon: Users },
-  { value: '30만+', label: 'SNS 커뮤니티', icon: Globe },
-  { value: '250%', label: '평균 ROI', icon: BarChart3 },
+  { num: 185, suffix: '+', label: '지원 브랜드', icon: Building2 },
+  { num: 220, suffix: '+', label: '주요 크리에이터', icon: Users },
+  { num: 30, suffix: '만+', label: 'SNS 커뮤니티', icon: Globe },
+  { num: 250, suffix: '%', label: '평균 ROI', icon: BarChart3 },
 ]
 
 const services = [
@@ -94,11 +95,16 @@ export default function AboutPage() {
 
       {/* Stats */}
       <section className="py-16 sm:py-20 px-6 lg:px-24 border-t border-border">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
+            <div
+              key={stat.label}
+              className="bg-surface-1 border border-border rounded-[var(--radius)] p-6 sm:p-8 text-center hover:border-[#FF4500]/40 transition-colors"
+            >
               <stat.icon className="h-6 w-6 text-[#FF4500] mx-auto mb-3" />
-              <p className="text-3xl sm:text-4xl font-bold gradient-warm-text">{stat.value}</p>
+              <p className="text-3xl sm:text-4xl font-bold gradient-warm-text">
+                <CountUp value={stat.num} suffix={stat.suffix} />
+              </p>
               <p className="text-sm text-[#A8A29E] mt-1">{stat.label}</p>
             </div>
           ))}
