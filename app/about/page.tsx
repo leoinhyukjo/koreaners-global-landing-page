@@ -77,7 +77,7 @@ export default function AboutPage() {
       <section className="pt-32 sm:pt-40 pb-16 sm:pb-20 px-6 lg:px-24 hero-glow">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs uppercase tracking-[0.2em] text-[#FF4500] font-bold mb-6">ABOUT US</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
+          <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
             일본 시장 진출의
             <br />
             <span className="gradient-warm-text">확실한 파트너</span>

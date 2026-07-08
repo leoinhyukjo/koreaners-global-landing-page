@@ -71,7 +71,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">PORTFOLIO</SectionTag>
             <div className="mt-6" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('portfolioPageHero1')}</span>
               <br />
               <span className="gradient-warm-text">{t('portfolioPageHero2')}</span>

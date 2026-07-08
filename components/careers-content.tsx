@@ -105,7 +105,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="light">ABOUT US</SectionTag>
           <div className="mb-16" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-8 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-8 break-keep">
             {t('careersAboutTitle')}
           </h2>
           <div className="max-w-3xl space-y-4">
@@ -124,7 +124,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">BUSINESS</SectionTag>
           <div className="mt-6 mb-8" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16 break-keep">
             {t('careersBizTitle')}
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -161,7 +161,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="light">STRENGTHS</SectionTag>
           <div className="mb-16" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
             {t('careersStrengthTitle')}
           </h2>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
@@ -192,7 +192,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">VISION</SectionTag>
           <div className="mt-6 mb-8" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 break-keep">
             {t('careersVisionTitle')}
           </h2>
           <p className="text-lg sm:text-xl text-[#A8A29E] max-w-3xl mb-16 break-keep">
@@ -228,7 +228,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="light">CULTURE</SectionTag>
           <div className="mb-16" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
             {t('careersCultureTitle')}
           </h2>
           <div className="space-y-4 sm:space-y-6">
@@ -269,7 +269,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">OPENINGS</SectionTag>
           <div className="mt-6 mb-8" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 break-keep">
             {t('careersOpeningsTitle')}
           </h2>
           <p className="text-lg sm:text-xl text-[#A8A29E] mb-16 break-keep">

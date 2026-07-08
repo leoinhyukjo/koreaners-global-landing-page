@@ -227,7 +227,7 @@ function CreatorContent() {
             <SectionTag variant="dark">CREATOR</SectionTag>
             <div className="mb-8" />
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
+            <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
               <span>{t("creatorHero1")}</span>
               <br />
               <span className="gradient-warm-text">{t("creatorHero2")}</span>

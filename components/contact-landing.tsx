@@ -58,10 +58,10 @@ export default function ContactLanding() {
           <p className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#FF4500] bg-white/10 mb-6">
             수출바우처 공식 수행기관
           </p>
-          <h1 className="font-display font-bold uppercase text-4xl md:text-5xl leading-[0.95] text-[var(--foreground)] mb-6">
+          <h1 className="heading-kr font-display font-bold uppercase text-4xl md:text-5xl leading-[0.95] text-[var(--foreground)] mb-6">
             일본, 대만 진출은
             <br />
-            코리너스입니다
+            <span className="text-accent">코리너스입니다</span>
           </h1>
           <p className="text-lg text-[#A8A29E] mb-8">
             현지 크리에이터 리뷰 하나로 인지도부터 매출까지 이어집니다.

@@ -37,7 +37,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">BLOG</SectionTag>
             <div className="mb-8" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('blogHeroTitle')}</span>
               <span className="gradient-warm-text">{t('blogHeroTitle2')}</span>
             </h1>

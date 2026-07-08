@@ -47,9 +47,9 @@ export default function ServiceContent() {
       <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background hero-glow">
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">SERVICE</SectionTag>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep max-w-4xl mt-8">
+          <h1 className="heading-kr text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight break-keep max-w-4xl mt-8">
             <span>{t('serviceHero1')}</span>{' '}
-            <span>{t('serviceHero2')}</span>
+            <span className="text-accent">{t('serviceHero2')}</span>
             <span>{t('serviceHero3')}</span>
           </h1>
           <p className="text-lg md:text-xl text-[#A8A29E] max-w-2xl mt-6 leading-relaxed break-keep">
