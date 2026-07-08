@@ -15,7 +15,7 @@ export function FadeIn({ children, delay = 0, duration = 0.5, className }: FadeI
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, margin: '-15% 0px' }}
       transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1.0] }}
       className={className}
     >
@@ -38,7 +38,7 @@ export function Reveal({ children, direction = 'left', delay = 0, duration = 0.6
     <motion.div
       initial={{ opacity: 0, x }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, margin: '-15% 0px' }}
       transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1.0] }}
       className={className}
     >
@@ -59,7 +59,7 @@ export function ScaleIn({ children, delay = 0, duration = 0.6, className }: Scal
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, margin: '-15% 0px' }}
       transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1.0] }}
       className={className}
     >
@@ -79,7 +79,7 @@ export function StaggerContainer({ children, staggerDelay = 0.1, className }: St
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, margin: '-15% 0px' }}
       variants={{
         hidden: {},
         visible: { transition: { staggerChildren: staggerDelay } },

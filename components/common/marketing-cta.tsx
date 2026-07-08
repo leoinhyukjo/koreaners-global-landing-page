@@ -4,16 +4,19 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 
-export function MarketingCTA() {
+/** shaderSeed 를 넘기면 CTA 밴드 배경에 라이브 셰이더 레이어(cta variant)를 얹는다. */
+export function MarketingCTA({ shaderSeed }: { shaderSeed?: number }) {
   const { locale } = useLocale()
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(locale, key)
   return (
     <section
-      className="mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-[var(--radius)] border border-[var(--border)] bg-card"
+      className="relative overflow-hidden mt-12 sm:mt-16 py-10 sm:py-14 px-4 sm:px-6 lg:px-24 rounded-[var(--radius)] border border-[var(--border)] bg-card"
       aria-label={t('marketingCtaButton')}
     >
-      <div className="container mx-auto max-w-7xl">
+      {typeof shaderSeed === 'number' && <ShaderBackdrop variant="cta" seed={shaderSeed} />}
+      <div className="container mx-auto max-w-7xl relative z-10">
         <div className="max-w-2xl mx-auto text-center space-y-5 sm:space-y-6">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight break-keep">
           {t('marketingCtaTitle')}

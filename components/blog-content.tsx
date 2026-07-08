@@ -7,8 +7,10 @@ import type { BlogPost } from '@/lib/supabase'
 import Link from 'next/link'
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 import { SafeImage } from '@/components/ui/SafeImage'
 import { resolveThumbnailSrc } from '@/lib/thumbnail'
+import { blogArtSrc, isGenericBlogThumbnail } from '@/lib/blog-art'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { getBlogTitle } from '@/lib/localized-content'
@@ -33,11 +35,12 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
     <>
       {/* Hero Section */}
       <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 w-full max-w-full overflow-hidden relative hero-glow">
+        <ShaderBackdrop variant="hero-sub" seed={4} className="absolute!" />
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">BLOG</SectionTag>
             <div className="mb-8" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('blogHeroTitle')}</span>
               <span className="gradient-warm-text">{t('blogHeroTitle2')}</span>
             </h1>
@@ -62,28 +65,24 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                 <article key={post.id} className="h-full">
                   <Link href={`/blog/${post.slug}`} className="block h-full">
                     <Card
-                      className="group overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                      className="group overflow-hidden bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                     >
-                      {/* Image */}
-                      <div className="aspect-video relative overflow-hidden bg-card">
-                        {post.thumbnail_url ? (
-                          <SafeImage
-                            src={resolveThumbnailSrc(post.thumbnail_url)}
-                            alt={`${getBlogTitle(post, locale)} - ${post.category}`}
-                            fill
-                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-card">
-                            <div className="text-center px-4">
-                              <div className="text-4xl mb-2">📝</div>
-                              <p className="text-sm text-[#A8A29E]">{t('performanceNoImage')}</p>
-                            </div>
-                          </div>
-                        )}
+                      {/* Image — 고유 썸네일 → 카테고리 아트 → 기본 아트 폴백 체인 */}
+                      <div className="aspect-video relative overflow-hidden bg-surface-1">
+                        <SafeImage
+                          src={
+                            isGenericBlogThumbnail(post.thumbnail_url)
+                              ? blogArtSrc(post.category)
+                              : resolveThumbnailSrc(post.thumbnail_url)
+                          }
+                          alt={`${getBlogTitle(post, locale)} - ${post.category}`}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1917]/60 via-transparent to-transparent pointer-events-none z-[5]" />
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                          <Badge variant="secondary" className="text-xs bg-card text-white/80 border-border">{post.category}</Badge>
+                          <Badge variant="secondary" className="text-xs bg-surface-1 text-white/80 border-border">{post.category}</Badge>
                         </div>
                       </div>
 
@@ -115,7 +114,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                   <Link
                     href={currentPage > 1 ? `/blog?page=${currentPage - 1}` : '#'}
                     aria-disabled={currentPage === 1}
-                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-card text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-surface-1 text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     {t('prev')}
@@ -137,7 +136,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                             className={`inline-flex items-center justify-center min-w-[44px] h-10 px-4 rounded-md text-sm ${
                               isActive
                                 ? 'gradient-warm text-white hover:opacity-90'
-                                : 'border border-border bg-card text-white hover:bg-white/10 hover:text-white hover:border-border'
+                                : 'border border-border bg-surface-1 text-white hover:bg-white/10 hover:text-white hover:border-border'
                             }`}
                           >
                             {page}
@@ -160,7 +159,7 @@ function BlogContent({ initialPosts, currentPage }: BlogContentProps) {
                   <Link
                     href={currentPage < totalPages ? `/blog?page=${currentPage + 1}` : '#'}
                     aria-disabled={currentPage === totalPages}
-                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-card text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
+                    className={`inline-flex items-center justify-center gap-1 h-10 px-4 rounded-md border border-border bg-surface-1 text-white text-sm hover:bg-white/10 hover:text-white hover:border-border ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     {t('next')}
                     <ChevronRight className="h-4 w-4 ml-1" />

@@ -67,7 +67,7 @@ export function LatestInsights() {
         </div>
 
         <Link href={`/blog/${latestPost.slug}`}>
-          <Card className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl">
+          <Card className="group overflow-hidden bg-surface-1 border-border hover:border-primary/50 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl">
             <div className="grid md:grid-cols-2 gap-0">
               {/* 썸네일 */}
               <div className="aspect-video md:aspect-auto md:h-full relative overflow-hidden bg-muted">

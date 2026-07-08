@@ -41,19 +41,47 @@ async function getPortfolio(id: string): Promise<Portfolio | null> {
   }
 }
 
-async function getOtherPortfolios(excludeId: string): Promise<Portfolio[]> {
+async function getOtherPortfolios(
+  excludeId: string,
+  category?: string[] | null,
+): Promise<Portfolio[]> {
   try {
     const supabase = createStaticClient();
-    const { data, error } = await supabase
-      .from("portfolios")
-      .select("*")
-      .neq("id", excludeId)
-      .order("published_at", { ascending: false, nullsFirst: false })
-      .order("created_at", { ascending: false })
-      .limit(3);
 
-    if (error) return [];
-    return data || [];
+    // 1) 같은 category 관련 사례 우선
+    const related: Portfolio[] = [];
+    if (Array.isArray(category) && category.length > 0) {
+      const { data } = await supabase
+        .from("portfolios")
+        .select("*")
+        .neq("id", excludeId)
+        .overlaps("category", category)
+        .order("published_at", { ascending: false, nullsFirst: false })
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (data) related.push(...data);
+    }
+
+    // 2) 3장 미만이면 최신 사례로 보강 (중복 제외)
+    if (related.length < 3) {
+      const seen = new Set([excludeId, ...related.map((p) => p.id)]);
+      const { data } = await supabase
+        .from("portfolios")
+        .select("*")
+        .neq("id", excludeId)
+        .order("published_at", { ascending: false, nullsFirst: false })
+        .order("created_at", { ascending: false })
+        .limit(6);
+      for (const p of data || []) {
+        if (related.length >= 3) break;
+        if (!seen.has(p.id)) {
+          related.push(p);
+          seen.add(p.id);
+        }
+      }
+    }
+
+    return related.slice(0, 3);
   } catch {
     return [];
   }
@@ -107,14 +135,13 @@ export async function generateMetadata({
 
 export default async function PortfolioDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const [portfolio, otherPortfolios] = await Promise.all([
-    getPortfolio(id),
-    getOtherPortfolios(id),
-  ]);
+  const portfolio = await getPortfolio(id);
 
   if (!portfolio) {
     notFound();
   }
+
+  const otherPortfolios = await getOtherPortfolios(id, portfolio.category);
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://www.koreaners.co";

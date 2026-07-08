@@ -61,10 +61,10 @@ export function CreatorTrackSection({
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Exclusive Creator Track */}
-        <div className="overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300">
+        <div className="overflow-hidden bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300">
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-card border border-[var(--border)] rounded-[var(--radius-sm)]">
+              <div className="p-3 bg-surface-2 border border-[var(--border)] rounded-[var(--radius-sm)]">
                 <Zap className="w-7 h-7 text-[#FF4500]/70" />
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white">
@@ -169,10 +169,10 @@ export function CreatorTrackSection({
         </div>
 
         {/* Partner Track */}
-        <div className="overflow-hidden bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300">
+        <div className="overflow-hidden bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300">
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-card border border-[var(--border)] rounded-[var(--radius-sm)]">
+              <div className="p-3 bg-surface-2 border border-[var(--border)] rounded-[var(--radius-sm)]">
                 <Target className="w-7 h-7 text-[#FF4500]/70" />
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white">

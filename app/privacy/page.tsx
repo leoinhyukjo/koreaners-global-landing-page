@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
           개인정보처리방침
         </h1>
 
-        <p className="mb-8 text-sm text-white/50">최종 수정일: 2026년 2월 27일</p>
+        <p className="mb-8 text-sm text-white/60">최종 수정일: 2026년 2월 27일</p>
 
         <div className="space-y-8 text-sm leading-relaxed">
           <section>

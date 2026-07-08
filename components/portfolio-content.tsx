@@ -9,6 +9,7 @@ import { useLocale } from '@/contexts/locale-context'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
 import { getTranslation } from '@/lib/translations'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 import Image from 'next/image'
 
 interface PortfolioContentProps {
@@ -67,11 +68,12 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
       <Navigation />
       {/* Hero Section */}
 <section className="pt-32 sm:pt-40 pb-12 sm:pb-16 py-24 md:py-32 lg:py-40 px-6 lg:px-24 relative overflow-hidden hero-glow">
+      <ShaderBackdrop variant="hero-sub" seed={3} className="absolute!" />
       <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-12 sm:mb-16">
             <SectionTag variant="dark">PORTFOLIO</SectionTag>
             <div className="mt-6" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               <span>{t('portfolioPageHero1')}</span>
               <br />
               <span className="gradient-warm-text">{t('portfolioPageHero2')}</span>
@@ -90,7 +92,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
                 className={`px-4 sm:px-6 py-2 sm:py-3 rounded-[var(--radius-sm)] font-bold transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab.id
                     ? 'gradient-warm text-white'
-                    : 'bg-card text-[#A8A29E] hover:bg-white/10 border border-[var(--border)]'
+                    : 'bg-surface-1 text-[#A8A29E] hover:bg-white/10 border border-[var(--border)]'
                 }`}
               >
                 {tab.label}
@@ -110,11 +112,11 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
               {filteredItems.map(item => (
                 <Link key={item.id} href={`/portfolio/${item.id}`} className="block h-full">
                   <Card
-                    className="group overflow-hidden bg-card border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
+                    className="group overflow-hidden bg-surface-1 border border-border hover:border-[#FF4500]/60 transition-all duration-300 cursor-pointer h-full flex flex-col"
                   >
                     {/* Image */}
                     {item.thumbnail_url ? (
-                      <div className="aspect-video relative overflow-hidden bg-card">
+                      <div className="aspect-video relative overflow-hidden bg-surface-1">
                         <Image
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale)}
@@ -123,6 +125,8 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
                         />
+                        {/* 톤 통일: 하단 그라데이션 오버레이 (로고형/사진형 썸네일 편차 흡수) */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1917]/70 via-transparent to-transparent pointer-events-none z-[5]" />
                         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
                           <span className="px-2 sm:px-3 py-1 bg-[#FF4500]/10 text-[#FF4500] text-xs font-bold rounded-full uppercase">
                             {getCategoryDisplay(item.category)}
@@ -130,7 +134,7 @@ export default function PortfolioContent({ initialPortfolios }: PortfolioContent
                         </div>
                       </div>
                     ) : (
-                      <div className="aspect-video bg-card relative overflow-hidden">
+                      <div className="aspect-video bg-surface-1 relative overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center px-4">
                             <div className="text-4xl sm:text-6xl font-bold text-white/30 uppercase mb-2">

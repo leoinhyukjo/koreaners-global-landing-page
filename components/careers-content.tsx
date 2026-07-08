@@ -23,6 +23,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react'
 import { SectionTag } from '@/components/ui/section-tag'
+import { ShaderBackdrop } from '@/components/ui/shader-backdrop'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import type { CareerJob } from '@/lib/notion/careers'
@@ -85,6 +86,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
 
       {/* Hero Section (Dark) */}
       <section className="pt-32 sm:pt-40 pb-24 md:pb-32 lg:pb-40 px-6 lg:px-24 bg-background relative overflow-hidden w-full max-w-full hero-glow">
+        <ShaderBackdrop variant="hero-sub" seed={5} className="absolute!" />
         <div className="max-w-7xl mx-auto relative z-10">
           <SectionTag variant="dark">CAREERS</SectionTag>
           <div className="mt-6 mb-8" />
@@ -105,7 +107,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="light">ABOUT US</SectionTag>
           <div className="mb-16" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-8 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-8 break-keep">
             {t('careersAboutTitle')}
           </h2>
           <div className="max-w-3xl space-y-4">
@@ -124,14 +126,14 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">BUSINESS</SectionTag>
           <div className="mt-6 mb-8" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-16 break-keep">
             {t('careersBizTitle')}
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {bizAreas.map((area, index) => (
               <Card
                 key={index}
-                className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
+                className="p-8 bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 group min-w-0 overflow-hidden"
               >
                 <p className="text-xs font-mono mb-4 text-[#FF4500]">{String(index + 1).padStart(2, '0')}</p>
                 <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mb-6 shrink-0">
@@ -161,7 +163,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="light">STRENGTHS</SectionTag>
           <div className="mb-16" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
             {t('careersStrengthTitle')}
           </h2>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
@@ -192,7 +194,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">VISION</SectionTag>
           <div className="mt-6 mb-8" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 break-keep">
             {t('careersVisionTitle')}
           </h2>
           <p className="text-lg sm:text-xl text-[#A8A29E] max-w-3xl mb-16 break-keep">
@@ -205,7 +207,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
               return (
                 <Card
                   key={index}
-                  className="p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
+                  className="p-8 bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 hover:-translate-y-1 transition-all duration-300 group text-center"
                 >
                   <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-white/10 flex items-center justify-center mx-auto mb-6">
                     <Icon className="w-8 h-8 text-[#FF4500]/70" />
@@ -228,7 +230,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="light">CULTURE</SectionTag>
           <div className="mb-16" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[var(--kn-dark)] mb-16 break-keep">
             {t('careersCultureTitle')}
           </h2>
           <div className="space-y-4 sm:space-y-6">
@@ -269,7 +271,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
         <div className="max-w-7xl mx-auto">
           <SectionTag variant="dark">OPENINGS</SectionTag>
           <div className="mt-6 mb-8" />
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 break-keep">
+          <h2 className="heading-kr text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 break-keep">
             {t('careersOpeningsTitle')}
           </h2>
           <p className="text-lg sm:text-xl text-[#A8A29E] mb-16 break-keep">
@@ -278,7 +280,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
 
           {jobs.length === 0 ? (
             <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-card flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 rounded-[var(--radius-sm)] bg-surface-1 flex items-center justify-center mx-auto mb-6">
                 <FileText className="w-8 h-8 text-white/50" />
               </div>
               <p className="text-[#A8A29E] text-lg">{t('careersNoOpenings')}</p>
@@ -290,7 +292,7 @@ export default function CareersContent({ initialJobs }: CareersContentProps) {
                 return (
                   <Card
                     key={job.id}
-                    className={`p-6 sm:p-8 bg-card rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
+                    className={`p-6 sm:p-8 bg-surface-1 rounded-[var(--radius)] border border-[var(--border)] hover:border-[#FF4500]/60 transition-all duration-300 min-w-0 overflow-hidden ${isClosed ? 'opacity-70' : ''}`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="min-w-0 flex-1">
