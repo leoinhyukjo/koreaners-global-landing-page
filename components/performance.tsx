@@ -8,7 +8,7 @@ import { SkeletonGrid } from '@/components/ui/skeleton-card'
 import { useLocale } from '@/contexts/locale-context'
 import { getTranslation } from '@/lib/translations'
 import { getPortfolioTitle, getPortfolioClientName } from '@/lib/localized-content'
-import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/fade-in'
+import { FadeIn } from '@/components/ui/fade-in'
 import { SectionTag } from '@/components/ui/section-tag'
 import Image from 'next/image'
 
@@ -29,7 +29,7 @@ export function Performance() {
         .from('portfolios')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(3)
+        .limit(10)
 
       if (error) throw error
       setPortfolios(data || [])
@@ -63,22 +63,27 @@ export function Performance() {
           </div>
         ) : (
           <>
-            <StaggerContainer staggerDelay={0.15} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-              {portfolios.slice(0, 3).map((item) => (
-                <StaggerItem key={item.id}>
-                  <Link href={`/portfolio/${item.id}`} className="group cursor-pointer block">
-                    <div className="relative aspect-video bg-[var(--kn-card-dark)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-light)]/10">
+            {/* 한 줄 캐러셀 (마퀴, hover 시 정지). height = 카드 한 칸 */}
+            <div className="mt-16 overflow-hidden">
+              <div className="portfolio-marquee flex w-max gap-6">
+                {[...portfolios, ...portfolios].map((item, i) => (
+                  <Link
+                    key={`${item.id}-${i}`}
+                    href={`/portfolio/${item.id}`}
+                    className="group/card block w-72 flex-shrink-0 sm:w-80"
+                  >
+                    <div className="relative aspect-video overflow-hidden rounded-[var(--radius-lg)] border border-[var(--kn-light)]/10 bg-[var(--kn-card-dark)]">
                       {item.thumbnail_url ? (
                         <Image
                           src={item.thumbnail_url}
                           alt={getPortfolioTitle(item, locale) || 'Portfolio image'}
                           fill
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="320px"
+                          className="object-cover transition-transform duration-500 group-hover/card:scale-105"
                           loading="lazy"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[var(--kn-light)]/20 font-display font-bold text-4xl">
+                        <div className="flex h-full w-full items-center justify-center font-display text-4xl font-bold text-[var(--kn-light)]/20">
                           {item.category?.[0]?.charAt(0) || 'P'}
                         </div>
                       )}
@@ -87,17 +92,17 @@ export function Performance() {
                       <span className="text-xs uppercase tracking-wider text-[#FF4500]">
                         {item.category && item.category.length > 0 ? item.category[0] : 'ETC'}
                       </span>
-                      <h3 className="text-xl font-bold text-[var(--kn-light)] mt-1 group-hover:text-[#FF4500] transition-colors duration-300">
+                      <h3 className="mt-1 truncate text-xl font-bold text-[var(--kn-light)] transition-colors duration-300 group-hover/card:text-[#FF4500]">
                         {getPortfolioTitle(item, locale)}
                       </h3>
-                      <p className="text-sm text-[#78716C] mt-1">
+                      <p className="mt-1 truncate text-sm text-[#78716C]">
                         {getPortfolioClientName(item, locale)}
                       </p>
                     </div>
                   </Link>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
+                ))}
+              </div>
+            </div>
 
             <FadeIn delay={0.3}>
               <div className="mt-12 text-center">

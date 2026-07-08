@@ -29,7 +29,7 @@ export default function HeroSection() {
           </span>
         </h1>
 
-        <p className="heading-kr mx-auto mt-6 max-w-xl text-center text-lg text-foreground/90 sm:text-xl">
+        <p className="heading-kr mx-auto mt-6 max-w-xl text-center text-lg text-foreground/90 sm:text-xl whitespace-pre-line">
           {t('heroValueProp')}
         </p>
         <p className="mt-3 text-center text-sm tracking-wide text-foreground/50">

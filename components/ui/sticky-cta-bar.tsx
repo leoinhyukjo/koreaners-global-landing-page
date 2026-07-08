@@ -16,8 +16,8 @@ export function StickyCtaBar() {
   useEffect(() => {
     setMounted(true);
     // CTA 전환 분석 반영: 스크롤 33% 데드존 어디서든 진입로 확보 —
-    // 히어로(자체 CTA 보유)를 벗어나는 즉시 상시 노출
-    const onScroll = () => setShow(window.scrollY > window.innerHeight * 0.8);
+    // 히어로를 조금만 벗어나도 일찍 노출 (0.35 뷰포트)
+    const onScroll = () => setShow(window.scrollY > window.innerHeight * 0.35);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
